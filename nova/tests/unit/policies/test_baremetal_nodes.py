@@ -1,0 +1,78 @@
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+import fixtures
+from oslo_utils.fixture import uuidsentinel as uuids
+
+from nova.api.openstack.compute import baremetal_nodes
+from nova.tests.unit.api.openstack import fakes
+from nova.tests.unit.policies import base
+from nova.tests.unit.virt.ironic import utils as ironic_utils
+
+
+class BaremetalNodesPolicyTest(base.BasePolicyTest):
+    """Test Baremetal Nodes APIs policies with all possible context.
+
+    This class defines the set of context with different roles
+    which are allowed and not allowed to pass the policy checks.
+    With those set of context, it will call the API operation and
+    verify the expected behaviour.
+    """
+
+    def setUp(self):
+        super().setUp()
+
+        self.controller = baremetal_nodes.BareMetalNodeController()
+        self.req = fakes.HTTPRequest.blank('')
+
+        # stub out openstacksdk
+        self.mock_conn = self.useFixture(
+            fixtures.MockPatchObject(self.controller, '_ironic_connection'),
+        ).mock
+
+        # With legacy rule and scope check disabled by default, system admin,
+        # legacy admin, and project admin will be able to get baremetal nodes.
+        self.project_admin_authorized_contexts = [
+            self.legacy_admin_context,
+            self.project_admin_context,
+        ]
+
+    def test_index_nodes_policy(self):
+        rule_name = "os_compute_api:os-baremetal-nodes:list"
+        self.mock_conn.nodes.return_value = iter([])
+
+        self.common_policy_auth(self.project_admin_authorized_contexts,
+                                rule_name, self.controller.index,
+                                self.req)
+
+    def test_show_node_policy(self):
+        rule_name = "os_compute_api:os-baremetal-nodes:show"
+        properties = {'cpus': '1', 'memory_mb': '512', 'local_gb': '10'}
+        node = ironic_utils.get_test_node(
+            instance_id=uuids.instance, properties=properties)
+        self.mock_conn.get_node.return_value = node
+        self.mock_conn.ports.return_value = iter([])
+
+        self.common_policy_auth(self.project_admin_authorized_contexts,
+                                rule_name,
+                                self.controller.show,
+                                self.req, uuids.fake_id)
+
+
+class BaremetalNodesNoLegacyPolicyTest(BaremetalNodesPolicyTest):
+    """Test Baremetal Nodes APIs policies with no legacy deprecated rules
+    which means new defaults only. In that case, legacy admin and project
+    admin will be able to get Baremetal nodes.
+
+    """
+
+    without_deprecated_rules = True

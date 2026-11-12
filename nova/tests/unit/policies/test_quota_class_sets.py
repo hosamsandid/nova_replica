@@ -1,0 +1,75 @@
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+from nova.api.openstack.compute import quota_classes
+from nova.policies import quota_class_sets as policies
+from nova.tests import fixtures as nova_fixtures
+from nova.tests.unit.api.openstack import fakes
+from nova.tests.unit.policies import base
+
+
+class QuotaClassSetsPolicyTest(base.BasePolicyTest):
+    """Test Quota Class Set APIs policies with all possible context.
+    This class defines the set of context with different roles
+    which are allowed and not allowed to pass the policy checks.
+    With those set of context, it will call the API operation and
+    verify the expected behaviour.
+    """
+
+    def setUp(self):
+        super(QuotaClassSetsPolicyTest, self).setUp()
+        self.controller = quota_classes.QuotaClassSetsController()
+        self.req = fakes.HTTPRequest.blank('')
+
+        self.useFixture(nova_fixtures.NoopQuotaDriverFixture())
+
+        # With legacy rule and scope check disabled by default, system admin,
+        # legacy admin, and project admin will be able to get, update quota
+        # class.
+        self.project_admin_authorized_contexts = [
+            self.legacy_admin_context,
+            self.project_admin_context]
+
+    def test_update_quota_class_sets_policy(self):
+        rule_name = policies.POLICY_ROOT % 'update'
+        body = {
+            'quota_class_set': {
+                'cores': 20,
+                'fixed_ips': -1,
+                'floating_ips': -1,
+                'injected_files': 5,
+                'instances': 10,
+                'metadata_items': 128,
+                'ram': 51200,
+            }
+        }
+        self.common_policy_auth(self.project_admin_authorized_contexts,
+                                rule_name,
+                                self.controller.update,
+                                self.req, 'default',
+                                body=body)
+
+    def test_show_quota_class_sets_policy(self):
+        rule_name = policies.POLICY_ROOT % 'show'
+        self.common_policy_auth(self.project_admin_authorized_contexts,
+                                rule_name,
+                                self.controller.show,
+                                self.req, 'default')
+
+
+class QuotaClassSetsNoLegacyPolicyTest(QuotaClassSetsPolicyTest):
+    """Test QuotaClassSets APIs policies with no legacy deprecated rules
+    which means new defaults only. In this case, legacy admin and project
+    admin will be able to get update quota class.
+
+    """
+    without_deprecated_rules = True

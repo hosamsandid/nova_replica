@@ -1,0 +1,2459 @@
+# Copyright 2010 United States Government as represented by the
+# Administrator of the National Aeronautics and Space Administration.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+"""Fixtures for Nova tests."""
+
+import collections
+from contextlib import contextmanager
+import copy
+import functools
+from importlib.abc import MetaPathFinder
+import logging as std_logging
+import os
+import sqlite3
+import sys
+import tempfile
+import threading
+import time
+import traceback
+from unittest import mock
+import warnings
+
+import fixtures
+import futurist
+from openstack.cloud import _utils
+from openstack import service_description
+from oslo_concurrency import lockutils
+from oslo_config import cfg
+from oslo_db import exception as db_exc
+from oslo_db.sqlalchemy import enginefacade
+from oslo_db.sqlalchemy import test_fixtures as db_fixtures
+from oslo_log import log as logging
+import oslo_messaging as messaging
+from oslo_messaging import conffixture as messaging_conffixture
+from oslo_privsep import daemon as privsep_daemon
+from oslo_utils.fixture import uuidsentinel
+from oslo_utils import strutils
+from requests import adapters
+from sqlalchemy import exc as sqla_exc
+from wsgi_intercept import interceptor
+
+from nova.api.openstack import wsgi_app
+from nova.api import wsgi
+from nova.compute import multi_cell_list
+from nova.compute import rpcapi as compute_rpcapi
+from nova import context
+from nova.db.api import api as api_db_api
+from nova.db.main import api as main_db_api
+from nova.db import migration
+from nova import exception
+from nova import objects
+from nova.objects import base as obj_base
+from nova.objects import service as service_obj
+import nova.privsep
+from nova import quota as nova_quota
+from nova import rpc
+from nova.scheduler import weights
+from nova import service
+from nova.tests.functional.api import client
+from nova import thread_pool_factory
+from nova import utils
+from nova.virt import node
+
+CONF = cfg.CONF
+LOG = logging.getLogger(__name__)
+
+DB_SCHEMA = collections.defaultdict(str)
+PROJECT_ID = '6f70656e737461636b20342065766572'
+
+
+def _use_file_backed_sqlite_with_wal(name):
+    """Create a temp SQLite file with WAL; return (sqlalchemy_url, abs_path).
+
+    Expects fixtures.NestedTempfile() so tempfile paths
+    live under a directory that is removed on test end. The file is created
+    empty; WAL (Write-Ahead Logging) mode is set on the file with
+    :mod:`sqlite3` before SQLAlchemy opens it.
+    """
+    # Sanitize name for filename (/ would be treated as path separator)
+    name = name.replace('/', '_').replace(':', '_')
+    fd, path = tempfile.mkstemp(
+        prefix='nova-test-%s-' % name,
+        suffix='.sqlite',
+    )
+    os.close(fd)
+    abs_path = os.path.abspath(path)
+    with sqlite3.connect(abs_path) as conn:
+        conn.execute('PRAGMA journal_mode=WAL')
+    return 'sqlite:///%s' % abs_path, abs_path
+
+
+def _bind_database_fixture_to_file_wal_sqlite(
+    database_fixture, file_label, db_api_module,
+):
+    """Point the fixture at temp file SQLite (WAL);"""
+    url, db_path = _use_file_backed_sqlite_with_wal(file_label)
+    new_engine = enginefacade.transaction_context()
+    database_fixture.useFixture(
+        db_fixtures.ReplaceEngineFacadeFixture(
+            db_api_module.context_manager, new_engine))
+    # Apply all database configuration from CONF (pool size, timeouts, etc.)
+    # before overriding just the connection URL
+    db_api_module.configure(CONF)
+    new_engine.configure(connection=url)
+    database_fixture.get_engine = db_api_module.get_engine
+
+
+class ServiceFixture(fixtures.Fixture):
+    """Run a service as a test fixture."""
+
+    def __init__(self, name, host=None, cell=None, **kwargs):
+        name = name
+        # If not otherwise specified, the host will default to the
+        # name of the service. Some things like aggregates care that
+        # this is stable.
+        host = host or name
+        kwargs.setdefault('host', host)
+        kwargs.setdefault('binary', 'nova-%s' % name)
+        self.cell = cell
+        self.kwargs = kwargs
+
+    def setUp(self):
+        super(ServiceFixture, self).setUp()
+        self.ctxt = context.get_admin_context()
+        if self.cell:
+            context.set_target_cell(self.ctxt, self.cell)
+
+        with mock.patch('nova.context.get_admin_context',
+                        return_value=self.ctxt):
+            self.service = service.Service.create(**self.kwargs)
+            self.service.start()
+
+        # NOTE(gmaan): service.stop() calls the real shutdown_all_executors(),
+        # which permanently marks the process-wide thread_pool_factory.FACTORY
+        # as shutdown and stop any other tests to create executors.
+        # Test run the service stop/start n cleanup or withint test.
+        # service stop() run manager's graceful_shutdown() in background thread
+        # so we need to mock the shutdown_all_executors() while service
+        # shutdown is finished in background. Only mocking over stop() call
+        # will not be enough.
+        # This is at least better than mocking it globally in test.py because
+        # it will mock it for the tests playing with services (means using
+        # ServiceFixture)
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.thread_pool_factory.shutdown_all_executors',
+            lambda: None))
+        self.addCleanup(self.service.kill)
+
+
+class NullHandler(std_logging.Handler):
+    """custom default NullHandler to attempt to format the record.
+
+    Used in conjunction with
+    log_fixture.get_logging_handle_error_fixture to detect formatting errors in
+    debug level logs without saving the logs.
+    """
+
+    def handle(self, record):
+        self.format(record)
+
+    def emit(self, record):
+        pass
+
+    def createLock(self):
+        self.lock = None
+
+
+class StandardLogging(fixtures.Fixture):
+    """Setup Logging redirection for tests.
+
+    There are a number of things we want to handle with logging in tests:
+
+    * Redirect the logging to somewhere that we can test or dump it later.
+
+    * Ensure that as many DEBUG messages as possible are actually
+       executed, to ensure they are actually syntactically valid (they
+       often have not been).
+
+    * Ensure that we create useful output for tests that doesn't
+      overwhelm the testing system (which means we can't capture the
+      100 MB of debug logging on every run).
+
+    To do this we create a logger fixture at the root level, which
+    defaults to INFO and create a Null Logger at DEBUG which lets
+    us execute log messages at DEBUG but not keep the output.
+
+    To support local debugging OS_DEBUG=True can be set in the
+    environment, which will print out the full debug logging.
+
+    There are also a set of overrides for particularly verbose
+    modules to be even less than INFO.
+
+    """
+
+    def setUp(self):
+        super(StandardLogging, self).setUp()
+
+        # set root logger to debug
+        root = std_logging.getLogger()
+        root.setLevel(std_logging.DEBUG)
+
+        # supports collecting debug level for local runs
+        if os.environ.get('OS_DEBUG') in ('True', 'true', '1', 'yes'):
+            level = std_logging.DEBUG
+        else:
+            level = std_logging.INFO
+
+        # Collect logs
+        fs = '%(asctime)s %(levelname)s [%(name)s] %(message)s'
+        self.logger = self.useFixture(
+            fixtures.FakeLogger(format=fs, level=None))
+        # TODO(sdague): why can't we send level through the fake
+        # logger? Tests prove that it breaks, but it's worth getting
+        # to the bottom of.
+        root.handlers[0].setLevel(level)
+
+        if level > std_logging.DEBUG:
+            # Just attempt to format debug level logs, but don't save them
+            handler = NullHandler()
+            self.useFixture(fixtures.LogHandler(handler, nuke_handlers=False))
+            handler.setLevel(std_logging.DEBUG)
+
+            # Don't log every single DB migration step
+            std_logging.getLogger(
+                'migrate.versioning.api').setLevel(std_logging.WARNING)
+            # Or alembic for model comparisons.
+            std_logging.getLogger('alembic').setLevel(std_logging.WARNING)
+            # Or oslo_db provisioning steps
+            std_logging.getLogger('oslo_db.sqlalchemy').setLevel(
+                std_logging.WARNING)
+
+        # At times we end up calling back into main() functions in
+        # testing. This has the possibility of calling logging.setup
+        # again, which completely unwinds the logging capture we've
+        # created here. Once we've setup the logging the way we want,
+        # disable the ability for the test to change this.
+        def fake_logging_setup(*args):
+            pass
+
+        self.useFixture(
+            fixtures.MonkeyPatch('oslo_log.log.setup', fake_logging_setup))
+
+    def delete_stored_logs(self):
+        # NOTE(gibi): this depends on the internals of the fixtures.FakeLogger.
+        # This could be enhanced once the PR
+        # https://github.com/testing-cabal/fixtures/pull/42 merges
+        self.logger._output.truncate(0)
+
+
+class DatabasePoisonFixture(fixtures.Fixture):
+    def setUp(self):
+        super(DatabasePoisonFixture, self).setUp()
+        self.useFixture(fixtures.MonkeyPatch(
+            'oslo_db.sqlalchemy.enginefacade._TransactionFactory.'
+            '_create_session',
+            self._poison_configure))
+
+        # NOTE(gibi): not just _create_session indicates a manipulation on the
+        # DB but actually any operation that actually initializes (starts) a
+        # transaction factory. If a test does this without using the Database
+        # fixture then that test i) actually a database test and should declare
+        # it so ii) actually manipulates a global state without proper cleanup
+        # and test isolation. This could lead that later tests are failing with
+        # the error: oslo_db.sqlalchemy.enginefacade.AlreadyStartedError: this
+        # TransactionFactory is already started
+        self.useFixture(fixtures.MonkeyPatch(
+           'oslo_db.sqlalchemy.enginefacade._TransactionFactory._start',
+           self._poison_configure))
+
+    def _poison_configure(self, *a, **k):
+        # If you encounter this error, you might be tempted to just not
+        # inherit from NoDBTestCase. Bug #1568414 fixed a few hundred of these
+        # errors, and not once was that the correct solution. Instead,
+        # consider some of the following tips (when applicable):
+        #
+        # - mock at the object layer rather than the db layer, for example:
+        #       nova.objects.instance.Instance.get
+        #            vs.
+        #       nova.db.instance_get
+        #
+        # - mock at the api layer rather than the object layer, for example:
+        #       nova.api.openstack.common.get_instance
+        #           vs.
+        #       nova.objects.instance.Instance.get
+        #
+        # - mock code that requires the database but is otherwise tangential
+        #   to the code you're testing (for example: EventReporterStub)
+        #
+        # - peruse some of the other database poison warning fixes here:
+        #   https://review.opendev.org/#/q/topic:bug/1568414
+        raise Exception('This test uses methods that set internal oslo_db '
+                        'state, but it does not claim to use the database. '
+                        'This will conflict with the setup of tests that '
+                        'do use the database and cause failures later.')
+
+
+class SingleCellSimple(fixtures.Fixture):
+    """Setup the simplest cells environment possible
+
+    This should be used when you do not care about multiple cells,
+    or having a "real" environment for tests that should not care.
+    This will give you a single cell, and map any and all accesses
+    to that cell (even things that would go to cell0).
+
+    If you need to distinguish between cell0 and cellN, then you
+    should use the CellDatabases fixture.
+
+    If instances should appear to still be in scheduling state, pass
+    instances_created=False to init.
+    """
+
+    def __init__(
+        self, instances_created=True, project_id=PROJECT_ID,
+    ):
+        self.instances_created = instances_created
+        self.project_id = project_id
+
+    def setUp(self):
+        super(SingleCellSimple, self).setUp()
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.CellMappingList._get_all_from_db',
+            self._fake_cell_list))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.CellMappingList._get_by_project_id_from_db',
+            self._fake_cell_list))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.CellMapping._get_by_uuid_from_db',
+            self._fake_cell_get))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.HostMapping._get_by_host_from_db',
+            self._fake_hostmapping_get))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.InstanceMapping._get_by_instance_uuid_from_db',
+            self._fake_instancemapping_get))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.InstanceMappingList._get_by_instance_uuids_from_db',
+            self._fake_instancemapping_get_uuids))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.InstanceMapping._save_in_db',
+            self._fake_instancemapping_get_save))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.context.target_cell',
+            self._fake_target_cell))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.context.set_target_cell',
+            self._fake_set_target_cell))
+
+    def _fake_hostmapping_get(self, *args):
+        return {'id': 1,
+                'updated_at': None,
+                'created_at': None,
+                'host': 'host1',
+                'cell_mapping': self._fake_cell_list()[0]}
+
+    def _fake_instancemapping_get_common(self, instance_uuid):
+        return {
+            'id': 1,
+            'updated_at': None,
+            'created_at': None,
+            'instance_uuid': instance_uuid,
+            'cell_id': (self.instances_created and 1 or None),
+            'project_id': self.project_id,
+            'cell_mapping': (
+                self.instances_created and self._fake_cell_get() or None),
+        }
+
+    def _fake_instancemapping_get_save(self, *args):
+        return self._fake_instancemapping_get_common(args[-2])
+
+    def _fake_instancemapping_get(self, *args):
+        return self._fake_instancemapping_get_common(args[-1])
+
+    def _fake_instancemapping_get_uuids(self, *args):
+        return [self._fake_instancemapping_get(uuid)
+                for uuid in args[-1]]
+
+    def _fake_cell_get(self, *args):
+        return self._fake_cell_list()[0]
+
+    def _fake_cell_list(self, *args):
+        return [{'id': 1,
+                 'updated_at': None,
+                 'created_at': None,
+                 'uuid': uuidsentinel.cell1,
+                 'name': 'onlycell',
+                 'transport_url': 'fake://nowhere/',
+                 'database_connection': 'sqlite:///',
+                 'disabled': False}]
+
+    @contextmanager
+    def _fake_target_cell(self, context, target_cell):
+        # Just do something simple and set/unset the cell_uuid on the context.
+        if target_cell:
+            context.cell_uuid = getattr(target_cell, 'uuid',
+                                        uuidsentinel.cell1)
+        else:
+            context.cell_uuid = None
+        yield context
+
+    def _fake_set_target_cell(self, context, cell_mapping):
+        # Just do something simple and set/unset the cell_uuid on the context.
+        if cell_mapping:
+            context.cell_uuid = getattr(cell_mapping, 'uuid',
+                                        uuidsentinel.cell1)
+        else:
+            context.cell_uuid = None
+
+
+class CheatingSerializer(rpc.RequestContextSerializer):
+    """A messaging.RequestContextSerializer that helps with cells.
+
+    Our normal serializer does not pass in the context like db_connection
+    and mq_connection, for good reason. We don't really want/need to
+    force a remote RPC server to use our values for this. However,
+    during unit and functional tests, since we're all in the same
+    process, we want cell-targeted RPC calls to preserve these values.
+    Unless we had per-service config and database layer state for
+    the fake services we start, this is a reasonable cheat.
+    """
+
+    def serialize_context(self, context):
+        """Serialize context with the db_connection inside."""
+        values = super(CheatingSerializer, self).serialize_context(context)
+        values['db_connection'] = context.db_connection
+        values['mq_connection'] = context.mq_connection
+        return values
+
+    def deserialize_context(self, values):
+        """Deserialize context and honor db_connection if present."""
+        ctxt = super(CheatingSerializer, self).deserialize_context(values)
+        ctxt.db_connection = values.pop('db_connection', None)
+        ctxt.mq_connection = values.pop('mq_connection', None)
+        return ctxt
+
+
+class DatabaseWriteLock(fixtures.Fixture):
+    """Serialize writer transactions per database across threads in tests.
+
+    SQLite allows only a single writer at a time per database file. Patches
+    _TransactionContextManager._transaction_scope to acquire a reentrant lock
+    keyed by the engine facade root (``tcm_self._root``) around every writer
+    transaction so concurrent threads within a test cannot race on the same
+    connection, while writes to different databases (e.g. cell0 and cell1)
+    can still proceed in parallel.
+
+    An RLock is used per database because a single thread may nest writer
+    transactions against the same engine facade.
+    """
+
+    def _setUp(self):
+        self._locks_guard = threading.Lock()
+        self._locks = collections.defaultdict(threading.RLock)
+        original = (
+            enginefacade._TransactionContextManager._transaction_scope)
+
+        @contextmanager
+        def _locked_scope(tcm_self, context):
+            if tcm_self._mode is enginefacade._WRITER:
+                db_url = tcm_self.reader.get_engine().url
+                with self._get_lock(db_url):
+                    with original(tcm_self, context) as resource:
+                        yield resource
+            else:
+                with original(tcm_self, context) as resource:
+                    yield resource
+
+        self.useFixture(fixtures.MockPatchObject(
+            enginefacade._TransactionContextManager,
+            '_transaction_scope',
+            _locked_scope))
+
+    def _get_lock(self, db_url):
+        """Return a reentrant lock for the given DB"""
+        with self._locks_guard:
+            return self._locks[db_url]
+
+
+class CellDatabases(fixtures.Fixture):
+    """Create per-cell databases for testing.
+
+    Installs fixtures.NestedTempfile() so file-backed SQLite databases (see
+    _use_file_backed_sqlite_with_wal under threading) live under a single
+    temp directory that is removed automatically when the fixture ends.
+
+    How to use::
+
+      fix = CellDatabases()
+      fix.add_cell_database('connection1')
+      fix.add_cell_database('connection2', default=True)
+      self.useFixture(fix)
+
+    Passing default=True tells the fixture which database should
+    be given to code that doesn't target a specific cell.
+    """
+
+    def __init__(self):
+        self._ctxt_mgrs = {}
+        self._default_ctxt_mgr = None
+
+        # Per-thread (or per-greenlet under eventlet) storage for the
+        # "current cell" context manager.  Replaces the old shared
+        # _last_ctxt_mgr + ReaderWriterLock: each execution context
+        # tracks its own targeted cell independently, which is safe
+        # under both eventlet and native threading.
+        self._local = threading.local()
+
+    def _cache_schema(self, connection_str):
+        """Apply the main DB schema to a cell and cache it for reuse.
+
+        The first cell DB in this process is migrated with db_sync and the
+        resulting SQL is stored in DB_SCHEMA. Each later cell replays that
+        cached SQL via executescript on an empty database.
+        """
+        ctxt_mgr = self._ctxt_mgrs[connection_str]
+        engine = ctxt_mgr.writer.get_engine()
+        conn = engine.connect()
+        if not DB_SCHEMA[('main', None)]:
+            migration.db_sync(database='main')
+            DB_SCHEMA[('main', None)] = "".join(line for line
+                                                in conn.connection.iterdump())
+        else:
+            conn.connection.executescript(DB_SCHEMA[('main', None)])
+
+    @contextmanager
+    def _wrap_target_cell(self, context, cell_mapping):
+        """Route the context to the correct cell database.
+
+        This replaces the real ``nova.context.target_cell`` for the
+        duration of the test.  It looks up the right per-cell context
+        manager and stores it in thread-local storage so that
+        ``_wrap_get_context_manager`` returns it for any subsequent DB
+        access on this thread/greenlet.
+
+        Thread-local (``threading.local()``) is used instead of a shared
+        variable so that concurrent threads/greenlets targeting different
+        cells don't overwrite each other's routing state.  Under eventlet,
+        ``threading.local()`` is greenlet-local, so this works in both
+        concurrency modes.
+
+        The previous cell routing is saved and restored on exit so that
+        nested ``target_cell`` calls work correctly.
+        """
+        # Look up the context manager for the requested cell.
+        if cell_mapping:
+            desired = self._ctxt_mgrs[cell_mapping.database_connection]
+        else:
+            desired = self._default_ctxt_mgr
+
+        # Save the current cell routing for this thread/greenlet so we
+        # can restore it when we leave this context.
+        previous = getattr(self._local, 'ctxt_mgr', self._default_ctxt_mgr)
+        self._local.ctxt_mgr = desired
+        try:
+            with self._real_target_cell(context, cell_mapping) as c:
+                yield c
+        finally:
+            self._local.ctxt_mgr = previous
+
+    def _wrap_create_context_manager(self, connection=None):
+        ctxt_mgr = self._ctxt_mgrs[connection]
+        return ctxt_mgr
+
+    def _wrap_get_context_manager(self, context):
+        try:
+            # If the context has already been targeted to a specific cell
+            # (via target_cell / _wrap_target_cell), its db_connection
+            # points directly at that cell's context manager — use it.
+            if context.db_connection:
+                return context.db_connection
+        except AttributeError:
+            # Unit tests with None, FakeContext, etc
+            pass
+
+        # For "local" DB accesses that don't go through target_cell,
+        # return whatever cell this thread/greenlet is currently
+        # operating in.  _wrap_target_cell sets this in thread-local
+        # storage; outside any target_cell scope we fall back to the
+        # default cell.
+        return getattr(self._local, 'ctxt_mgr', self._default_ctxt_mgr)
+
+    def _wrap_get_server(self, target, endpoints, serializer=None):
+        """Mirror rpc.get_server() but with our special sauce."""
+        serializer = CheatingSerializer(serializer)
+        exc = "threading" if utils.concurrency_mode_threading() else "eventlet"
+        return messaging.get_rpc_server(rpc.TRANSPORT,
+                                        target,
+                                        endpoints,
+                                        executor=exc,
+                                        serializer=serializer)
+
+    def _wrap_get_client(self, target, version_cap=None, serializer=None,
+                         call_monitor_timeout=None):
+        """Mirror rpc.get_client() but with our special sauce."""
+        serializer = CheatingSerializer(serializer)
+        return messaging.get_rpc_client(rpc.TRANSPORT, target,
+            version_cap=version_cap,
+            serializer=serializer,
+            call_monitor_timeout=call_monitor_timeout)
+
+    def add_cell_database(self, connection_str, default=False):
+        """Add a cell database to the fixture.
+
+        :param connection_str: An identifier used to represent the connection
+        string for this database. It should match the database_connection field
+        in the corresponding CellMapping.
+        """
+
+        # NOTE: Under native threading, use a file-backed SQLite DB with
+        # WAL (see _use_file_backed_sqlite_with_wal).
+        if utils.concurrency_mode_threading():
+            cell_url, _path = _use_file_backed_sqlite_with_wal(connection_str)
+            ctxt_mgr = main_db_api.create_context_manager(connection=cell_url)
+        else:
+            # NOTE(danms): Create a new context manager for the cell, which
+            # will house the sqlite:// connection for this cell's in-memory
+            # database. Store/index it by the connection string, which is
+            # how we identify cells in CellMapping.
+            ctxt_mgr = main_db_api.create_context_manager()
+        self._ctxt_mgrs[connection_str] = ctxt_mgr
+
+        # NOTE(danms): Record which context manager should be the default
+        # so we can restore it when we return from target-cell contexts.
+        # If none has been provided yet, store the current one in case
+        # no default is ever specified.
+        if self._default_ctxt_mgr is None or default:
+            self._default_ctxt_mgr = ctxt_mgr
+
+        def get_context_manager(context):
+            return ctxt_mgr
+
+        # NOTE(danms): This is a temporary MonkeyPatch just to get
+        # a new database created with the schema we need and the
+        # context manager for it stashed.
+        with fixtures.MonkeyPatch(
+            'nova.db.main.api.get_context_manager',
+            get_context_manager,
+        ):
+            engine = ctxt_mgr.writer.get_engine()
+            engine.dispose()
+            self._cache_schema(connection_str)
+
+    def setUp(self):
+        super(CellDatabases, self).setUp()
+        if utils.concurrency_mode_threading():
+            self.useFixture(DatabaseWriteLock())
+        self.useFixture(fixtures.NestedTempfile())
+        self.addCleanup(self.cleanup)
+        self._real_target_cell = context.target_cell
+
+        # NOTE(danms): These context managers are in place for the
+        # duration of the test (unlike the temporary ones above) and
+        # provide the actual "runtime" switching of connections for us.
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.db.main.api.create_context_manager',
+            self._wrap_create_context_manager))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.db.main.api.get_context_manager',
+            self._wrap_get_context_manager))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.context.target_cell',
+            self._wrap_target_cell))
+
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.rpc.get_server',
+            self._wrap_get_server))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.rpc.get_client',
+            self._wrap_get_client))
+
+    def cleanup(self):
+        for ctxt_mgr in self._ctxt_mgrs.values():
+            engine = ctxt_mgr.writer.get_engine()
+            engine.dispose()
+
+
+class Database(fixtures.Fixture):
+
+    # TODO(stephenfin): The 'version' argument is unused and can be removed
+    def __init__(self, database='main', version=None, connection=None):
+        """Create a database fixture.
+
+        :param database: The type of database, 'main', or 'api'
+        :param connection: The connection string to use
+        """
+        super().__init__()
+
+        assert database in {'main', 'api'}, f'Unrecognized database {database}'
+        if database == 'api':
+            assert connection is None, 'Not supported for the API database'
+
+        self.database = database
+        self.version = version
+        self.connection = connection
+
+    def setUp(self):
+        super().setUp()
+        # File-backed SQLite DB paths land under this tree (see
+        # _use_file_backed_sqlite_with_wal for main/api default connections and
+        # CellDatabases).
+        self.useFixture(fixtures.NestedTempfile())
+
+        if self.database == 'main':
+
+            if self.connection is not None:
+                ctxt_mgr = main_db_api.create_context_manager(
+                    connection=self.connection)
+                self.get_engine = ctxt_mgr.writer.get_engine
+            elif utils.concurrency_mode_threading():
+                _bind_database_fixture_to_file_wal_sqlite(
+                    self, 'main', main_db_api)
+            else:
+                # NOTE(gibi): this injects a new factory for each test and
+                # cleans it up at then end of the test case. This way we can
+                # let each test configure the factory so we can avoid having a
+                # global flag guarding against factory re-configuration
+                new_engine = enginefacade.transaction_context()
+                self.useFixture(
+                    db_fixtures.ReplaceEngineFacadeFixture(
+                        main_db_api.context_manager, new_engine))
+                main_db_api.configure(CONF)
+                self.get_engine = main_db_api.get_engine
+        elif self.database == 'api':
+            if utils.concurrency_mode_threading():
+                _bind_database_fixture_to_file_wal_sqlite(
+                    self, 'api', api_db_api)
+            else:
+                # NOTE(gibi): similar note applies here as for the main_db_api
+                # above
+                new_engine = enginefacade.transaction_context()
+                self.useFixture(
+                    db_fixtures.ReplaceEngineFacadeFixture(
+                        api_db_api.context_manager, new_engine))
+                api_db_api.configure(CONF)
+                self.get_engine = api_db_api.get_engine
+
+        if utils.concurrency_mode_threading():
+            self.useFixture(DatabaseWriteLock())
+
+        self._apply_schema()
+
+        self.addCleanup(self.cleanup)
+
+    def _apply_schema(self):
+        if not DB_SCHEMA[(self.database, self.version)]:
+            # apply and cache schema
+            engine = self.get_engine()
+            conn = engine.connect()
+            migration.db_sync(database=self.database, version=self.version)
+            DB_SCHEMA[(self.database, self.version)] = "".join(
+                line for line in conn.connection.iterdump())
+        else:
+            # apply the cached schema
+            engine = self.get_engine()
+            conn = engine.connect()
+            conn.connection.executescript(
+                DB_SCHEMA[(self.database, self.version)])
+
+    def cleanup(self):
+        engine = self.get_engine()
+        engine.dispose()
+
+
+class DefaultFlavorsFixture(fixtures.Fixture):
+    def setUp(self):
+        super(DefaultFlavorsFixture, self).setUp()
+        ctxt = context.get_admin_context()
+        defaults = {'rxtx_factor': 1.0, 'disabled': False, 'is_public': True,
+                    'ephemeral_gb': 0, 'swap': 0}
+        extra_specs = {
+            "hw:numa_nodes": "1"
+        }
+        default_flavors = [
+            objects.Flavor(context=ctxt, memory_mb=512, vcpus=1,
+                           root_gb=1, flavorid='1', name='m1.tiny',
+                           **defaults),
+            objects.Flavor(context=ctxt, memory_mb=2048, vcpus=1,
+                           root_gb=20, flavorid='2', name='m1.small',
+                           **defaults),
+            objects.Flavor(context=ctxt, memory_mb=4096, vcpus=2,
+                           root_gb=40, flavorid='3', name='m1.medium',
+                           **defaults),
+            objects.Flavor(context=ctxt, memory_mb=8192, vcpus=4,
+                           root_gb=80, flavorid='4', name='m1.large',
+                           **defaults),
+            objects.Flavor(context=ctxt, memory_mb=16384, vcpus=8,
+                           root_gb=160, flavorid='5', name='m1.xlarge',
+                           **defaults),
+            objects.Flavor(context=ctxt, memory_mb=512, vcpus=1,
+                           root_gb=1, flavorid='6', name='m1.tiny.specs',
+                           extra_specs=extra_specs, **defaults),
+            ]
+        for flavor in default_flavors:
+            flavor.create()
+
+
+class RPCFixture(fixtures.Fixture):
+    def __init__(self, *exmods):
+        super(RPCFixture, self).__init__()
+        self.exmods = []
+        self.exmods.extend(exmods)
+        self._buses = {}
+
+    def _fake_create_transport(self, url):
+        # FIXME(danms): Right now, collapse all connections
+        # to a single bus. This is how our tests expect things
+        # to work. When the tests are fixed, this fixture can
+        # support simulating multiple independent buses, and this
+        # hack should be removed.
+        url = None
+
+        # NOTE(danms): This will be called with a non-None url by
+        # cells-aware code that is requesting to contact something on
+        # one of the many transports we're multplexing here.
+        if url not in self._buses:
+            exmods = rpc.get_allowed_exmods()
+            self._buses[url] = messaging.get_rpc_transport(
+                CONF,
+                url=url,
+                allowed_remote_exmods=exmods)
+        return self._buses[url]
+
+    def setUp(self):
+        super(RPCFixture, self).setUp()
+        self.addCleanup(rpc.cleanup)
+        rpc.add_extra_exmods(*self.exmods)
+        self.addCleanup(rpc.clear_extra_exmods)
+        self.messaging_conf = messaging_conffixture.ConfFixture(CONF)
+        self.messaging_conf.transport_url = 'fake:/'
+        self.useFixture(self.messaging_conf)
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.rpc.create_transport', self._fake_create_transport))
+        # NOTE(danms): Execute the init with get_transport_url() as None,
+        # instead of the parsed TransportURL(None) so that we can cache
+        # it as it will be called later if the default is requested by
+        # one of our mq-switching methods.
+        with mock.patch('nova.rpc.get_transport_url') as mock_gtu:
+            mock_gtu.return_value = None
+            rpc.init(CONF)
+
+        def cleanup_in_flight_rpc_messages():
+            messaging._drivers.impl_fake.FakeExchangeManager._exchanges = {}
+
+        self.addCleanup(cleanup_in_flight_rpc_messages)
+
+
+class WarningsFixture(fixtures.Fixture):
+    """Filters out warnings during test runs."""
+
+    def setUp(self):
+        super().setUp()
+
+        self._original_warning_filters = warnings.filters[:]
+
+        # NOTE(sdague): Make deprecation warnings only happen once. Otherwise
+        # this gets kind of crazy given the way that upstream python libs use
+        # this.
+        warnings.simplefilter("once", DeprecationWarning)
+
+        # NOTE(sdague): this remains an unresolved item around the way
+        # forward on is_admin, the deprecation is definitely really premature.
+        warnings.filterwarnings(
+            'ignore',
+            message=(
+                'Policy enforcement is depending on the value of is_admin. '
+                'This key is deprecated. Please update your policy '
+                'file to use the standard policy values.'
+            ),
+        )
+
+        # NOTE(mriedem): Ignore scope check UserWarnings from oslo.policy.
+        warnings.filterwarnings(
+            'ignore',
+            message="Policy .* failed scope check",
+            category=UserWarning,
+        )
+
+        # NOTE(stephenfin): Ignore deprecation warnings related to eventlet: we
+        # know it needs to go, there's no point having our unit tests
+        # continuously shout about it
+        warnings.filterwarnings(
+            'ignore',
+            message=(
+                "Using class 'GreenThreadPoolExecutor' \\(either directly or "
+                "via inheritance\\) is deprecated: Eventlet support is "
+                "deprecated. Please migrate your code and stop using Green "
+                "executor."
+            ),
+            category=DeprecationWarning,
+        )
+        warnings.filterwarnings(
+            'ignore',
+            message=(
+                "Using class 'GreenFuture' \\(either directly or "
+                "via inheritance\\) is deprecated: Eventlet support is "
+                "deprecated. Please migrate your code and stop using Green "
+                "future."
+            ),
+            category=DeprecationWarning,
+        )
+        warnings.filterwarnings(
+            'ignore',
+            message='Eventlet support is deprecated and will be removed.',
+            category=DeprecationWarning,
+        )
+        warnings.filterwarnings(
+            'ignore',
+            message=(
+                "Using the 'executor' argument is deprecated: the eventlet "
+                "executor is now deprecated. Threading will be the only "
+                "execution model available."
+            ),
+            category=DeprecationWarning,
+        )
+        warnings.filterwarnings(
+            'ignore',
+            message=(
+                "Eventlet usages are deprecated and the removal of Eventlet "
+                "from OpenStack is planned, for this reason the Eventlet "
+                "executor is deprecated."
+            ),
+            category=DeprecationWarning,
+        )
+        warnings.filterwarnings(
+            'ignore',
+            message=(
+                r"Using fork\(\) is a bad idea, and there is no guarantee "
+                r"eventlet will work."
+            ),
+            category=DeprecationWarning,
+        )
+
+        # NOTE(gibi): The UUIDFields emits a warning if the value is not a
+        # valid UUID. Let's escalate that to an exception in the test to
+        # prevent adding violations.
+        warnings.filterwarnings('error', message=".*invalid UUID.*")
+
+        # NOTE(mriedem): Avoid adding anything which tries to convert an
+        # object to a primitive which jsonutils.to_primitive() does not know
+        # how to handle (or isn't given a fallback callback).
+        warnings.filterwarnings(
+            'error',
+            message=(
+                'Cannot convert <oslo_db.sqlalchemy.enginefacade._Default '
+                'object at '
+            ),
+            category=UserWarning,
+        )
+
+        # Enable deprecation warnings for nova itself to capture upcoming
+        # SQLAlchemy changes
+
+        warnings.filterwarnings(
+            'ignore',
+            category=sqla_exc.SADeprecationWarning,
+        )
+
+        warnings.filterwarnings(
+            'error',
+            module='nova',
+            category=sqla_exc.SADeprecationWarning,
+        )
+
+        # Enable general SQLAlchemy warnings also to ensure we're not doing
+        # silly stuff. It's possible that we'll need to filter things out here
+        # with future SQLAlchemy versions, but that's a good thing
+
+        warnings.filterwarnings(
+            'error',
+            module='nova',
+            category=sqla_exc.SAWarning,
+        )
+
+        self.addCleanup(self._reset_warning_filters)
+
+    def _reset_warning_filters(self):
+        warnings.filters[:] = self._original_warning_filters
+
+
+class ConfPatcher(fixtures.Fixture):
+    """Fixture to patch and restore global CONF.
+
+    This also resets overrides for everything that is patched during
+    it's teardown.
+
+    """
+
+    def __init__(self, **kwargs):
+        """Constructor
+
+        :params group: if specified all config options apply to that group.
+
+        :params **kwargs: the rest of the kwargs are processed as a
+        set of key/value pairs to be set as configuration override.
+
+        """
+        super(ConfPatcher, self).__init__()
+        self.group = kwargs.pop('group', None)
+        self.args = kwargs
+
+    def setUp(self):
+        super(ConfPatcher, self).setUp()
+        for k, v in self.args.items():
+            self.addCleanup(CONF.clear_override, k, self.group)
+            CONF.set_override(k, v, self.group)
+
+
+class OSAPIFixture(fixtures.Fixture):
+    """Create an OS API server as a fixture.
+
+    This spawns an OS API server as a fixture in a new greenthread in
+    the current test. The fixture has a .api parameter with is a
+    simple rest client that can communicate with it.
+
+    This fixture is extremely useful for testing REST responses
+    through the WSGI stack easily in functional tests.
+
+    Usage:
+
+        api = self.useFixture(fixtures.OSAPIFixture()).api
+        resp = api.api_request('/someurl')
+        self.assertEqual(200, resp.status_code)
+        resp = api.api_request('/otherurl', method='POST', body='{foo}')
+
+    The resp is a requests library response. Common attributes that
+    you'll want to use are:
+
+    - resp.status_code - integer HTTP status code returned by the request
+    - resp.content - the body of the response
+    - resp.headers - dictionary of HTTP headers returned
+
+    This fixture also has the following clients with various differences:
+
+        self.admin_api - Project user with is_admin=True and the "admin" role
+        self.reader_api - Project user with only the "reader" role
+        self.other_api - Project user with only the "other" role
+    """
+
+    def __init__(
+        self, api_version='v2.1', project_id=PROJECT_ID,
+        use_project_id_in_urls=False, stub_keystone=True,
+    ):
+        """Constructor
+
+        :param api_version: the API version that we're interested in
+            using. Currently this expects 'v2' or 'v2.1' as possible options.
+        :param project_id: the project id to use on the API.
+        :param use_project_id_in_urls: If True, act like the "endpoint" in the
+            "service catalog" has the legacy format including the project_id.
+        :param stub_keystone: If True, stub keystonemiddleware and
+            NovaKeystoneContext to simulate (but not perform) real auth.
+        """
+        super(OSAPIFixture, self).__init__()
+        self.api_version = api_version
+        self.project_id = project_id
+        self.use_project_id_in_urls = use_project_id_in_urls
+        self.stub_keystone = stub_keystone
+
+    def setUp(self):
+        super(OSAPIFixture, self).setUp()
+        # A unique hostname for the wsgi-intercept.
+        hostname = uuidsentinel.osapi_host
+        port = 80
+        service_name = 'osapi_compute'
+        endpoint = 'http://%s:%s/' % (hostname, port)
+        conf_overrides = {
+            'debug': True,
+        }
+        self.useFixture(ConfPatcher(**conf_overrides))
+
+        if self.stub_keystone:
+            self._stub_keystone()
+
+        # Turn off manipulation of socket_options in TCPKeepAliveAdapter
+        # to keep wsgi-intercept happy. Replace it with the method
+        # from its superclass.
+        self.useFixture(fixtures.MonkeyPatch(
+                'keystoneauth1.session.TCPKeepAliveAdapter.init_poolmanager',
+                adapters.HTTPAdapter.init_poolmanager))
+
+        loader = wsgi.Loader().load_app(service_name)
+        app = lambda: loader
+
+        # reuse service setup code from wsgi_app to register
+        # service, which is looked for in some tests
+        wsgi_app._setup_service(CONF.host, service_name)
+        intercept = interceptor.RequestsInterceptor(app, url=endpoint)
+        intercept.install_intercept()
+        self.addCleanup(intercept.uninstall_intercept)
+
+        base_url = 'http://%(host)s:%(port)s/%(api_version)s' % ({
+            'host': hostname, 'port': port, 'api_version': self.api_version})
+        if self.use_project_id_in_urls:
+            base_url += '/' + self.project_id
+
+        self.api = client.TestOpenStackClient(
+            'fake', base_url, project_id=self.project_id,
+            roles=['reader', 'member'])
+        self.alternative_api = client.TestOpenStackClient(
+            'fake', base_url, project_id=self.project_id,
+            roles=['reader', 'member'])
+        self.admin_api = client.TestOpenStackClient(
+            'admin', base_url, project_id=self.project_id,
+            roles=['reader', 'member', 'admin'])
+        self.alternative_admin_api = client.TestOpenStackClient(
+            'admin', base_url, project_id=self.project_id,
+            roles=['reader', 'member', 'admin'])
+        self.reader_api = client.TestOpenStackClient(
+            'reader', base_url, project_id=self.project_id,
+            roles=['reader'])
+        self.other_api = client.TestOpenStackClient(
+            'other', base_url, project_id=self.project_id,
+            roles=['other'])
+        self.base_url = base_url
+        # Provide a way to access the wsgi application to tests using
+        # the fixture.
+        self.app = app
+
+    def _stub_keystone(self):
+        # Stub out authentication middleware
+        # TODO(efried): Use keystonemiddleware.fixtures.AuthTokenFixture
+        self.useFixture(fixtures.MockPatch(
+            'keystonemiddleware.auth_token.filter_factory',
+            return_value=lambda _app: _app))
+
+        # Stub out context middleware
+        def fake_ctx(env, **kwargs):
+            user_id = env['HTTP_X_AUTH_USER']
+            project_id = env['HTTP_X_AUTH_PROJECT_ID']
+            is_admin = user_id == 'admin'
+            roles = env['HTTP_X_ROLES'].split(',')
+            return context.RequestContext(
+                user_id, project_id, is_admin=is_admin, roles=roles, **kwargs)
+
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.api.auth.NovaKeystoneContext._create_context', fake_ctx))
+
+
+class OSMetadataServer(fixtures.Fixture):
+    """Create an OS Metadata API server as a fixture.
+
+    This spawns an OS Metadata API server as a fixture in a new
+    greenthread in the current test.
+
+    TODO(sdague): ideally for testing we'd have something like the
+    test client which acts like requests, but connects any of the
+    interactions needed.
+
+    """
+
+    def __init__(self):
+        self.md_url = None
+
+    def setUp(self):
+        super(OSMetadataServer, self).setUp()
+
+        # A unique hostname for the wsgi-intercept.
+        hostname = uuidsentinel.metadata_host
+        service_name = 'metadata'
+        endpoint = f'http://{hostname}/'
+        conf_overrides = {
+            'debug': True,
+        }
+        self.useFixture(ConfPatcher(**conf_overrides))
+
+        loader = wsgi.Loader().load_app(service_name)
+        app = lambda: loader
+
+        intercept = interceptor.RequestsInterceptor(app, url=endpoint)
+        intercept.install_intercept()
+        self.addCleanup(intercept.uninstall_intercept)
+
+        self.md_url = endpoint
+
+
+class PoisonFunctions(fixtures.Fixture):
+    """Poison functions so they explode if we touch them.
+
+    When running under a non full stack test harness there are parts
+    of the code that you don't want to go anywhere near. These include
+    things like code that spins up extra threads, which just
+    introduces races.
+
+    """
+
+    def setUp(self):
+        super(PoisonFunctions, self).setUp()
+
+        self._poison_libvirt_driver()
+
+    def _poison_libvirt_driver(self):
+        # The nova libvirt driver starts an event thread which only
+        # causes trouble in tests. Make sure that if tests don't
+        # properly patch it the test explodes.
+
+        def evloop(*args, **kwargs):
+            import sys
+            warnings.warn("Forgot to disable libvirt event thread")
+            sys.exit(1)
+
+        # Don't poison the function if it's already mocked
+        import nova.virt.libvirt.host
+        if not isinstance(nova.virt.libvirt.host.Host._init_events, mock.Mock):
+            self.useFixture(fixtures.MonkeyPatch(
+                'nova.virt.libvirt.host.Host._init_events',
+                evloop))
+
+
+class IndirectionAPIFixture(fixtures.Fixture):
+    """Patch and restore the global NovaObject indirection api."""
+
+    def __init__(self, indirection_api):
+        """Constructor
+
+        :param indirection_api: the indirection API to be used for tests.
+
+        """
+        super(IndirectionAPIFixture, self).__init__()
+        self.indirection_api = indirection_api
+
+    def cleanup(self):
+        obj_base.NovaObject.indirection_api = self.orig_indirection_api
+
+    def setUp(self):
+        super(IndirectionAPIFixture, self).setUp()
+        self.orig_indirection_api = obj_base.NovaObject.indirection_api
+        obj_base.NovaObject.indirection_api = self.indirection_api
+        self.addCleanup(self.cleanup)
+
+
+class IsolatedExecutorFixture(fixtures.Fixture):
+    """isolate each test to a dedicated executor.
+
+    Replace the default shared executor with a per test executor
+    and wait for all threads to finish in test cleanup.
+    """
+
+    def __init__(self, test):
+        self.test_case_id = test
+
+    def _setUp(self):
+        # Just safety that the previous testcase cleaned up after itself
+        assert not thread_pool_factory.FACTORY._all_executors
+
+        origi_get_executor = thread_pool_factory.get_executor
+
+        def _get_executor(executor_type, **kwargs):
+            executor = origi_get_executor(executor_type, **kwargs)
+            executor.name = f"{self.test_case_id}.{executor_type.value}"
+            return executor
+
+        # NOTE(sean-k-mooney): greenpools use eventlet.spawn so we can't stub
+        # out all calls to those functions.
+        # Instead since nova only creates greenthreads directly via
+        # nova.thread_pool_factory we stub out the executor getter. This will
+        # not capture Greenthreads created via the standard lib threading
+        # module.
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.thread_pool_factory.get_executor', _get_executor))
+
+        self.addCleanup(self._cleanup_executors)
+
+    # It shutdown all the executors test has created so that new fresh
+    # executors are available for the next test. We want to catch test
+    # who are leaving the in-progress tasks at this cleanup stage, if
+    # so then this timeout will help to fail such tests instead of hanging
+    # in executors to finish all the pending tasks. Some cleanup tasks
+    # might be needed and running in executors so let's not fail test
+    # immediately instead wait for EXECUTORS_SHUTDOWN_TIMEOUT (10 sec)
+    # before failing the tests. This is not per executor shutdown time
+    # but shutdown timeout for all the executors test created.
+    EXECUTORS_SHUTDOWN_TIMEOUT = 10
+
+    def _reset_all_executors(self, executors):
+        threading_executors = [
+            e for e in executors if isinstance(e, futurist.ThreadPoolExecutor)
+        ]
+
+        # NOTE(gmaan): Stop every threading executor from accepting any
+        # more work before we start polling for pending tasks below.
+        for executor in threading_executors:
+            executor.shutdown(wait=False)
+
+        def _get_executors_with_pending_tasks():
+            # TODO(gmaan): Once we have futurist public interface to know the
+            # state of queue, we can stop using its internal variable.
+            return [e for e in threading_executors
+                    if e._work_queue.unfinished_tasks
+            ]
+
+        LOG.info('%s: executors cleanup started, waiting up to %ss for '
+                 'pending tasks of executors %s',
+                 self.test_case_id, self.EXECUTORS_SHUTDOWN_TIMEOUT,
+                 [e.name for e in threading_executors])
+        start = time.monotonic()
+        deadline = start + self.EXECUTORS_SHUTDOWN_TIMEOUT
+        while True:
+            active_executors = _get_executors_with_pending_tasks()
+            if not active_executors or time.monotonic() >= deadline:
+                break
+            time.sleep(0.05)
+
+        # If executors still has tasks to finish after timeout
+        # then clean executors manually and fail the tests.
+        if active_executors:
+            LOG.warning('%s: executors cleanup timed out after %.2fs, '
+                        'executors %s still have tasks running or tasks '
+                        'waiting for a free worker thread',
+                        self.test_case_id, time.monotonic() - start,
+                        [e.name for e in active_executors])
+            thread_pool_factory.FACTORY._all_executors.clear()
+            for executor in active_executors:
+                queued_tasks = [
+                    getattr(item.fn, '__name__', repr(item.fn))
+                    for item in list(executor._work_queue.queue)
+                    if item is not None
+                ]
+                if queued_tasks:
+                    LOG.warning(
+                        '%s: executor %s has tasks waiting for a free '
+                        'worker thread: %s',
+                        self.test_case_id, executor.name, queued_tasks)
+                for worker in executor._workers:
+                    if worker.is_alive():
+                        stack = ''
+                        frame = sys._current_frames().get(worker.ident)
+                        if frame:
+                            stack = ''.join(traceback.format_stack(frame))
+                        LOG.warning(
+                            '%s: worker %s of executor %s did not finish '
+                            'in %ss, it is still running:\n%s',
+                            self.test_case_id, worker.name, executor.name,
+                            self.EXECUTORS_SHUTDOWN_TIMEOUT, stack)
+                    # A hanged executor still run in background and will hang
+                    # the test process so we need to cleanup the executor's
+                    # worker manually.
+                    # TODO(gmaan): need to avoid accessing internal variable
+                    # from futurist, instead futurist should provide some
+                    # public interface.
+                    # https://bugs.launchpad.net/futurist/+bug/2168924
+                    futurist._thread._to_be_cleaned.pop(worker, None)
+            raise RuntimeError(
+                f'{self.test_case_id}: the executors still have tasks that '
+                f'did not finish in {self.EXECUTORS_SHUTDOWN_TIMEOUT}s')
+        else:
+            thread_pool_factory.reset_all_executors()
+            LOG.info('%s: executors cleanup finished in %.2fs',
+                     self.test_case_id, time.monotonic() - start)
+
+    def _cleanup_executors(self):
+        executors = list(thread_pool_factory.FACTORY._all_executors.values())
+        self._reset_all_executors(executors)
+        for executor in executors:
+            # NOTE(gibi): we cannot rely on utils.concurrency_mode_threading
+            # as that might have been mocked during the test when the executor
+            # was created, but during cleanup the mock is already removed.
+            if isinstance(executor, futurist.GreenThreadPoolExecutor):
+                eventlet = utils.get_eventlet()
+                # kill all greenthreads in the pool before raising to prevent
+                # them from interfering with other tests.
+                for gt in list(executor._pool.coroutines_running):
+                    if isinstance(gt, eventlet.greenthread.GreenThread):
+                        gt.kill()
+                self._raise_on_green_pool(executor._pool)
+
+        # NOTE(gmaan): shutdown_all_executors() set the _shutdown flag to True
+        # and if any test called the shutdown_all_executors then they should
+        # reset it back to False. Check here if any test leave it without
+        # resetting it back to False.
+        assert not thread_pool_factory.FACTORY._shutdown
+
+    def _raise_on_green_pool(self, pool):
+        eventlet = utils.get_eventlet()
+        if any(
+                isinstance(gt, eventlet.greenthread.GreenThread)
+                for gt in pool.coroutines_running
+        ):
+            raise RuntimeError(
+                f'detected leaked greenthreads in {self.test_case_id}')
+        elif (len(pool.coroutines_running) > 0 and
+              strutils.bool_from_string(os.getenv(
+                  "NOVA_RAISE_ON_GREENLET_LEAK", "0")
+              )):
+            raise RuntimeError(
+                f'detected leaked greenlets in {self.test_case_id}')
+        else:
+            self.addDetail(
+                'IsolatedGreenPoolFixture',
+                'no leaked greenthreads detected in '
+                f'{self.test_case_id} '
+                'but some greenlets were running when the test'
+                'finished.'
+                'They cannot be killed so they may interact with '
+                'other tests if they raise exceptions. '
+                'These greenlets were likely created by spawn and'
+                'and therefore are not expected to return or raise.'
+            )
+
+
+class SpawnIsSynchronousFixture(fixtures.Fixture):
+    """Patch and restore the spawn_* utility methods to be synchronous"""
+
+    def setUp(self):
+        super(SpawnIsSynchronousFixture, self).setUp()
+        executor = futurist.SynchronousExecutor()
+        self.addCleanup(executor.shutdown)
+
+        def spawn(func, *args, **kwargs):
+            return executor.submit(func, *args, **kwargs)
+
+        # Just ignore the executor_type argument and use our test internal
+        # synchronous executor instead.
+        def spawn_on(executor_type, func, *args, **kwargs):
+            return executor.submit(func, *args, **kwargs)
+
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.thread_pool_factory.spawn', spawn))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.thread_pool_factory.spawn_on', spawn_on))
+
+
+class BannedDBSchemaOperations(fixtures.Fixture):
+    """Ban some operations for migrations"""
+
+    def __init__(self, banned_resources=None):
+        super(BannedDBSchemaOperations, self).__init__()
+        self._banned_resources = banned_resources or []
+
+    @staticmethod
+    def _explode(resource, op):
+        raise exception.DBNotAllowed(
+            'Operation %s.%s() is not allowed in a database migration' % (
+                resource, op))
+
+    def setUp(self):
+        super(BannedDBSchemaOperations, self).setUp()
+        for thing in self._banned_resources:
+            self.useFixture(fixtures.MonkeyPatch(
+                'sqlalchemy.%s.drop' % thing,
+                lambda *a, **k: self._explode(thing, 'drop')))
+            self.useFixture(fixtures.MonkeyPatch(
+                'sqlalchemy.%s.alter' % thing,
+                lambda *a, **k: self._explode(thing, 'alter')))
+
+
+class ForbidNewLegacyNotificationFixture(fixtures.Fixture):
+    """Make sure the test fails if new legacy notification is added"""
+
+    def __init__(self):
+        super(ForbidNewLegacyNotificationFixture, self).__init__()
+        self.notifier = rpc.LegacyValidatingNotifier
+
+    def setUp(self):
+        super(ForbidNewLegacyNotificationFixture, self).setUp()
+        self.notifier.fatal = True
+
+        # allow the special test value used in
+        # nova.tests.unit.test_notifications.NotificationsTestCase
+        self.notifier.allowed_legacy_notification_event_types.append(
+                '_decorated_function')
+
+        self.addCleanup(self.cleanup)
+
+    def cleanup(self):
+        self.notifier.fatal = False
+        self.notifier.allowed_legacy_notification_event_types.remove(
+                '_decorated_function')
+
+
+class AllServicesCurrent(fixtures.Fixture):
+    def setUp(self):
+        super(AllServicesCurrent, self).setUp()
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.Service.get_minimum_version_multi',
+            self._fake_minimum))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.objects.service.get_minimum_version_all_cells',
+            lambda *a, **k: service_obj.SERVICE_VERSION))
+        compute_rpcapi.LAST_VERSION = None
+
+    def _fake_minimum(self, *args, **kwargs):
+        return service_obj.SERVICE_VERSION
+
+
+class _NoopConductor(object):
+    def __getattr__(self, key):
+        def _noop_rpc(*args, **kwargs):
+            return None
+        return _noop_rpc
+
+
+class NoopConductorFixture(fixtures.Fixture):
+    """Stub out the conductor API to do nothing"""
+
+    def setUp(self):
+        super(NoopConductorFixture, self).setUp()
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.conductor.ComputeTaskAPI', _NoopConductor))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.conductor.API', _NoopConductor))
+
+
+class EventReporterStub(fixtures.Fixture):
+
+    def setUp(self):
+        super(EventReporterStub, self).setUp()
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.compute.utils.EventReporter',
+            lambda *args, **kwargs: mock.MagicMock()))
+
+
+class UnHelperfulClientChannel(privsep_daemon._ClientChannel):
+    def __init__(self, context):
+        raise Exception('You have attempted to start a privsep helper. '
+                        'This is not allowed in the gate, and '
+                        'indicates a failure to have mocked your tests.')
+
+
+class PrivsepNoHelperFixture(fixtures.Fixture):
+    """A fixture to catch failures to mock privsep's rootwrap helper.
+
+    If you fail to mock away a privsep'd method in a unit test, then
+    you may well end up accidentally running the privsep rootwrap
+    helper. This will fail in the gate, but it fails in a way which
+    doesn't identify which test is missing a mock. Instead, we
+    raise an exception so that you at least know where you've missed
+    something.
+    """
+
+    def setUp(self):
+        super(PrivsepNoHelperFixture, self).setUp()
+
+        self.useFixture(fixtures.MonkeyPatch(
+            'oslo_privsep.daemon.RootwrapClientChannel',
+            UnHelperfulClientChannel))
+
+
+class PrivsepFixture(fixtures.Fixture):
+    """Disable real privsep checking so we can test the guts of methods
+    decorated with sys_admin_pctxt.
+    """
+
+    def setUp(self):
+        super(PrivsepFixture, self).setUp()
+        self.useFixture(fixtures.MockPatchObject(
+            nova.privsep.sys_admin_pctxt, 'client_mode', False))
+
+
+class CGroupsFixture(fixtures.Fixture):
+    """Mocks checks made for available subsystems on the host's control group.
+
+    The fixture mocks all calls made on the host to verify the capabilities
+    provided by its kernel. Through this, one can simulate the underlying
+    system hosts work on top of and have tests react to expected outcomes from
+    such.
+
+    Use sample:
+    >>> cgroups = self.useFixture(CGroupsFixture())
+    >>> cgroups = self.useFixture(CGroupsFixture(version=2))
+    >>> cgroups = self.useFixture(CGroupsFixture())
+    ... cgroups.version = 2
+
+    :attr version: Arranges mocks to simulate the host interact with nova
+                   following the given version of cgroups.
+                   Available values are:
+                        - 0: All checks related to cgroups will return False.
+                        - 1: Checks related to cgroups v1 will return True.
+                        - 2: Checks related to cgroups v2 will return True.
+                   Defaults to 1.
+    """
+
+    def __init__(self, version=1):
+        self._cpuv1 = None
+        self._cpuv2 = None
+
+        self._version = version
+
+    @property
+    def version(self):
+        return self._version
+
+    @version.setter
+    def version(self, value):
+        self._version = value
+        self._update_mocks()
+
+    def setUp(self):
+        super().setUp()
+        self._cpuv1 = self.useFixture(fixtures.MockPatch(
+            'nova.virt.libvirt.host.Host._has_cgroupsv1_cpu_controller')).mock
+        self._cpuv2 = self.useFixture(fixtures.MockPatch(
+            'nova.virt.libvirt.host.Host._has_cgroupsv2_cpu_controller')).mock
+        self._update_mocks()
+
+    def _update_mocks(self):
+        if not self._cpuv1:
+            return
+
+        if not self._cpuv2:
+            return
+
+        if self.version == 0:
+            self._cpuv1.return_value = False
+            self._cpuv2.return_value = False
+            return
+
+        if self.version == 1:
+            self._cpuv1.return_value = True
+            self._cpuv2.return_value = False
+            return
+
+        if self.version == 2:
+            self._cpuv1.return_value = False
+            self._cpuv2.return_value = True
+            return
+
+        raise ValueError(f"Unknown cgroups version: '{self.version}'.")
+
+
+class NoopQuotaDriverFixture(fixtures.Fixture):
+    """A fixture to run tests using the NoopQuotaDriver.
+
+    We can't simply set self.flags to the NoopQuotaDriver in tests to use the
+    NoopQuotaDriver because the QuotaEngine object is global. Concurrently
+    running tests will fail intermittently because they might get the
+    NoopQuotaDriver globally when they expected the default DbQuotaDriver
+    behavior. So instead, we can patch the _driver property of the QuotaEngine
+    class on a per-test basis.
+    """
+
+    def setUp(self):
+        super(NoopQuotaDriverFixture, self).setUp()
+        self.useFixture(fixtures.MonkeyPatch('nova.quota.QuotaEngine._driver',
+                        nova_quota.NoopQuotaDriver()))
+        # Set the config option just so that code checking for the presence of
+        # the NoopQuotaDriver setting will see it as expected.
+        # For some reason, this does *not* work when TestCase.flags is used.
+        # When using self.flags, the concurrent test failures returned.
+        CONF.set_override('driver', 'nova.quota.NoopQuotaDriver', 'quota')
+        self.addCleanup(CONF.clear_override, 'driver', 'quota')
+
+
+class DownCellFixture(fixtures.Fixture):
+    """A fixture to simulate when a cell is down either due to error or timeout
+
+    This fixture will stub out the scatter_gather_cells routine and target_cell
+    used in various cells-related API operations like listing/showing server
+    details to return a ``oslo_db.exception.DBError`` per cell in the results.
+    Therefore it is best used with a test scenario like this:
+
+    1. Create a server successfully.
+    2. Using the fixture, list/show servers. Depending on the microversion
+       used, the API should either return minimal results or by default skip
+       the results from down cells.
+
+    Example usage::
+
+        with nova_fixtures.DownCellFixture():
+            # List servers with down cells.
+            self.api.get_servers()
+            # Show a server in a down cell.
+            self.api.get_server(server['id'])
+            # List services with down cells.
+            self.admin_api.api_get('/os-services')
+    """
+
+    def __init__(self, down_cell_mappings=None):
+        self.down_cell_mappings = down_cell_mappings
+
+    def setUp(self):
+        super(DownCellFixture, self).setUp()
+
+        def stub_scatter_gather_cells(ctxt, cell_mappings, timeout, fn, *args,
+                                      **kwargs):
+            # Return a dict with an entry per cell mapping where the results
+            # are some kind of exception.
+            up_cell_mappings = objects.CellMappingList()
+            if not self.down_cell_mappings:
+                # User has not passed any down cells explicitly, so all cells
+                # are considered as down cells.
+                self.down_cell_mappings = cell_mappings
+            else:
+                # User has passed down cell mappings, so the rest of the cells
+                # should be up meaning we should return the right results.
+                # We assume that down cells will be a subset of the
+                # cell_mappings.
+                down_cell_uuids = [cell.uuid
+                    for cell in self.down_cell_mappings]
+                up_cell_mappings.objects = [cell
+                    for cell in cell_mappings
+                        if cell.uuid not in down_cell_uuids]
+
+            def wrap(cell_uuid, thing):
+                # We should embed the cell_uuid into the context before
+                # wrapping since its used to calculate the cells_timed_out and
+                # cells_failed properties in the object.
+                ctxt.cell_uuid = cell_uuid
+                return multi_cell_list.RecordWrapper(ctxt, sort_ctx, thing)
+
+            if fn.__func__ is multi_cell_list.CrossCellLister.query_wrapper:
+                # If the function called through scatter-gather utility is the
+                # multi_cell_list.query_wrapper, we should wrap the exception
+                # object into the multi_cell_list.RecordWrapper. This is
+                # because unlike the other functions where the exception object
+                # is returned directly, the query_wrapper wraps this into the
+                # RecordWrapper object format. So if we do not wrap it will
+                # blow up at the point of generating results from heapq further
+                # down the stack.
+                sort_ctx = multi_cell_list.RecordSortContext([], [])
+                ret1 = {
+                    cell_mapping.uuid: [wrap(cell_mapping.uuid,
+                        db_exc.DBError())]
+                    for cell_mapping in self.down_cell_mappings
+                }
+            else:
+                ret1 = {
+                    cell_mapping.uuid: db_exc.DBError()
+                    for cell_mapping in self.down_cell_mappings
+                }
+            ret2 = {}
+            for cell in up_cell_mappings:
+                ctxt.cell_uuid = cell.uuid
+                cctxt = context.RequestContext.from_dict(ctxt.to_dict())
+                context.set_target_cell(cctxt, cell)
+                result = fn(cctxt, *args, **kwargs)
+                ret2[cell.uuid] = result
+            return dict(list(ret1.items()) + list(ret2.items()))
+
+        @contextmanager
+        def stub_target_cell(ctxt, cell_mapping):
+            # This is to give the freedom to simulate down cells for each
+            # individual cell targeted function calls.
+            if not self.down_cell_mappings:
+                # User has not passed any down cells explicitly, so all cells
+                # are considered as down cells.
+                self.down_cell_mappings = [cell_mapping]
+                raise db_exc.DBError()
+            else:
+                # if down_cell_mappings are passed, then check if this cell
+                # is down or up.
+                down_cell_uuids = [cell.uuid
+                    for cell in self.down_cell_mappings]
+                if cell_mapping.uuid in down_cell_uuids:
+                    # its a down cell raise the exception straight away
+                    raise db_exc.DBError()
+                else:
+                    # its an up cell, so yield its context
+                    cctxt = context.RequestContext.from_dict(ctxt.to_dict())
+                    context.set_target_cell(cctxt, cell_mapping)
+                    yield cctxt
+
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.context.scatter_gather_cells', stub_scatter_gather_cells))
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.context.target_cell', stub_target_cell))
+
+
+class AvailabilityZoneFixture(fixtures.Fixture):
+    """Fixture to stub out the nova.availability_zones module
+
+    The list of ``zones`` provided to the fixture are what get returned from
+    ``get_availability_zones``.
+
+    ``get_instance_availability_zone`` will return the availability_zone
+    requested when creating a server otherwise the instance.availability_zone
+    or default_availability_zone is returned.
+    """
+
+    def __init__(self, zones):
+        self.zones = zones
+
+    def setUp(self):
+        super(AvailabilityZoneFixture, self).setUp()
+
+        def fake_get_availability_zones(
+                ctxt, hostapi, get_only_available=False,
+                with_hosts=False, services=None):
+            # A 2-item tuple is returned if get_only_available=False.
+            if not get_only_available:
+                return self.zones, []
+            return self.zones
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.availability_zones.get_availability_zones',
+            fake_get_availability_zones))
+
+        def fake_get_instance_availability_zone(ctxt, instance):
+            # If the server was created with a specific AZ, return it.
+            reqspec = objects.RequestSpec.get_by_instance_uuid(
+                ctxt, instance.uuid)
+            requested_az = reqspec.availability_zone
+            if requested_az:
+                return requested_az
+            # Otherwise return the instance.availability_zone if set else
+            # the default AZ.
+            return instance.availability_zone or CONF.default_availability_zone
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.availability_zones.get_instance_availability_zone',
+            fake_get_instance_availability_zone))
+
+
+class KSAFixture(fixtures.Fixture):
+    """Lets us initialize an openstack.connection.Connection by stubbing the
+    auth plugin.
+    """
+
+    def setUp(self):
+        super(KSAFixture, self).setUp()
+        self.mock_load_auth = self.useFixture(fixtures.MockPatch(
+            'keystoneauth1.loading.load_auth_from_conf_options')).mock
+        self.mock_load_sess = self.useFixture(fixtures.MockPatch(
+            'keystoneauth1.loading.load_session_from_conf_options')).mock
+        # For convenience, an attribute for the "Session" itself
+        self.mock_session = self.mock_load_sess.return_value
+
+
+class OpenStackSDKFixture(fixtures.Fixture):
+    # This satisfies tests that happen to run through get_sdk_adapter but don't
+    # care about the adapter itself (default mocks are fine).
+    # TODO(efried): Get rid of this and use fixtures from openstacksdk once
+    # https://storyboard.openstack.org/#!/story/2005475 is resolved.
+    def setUp(self):
+        super(OpenStackSDKFixture, self).setUp()
+        self.useFixture(fixtures.MockPatch(
+            'openstack.proxy.Proxy.get_endpoint'))
+        real_make_proxy = service_description.ServiceDescription._make_proxy
+        _stub_service_types = {'placement', 'accelerator'}
+
+        def fake_make_proxy(self, instance):
+            if self.service_type in _stub_service_types:
+                return instance.config.get_session_client(
+                    self.service_type,
+                    allow_version_hack=True,
+                )
+            return real_make_proxy(self, instance)
+        self.useFixture(fixtures.MockPatchObject(
+            service_description.ServiceDescription, '_make_proxy',
+            fake_make_proxy))
+        self.useFixture(fixtures.MockPatchObject(
+            _utils, 'localhost_supports_ipv6', return_value=False))
+
+
+class HostNameWeigher(weights.BaseHostWeigher):
+    """Weigher to make the scheduler host selection deterministic.
+
+    Note that this weigher is supposed to be used via
+    HostNameWeigherFixture and will fail to instantiate if used without that
+    fixture.
+    """
+
+    def __init__(self):
+        self.weights = self.get_weights()
+
+    def get_weights(self):
+        raise NotImplementedError()
+
+    def _weigh_object(self, host_state, weight_properties):
+        # Any unspecified host gets no weight.
+        return self.weights.get(host_state.host, 0)
+
+
+class HostNameWeigherFixture(fixtures.Fixture):
+    """Fixture to make the scheduler host selection deterministic.
+
+    Note that this fixture needs to be used before the scheduler service is
+    started as it changes the scheduler configuration.
+    """
+
+    def __init__(self, weights=None):
+        """Create the fixture
+        :param weights: A dict of weights keyed by host names. Defaulted to
+            {'host1': 100, 'host2': 50, 'host3': 10}"
+        """
+        if weights:
+            self.weights = weights
+        else:
+            # default weights good for most of the functional tests
+            self.weights = {'host1': 100, 'host2': 50, 'host3': 10}
+
+    def setUp(self):
+        super(HostNameWeigherFixture, self).setUp()
+        # Make sure that when the scheduler instantiate the HostNameWeigher it
+        # is initialized with the weights that is configured in this fixture
+        self.useFixture(fixtures.MockPatchObject(
+            HostNameWeigher, 'get_weights', return_value=self.weights))
+        # Make sure that the scheduler loads the HostNameWeigher and only that
+        self.useFixture(ConfPatcher(
+            weight_classes=[__name__ + '.HostNameWeigher'],
+            group='filter_scheduler'))
+
+
+class GenericPoisonFixture(fixtures.Fixture):
+    POISON_THESE = (
+        (
+            'psutil.net_if_addrs',
+            'tests should not be inspecting real interfaces on the test node',
+        ),
+        (
+            'os.uname',
+            'tests should not be inspecting host information on the test node',
+        ),
+    )
+
+    def setUp(self):
+        def poison_configure(method, reason):
+            def fail(*a, **k):
+                raise Exception('This test invokes %s, which is bad (%s); you '
+                                'should mock it.' % (method, reason))
+            return fail
+
+        super(GenericPoisonFixture, self).setUp()
+        for meth, why in self.POISON_THESE:
+            # attempt to mock only if not already mocked
+            location, attribute = meth.rsplit('.', 1)
+            components = location.split('.')
+            try:
+                current = __import__(components[0], {}, {})
+                for component in components[1:]:
+                    current = getattr(current, component)
+
+                # NOTE(stephenfin): There are a couple of mock libraries in use
+                # (including mocked versions of mock from oslotest) so we can't
+                # use isinstance checks here
+                if 'mock' not in str(type(getattr(current, attribute))):
+                    self.useFixture(fixtures.MonkeyPatch(
+                        meth, poison_configure(meth, why)))
+            except ImportError:
+                self.useFixture(fixtures.MonkeyPatch(
+                    meth, poison_configure(meth, why)))
+
+
+class PropagateTestCaseIdToChildEventlets(fixtures.Fixture):
+    """A fixture that adds the currently running test case id to each spawned
+    eventlet. This information then later used by the NotificationFixture to
+    detect if a notification was emitted by an eventlet that was spawned by a
+    previous test case so such late notification can be ignored. For more
+    background about what issues this can prevent see
+    https://bugs.launchpad.net/nova/+bug/1946339
+
+    """
+
+    def __init__(self, test_case_id):
+        self.test_case_id = test_case_id
+
+    def setUp(self):
+        super().setUp()
+
+        if utils.concurrency_mode_threading():
+            # TODO(gibi): reimplement this to native threading mode
+            return
+
+        eventlet = utils.get_eventlet()
+
+        # set the id on the main eventlet
+        c = eventlet.getcurrent()
+        c.test_case_id = self.test_case_id
+
+        orig_spawn = thread_pool_factory.spawn
+
+        def wrapped_spawn(func, *args, **kwargs):
+            # This is still runs before the eventlet.spawn so read the id for
+            # propagation
+            caller = eventlet.getcurrent()
+            # If there is no id set on us that means we were spawned with
+            # other than nova.thread_pool_factory.spawn so the id propagation
+            # chain got broken. We fall back to self.test_case_id from the
+            # fixture which is good enough
+            caller_test_case_id = getattr(
+                caller, 'test_case_id', None) or self.test_case_id
+
+            @functools.wraps(func)
+            def test_case_id_wrapper(*args, **kwargs):
+                # This runs after the eventlet.spawn in the new child.
+                # Propagate the id from our caller eventlet
+                current = eventlet.getcurrent()
+                current.test_case_id = caller_test_case_id
+                return func(*args, **kwargs)
+
+            # call the original spawn to create the child but with our
+            # new wrapper around its target
+            return orig_spawn(test_case_id_wrapper, *args, **kwargs)
+
+        # let's replace nova.thread_pool_factory.spawn with the wrapped one
+        # that injects our initialization to the child eventlet
+        self.useFixture(fixtures.MonkeyPatch(
+            'nova.thread_pool_factory.spawn',
+            wrapped_spawn))
+
+
+class ReaderWriterLock(lockutils.ReaderWriterLock):
+    """Wrap oslo.concurrency lockutils.ReaderWriterLock to support eventlet.
+
+    As of fasteners >= 0.15, the workaround code to use eventlet.getcurrent()
+    if eventlet patching is detected has been removed and
+    threading.current_thread is being used instead. Although we are running in
+    a greenlet in our test environment, we are not running in a greenlet of
+    type GreenThread. A GreenThread is created by calling eventlet.spawn() and
+    spawn() is not used to run our tests. At the time of this writing, the
+    eventlet patched threading.current_thread() method falls back to the
+    original unpatched current_thread() method if it is not called from a
+    GreenThead [1] and that breaks our tests involving this fixture.
+
+    We can work around this by patching threading.current_thread() with
+    eventlet.getcurrent() during creation of the lock object, if we detect we
+    are eventlet patched. If we are not eventlet patched, we use a no-op
+    context manager.
+
+    Note: this wrapper should be used for any ReaderWriterLock because any lock
+    may possibly be running inside a plain greenlet created by spawn_n().
+
+    See https://github.com/eventlet/eventlet/issues/731 for details.
+
+    [1] https://github.com/eventlet/eventlet/blob/v0.32.0/eventlet/green/threading.py#L128
+    """  # noqa: E501
+
+    def __init__(self, *a, **kw):
+        if not utils.concurrency_mode_threading():
+            eventlet = utils.get_eventlet()
+            mpatch = fixtures.MonkeyPatch(
+                'threading.current_thread', eventlet.getcurrent)
+            with mpatch:
+                super().__init__(*a, **kw)
+        else:
+            # in netive threading mode this fixture is no-op
+            super().__init__(*a, **kw)
+
+
+class SysFsPoisonFixture(fixtures.Fixture):
+
+    def inject_poison(self, module_name, function_name):
+        import importlib
+        mod = importlib.import_module(module_name)
+        orig_f = getattr(mod, function_name)
+        if (
+            isinstance(orig_f, mock.Mock) or
+            # FIXME(gibi): Is this a bug in unittest.mock? If I remove this
+            # then LibvirtReportSevTraitsTests fails as builtins.open is mocked
+            # there at import time via @test.patch_open. That injects a
+            # MagicMock instance to builtins.open which we check here against
+            # Mock (or even MagicMock) via isinstance and that check says it is
+            # not a mock. More interestingly I cannot reproduce the same
+            # issue with @test.patch_open and isinstance in a simple python
+            # interpreter. So to make progress I'm checking the class name
+            # here instead as that works.
+            orig_f.__class__.__name__ == "MagicMock"
+        ):
+            # the target is already mocked, probably via a decorator run at
+            # import time, so we don't need to inject our poison
+            return
+
+        full_name = module_name + "." + function_name
+
+        def toxic_wrapper(*args, **kwargs):
+            path = args[0]
+            if isinstance(path, bytes):
+                pattern = b'/sys'
+            elif isinstance(path, str):
+                pattern = '/sys'
+            else:
+                # we ignore the rest of the potential pathlike types for now
+                pattern = None
+
+            if pattern and path.startswith(pattern):
+                raise Exception(
+                    'This test invokes %s on %s. It is bad, you '
+                    'should mock it.'
+                    % (full_name, path)
+                )
+            else:
+                return orig_f(*args, **kwargs)
+
+        self.useFixture(fixtures.MonkeyPatch(full_name, toxic_wrapper))
+
+    def setUp(self):
+        super().setUp()
+        self.inject_poison("os.path", "isdir")
+        self.inject_poison("builtins", "open")
+        self.inject_poison("glob", "iglob")
+        self.inject_poison("os", "listdir")
+        self.inject_poison("glob", "glob")
+        # TODO(gibi): Would be good to poison these too but that makes
+        # a bunch of test to fail
+        # self.inject_poison("os.path", "exists")
+        # self.inject_poison("os", "stat")
+
+
+class ImportModulePoisonFixture(fixtures.Fixture):
+    """Poison imports of modules unsuitable for the test environment.
+
+    Examples are guestfs and libvirt. Ordinarily, these would not be installed
+    in the test environment but if they _are_ present, it can result in
+    actual calls to libvirt, for example, which could cause tests to fail.
+
+    This fixture will inspect module imports and if they are in the disallowed
+    list, it will fail the test with a helpful message about mocking needed in
+    the test.
+    """
+
+    class ForbiddenModules(MetaPathFinder):
+        def __init__(self, test, modules):
+            super().__init__()
+            self.test = test
+            self.modules = modules
+
+        def find_spec(self, fullname, path, target=None):
+            if fullname in self.modules:
+                self.test.fail_message = (
+                    f"This test imports the '{fullname}' module, which it "
+                    f'should not in the test environment. Please add '
+                    f'appropriate mocking to this test.'
+                )
+                raise ImportError(fullname)
+
+    def __init__(self, module_names):
+        self.module_names = module_names
+        self.fail_message = ''
+        if isinstance(module_names, str):
+            self.module_names = {module_names}
+        self.meta_path_finder = self.ForbiddenModules(self, self.module_names)
+
+    def setUp(self):
+        super().setUp()
+        self.addCleanup(self.cleanup)
+        sys.meta_path.insert(0, self.meta_path_finder)
+
+    def cleanup(self):
+        sys.meta_path.remove(self.meta_path_finder)
+        # We use a flag and check it during the cleanup phase to fail the test
+        # if needed. This is done because some module imports occur inside of a
+        # try-except block that ignores all exceptions, so raising an exception
+        # there (which is also what self.assert* and self.fail() do underneath)
+        # will not work to cause a failure in the test.
+        if self.fail_message:
+            raise ImportError(self.fail_message)
+
+
+class ComputeNodeIdFixture(fixtures.Fixture):
+    def setUp(self):
+        super().setUp()
+
+        node.LOCAL_NODE_UUID = None
+        self.useFixture(fixtures.MockPatch(
+            'nova.virt.node.read_local_node_uuid',
+            lambda: None))
+        self.useFixture(fixtures.MockPatch(
+            'nova.virt.node.write_local_node_uuid',
+            lambda uuid: None))
+        self.useFixture(fixtures.MockPatch(
+            'nova.compute.manager.ComputeManager.'
+            '_ensure_existing_node_identity',
+            mock.DEFAULT))
+
+
+class GreenThreadPoolShutdownWait(fixtures.Fixture):
+    """Always wait for greenlets in greenpool to finish.
+
+    We use the futurist.GreenThreadPoolExecutor, for example, in compute
+    manager to run live migration jobs. It runs those jobs in bare greenlets
+    created by eventlet.spawn_n(). Bare greenlets cannot be killed the same
+    way as GreenThreads created by eventlet.spawn().
+
+    Because they cannot be killed, in the test environment we must either let
+    them run to completion or move on while they are still running (which can
+    cause test failures as the leaked greenlets attempt to access structures
+    that have already been torn down).
+
+    When a compute service is stopped by Service.stop(), the compute manager's
+    cleanup_host() method is called and while cleaning up, the compute manager
+    calls the GreenThreadPoolExecutor.shutdown() method with wait=False. This
+    means that a test running GreenThreadPoolExecutor jobs will not wait for
+    the bare greenlets to finish running -- it will instead move on immediately
+    while greenlets are still running.
+
+    This fixture will ensure GreenThreadPoolExecutor.shutdown() is always
+    called with wait=True in an effort to reduce the number of leaked bare
+    greenlets.
+
+    See https://bugs.launchpad.net/nova/+bug/1946339 for details.
+    """
+
+    def setUp(self):
+        super().setUp()
+        real_shutdown = futurist.GreenThreadPoolExecutor.shutdown
+        self.useFixture(fixtures.MockPatch(
+            'futurist.GreenThreadPoolExecutor.shutdown',
+            lambda self, wait=True: real_shutdown(self, wait=True)))
+
+
+class UnifiedLimitsFixture(fixtures.Fixture):
+    """A fixture that models Keystone unified limits for testing.
+
+    Although there exists a LimitFixture in oslo.limit, we need a fixture that
+    both oslo.limit and bare OpenStack SDK calls could hook into for unified
+    limits testing. We do some of our own logic outside of oslo.limit and call
+    the OpenStack SDK directly and we need them both to see the same limits.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.mock_sdk_adapter = mock.Mock()
+        real_get_sdk_adapter = utils.get_sdk_adapter
+
+        def fake_get_sdk_adapter(service_type, admin, **kwargs):
+            if service_type == 'identity':
+                return self.mock_sdk_adapter
+            return real_get_sdk_adapter(service_type, admin, **kwargs)
+
+        self.useFixture(fixtures.MockPatch(
+            'nova.utils.get_sdk_adapter', fake_get_sdk_adapter))
+        self.useFixture(fixtures.MockPatch(
+            'oslo_limit.limit._get_keystone_connection',
+            return_value=self.mock_sdk_adapter))
+
+        # These are needed by oslo.limit.
+        self.mock_sdk_adapter.get.return_value.json.return_value = {
+            'model': {'name': 'flat'}}
+        self.mock_sdk_adapter.get_endpoint.return_value.service_id = None
+        self.mock_sdk_adapter.get_endpoint.return_value.region_id = None
+        self.mock_sdk_adapter.endpoints.return_value = [
+            mock.Mock(service_id=None, region_id=None)]
+
+        # These are Keystone API calls that oslo.limit will also use.
+        self.mock_sdk_adapter.registered_limits.side_effect = (
+            self.registered_limits)
+        self.mock_sdk_adapter.limits.side_effect = self.limits
+        self.mock_sdk_adapter.create_registered_limit.side_effect = (
+            self.create_registered_limit)
+        self.mock_sdk_adapter.create_limit.side_effect = self.create_limit
+
+        # These are calls made for service endpoint discovery in
+        # nova/limit/utils.py and they should return generators the same way
+        # openstacksdk does.
+        def fake_services(*a, **kw):
+            return iter([mock.Mock(id=None)])
+
+        def fake_regions(*a, **kw):
+            return iter([mock.Mock(id=None)])
+
+        self.mock_sdk_adapter.services.side_effect = fake_services
+        self.mock_sdk_adapter.regions.side_effect = fake_regions
+
+        self.registered_limits_list = []
+        self.limits_list = []
+
+    def registered_limits(
+            self, region_id=None, resource_name=None, service_id=None):
+        registered_limits_list = copy.deepcopy(self.registered_limits_list)
+        if region_id:
+            registered_limits_list = [rl for rl in registered_limits_list
+                                      if rl.region_id == region_id]
+        if resource_name:
+            registered_limits_list = [rl for rl in registered_limits_list
+                                      if rl.resource_name == resource_name]
+        yield from registered_limits_list
+
+    def limits(
+            self, project_id=None, region_id=None, resource_name=None,
+            service_id=None):
+        limits_list = copy.deepcopy(self.limits_list)
+        if project_id:
+            limits_list = [pl for pl in limits_list
+                           if pl.project_id == project_id]
+        if region_id:
+            limits_list = [pl for pl in limits_list
+                           if pl.region_id == region_id]
+        if resource_name:
+            limits_list = [pl for pl in limits_list
+                           if pl.resource_name == resource_name]
+        yield from limits_list
+
+    def create_registered_limit(self, **attrs):
+        rl = collections.namedtuple(
+            'RegisteredLimit',
+            ['resource_name', 'default_limit', 'region_id', 'service_id'])
+        rl.resource_name = attrs.get('resource_name')
+        rl.default_limit = attrs.get('default_limit')
+        rl.region_id = attrs.get('region_id')
+        rl.service_id = attrs.get('service_id')
+        self.registered_limits_list.append(rl)
+
+    def create_limit(self, **attrs):
+        pl = collections.namedtuple(
+            'Limit',
+            ['resource_name', 'resource_limit', 'project_id', 'region_id',
+             'service_id'])
+        pl.resource_name = attrs.get('resource_name')
+        pl.resource_limit = attrs.get('resource_limit')
+        pl.project_id = attrs.get('project_id')
+        pl.region_id = attrs.get('region_id')
+        pl.service_id = attrs.get('service_id')
+        self.limits_list.append(pl)
+
+
+class RPCPollerCleanupFixture(fixtures.Fixture):
+    def setUp(self):
+        super().setUp()
+        orig_start = (
+            messaging._drivers.base.PollStyleListenerAdapter.start)
+
+        def wrapped_start(_self, *args, **kwargs):
+            stack = "".join(traceback.format_stack())
+            self.addCleanup(lambda: self._check_listener_stopped(_self, stack))
+            return orig_start(_self, *args, **kwargs)
+
+        self.useFixture(
+            fixtures.MonkeyPatch(
+                'oslo_messaging._drivers.base.'
+                'PollStyleListenerAdapter.start',
+                wrapped_start))
+
+    @staticmethod
+    def _check_listener_stopped(
+        listener: messaging._drivers.base.PollStyleListenerAdapter,
+        stack: str,
+    ):
+        if listener._started:
+            raise RuntimeError(
+                'The test case leaked an active oslo_messaging poller thread. '
+                'This can lead to unexpected failures in later test case. '
+                'Please stop the RPC server or the nova.service.Service '
+                'instance in your test case e.g. by using '
+                'self.addCleanup(...). The test started the poller at the '
+                'following place:\n%s' % stack)
+
+
+class DelayingExecutorWrapperCleanupFixture(fixtures.Fixture):
+    def setUp(self):
+        super().setUp()
+
+        orig = (
+            thread_pool_factory.
+            StaticallyDelayingCancellableTaskExecutorWrapper.
+            __init__)
+
+        def wrapped_init(executor_wrapper, delay, executor):
+            stack = "".join(traceback.format_stack())
+            self.addCleanup(
+                self._check_wrapper_stopped, executor_wrapper, stack)
+            orig(executor_wrapper, delay, executor)
+
+        self.useFixture(
+            fixtures.MonkeyPatch(
+                'nova.thread_pool_factory.'
+                'StaticallyDelayingCancellableTaskExecutorWrapper.'
+                '__init__', wrapped_init))
+
+    @staticmethod
+    def _check_wrapper_stopped(
+        wrapper: thread_pool_factory.
+        StaticallyDelayingCancellableTaskExecutorWrapper,
+        stack: str,
+    ):
+        if wrapper.is_alive:
+            raise RuntimeError(
+                'The test case leaked an active '
+                'nova.thread_pool_factory.'
+                'StaticallyDelayingCancellableTaskExecutorWrapper'
+                'instance. This can lead to unexpected failures in later test '
+                'case. Please ensure that shutdown(wait=true) is called on '
+                'the wrapper before the end of the test case e.g. by using '
+                'self.addCleanup(...). The test instantiated the wrapper at '
+                'the following place:\n%s' % stack)
+
+
+class NoSleepRetryDecoratorFixture(fixtures.Fixture):
+    def setUp(self):
+        super().setUp()
+        if utils.concurrency_mode_threading():
+            self.useFixture(
+                fixtures.MockPatch(
+                    "oslo_service.backend._threading.loopingcall."
+                    "LoopingCallBase._sleep"))
+        else:
+            self.useFixture(
+                fixtures.MockPatch(
+                    "oslo_service.backend._eventlet.loopingcall."
+                    "LoopingCallBase._sleep"))
+
+
+class WaitableEvent(threading.Event):
+    """threading.Event subclass that tracks the number of active waiters."""
+
+    def __init__(self):
+        super().__init__()
+        self._waiters_lock = threading.Lock()
+        self._waiters = 0
+
+    def wait(self, timeout=None):
+        with self._waiters_lock:
+            self._waiters += 1
+        try:
+            return super().wait(timeout=timeout)
+        finally:
+            with self._waiters_lock:
+                self._waiters -= 1
+
+    def waiter_count(self):
+        with self._waiters_lock:
+            return self._waiters
+
+
+class InterceptMethodFixture(fixtures.Fixture):
+    """Intercept a method call and pause until explicitly released.
+
+    Patches ``method_name`` on ``target`` so that a call blocks until the
+    ``proceed`` event is set, then calls '`side_effect`` (or the
+    original method if ``side_effect`` is not given). This is useful for
+    tests that need to pause an in-progress operation and asserts on things.
+
+    Provides ``started`` and ``proceed`` events. The caller waits on
+    ``started`` to confirm the method has been entered, then can assert
+    ``proceed.waiter_count() > 0`` to verify the method is genuinely
+    blocking before releasing it.
+
+    Usage::
+
+        intercept = self.useFixture(InterceptMethodFixture(
+            target, 'method_name'))
+        < Call method>
+        # Check if method is started>
+        self.assertTrue(intercept.started.is_set())
+        < Check/do more things while the method is in-progress>
+        # Signal method to proceed/complete.
+        intercept.proceed.set()
+    """
+
+    DEFAULT_TIMEOUT = 60
+
+    def __init__(self, target, method_name, side_effect=None, timeout=None):
+        self.target = target
+        self.method_name = method_name
+        self.side_effect = side_effect
+        self.timeout = (
+            self.DEFAULT_TIMEOUT if timeout is None else timeout)
+        self.started = threading.Event()
+        self.proceed = WaitableEvent()
+
+    def setUp(self):
+        super().setUp()
+        original = getattr(self.target, self.method_name)
+        side_effect = self.side_effect or original
+
+        def _blocking(*args, **kwargs):
+            self.started.set()
+            self.proceed.wait(timeout=self.timeout)
+            return side_effect(*args, **kwargs)
+
+        self.useFixture(fixtures.MockPatchObject(
+            self.target, self.method_name, side_effect=_blocking))

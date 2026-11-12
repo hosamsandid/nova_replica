@@ -1,0 +1,437 @@
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+import datetime
+import hashlib
+
+from copy import deepcopy
+from nova.db.main import api as db
+from nova.db.main import models
+from nova import exception
+from nova import objects
+from nova.objects import fields
+from nova.objects import share_mapping as sm
+from nova.tests.unit.objects import test_objects
+from oslo_utils.fixture import uuidsentinel as uuids
+
+from unittest import mock
+
+
+fake_share_mapping = {
+    'created_at': datetime.datetime(2022, 8, 25, 10, 5, 4),
+    'updated_at': None,
+    'id': 1,
+    'uuid': uuids.share_mapping,
+    'instance_uuid': uuids.instance,
+    'share_id': uuids.share,
+    'status': 'inactive',
+    'tag': 'fake_tag',
+    'export_location': '192.168.122.152:/manila/share',
+    'share_proto': 'NFS',
+    'access_to': '',
+    'access_type': '',
+    'access_key': '',
+    }
+
+fake_share_mapping2 = {
+    'created_at': datetime.datetime(2022, 8, 26, 10, 5, 4),
+    'updated_at': None,
+    'id': 2,
+    'uuid': uuids.share_mapping2,
+    'instance_uuid': uuids.instance,
+    'share_id': uuids.share2,
+    'status': 'inactive',
+    'tag': 'fake_tag2',
+    'export_location': '192.168.122.152:/manila/share2',
+    'share_proto': 'NFS',
+    'access_to': '',
+    'access_type': '',
+    'access_key': '',
+    }
+
+fake_share_mapping_attached = deepcopy(fake_share_mapping)
+fake_share_mapping_attached['status'] = 'active'
+
+
+class _TestShareMapping(object):
+    def _compare_obj(self, share_mapping, fake_share_mapping):
+        self.compare_obj(
+            share_mapping,
+            fake_share_mapping,
+            allow_missing=["deleted", "deleted_at", "access_type",
+                           "access_to", "access_key"])
+
+    def test_obj_make_compatible_attaching_status(self):
+        obj = objects.ShareMapping()
+        obj.status = fields.ShareMappingStatus.ATTACHING
+        primitive = obj.obj_to_primitive('1.1')
+        self.assertIn("status", primitive['nova_object.data'])
+
+        exc = self.assertRaises(
+            exception.ObjectActionError, obj.obj_to_primitive, "1.0"
+        )
+
+        self.assertIn(
+            "status=attaching not supported in version (1, 0)", str(exc)
+        )
+
+    @mock.patch(
+        'nova.db.main.api.share_mapping_update',
+        return_value=fake_share_mapping)
+    def test_save(self, mock_upd):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'inactive'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = '192.168.122.152:/manila/share'
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_mapping.save()
+        mock_upd.assert_called_once_with(
+            self.context,
+            uuids.share_mapping,
+            uuids.instance,
+            uuids.share,
+            'inactive',
+            'fake_tag',
+            '192.168.122.152:/manila/share',
+            'NFS'
+        )
+        self._compare_obj(share_mapping, fake_share_mapping)
+
+    def test_get_share_host_provider(self):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'inactive'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = '192.168.122.152:/manila/share'
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_host_provider = share_mapping.get_share_host_provider()
+        self.assertEqual(share_host_provider, '192.168.122.152')
+
+    def test_get_share_host_provider_not_defined(self):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'inactive'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = ''
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_host_provider = share_mapping.get_share_host_provider()
+        self.assertIsNone(share_host_provider)
+
+    @mock.patch(
+        'nova.db.main.api.share_mapping_update',
+        return_value=fake_share_mapping_attached)
+    def test_create(self, mock_upd):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'inactive'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = '192.168.122.152:/manila/share'
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_mapping.create()
+        mock_upd.assert_called_once_with(
+            self.context,
+            uuids.share_mapping,
+            uuids.instance,
+            uuids.share,
+            'inactive',
+            'fake_tag',
+            '192.168.122.152:/manila/share',
+            'NFS'
+        )
+        self._compare_obj(share_mapping, fake_share_mapping_attached)
+
+    @mock.patch(
+        'nova.db.main.api.share_mapping_update',
+        return_value=fake_share_mapping_attached)
+    def test_activate(self, mock_upd):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'inactive'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = '192.168.122.152:/manila/share'
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_mapping.activate()
+        mock_upd.assert_called_once_with(
+            self.context,
+            uuids.share_mapping,
+            uuids.instance,
+            uuids.share,
+            'active',
+            'fake_tag',
+
+            '192.168.122.152:/manila/share',
+            'NFS'
+        )
+        self._compare_obj(share_mapping, fake_share_mapping_attached)
+
+    @mock.patch(
+        'nova.db.main.api.share_mapping_update',
+        return_value=fake_share_mapping)
+    def test_deactivate(self, mock_upd):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'active'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = '192.168.122.152:/manila/share'
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_mapping.deactivate()
+        mock_upd.assert_called_once_with(
+            self.context,
+            uuids.share_mapping,
+            uuids.instance,
+            uuids.share,
+            'inactive',
+            'fake_tag',
+
+            '192.168.122.152:/manila/share',
+            'NFS'
+        )
+        self._compare_obj(share_mapping, fake_share_mapping)
+
+    @mock.patch(
+        'nova.db.main.api.share_mapping_delete_by_instance_uuid_and_share_id')
+    def test_delete(self, mock_del):
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.uuid = uuids.share_mapping
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_id = uuids.share
+        share_mapping.status = 'inactive'
+        share_mapping.tag = 'fake_tag'
+        share_mapping.export_location = '192.168.122.152:/manila/share'
+        share_mapping.share_proto = 'NFS'
+        share_mapping.access_to = ''
+        share_mapping.access_type = ''
+        share_mapping.access_key = ''
+        share_mapping.delete()
+        mock_del.assert_called_once_with(
+            self.context, uuids.instance, uuids.share)
+
+    def test_get_by_instance_uuid_and_share_id(self):
+
+        fake_db_sm = models.ShareMapping()
+        fake_db_sm.id = 1
+        fake_db_sm.created_at = datetime.datetime(2022, 8, 25, 10, 5, 4)
+        fake_db_sm.uuid = fake_share_mapping['uuid']
+        fake_db_sm.instance_uuid = fake_share_mapping['instance_uuid']
+        fake_db_sm.share_id = fake_share_mapping['share_id']
+        fake_db_sm.status = fake_share_mapping['status']
+        fake_db_sm.tag = fake_share_mapping['tag']
+        fake_db_sm.export_location = fake_share_mapping['export_location']
+        fake_db_sm.share_proto = fake_share_mapping['share_proto']
+
+        with mock.patch(
+            'nova.db.main.api.share_mapping_get_by_instance_uuid_and_share_id',
+            return_value=fake_db_sm
+        ) as mock_get:
+
+            share_mapping = sm.ShareMapping.get_by_instance_uuid_and_share_id(
+                self.context,
+                uuids.instance,
+                uuids.share
+            )
+
+            mock_get.assert_called_once_with(
+                self.context, uuids.instance, uuids.share)
+
+            self._compare_obj(share_mapping, fake_share_mapping)
+
+    def test_set_access_according_to_protocol_nfs(self):
+        self.flags(my_shared_fs_storage_ip='192.168.0.1')
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_proto = 'NFS'
+        share_mapping.set_access_according_to_protocol()
+        self.assertEqual('ip', share_mapping.access_type)
+        self.assertEqual('192.168.0.1', share_mapping.access_to)
+
+    def test_set_access_according_to_protocol_cephfs(self):
+        self.flags(host='compute-1')
+        share_mapping = objects.ShareMapping(self.context)
+        share_mapping.instance_uuid = uuids.instance
+        share_mapping.share_proto = 'CEPHFS'
+        share_mapping.set_access_according_to_protocol()
+        expected = 'nova-' + hashlib.sha256(
+            f'{uuids.instance}:compute-1'.encode()).hexdigest()[:16]
+        self.assertEqual('cephx', share_mapping.access_type)
+        self.assertEqual(expected, share_mapping.access_to)
+
+    def test_cephx_identity(self):
+        identity = objects.ShareMapping._cephx_identity(
+            uuids.instance, 'compute-1')
+        expected = 'nova-' + hashlib.sha256(
+            f'{uuids.instance}:compute-1'.encode()).hexdigest()[:16]
+        self.assertEqual(expected, identity)
+        self.assertTrue(identity.startswith('nova-'))
+        # Deterministic and host-scoped.
+        self.assertEqual(
+            identity,
+            objects.ShareMapping._cephx_identity(uuids.instance, 'compute-1'))
+        self.assertNotEqual(
+            identity,
+            objects.ShareMapping._cephx_identity(uuids.instance, 'compute-2'))
+
+    def test_set_access_according_to_protocol_cephfs_per_instance_per_host(
+        self
+    ):
+        self.flags(host='compute-1')
+        sm_a = objects.ShareMapping(self.context)
+        sm_a.instance_uuid = uuids.instance
+        sm_a.share_proto = 'CEPHFS'
+        sm_a.set_access_according_to_protocol()
+
+        # Different instance on the same host gets a different identity.
+        sm_b = objects.ShareMapping(self.context)
+        sm_b.instance_uuid = uuids.instance2
+        sm_b.share_proto = 'CEPHFS'
+        sm_b.set_access_according_to_protocol()
+        self.assertNotEqual(sm_a.access_to, sm_b.access_to)
+
+        # Same instance on a different host gets a different identity.
+        self.flags(host='compute-2')
+        sm_c = objects.ShareMapping(self.context)
+        sm_c.instance_uuid = uuids.instance
+        sm_c.share_proto = 'CEPHFS'
+        sm_c.set_access_according_to_protocol()
+        self.assertNotEqual(sm_a.access_to, sm_c.access_to)
+
+    @mock.patch(
+        'nova.db.main.api.share_mapping_get_by_instance_uuid_and_share_id',
+        return_value=None)
+    def test_get_by_instance_uuid_and_share_id_not_found(self, mock_get):
+        self.assertRaises(exception.ShareNotFound,
+                sm.ShareMapping.get_by_instance_uuid_and_share_id,
+                self.context,
+                uuids.instance,
+                uuids.share)
+        mock_get.assert_called_once_with(
+            self.context, uuids.instance, uuids.share)
+
+
+class _TestShareMappingList(object):
+    def test_get_by_instance_uuid(self):
+        with mock.patch.object(
+            db, 'share_mapping_get_by_instance_uuid'
+        ) as get:
+            get.return_value = [fake_share_mapping]
+            share_mappings = sm.ShareMappingList.get_by_instance_uuid(
+                self.context, uuids.instance
+            )
+
+            self.assertIsInstance(share_mappings, sm.ShareMappingList)
+            self.assertEqual(1, len(share_mappings))
+            self.assertIsInstance(share_mappings[0], sm.ShareMapping)
+
+    @mock.patch.object(db, 'share_mapping_get_by_instance_uuids')
+    @mock.patch.object(db, 'migration_get_all_by_filters')
+    @mock.patch.object(db, 'instance_get_all_uuids_by_hosts')
+    def test_get_by_host_for_reconcile(
+        self, mock_hosts, mock_migs, mock_share_mappings
+    ):
+        mock_hosts.return_value = {'fake-host': [uuids.instance]}
+        mock_migs.return_value = [mock.Mock(instance_uuid=uuids.instance2)]
+        mock_share_mappings.return_value = [fake_share_mapping]
+
+        share_mappings = sm.ShareMappingList.get_by_host_for_reconcile(
+            self.context, 'fake-host'
+        )
+
+        mock_hosts.assert_called_once_with(self.context, ['fake-host'])
+        mock_migs.assert_called_once_with(
+            self.context,
+            {'host': 'fake-host',
+             'status': ['confirmed', 'reverted', 'error']})
+        # The on-host instance and the migration's instance are gathered
+        # into a single bulk share-mapping query.
+        called_context, called_uuids = mock_share_mappings.call_args[0]
+        self.assertEqual(self.context, called_context)
+        self.assertEqual(
+            {uuids.instance, uuids.instance2}, set(called_uuids))
+        self.assertIsInstance(share_mappings, sm.ShareMappingList)
+        self.assertEqual(1, len(share_mappings))
+        self.assertIsInstance(share_mappings[0], sm.ShareMapping)
+
+    @mock.patch.object(db, 'share_mapping_get_by_instance_uuids')
+    @mock.patch.object(db, 'migration_get_all_by_filters')
+    @mock.patch.object(db, 'instance_get_all_uuids_by_hosts')
+    def test_get_by_host_for_reconcile_no_candidates(
+        self, mock_hosts, mock_migs, mock_share_mappings
+    ):
+        # No instances on the host and no migrations touching it: skip the
+        # share-mapping query entirely and return an empty list.
+        mock_hosts.return_value = {'fake-host': []}
+        mock_migs.return_value = []
+
+        share_mappings = sm.ShareMappingList.get_by_host_for_reconcile(
+            self.context, 'fake-host'
+        )
+
+        mock_share_mappings.assert_not_called()
+        self.assertIsInstance(share_mappings, sm.ShareMappingList)
+        self.assertEqual(0, len(share_mappings))
+
+    def test_get_by_share_id(self):
+        with mock.patch.object(db, 'share_mapping_get_by_share_id') as get:
+            get.return_value = [fake_share_mapping]
+            share_mappings = sm.ShareMappingList.get_by_share_id(
+                self.context, uuids.share
+            )
+
+            self.assertIsInstance(share_mappings, sm.ShareMappingList)
+            self.assertEqual(1, len(share_mappings))
+            self.assertIsInstance(share_mappings[0], sm.ShareMapping)
+
+
+class TestShareMapping(test_objects._LocalTest, _TestShareMapping):
+    pass
+
+
+class TestRemoteShareMapping(test_objects._RemoteTest, _TestShareMapping):
+    pass
+
+
+class TestShareMappingList(test_objects._LocalTest, _TestShareMappingList):
+    pass
+
+
+class TestRemoteShareMappingList(
+        test_objects._RemoteTest, _TestShareMappingList):
+    pass

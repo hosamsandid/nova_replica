@@ -1,0 +1,705 @@
+#    Copyright 2011 OpenStack Foundation
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+import threading
+from unittest import mock
+
+import ddt
+from keystoneauth1.fixture import plugin as ks_plugin_fixture
+from keystoneauth1 import loading as ks_loading
+from oslo_config import cfg
+from oslo_config import fixture as config_fixture
+from oslo_context import context as o_context
+from oslo_context import fixture as o_fixture
+from oslo_utils.fixture import uuidsentinel as uuids
+
+from nova import context
+from nova import exception
+from nova import objects
+from nova import service_auth
+from nova import test
+from nova import thread_pool_factory
+from nova import utils
+
+
+class TestPluginWithAccess(ks_plugin_fixture.TestPlugin):
+
+    def get_access(self, session):
+        return mock.Mock(role_names=['service'])
+
+
+class LoadingFixtureWithAccess(ks_plugin_fixture.LoadingFixture):
+
+    def create_plugin(self):
+        return TestPluginWithAccess(
+                token=self.token,
+                endpoint=self.endpoint,
+                user_id=self.user_id,
+                project_id=self.project_id)
+
+
+@ddt.ddt
+class ContextTestCase(test.NoDBTestCase):
+    # NOTE(danms): Avoid any cells setup by claiming we will
+    # do things ourselves.
+    USES_DB_SELF = True
+
+    def setUp(self):
+        super(ContextTestCase, self).setUp()
+        self.useFixture(o_fixture.ClearRequestContext())
+
+    def test_request_context_elevated(self):
+        user_ctxt = context.RequestContext('111',
+                                           '222',
+                                           is_admin=False)
+        self.assertFalse(user_ctxt.is_admin)
+        admin_ctxt = user_ctxt.elevated()
+        self.assertTrue(admin_ctxt.is_admin)
+        self.assertIn('admin', admin_ctxt.roles)
+        self.assertFalse(user_ctxt.is_admin)
+        self.assertNotIn('admin', user_ctxt.roles)
+
+    def test_request_context_sets_is_admin(self):
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      roles=['admin', 'weasel'])
+        self.assertTrue(ctxt.is_admin)
+
+    def test_request_context_sets_is_admin_by_role(self):
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      roles=['administrator'])
+        self.assertTrue(ctxt.is_admin)
+
+    def test_request_context_sets_is_admin_upcase(self):
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      roles=['Admin', 'weasel'])
+        self.assertTrue(ctxt.is_admin)
+
+    def test_request_context_read_deleted(self):
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      read_deleted='yes')
+        self.assertEqual('yes', ctxt.read_deleted)
+
+        ctxt.read_deleted = 'no'
+        self.assertEqual('no', ctxt.read_deleted)
+
+    def test_request_context_read_deleted_invalid(self):
+        self.assertRaises(ValueError,
+                          context.RequestContext,
+                          '111',
+                          '222',
+                          read_deleted=True)
+
+        ctxt = context.RequestContext('111', '222')
+        self.assertRaises(ValueError,
+                          setattr,
+                          ctxt,
+                          'read_deleted',
+                          True)
+
+    def test_service_catalog_default(self):
+        ctxt = context.RequestContext('111', '222')
+        self.assertEqual([], ctxt.service_catalog)
+
+        ctxt = context.RequestContext('111', '222',
+                service_catalog=[])
+        self.assertEqual([], ctxt.service_catalog)
+
+        ctxt = context.RequestContext('111', '222',
+                service_catalog=None)
+        self.assertEqual([], ctxt.service_catalog)
+
+    def test_service_catalog_filter(self):
+        service_catalog = [
+                {u'type': u'compute', u'name': u'nova'},
+                {u'type': u's3', u'name': u's3'},
+                {u'type': u'image', u'name': u'glance'},
+                {u'type': u'volumev3', u'name': u'cinderv3'},
+                {u'type': u'network', u'name': u'neutron'},
+                {u'type': u'ec2', u'name': u'ec2'},
+                {u'type': u'object-store', u'name': u'swift'},
+                {u'type': u'identity', u'name': u'keystone'},
+                {u'type': u'block-storage', u'name': u'cinder'},
+                {u'type': None, u'name': u'S_withouttype'},
+                {u'type': u'vo', u'name': u'S_partofvolume'}]
+
+        volume_catalog = [{u'type': u'image', u'name': u'glance'},
+                          {u'type': u'volumev3', u'name': u'cinderv3'},
+                          {u'type': u'network', u'name': u'neutron'},
+                          {u'type': u'block-storage', u'name': u'cinder'}]
+        ctxt = context.RequestContext('111', '222',
+                service_catalog=service_catalog)
+        self.assertEqual(volume_catalog, ctxt.service_catalog)
+
+    @mock.patch('keystoneauth1.plugin.BaseAuthPlugin.get_endpoint_data')
+    @mock.patch('nova.context._ContextAuthPlugin.get_endpoint')
+    def test_context_auth_plugin_get_endpoint_data(
+            self, mock_get_endpoint, mock_super_get_endpoint_data):
+        # _ContextAuthPlugin resolves the endpoint from the service
+        # catalog and passes it as endpoint_override so the base class
+        # can run version discovery. Without this, openstacksdk gets
+        # None and raises NotSupported during proxy creation.
+        mock_get_endpoint.return_value = 'http://cyborg.example.com/v2'
+        ctxt = context.RequestContext(
+            '111', '222',
+            service_catalog=[{'type': 'accelerator', 'name': 'cyborg'}])
+        auth_plugin = ctxt.get_auth_plugin()
+
+        result = auth_plugin.get_endpoint_data(
+            mock.sentinel.session, service_type='accelerator')
+
+        mock_get_endpoint.assert_called_once_with(
+            mock.sentinel.session, service_type='accelerator')
+        mock_super_get_endpoint_data.assert_called_once_with(
+            mock.sentinel.session,
+            endpoint_override='http://cyborg.example.com/v2',
+            discover_versions=True, service_type='accelerator')
+        self.assertEqual(mock_super_get_endpoint_data.return_value, result)
+
+    def test_to_dict_from_dict_no_log(self):
+        warns = []
+
+        def stub_warn(msg, *a, **kw):
+            if (a and len(a) == 1 and isinstance(a[0], dict) and a[0]):
+                a = a[0]
+            warns.append(str(msg) % a)
+
+        self.stub_out('nova.context.LOG.warning', stub_warn)
+
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      roles=['admin', 'weasel'])
+
+        context.RequestContext.from_dict(ctxt.to_dict())
+
+        self.assertEqual(0, len(warns), warns)
+
+    def test_store_when_no_overwrite(self):
+        # If no context exists we store one even if overwrite is false
+        # (since we are not overwriting anything).
+        ctx = context.RequestContext('111',
+                                      '222',
+                                      overwrite=False)
+        self.assertIs(o_context.get_current(), ctx)
+
+    def test_no_overwrite(self):
+        # If there is already a context in the cache a new one will
+        # not overwrite it if overwrite=False.
+        ctx1 = context.RequestContext('111',
+                                      '222',
+                                      overwrite=True)
+        context.RequestContext('333',
+                               '444',
+                               overwrite=False)
+        self.assertIs(o_context.get_current(), ctx1)
+
+    def test_get_context_no_overwrite(self):
+        # If there is already a context in the cache creating another context
+        # should not overwrite it.
+        ctx1 = context.RequestContext('111',
+                                      '222',
+                                      overwrite=True)
+        context.get_context()
+        self.assertIs(ctx1, o_context.get_current())
+
+    def test_admin_no_overwrite(self):
+        # If there is already a context in the cache creating an admin
+        # context will not overwrite it.
+        ctx1 = context.RequestContext('111',
+                                      '222',
+                                      overwrite=True)
+        context.get_admin_context()
+        self.assertIs(o_context.get_current(), ctx1)
+
+    @mock.patch('keystoneauth1.loading.load_auth_from_conf_options')
+    @mock.patch('keystoneauth1.loading.load_session_from_conf_options')
+    def test_get_nova_service_user_context(self, mock_load_session,
+                                           mock_load_auth):
+        """Verify the basic get of a Nova service user context."""
+        # Get a Nova service user context.
+        ctxt = context.get_nova_service_user_context()
+
+        # Verify we called the loading functions as expected.
+        mock_load_auth.assert_called_once_with(context.CONF, 'service_user')
+        mock_load_session.assert_called_once_with(context.CONF, 'service_user',
+                                                  auth=None)
+        mock_plugin = mock_load_auth.return_value
+        mock_session = mock_load_session.return_value
+
+        # Verify we called the user_id and project_id getting methods as
+        # expected.
+        mock_plugin.get_user_id.assert_called_once_with(mock_session)
+        mock_plugin.get_project_id.assert_called_once_with(mock_session)
+
+        # Verify the RequestContext attributes got set as expected.
+        self.assertEqual(mock_plugin.get_user_id.return_value, ctxt.user_id)
+        self.assertEqual(mock_plugin.get_project_id.return_value,
+                         ctxt.project_id)
+        self.assertEqual(mock_plugin, ctxt.user_auth_plugin)
+
+        # Get another context to verify we create the context with
+        # overwrite=False to avoid overwriting the thread local storage.
+        with mock.patch('nova.context.RequestContext') as mock_context:
+            ctxt = context.get_nova_service_user_context()
+            mock_context.assert_called_once_with(
+                user_id=mock_plugin.get_user_id.return_value,
+                project_id=mock_plugin.get_project_id.return_value,
+                roles=mock_plugin.get_access.return_value.role_names,
+                user_auth_plugin=mock_plugin, overwrite=False)
+
+    def test_get_nova_service_user_context_user_project(self):
+        """Verify the user_id and project_id get set to what we expect."""
+        # Use a new config fixture so that the options we register here will
+        # get unregistered after the test.
+        conf_fixture = self.useFixture(
+                config_fixture.Config(conf=cfg.ConfigOpts()))
+
+        # Register the auth and session options in the [service_user]
+        # config section.
+        oslo_opts = (ks_loading.get_auth_common_conf_options() +
+                     ks_loading.get_session_conf_options() +
+                     ks_loading.get_auth_plugin_conf_options('password'))
+        conf_fixture.register_opts(oslo_opts, group='service_user')
+
+        # Fill in typical values for the Nova service user.
+        conf_fixture.config(
+            group='service_user', auth_type='password', username='nova',
+            project_name='service', auth_url='http://anyhost/auth')
+
+        # Use the plugin loading fixture from keystoneauth in order to skip all
+        # of the real authentication steps of calling Keystone and set expected
+        # user_id and project_id values.
+        self.useFixture(LoadingFixtureWithAccess(user_id=uuids.nova,
+                                                 project_id=uuids.service))
+
+        # Verify we get the expected user_id and project_id in the
+        # RequestContext.
+        with mock.patch.object(service_auth, 'CONF', conf_fixture.conf):
+            ctxt = context.get_nova_service_user_context()
+        self.assertEqual(uuids.nova, ctxt.user_id)
+        self.assertEqual(uuids.service, ctxt.project_id)
+        self.assertEqual(['service'], ctxt.roles)
+
+    @mock.patch('keystoneauth1.loading.load_auth_from_conf_options')
+    @mock.patch('keystoneauth1.loading.load_session_from_conf_options')
+    @ddt.data('auth', 'session')
+    def test_get_nova_service_user_context_load_fail(
+            self, to_fail, mock_load_session, mock_load_auth):
+        if to_fail == 'auth':
+            mock_load_auth.return_value = None
+        elif to_fail == 'session':
+            mock_load_session.return_value = None
+
+        ex = self.assertRaises(exception.InvalidConfiguration,
+                               context.get_nova_service_user_context)
+        msg = (
+            'Failed to load auth plugin or session from configuration. '
+            'Ensure the [service_user] section of the Nova configuration '
+            'file is correctly configured for the Nova service user.')
+        self.assertIn(msg, str(ex))
+
+    def test_convert_from_rc_to_dict(self):
+        ctx = context.RequestContext(
+            111, 222, request_id='req-679033b7-1755-4929-bf85-eb3bfaef7e0b',
+            timestamp='2015-03-02T22:31:56.641629')
+        values2 = ctx.to_dict()
+        expected_values = {'auth_token': None,
+                           'domain': None,
+                           'is_admin': False,
+                           'is_admin_project': True,
+                           'project_id': 222,
+                           'project_domain': None,
+                           'project_name': None,
+                           'quota_class': None,
+                           'read_deleted': 'no',
+                           'read_only': False,
+                           'remote_address': None,
+                           'request_id':
+                               'req-679033b7-1755-4929-bf85-eb3bfaef7e0b',
+                           'resource_uuid': None,
+                           'roles': [],
+                           'service_catalog': [],
+                           'show_deleted': False,
+                           'timestamp': '2015-03-02T22:31:56.641629',
+                           'user': 111,
+                           'user_domain': None,
+                           'user_id': 111,
+                           'user_identity': '111 222 - - -',
+                           'user_name': None}
+        for k, v in expected_values.items():
+            self.assertIn(k, values2)
+            self.assertEqual(values2[k], v)
+
+    @mock.patch.object(context.policy, 'authorize')
+    def test_can(self, mock_authorize):
+        mock_authorize.return_value = True
+        ctxt = context.RequestContext('111', '222')
+
+        result = ctxt.can(mock.sentinel.rule)
+
+        self.assertTrue(result)
+        mock_authorize.assert_called_once_with(
+          ctxt, mock.sentinel.rule, None)
+
+    @mock.patch.object(context.policy, 'authorize')
+    def test_can_fatal(self, mock_authorize):
+        mock_authorize.side_effect = exception.Forbidden
+        ctxt = context.RequestContext('111', '222')
+
+        self.assertRaises(exception.Forbidden,
+                          ctxt.can, mock.sentinel.rule)
+
+    @mock.patch.object(context.policy, 'authorize')
+    def test_can_non_fatal(self, mock_authorize):
+        mock_authorize.side_effect = exception.Forbidden
+        ctxt = context.RequestContext('111', '222')
+
+        result = ctxt.can(mock.sentinel.rule, mock.sentinel.target,
+                          fatal=False)
+
+        self.assertFalse(result)
+        mock_authorize.assert_called_once_with(ctxt, mock.sentinel.rule,
+                                               mock.sentinel.target)
+
+    @mock.patch('nova.rpc.create_transport')
+    @mock.patch('nova.db.main.api.create_context_manager')
+    def test_target_cell(self, mock_create_ctxt_mgr, mock_rpc):
+        mock_create_ctxt_mgr.return_value = mock.sentinel.cdb
+        mock_rpc.return_value = mock.sentinel.cmq
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      roles=['admin', 'weasel'])
+        # Verify the existing db_connection, if any, is restored
+        ctxt.db_connection = mock.sentinel.db_conn
+        ctxt.mq_connection = mock.sentinel.mq_conn
+        mapping = objects.CellMapping(database_connection='fake://',
+                                      transport_url='fake://',
+                                      uuid=uuids.cell)
+        with context.target_cell(ctxt, mapping) as cctxt:
+            self.assertEqual(cctxt.db_connection, mock.sentinel.cdb)
+            self.assertEqual(cctxt.mq_connection, mock.sentinel.cmq)
+            self.assertEqual(cctxt.cell_uuid, mapping.uuid)
+        self.assertEqual(mock.sentinel.db_conn, ctxt.db_connection)
+        self.assertEqual(mock.sentinel.mq_conn, ctxt.mq_connection)
+        self.assertIsNone(ctxt.cell_uuid)
+        # Test again now that we have populated the cache
+        with context.target_cell(ctxt, mapping) as cctxt:
+            self.assertEqual(cctxt.db_connection, mock.sentinel.cdb)
+            self.assertEqual(cctxt.mq_connection, mock.sentinel.cmq)
+            self.assertEqual(cctxt.cell_uuid, mapping.uuid)
+
+    @mock.patch('nova.rpc.create_transport')
+    @mock.patch('nova.db.main.api.create_context_manager')
+    def test_target_cell_unset(self, mock_create_ctxt_mgr, mock_rpc):
+        """Tests that passing None as the mapping will temporarily
+        untarget any previously set cell context.
+        """
+        mock_create_ctxt_mgr.return_value = mock.sentinel.cdb
+        mock_rpc.return_value = mock.sentinel.cmq
+        ctxt = context.RequestContext('111',
+                                      '222',
+                                      roles=['admin', 'weasel'])
+        ctxt.db_connection = mock.sentinel.db_conn
+        ctxt.mq_connection = mock.sentinel.mq_conn
+        with context.target_cell(ctxt, None) as cctxt:
+            self.assertIsNone(cctxt.db_connection)
+            self.assertIsNone(cctxt.mq_connection)
+        self.assertEqual(mock.sentinel.db_conn, ctxt.db_connection)
+        self.assertEqual(mock.sentinel.mq_conn, ctxt.mq_connection)
+
+    @mock.patch('nova.context.set_target_cell')
+    def test_target_cell_regenerates(self, mock_set):
+        ctxt = context.RequestContext('fake', 'fake')
+        # Set a non-tracked property on the context to make sure it
+        # does not make it to the targeted one (like a copy would do)
+        ctxt.sentinel = mock.sentinel.parent
+        with context.target_cell(ctxt, mock.sentinel.cm) as cctxt:
+            # Should be a different object
+            self.assertIsNot(cctxt, ctxt)
+
+            # Should not have inherited the non-tracked property
+            self.assertFalse(hasattr(cctxt, 'sentinel'),
+                             'Targeted context was copied from original')
+
+            # Set another non-tracked property
+            cctxt.sentinel = mock.sentinel.child
+
+        # Make sure we didn't pollute the original context
+        self.assertNotEqual(ctxt.sentinel, mock.sentinel.child)
+
+    def test_get_context(self):
+        ctxt = context.get_context()
+        self.assertIsNone(ctxt.user_id)
+        self.assertIsNone(ctxt.project_id)
+        self.assertFalse(ctxt.is_admin)
+
+    @mock.patch('nova.rpc.create_transport')
+    @mock.patch('nova.db.main.api.create_context_manager')
+    def test_target_cell_caching(self, mock_create_cm, mock_create_tport):
+        mock_create_cm.return_value = mock.sentinel.db_conn_obj
+        mock_create_tport.return_value = mock.sentinel.mq_conn_obj
+        ctxt = context.get_context()
+        mapping = objects.CellMapping(database_connection='fake://db',
+                                      transport_url='fake://mq',
+                                      uuid=uuids.cell)
+        # First call should create new connection objects.
+        with context.target_cell(ctxt, mapping) as cctxt:
+            self.assertEqual(mock.sentinel.db_conn_obj, cctxt.db_connection)
+            self.assertEqual(mock.sentinel.mq_conn_obj, cctxt.mq_connection)
+        mock_create_cm.assert_called_once_with('fake://db')
+        mock_create_tport.assert_called_once_with('fake://mq')
+        # Second call should use cached objects.
+        mock_create_cm.reset_mock()
+        mock_create_tport.reset_mock()
+        with context.target_cell(ctxt, mapping) as cctxt:
+            self.assertEqual(mock.sentinel.db_conn_obj, cctxt.db_connection)
+            self.assertEqual(mock.sentinel.mq_conn_obj, cctxt.mq_connection)
+        mock_create_cm.assert_not_called()
+        mock_create_tport.assert_not_called()
+
+    def test_is_cell_failure_sentinel(self):
+        record = context.did_not_respond_sentinel
+        self.assertTrue(context.is_cell_failure_sentinel(record))
+        record = TypeError()
+        self.assertTrue(context.is_cell_failure_sentinel(record))
+        record = objects.Instance()
+        self.assertFalse(context.is_cell_failure_sentinel(record))
+
+    @mock.patch('nova.context.target_cell')
+    @mock.patch('nova.objects.InstanceList.get_by_filters')
+    def test_scatter_gather_cells(self, mock_get_inst, mock_target_cell):
+        ctxt = context.get_context()
+        mapping = objects.CellMapping(database_connection='fake://db',
+                                      transport_url='fake://mq',
+                                      uuid=uuids.cell)
+        mappings = objects.CellMappingList(objects=[mapping])
+
+        filters = {'deleted': False}
+        context.scatter_gather_cells(
+            ctxt, mappings, 60, objects.InstanceList.get_by_filters, filters,
+            sort_dir='foo')
+
+        mock_get_inst.assert_called_once_with(
+            mock_target_cell.return_value.__enter__.return_value, filters,
+            sort_dir='foo')
+
+    @mock.patch('nova.context.LOG.warning')
+    def test_scatter_gather_cells_timeout(self, mock_log_warning):
+        # Ensure only one task can finish the other will time out
+        work = threading.Semaphore(value=1)
+
+        # ensure that eventually all task finishes to avoid triggering
+        # the leaked thread check at the test case cleanup
+        def cleanup():
+            work.release()
+            thread_pool_factory.get_executor(
+                thread_pool_factory.ExecutorType.SCATTER_GATHER).shutdown(
+                    wait=True)
+
+        self.addCleanup(cleanup)
+
+        def task(*args, **kwargs):
+            work.acquire()
+            return mock.sentinel.instances
+
+        ctxt = context.get_context()
+        mapping0 = objects.CellMapping(database_connection='fake://db0',
+                                       transport_url='none:///',
+                                       uuid=objects.CellMapping.CELL0_UUID)
+        mapping1 = objects.CellMapping(database_connection='fake://db1',
+                                       transport_url='fake://mq1',
+                                       uuid=uuids.cell1)
+        mappings = objects.CellMappingList(objects=[mapping0, mapping1])
+
+        # We call scatter gather with a short (1s) timeout, dispatching two
+        # tasks where the second will wait forever on our work semaphore above.
+        results = context.scatter_gather_cells(ctxt, mappings, 1, task)
+        self.assertEqual(2, len(results))
+        self.assertEqual(
+            {mock.sentinel.instances, context.did_not_respond_sentinel},
+            set(results.values()))
+        self.assertTrue(mock_log_warning.called)
+
+    @mock.patch('nova.context.LOG.warning')
+    def test_scatter_gather_cells_queued_task_cancelled(self, mock_warning):
+        # ensure that only one task can run at a time so we can simulate
+        # queued tasks
+        executor = thread_pool_factory.FACTORY._new_executor(
+            1, thread_pool_factory.ExecutorType.SCATTER_GATHER.value)
+        thread_pool_factory.FACTORY._all_executors[
+            thread_pool_factory.ExecutorType.SCATTER_GATHER] = executor
+
+        work = threading.Event()
+
+        # ensure that eventually all task finishes, even if the test case fails
+        # early, to avoid triggering the leaked thread check at the test case
+        # cleanup
+        def cleanup():
+            work.set()
+            executor.shutdown(wait=True)
+
+        self.addCleanup(cleanup)
+
+        def task(*args, **kwargs):
+            work.wait()
+            return mock.sentinel.instances
+
+        ctxt = context.get_context()
+        mapping0 = objects.CellMapping(database_connection='fake://db0',
+                                       transport_url='none:///',
+                                       uuid=objects.CellMapping.CELL0_UUID)
+        mapping1 = objects.CellMapping(database_connection='fake://db1',
+                                       transport_url='fake://mq1',
+                                       uuid=uuids.cell1)
+        mappings = objects.CellMappingList(objects=[mapping0, mapping1])
+
+        # We call scatter gather with a short (1s) timeout, dispatching two
+        # tasks that will wait forever on our work event above.
+        results = context.scatter_gather_cells(
+            ctxt, mappings, 1, task)
+
+        self.assertEqual(2, len(results))
+        self.assertEqual(
+            [context.did_not_respond_sentinel] * 2, list(results.values()))
+
+        # let the started task eventually finish so the thread leak check at
+        # the test case cleanup is satisfied.
+        work.set()
+        executor.shutdown(wait=True)
+
+        stats = executor.statistics
+        # The task that wasn't started is cancelled when the scatter-gather
+        # timed out.
+        self.assertEqual(1, stats.cancelled)
+        # The task that was started is finished after the scatter-gather
+        # timeout
+        self.assertEqual(1, stats.executed)
+        mock_calls = [
+            mock.call(
+                'Timed out waiting for response from cell %s. Left the cell '
+                'worker thread to finish in the background.', mock.ANY)]
+
+        if utils.concurrency_mode_threading():
+            mock_calls.append(mock.call(
+                'Timed out waiting for response from cell %s. '
+                'The cell worker thread did not start and is now '
+                'cancelled. The cell_worker_thread_pool_size is too '
+                'small for the load or there are stuck worker threads '
+                'filling the pool.', mock.ANY))
+        else:
+            mock_calls.append(
+                mock.call(
+                    'Timed out waiting for response from cell %s.', mock.ANY))
+
+        mock_warning.assert_has_calls(mock_calls)
+
+    @mock.patch('nova.context.LOG.exception')
+    @mock.patch('nova.objects.InstanceList.get_by_filters')
+    def test_scatter_gather_cells_exception(self, mock_get_inst,
+                                            mock_log_exception):
+        ctxt = context.get_context()
+        mapping0 = objects.CellMapping(database_connection='fake://db0',
+                                       transport_url='none:///',
+                                       uuid=objects.CellMapping.CELL0_UUID)
+        mapping1 = objects.CellMapping(database_connection='fake://db1',
+                                       transport_url='fake://mq1',
+                                       uuid=uuids.cell1)
+        mappings = objects.CellMappingList(objects=[mapping0, mapping1])
+
+        # Simulate cell1 raising an exception.
+        mock_get_inst.side_effect = [mock.sentinel.instances,
+                                     test.TestingException()]
+
+        filters = {'deleted': False}
+        results = context.scatter_gather_cells(
+            ctxt, mappings, 30, objects.InstanceList.get_by_filters, filters)
+        self.assertEqual(2, len(results))
+        self.assertIn(mock.sentinel.instances, results.values())
+        self.assertIsInstance(results[mapping1.uuid], Exception)
+        # non-NovaException gets logged
+        self.assertTrue(mock_log_exception.called)
+
+        # Now run it again with a NovaException to see it's not logged.
+        mock_log_exception.reset_mock()
+        mock_get_inst.side_effect = [mock.sentinel.instances,
+                                     exception.NotFound()]
+
+        results = context.scatter_gather_cells(
+            ctxt, mappings, 30, objects.InstanceList.get_by_filters, filters)
+        self.assertEqual(2, len(results))
+        self.assertIn(mock.sentinel.instances, results.values())
+        self.assertIsInstance(results[mapping1.uuid], exception.NovaException)
+        # NovaExceptions are not logged, the caller should handle them.
+        mock_log_exception.assert_not_called()
+
+    @mock.patch('nova.context.scatter_gather_cells')
+    @mock.patch('nova.objects.CellMappingList.get_all')
+    def test_scatter_gather_all_cells(self, mock_get_all, mock_scatter):
+        ctxt = context.get_context()
+        mapping0 = objects.CellMapping(database_connection='fake://db0',
+                                       transport_url='none:///',
+                                       uuid=objects.CellMapping.CELL0_UUID)
+        mapping1 = objects.CellMapping(database_connection='fake://db1',
+                                       transport_url='fake://mq1',
+                                       uuid=uuids.cell1)
+        mock_get_all.return_value = objects.CellMappingList(
+            objects=[mapping0, mapping1])
+
+        filters = {'deleted': False}
+        context.scatter_gather_all_cells(
+            ctxt, objects.InstanceList.get_by_filters, filters, sort_dir='foo')
+
+        mock_scatter.assert_called_once_with(
+            ctxt, mock_get_all.return_value, 60,
+            objects.InstanceList.get_by_filters, filters, sort_dir='foo')
+
+    @mock.patch('nova.context.scatter_gather_cells')
+    @mock.patch('nova.objects.CellMappingList.get_all')
+    def test_scatter_gather_skip_cell0(self, mock_get_all, mock_scatter):
+        ctxt = context.get_context()
+        mapping0 = objects.CellMapping(database_connection='fake://db0',
+                                       transport_url='none:///',
+                                       uuid=objects.CellMapping.CELL0_UUID)
+        mapping1 = objects.CellMapping(database_connection='fake://db1',
+                                       transport_url='fake://mq1',
+                                       uuid=uuids.cell1)
+        mock_get_all.return_value = objects.CellMappingList(
+            objects=[mapping0, mapping1])
+
+        filters = {'deleted': False}
+        context.scatter_gather_skip_cell0(
+            ctxt, objects.InstanceList.get_by_filters, filters, sort_dir='foo')
+
+        mock_scatter.assert_called_once_with(
+            ctxt, [mapping1], 60, objects.InstanceList.get_by_filters, filters,
+            sort_dir='foo')
+
+    @mock.patch('nova.context.scatter_gather_cells')
+    def test_scatter_gather_single_cell(self, mock_scatter):
+        ctxt = context.get_context()
+        mapping0 = objects.CellMapping(database_connection='fake://db0',
+                                       transport_url='none:///',
+                                       uuid=objects.CellMapping.CELL0_UUID)
+
+        filters = {'deleted': False}
+        context.scatter_gather_single_cell(ctxt, mapping0,
+            objects.InstanceList.get_by_filters, filters, sort_dir='foo')
+
+        mock_scatter.assert_called_once_with(
+            ctxt, [mapping0], context.CELL_TIMEOUT,
+            objects.InstanceList.get_by_filters, filters,
+            sort_dir='foo')
