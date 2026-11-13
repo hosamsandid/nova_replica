@@ -1,0 +1,193 @@
+#!/usr/bin/env python3
+"""aee-ask — put a structured decision to the human and PAUSE the run (#2523).
+
+Use it whenever you need the human to make a choice before you can continue,
+instead of writing the question and its options out as plain prose:
+
+    aee-ask "Which base branch?" --header Branch \\
+        --option "main::default" --option "release::hotfix line"
+    aee-ask "Which checks should run?" --multi \\
+        --option "unit" --option "e2e::slow, ~10 min" --option "lint"
+
+The question reaches Agent Chat as a quick-reply card (clickable options). After
+a successful call END YOUR TURN IMMEDIATELY — do not answer the question yourself
+and do not take any further action. The human's answer arrives as your next
+message and the session resumes where it left off.
+
+Options:
+  <question>                 the question text (exactly one positional argument;
+                             put `--` before it if it starts with a dash)
+  --option "label::desc"     one choice; repeat for each. `::desc` is optional
+                             (at least one --option is required)
+  --header <text>            short label/category shown above the question
+  --multi                    the human may pick more than one option
+  --json                     one machine-readable JSON result object on stdout
+
+Why a CLI: Claude Code strips its built-in AskUserQuestion tool in headless
+(`--print`) mode, and the MCP server that used to re-supply it was removed
+(#1719). So this CLI validates its own arguments and writes the question
+as JSON to a run-scoped sentinel file (`$AEE_ASK_FILE`, set by the runtime for
+each turn); the runtime picks the sentinel up, ends the turn and posts the
+question as its terminal chat message. It talks to nothing over the network.
+Calling it more than once in the same turn adds further questions to the same
+card.
+
+Exit codes (shared CLI contract, docs/cli-contract.md): 0 ok (question queued —
+now end your turn) · 2 usage error (nothing was queued; fix the arguments and
+retry — the turn is NOT ended) · 1 the question could not be written (the turn is
+NOT ended; ask in prose instead).
+"""
+
+import json
+import os
+import sys
+import tempfile
+
+EXIT_OK = 0
+EXIT_DOMAIN = 1
+EXIT_USAGE = 2
+
+# The sentinel path the runtime sets for each turn (agent-entrypoint.py). The
+# fallback only matters for a manual call outside a runtime-driven turn.
+SENTINEL_ENV = "AEE_ASK_FILE"
+FALLBACK_SENTINEL = os.path.join("~", ".agent-studio", "pending-ask.json")
+
+OPTION_SEP = "::"
+
+# Printed after a successful call. Same job as the retired MCP tool's reply:
+# make the model stop and wait rather than answer its own question.
+STUB = (
+    "Your question has been delivered to the user and the run is now paused. "
+    "END YOUR TURN NOW — do not ask in prose, do not answer it yourself, and do "
+    "not take any further action. The human's answer arrives as your next "
+    "message, at which point you can continue where you left off."
+)
+
+_AS_JSON = False
+
+
+def die(msg: str, code: int = EXIT_USAGE):
+    if _AS_JSON:
+        sys.stdout.write(json.dumps({"ok": False, "error": msg}) + "\n")
+    else:
+        sys.stderr.write(f"aee-ask: {msg}\n")
+        sys.stderr.write('usage: aee-ask "<question>" --option "label[::description]" '
+                         "[--option …] [--header <text>] [--multi] [--json]\n")
+    sys.exit(code)
+
+
+def parse_option(raw: str) -> dict:
+    label, sep, desc = raw.partition(OPTION_SEP)
+    label = label.strip()
+    if not label:
+        die(f"malformed --option {raw!r}: expected \"label\" or \"label::description\" "
+            "with a non-empty label")
+    opt = {"label": label}
+    if sep and desc.strip():
+        opt["description"] = desc.strip()
+    return opt
+
+
+def parse_args(argv: list) -> dict:
+    question = None
+    header = None
+    multi = False
+    options: list = []
+    positional_only = False
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if positional_only or not a.startswith("-") or a == "-":
+            if question is not None:
+                die(f"unexpected extra argument {a!r} — quote the question as ONE argument")
+            question = a
+        elif a == "--":
+            positional_only = True
+        elif a in ("--option", "--header"):
+            if i + 1 >= len(argv):
+                die(f"{a} needs a value")
+            val = argv[i + 1]
+            i += 1
+            if a == "--option":
+                options.append(parse_option(val))
+            else:
+                header = val
+        elif a == "--multi":
+            multi = True
+        elif a == "--json":
+            pass  # consumed in main()
+        else:
+            die(f"unknown option {a!r}")
+        i += 1
+
+    if question is None or not question.strip():
+        die("missing the question text")
+    if not options:
+        die("at least one --option is required — offer the choices the human can pick from")
+    labels = [o["label"] for o in options]
+    dupes = sorted({x for x in labels if labels.count(x) > 1})
+    if dupes:
+        die(f"duplicate option label(s): {', '.join(dupes)} — each choice must be distinct")
+
+    q: dict = {"question": question.strip(), "options": options}
+    if header is not None and header.strip():
+        q["header"] = header.strip()
+    if multi:
+        q["multiSelect"] = True
+    return q
+
+
+def sentinel_path() -> str:
+    return os.path.expanduser(os.environ.get(SENTINEL_ENV) or FALLBACK_SENTINEL)
+
+
+def queue_question(q: dict) -> tuple:
+    """Append `q` to the sentinel's `questions` (same shape as AskUserQuestion's
+    input) and write it atomically, so the runtime never reads a torn file."""
+    path = sentinel_path()
+    questions: list = []
+    try:
+        with open(path, encoding="utf-8") as f:
+            existing = json.load(f)
+        if isinstance(existing, dict) and isinstance(existing.get("questions"), list):
+            questions = existing["questions"]
+    except (OSError, ValueError):
+        pass
+    questions.append(q)
+    directory = os.path.dirname(path) or "."
+    os.makedirs(directory, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(prefix=".pending-ask-", dir=directory)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump({"questions": questions}, f)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+    return path, len(questions)
+
+
+def main(argv: list) -> int:
+    global _AS_JSON
+    if not argv or argv[0] in ("--help", "-h", "help"):
+        sys.stdout.write(__doc__)
+        return EXIT_OK
+    _AS_JSON = "--json" in argv
+    q = parse_args(argv)
+    try:
+        path, count = queue_question(q)
+    except OSError as exc:
+        die(f"could not queue the question: {exc}", EXIT_DOMAIN)
+    if _AS_JSON:
+        sys.stdout.write(json.dumps({"ok": True, "questions": count,
+                                     "file": path, "instruction": STUB}) + "\n")
+    else:
+        sys.stdout.write(STUB + "\n")
+    return EXIT_OK
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

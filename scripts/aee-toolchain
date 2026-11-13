@@ -1,0 +1,45 @@
+#!/bin/sh
+# aee-toolchain for the baked `secscan` variant: `doctor` runs every bundled
+# tool's version command and fails if any of them does not.
+# The shared bootstrap is mise-based and has nothing to resolve here.
+
+tools="gitleaks semgrep bandit spotbugs checkov trivy conftest osv-scanner syft ruff pylint tox shellcheck hadolint pmd checkstyle tokei repomix ctags lizard aee-inventory aee-link aee-seams"
+
+cmd_doctor() {
+  printf 'toolchain:   secscan (versions fixed in the image)\n'
+  status=0
+  for tool in $tools; do
+    path="$(command -v "$tool" 2>/dev/null)"
+    if [ -z "$path" ]; then
+      printf '%-12s MISSING\n' "$tool"
+      status=1
+      continue
+    fi
+    case "$tool" in
+      gitleaks)      ver="$("$tool" version 2>&1 | head -1)" ;;
+      syft)          ver="$("$tool" version 2>&1 | sed -n 's/^Version: *//p' | head -1)" ;;
+      shellcheck)    ver="$("$tool" --version 2>&1 | sed -n 's/^version: *//p')" ;;
+      spotbugs)      ver="$("$tool" -version 2>&1 | head -1)" ;;
+      pmd)           ver="$(basename "$(ls /opt/aee/secscan/pmd/lib/pmd-core-*.jar | head -1)" .jar)" ;;
+      aee-inventory) if "$tool" /dev/null >/dev/null 2>&1; then ver="ok (tree-sitter grammars load)"; else ver="FAILED"; status=1; fi ;;
+      aee-link)      kbdir="$(mktemp -d)"; if "$tool" --kb "$kbdir" >/dev/null 2>&1; then ver="ok"; else ver="FAILED"; status=1; fi; rmdir "$kbdir" ;;
+      aee-seams)     sdir="$(mktemp -d)"; if "$tool" "$sdir" --json >/dev/null 2>&1; then ver="ok"; else ver="FAILED"; status=1; fi; rmdir "$sdir" ;;
+      tox)           ver="$("$tool" --version 2>&1 | tail -1 | cut -d' ' -f1)" ;;
+      *)             ver="$("$tool" --version 2>&1 | head -1)" ;;
+    esac
+    printf '%-12s %s\n' "$tool" "$ver"
+  done
+  fsb="$(ls /opt/aee/secscan/spotbugs/plugin/findsecbugs-plugin-*.jar 2>/dev/null | head -1)"
+  if [ -n "$fsb" ]; then
+    printf '%-12s %s\n' findsecbugs "$(basename "$fsb" .jar)"
+  else
+    printf '%-12s MISSING\n' findsecbugs
+    status=1
+  fi
+  return $status
+}
+
+case "${1:-doctor}" in
+  doctor) cmd_doctor ;;
+  *) printf 'usage: aee-toolchain doctor\n' >&2; exit 2 ;;
+esac
