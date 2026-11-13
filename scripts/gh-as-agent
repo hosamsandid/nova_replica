@@ -1,0 +1,276 @@
+#!/usr/bin/env bash
+# gh-as-agent — do git/GitHub actions as this agent.
+#
+# Two jobs:
+#  1. Identity tagging. All agents share one GitHub PAT, so the central poller
+#     cannot tell which agent triggered an event from the GitHub identity alone.
+#     Agents stamp their own actions so the poller can attribute resulting events
+#     back and skip the trigger fan-out for self-actions. Without this a reviewer
+#     agent reacts to its own comments and loops.
+#  2. Push / open-PR via the orchestrator. On an enterprise-subscription model
+#     provider the org's managed Claude Code policy forces interactive approval
+#     for `git push` / `gh pr create` — impossible in an unattended run. `commit`
+#     is not blocked, so the agent commits locally and `push` / `pr` route the
+#     network step through the orchestrator (env credentials, marker-stamped).
+#
+# Usage:
+#   gh-as-agent commit [git-commit-args ...]
+#       runs `git -c user.name=agent-$AGENT_ID -c user.email=agent-$AGENT_ID@ace.local
+#              commit --author="$AGENT_ID <$AGENT_ID@agents.local>" ...`
+#       Both author and committer are set inline, so the commit works even in a
+#       fresh context with no ambient git identity (Claude Code harness, manual
+#       shells). The author email keeps the poller's loop-protection marker;
+#       the committer mirrors the orchestrator's configure_git_identity().
+#
+#   gh-as-agent push [--repo <name>] [--branch <b>] [--no-set-upstream]
+#       push the current (or --branch) branch via the orchestrator
+#
+#   gh-as-agent pr --title <t> [--body-file <f>] [--base <branch>] [--repo <name>] [--draft]
+#       push the current branch, then open a PR via the orchestrator
+#       (body is stamped with this agent's identity marker automatically)
+#
+#   gh-as-agent stamp <file>
+#       appends "<!-- agent: $AGENT_ID -->" to <file>. Use before
+#       `gh pr create / comment / review --body-file <file>` on the plain gh CLI.
+#
+#   gh-as-agent marker
+#       prints the HTML comment so it can be inlined.
+#
+# Pass --json to push / pr / marker for a machine-readable JSON object on stdout
+# (push / pr echo the orchestrator's structured result verbatim).
+#
+# Exit codes (shared CLI contract, docs/cli-contract.md): 0 ok · 1 domain error
+# (orchestrator reachable but rejected the request, missing body file, …) ·
+# 2 usage error (bad/missing arguments, unusable AGENT_ID) · 3 orchestrator
+# unreachable (network step could not reach it — nothing was pushed/opened).
+
+set -euo pipefail
+
+# Shared CLI-contract exit codes (docs/cli-contract.md).
+EXIT_OK=0; EXIT_DOMAIN=1; EXIT_USAGE=2; EXIT_UNREACHABLE=3
+
+if [[ -z "${AGENT_ID:-}" ]]; then
+  echo "gh-as-agent: AGENT_ID is not set in the environment" >&2
+  exit "$EXIT_USAGE"
+fi
+
+# Mirror the regex the poller uses to extract agent ids from author emails
+# and HTML markers. If AGENT_ID doesn't conform, every signal we stamp
+# will silently fail to match on the read side.
+if [[ ! "${AGENT_ID}" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
+  echo "gh-as-agent: AGENT_ID '${AGENT_ID}' contains unexpected characters; loop protection would not work — refusing" >&2
+  exit "$EXIT_USAGE"
+fi
+
+marker="<!-- agent: ${AGENT_ID} -->"
+ORCH="${ORCHESTRATOR_INTERNAL_URL:-${AEE_ORCHESTRATOR_URL:-http://orchestrator:4002}}"
+AS_JSON="false"
+
+# Emit a "{\"ok\":false,\"error\":...}" object (--json) or a human error line,
+# then exit with a contract code (default 2 = usage). Callers pass the code as $2.
+die() {
+  local code="${2:-$EXIT_USAGE}"
+  if [[ "$AS_JSON" == "true" ]]; then
+    local msg="${1//\\/\\\\}"; msg="${msg//\"/\\\"}"
+    printf '{"ok":false,"error":"%s"}\n' "$msg"
+  else
+    echo "gh-as-agent: $1" >&2
+  fi
+  exit "$code"
+}
+
+# POST JSON ($2) to $1; print server 'url'/'output'/'error', exit non-zero on failure.
+_post() {
+  local route="$1" payload="$2" resp http_code body
+  # A failed network step (orchestrator unreachable) is exit 3: nothing was
+  # pushed/opened. This is distinct from a reachable-but-rejected HTTP error.
+  # Internal-API credential (#1456, GOV-PLATFORM-2): the per-agent token
+  # `startAgentProcess` baked into the container env, valid only for the
+  # agent-facing allowlist and only for this agent's own id. Built as an array so
+  # an unset token contributes NO argument at all — an empty `-H ''` would be a
+  # malformed header rather than an absent one, and a stack that has not armed
+  # the gate must send exactly what it sent before.
+  local auth=()
+  [[ -n "${AEE_INTERNAL_TOKEN:-}" ]] && auth=(-H "Authorization: Bearer ${AEE_INTERNAL_TOKEN}")
+  resp="$(curl -sS -w $'\n%{http_code}' \
+    -X POST -H 'Content-Type: application/json' "${auth[@]}" \
+    --data "$payload" \
+    "${ORCH%/}${route}")" || die "could not reach orchestrator at ${ORCH}" "$EXIT_UNREACHABLE"
+  http_code="${resp##*$'\n'}"
+  body="${resp%$'\n'*}"
+  # --json: echo the orchestrator's structured result verbatim on success.
+  if [[ "$AS_JSON" == "true" && "$http_code" == "200" ]]; then
+    printf '%s\n' "$body"
+    return 0
+  fi
+  if command -v jq >/dev/null 2>&1; then
+    if [[ "$http_code" == "200" ]]; then
+      local url out
+      url="$(printf '%s' "$body" | jq -r '.url // empty' 2>/dev/null || true)"
+      out="$(printf '%s' "$body" | jq -r '.output // empty' 2>/dev/null || true)"
+      [[ -n "$url" ]] && echo "PR: $url"
+      [[ -n "$out" ]] && echo "$out"
+      echo "gh-as-agent: done (branch $(printf '%s' "$body" | jq -r '.branch // "?"'))"
+      return 0
+    fi
+    local err code branch_pushed
+    err="$(printf '%s' "$body" | jq -r '.error // empty' 2>/dev/null || true)"
+    code="$(printf '%s' "$body" | jq -r '.code // empty' 2>/dev/null || true)"
+    branch_pushed="$(printf '%s' "$body" | jq -r '.branchPushed // empty' 2>/dev/null || true)"
+    # A missing GitHub token (HTTP 424, code=no-github-token) is not a git
+    # conflict — the branch is already pushed. Report it distinctly so the
+    # agent surfaces "no PAT in this environment" to the user, and does not
+    # retry with a raw 'git push'. Reachable-but-rejected → domain error (1).
+    if [[ "$code" == "no-github-token" ]]; then
+      [[ -n "$branch_pushed" && "$AS_JSON" != "true" ]] && echo "gh-as-agent: branch '$branch_pushed' pushed OK; PR step skipped." >&2
+      die "no-github-token: ${err:-this environment has no GitHub token to open a PR}" "$EXIT_DOMAIN"
+    fi
+    die "${err:-HTTP $http_code}" "$EXIT_DOMAIN"
+  fi
+  [[ "$http_code" == "200" ]] && { echo "$body"; return 0; }
+  die "HTTP $http_code: $body" "$EXIT_DOMAIN"
+}
+
+# Build a JSON object from key=value pairs. String values are escaped; the
+# literals true/false are emitted as JSON booleans.
+_json() {
+  local out="{" first=1 kv k v
+  for kv in "$@"; do
+    k="${kv%%=*}"; v="${kv#*=}"
+    [[ $first -eq 0 ]] && out+=","
+    first=0
+    if [[ "$v" == "true" || "$v" == "false" ]]; then
+      out+="\"$k\":$v"
+    else
+      v="${v//\\/\\\\}"; v="${v//\"/\\\"}"; v="${v//$'\n'/\\n}"; v="${v//$'\t'/\\t}"
+      out+="\"$k\":\"$v\""
+    fi
+  done
+  out+="}"
+  printf '%s' "$out"
+}
+
+case "${1:-}" in
+  commit)
+    shift
+    # Refuse a caller-supplied --author: a downstream override would
+    # silently strip the agent identity from the commit, defeating loop
+    # protection on push events. Callers who genuinely want a different
+    # author should call `git commit` directly.
+    for arg in "$@"; do
+      case "$arg" in
+        --author|--author=*)
+          echo "gh-as-agent commit: --author is set automatically and cannot be overridden (use 'git commit' directly if you must)" >&2
+          exit 2
+          ;;
+      esac
+    done
+    # Set committer identity inline (mirrors orchestrator's configure_git_identity)
+    # so the commit succeeds without an ambient git identity. The author keeps the
+    # @agents.local marker the poller reads for loop protection.
+    exec git \
+      -c user.name="agent-${AGENT_ID}" \
+      -c user.email="agent-${AGENT_ID}@ace.local" \
+      commit --author="${AGENT_ID} <${AGENT_ID}@agents.local>" "$@"
+    ;;
+
+  push)
+    shift
+    repo="" branch="" set_upstream="true"
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --repo) repo="${2:-}"; shift 2 ;;
+        --branch) branch="${2:-}"; shift 2 ;;
+        --no-set-upstream) set_upstream="false"; shift ;;
+        --json) AS_JSON="true"; shift ;;
+        *) die "unknown push option: $1" ;;
+      esac
+    done
+    pairs=(setUpstream="$set_upstream")
+    [[ -n "$repo" ]] && pairs+=(repo="$repo")
+    [[ -n "$branch" ]] && pairs+=(branch="$branch")
+    # Forward the invocation's correlation id (#655 tier A) when the runtime set
+    # it, so the orchestrator can tie the resulting pr-events record to this run.
+    [[ -n "${AEE_CORRELATION_ID:-}" ]] && pairs+=(correlationId="$AEE_CORRELATION_ID")
+    # Forward the acting human's Matrix id (#2175, epic #2166 B3) for an
+    # interactive chat turn — orchestrator-side resolution keys the personal
+    # credential on this sender instead of the agent's static config owner.
+    # Empty for an autonomous run (nothing sets it then).
+    [[ -n "${AEE_ACTING_SENDER:-}" ]] && pairs+=(actingSender="$AEE_ACTING_SENDER")
+    _post "/internal/agents/${AGENT_ID}/git/push" "$(_json "${pairs[@]}")"
+    ;;
+
+  pr)
+    shift
+    repo="" title="" body_file="" base="" draft="false"
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --repo) repo="${2:-}"; shift 2 ;;
+        --title) title="${2:-}"; shift 2 ;;
+        --body-file) body_file="${2:-}"; shift 2 ;;
+        --base) base="${2:-}"; shift 2 ;;
+        --draft) draft="true"; shift ;;
+        --json) AS_JSON="true"; shift ;;
+        *) die "unknown pr option: $1" ;;
+      esac
+    done
+    [[ -n "$title" ]] || die "pr requires --title"
+    body_text=""
+    if [[ -n "$body_file" ]]; then
+      [[ -f "$body_file" ]] || die "body file not found: $body_file"
+      body_text="$(cat "$body_file")"
+    fi
+    pairs=(title="$title" draft="$draft")
+    [[ -n "$repo" ]] && pairs+=(repo="$repo")
+    [[ -n "$base" ]] && pairs+=(base="$base")
+    [[ -n "$body_text" ]] && pairs+=(body="$body_text")
+    # Forward the invocation's correlation id (#655 tier A) when the runtime set
+    # it, so the orchestrator can tie the pr-created record to the run that opened
+    # the PR (the exact "which run created this PR" signal).
+    [[ -n "${AEE_CORRELATION_ID:-}" ]] && pairs+=(correlationId="$AEE_CORRELATION_ID")
+    # See the push case above (#2175, epic #2166 B3).
+    [[ -n "${AEE_ACTING_SENDER:-}" ]] && pairs+=(actingSender="$AEE_ACTING_SENDER")
+    _post "/internal/agents/${AGENT_ID}/git/pr" "$(_json "${pairs[@]}")"
+    ;;
+
+  stamp)
+    file="${2:-}"
+    if [[ -z "$file" ]]; then
+      echo "gh-as-agent stamp: missing <file>" >&2
+      exit "$EXIT_USAGE"
+    fi
+    if [[ ! -f "$file" ]]; then
+      echo "gh-as-agent stamp: file not found: $file" >&2
+      exit "$EXIT_USAGE"
+    fi
+    # Idempotent: only append if the marker isn't already present.
+    if ! grep -qF "$marker" "$file"; then
+      printf '\n%s\n' "$marker" >> "$file"
+    fi
+    ;;
+
+  marker)
+    if [[ "${2:-}" == "--json" ]]; then
+      m="${marker//\\/\\\\}"; m="${m//\"/\\\"}"
+      printf '{"marker":"%s"}\n' "$m"
+    else
+      printf '%s\n' "$marker"
+    fi
+    ;;
+
+  ""|-h|--help|help)
+    # Print the leading comment block (everything after the shebang up to the
+    # first non-comment line), robust to edits in the header.
+    awk 'NR>1 && /^#/ {sub(/^# ?/,""); print; next} NR>1 {exit}' "$0"
+    ;;
+
+  *)
+    echo "gh-as-agent: unknown subcommand '$*'." >&2
+    echo "gh-as-agent supports: commit, push, pr, stamp <file>, marker." >&2
+    echo "Push and PRs must go through 'gh-as-agent push' / 'gh-as-agent pr' — a raw 'git push' /" >&2
+    echo "'gh pr create' can be blocked by the org's managed Claude Code policy in unattended runs." >&2
+    echo "For other GitHub ops (issue/pr list/view/comment/review) use plain 'gh'; if the action carries" >&2
+    echo "a body, write it to a file, run 'gh-as-agent stamp <file>', then 'gh ... --body-file <file>'." >&2
+    exit "$EXIT_USAGE"
+    ;;
+esac

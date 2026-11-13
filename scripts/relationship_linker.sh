@@ -19,9 +19,17 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$HERE/.." && pwd)"
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 PY="${PYTHON:-python3}"
 SCAN=/tmp/scan   # raw tool output only; never committed
 BRANCH=agent_workspace
+
+# Ensure scripts directory is in PATH for aee-artifact and other tools
+export PATH="$HERE:$PATH"
+
+# Change to repository root early so all relative paths work correctly
+cd "$REPO_ROOT"
 
 sync=1
 publish=1
@@ -29,7 +37,7 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --no-sync)    sync=0; shift ;;
         --no-publish) publish=0; shift ;;
-        -h|--help)    sed -n '2,/^$/p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)    sed -n '2,/^$/p' "$HERE/$SCRIPT_NAME" | sed 's/^# \{0,1\}//'; exit 0 ;;
         *) echo "[ERROR] unknown option: $1"; exit 1 ;;
     esac
 done

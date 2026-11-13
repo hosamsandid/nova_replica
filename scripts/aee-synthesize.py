@@ -281,9 +281,8 @@ def side_effects(inp, comp, cf):
         out += md_table(["Kind", "Count"], [[k, n] for k, n in sorted(kinds.items(), key=lambda kv: (-kv[1], kv[0]))],
                         right=(1,))
     else:
-        out.append("None recorded by the Fact Extractor's pattern rules (Python, JavaScript, Go, Java, C "
-                   "and C++ only; a record's `warnings` say when a language has no rules), so this is not "
-                   "evidence that there are none.")
+        out.append("None recorded. The deterministic Fact Extractor does not extract side effects, so "
+                   "this is not evidence that there are none.")
     table = cf.boundary_table({})
     b = cf.boundary_calls(inp.kb, [k["file"] for k in kb], table)
     cats = defaultdict(lambda: [0, set()])
