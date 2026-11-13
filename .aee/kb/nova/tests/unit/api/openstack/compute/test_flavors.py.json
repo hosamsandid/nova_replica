@@ -1,0 +1,2139 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_flavors.py",
+  "hash": "fdc4b8c0f3a8e93da965279ceabcf0969f1a5ff682b50c9d672dfb59d9c27072",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 119,
+    "code": 939,
+    "comment": 22,
+    "total": 1080
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from urllib import parse as urlparse",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import common",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import flavors",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import matchers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_limit_and_marker",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 37
+      },
+      "parameters": [
+        {
+          "name": "request"
+        },
+        {
+          "default": "1",
+          "name": "max_limit"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "limit, marker",
+          "line": 37
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_flavor_not_found",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 41
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "flavor_id"
+        },
+        {
+          "default": "None",
+          "name": "read_deleted"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FlavorsTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 752
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "expect_description",
+      "kind": "field",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "expect_extra_specs",
+      "kind": "field",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "omit_legacy_fields",
+      "kind": "field",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 53,
+        "end": 58
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_request",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 60,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fakes.HTTPRequestV21.blank( url, version=self.microversion, base_url='http://localhost/v2.1')",
+          "line": 61
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_expected_body",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 64,
+        "end": 74
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "expected"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_by_invalid_id",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 78,
+        "end": 81
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_by_id",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 83,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_with_custom_link_prefix",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 110,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 140,
+        "end": 179
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_with_marker",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 181,
+        "end": 211
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_with_invalid_marker",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 213,
+        "end": 216
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_detail_with_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 218,
+        "end": 255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_with_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 257,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_with_default_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 306,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_detail",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 343,
+        "end": 390
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_empty_flavor_list",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 394,
+        "end": 398
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_filter_min_ram",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 400,
+        "end": 425
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_filter_invalid_min_ram",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 427,
+        "end": 431
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_filter_min_disk",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 433,
+        "end": 458
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_filter_invalid_min_disk",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 460,
+        "end": 464
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_list_detail_min_ram_and_min_disk",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 466,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_flavors_with_invalid_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 498,
+        "end": 505
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "default": "exception.ValidationError",
+          "name": "expected_exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_invalid_non_int_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 507,
+        "end": 508
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_invalid_non_int_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 510,
+        "end": 511
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 513,
+        "end": 514
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 516,
+        "end": 518
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 520,
+        "end": 522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_duplicate_query_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 524,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_flavors_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 528,
+        "end": 573
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "default": "None",
+          "name": "expected"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 575,
+        "end": 577
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 579,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_flavors_with_allowed_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 593,
+        "end": 625
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "default": "None",
+          "name": "expected"
+        },
+        {
+          "default": "None",
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_additional_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 627,
+        "end": 629
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_additional_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 631,
+        "end": 644
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_min_ram_filter_as_negative_int",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 646,
+        "end": 648
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_min_ram_filter_as_negative_int",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 650,
+        "end": 662
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_min_ram_filter_as_float",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 664,
+        "end": 666
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_min_ram_filter_as_float",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 668,
+        "end": 671
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_min_disk_filter_as_negative_int",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 673,
+        "end": 674
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_min_disk_filter_as_negative_int",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 676,
+        "end": 688
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_min_disk_filter_as_float",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 690,
+        "end": 693
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_min_disk_filter_as_float",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 695,
+        "end": 698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_is_public_filter_as_string_none",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 700,
+        "end": 702
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_is_public_filter_as_string_none",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 704,
+        "end": 716
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_is_public_filter_as_valid_bool",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 718,
+        "end": 720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_is_public_filter_as_valid_bool",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 722,
+        "end": 734
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_is_public_filter_as_invalid_string",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 736,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_is_public_filter_as_invalid_string",
+      "kind": "method",
+      "scope": "FlavorsTestV21",
+      "lineRange": {
+        "start": 740,
+        "end": 752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FlavorsTestV255",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 755,
+        "end": 758
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "FlavorsTestV255",
+      "lineRange": {
+        "start": 757,
+        "end": 757
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "expect_description",
+      "kind": "field",
+      "scope": "FlavorsTestV255",
+      "lineRange": {
+        "start": 758,
+        "end": 758
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FlavorsTestV261",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 761,
+        "end": 764
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "FlavorsTestV261",
+      "lineRange": {
+        "start": 763,
+        "end": 763
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "expect_extra_specs",
+      "kind": "field",
+      "scope": "FlavorsTestV261",
+      "lineRange": {
+        "start": 764,
+        "end": 764
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FlavorsTestV275",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 767,
+        "end": 864
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 768,
+        "end": 768
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FLAVOR_WITH_NO_SWAP",
+      "kind": "constant",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 770,
+        "end": 785
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_additional_filter_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 787,
+        "end": 793
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_additional_filter_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 795,
+        "end": 811
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_flavors_with_additional_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 813,
+        "end": 819
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_additional_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 821,
+        "end": 823
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_additional_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 825,
+        "end": 827
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavor_detail_default_swap_value_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 830,
+        "end": 837
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_flavor_default_swap_value_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 840,
+        "end": 845
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavor_detail_default_swap_value",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 848,
+        "end": 855
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_flavor_default_swap_value",
+      "kind": "method",
+      "scope": "FlavorsTestV275",
+      "lineRange": {
+        "start": 858,
+        "end": 864
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FlavorsTestV2102",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 867,
+        "end": 970
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 868,
+        "end": 868
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "omit_legacy_fields",
+      "kind": "field",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 869,
+        "end": 869
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_name_filter_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 871,
+        "end": 875
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_name_filter_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 877,
+        "end": 881
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavors_with_name_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 883,
+        "end": 906
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_name_filter",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 908,
+        "end": 939
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_detail_flavors_with_additional_filter_old_version",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 941,
+        "end": 943
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_flavor_invalid_query_params",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 945,
+        "end": 952
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detail_flavor_invalid_query_params",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 954,
+        "end": 961
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_flavor_invalid_query_params",
+      "kind": "method",
+      "scope": "FlavorsTestV2102",
+      "lineRange": {
+        "start": 963,
+        "end": 970
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DisabledFlavorsWithRealDBTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 973,
+        "end": 1044
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "DisabledFlavorsWithRealDBTestV21",
+      "lineRange": {
+        "start": 976,
+        "end": 987
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_disabled_flavor",
+      "kind": "method",
+      "scope": "DisabledFlavorsWithRealDBTestV21",
+      "lineRange": {
+        "start": 989,
+        "end": 997
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "flavor",
+          "line": 997
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_should_not_list_disabled_flavors_to_user",
+      "kind": "method",
+      "scope": "DisabledFlavorsWithRealDBTestV21",
+      "lineRange": {
+        "start": 999,
+        "end": 1010
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_should_list_disabled_flavors_to_admin",
+      "kind": "method",
+      "scope": "DisabledFlavorsWithRealDBTestV21",
+      "lineRange": {
+        "start": 1012,
+        "end": 1022
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_should_include_disabled_flavor_for_user",
+      "kind": "method",
+      "scope": "DisabledFlavorsWithRealDBTestV21",
+      "lineRange": {
+        "start": 1024,
+        "end": 1036
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_should_include_disabled_flavor_for_admin",
+      "kind": "method",
+      "scope": "DisabledFlavorsWithRealDBTestV21",
+      "lineRange": {
+        "start": 1038,
+        "end": 1044
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ParseIsPublicTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1047,
+        "end": 1080
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1049,
+        "end": 1051
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertPublic",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1053,
+        "end": 1055
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "expected"
+        },
+        {
+          "name": "is_public"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_None",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1057,
+        "end": 1058
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_truthy",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1060,
+        "end": 1065
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_falsey",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1067,
+        "end": 1072
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_string_none",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1074,
+        "end": 1076
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_other",
+      "kind": "method",
+      "scope": "ParseIsPublicTestV21",
+      "lineRange": {
+        "start": 1078,
+        "end": 1080
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "common.get_pagination_params",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "exception.FlavorNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "fakes.stub_out_networking",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "name": "fakes.stub_out_flavor_get_all",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "fakes.stub_out_flavor_get_by_flavor_id",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "flavors.FlavorsController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "name": "fakes.HTTPRequestV21.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 12,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 6,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 176,
+        "end": 176
+      }
+    },
+    {
+      "name": "matchers.DictMatches",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 4,
+      "lineRange": {
+        "start": 211,
+        "end": 211
+      }
+    },
+    {
+      "name": "urlparse.urlparse",
+      "usage": "call",
+      "via": "urllib",
+      "count": 3,
+      "lineRange": {
+        "start": 251,
+        "end": 251
+      }
+    },
+    {
+      "name": "urlparse.parse_qs",
+      "usage": "call",
+      "via": "urllib",
+      "count": 3,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "objects.FlavorList",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 393,
+        "end": 393
+      }
+    },
+    {
+      "name": "controller_list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 572,
+        "end": 572
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 770,
+        "end": 770
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 3,
+      "lineRange": {
+        "start": 946,
+        "end": 946
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 982,
+        "end": 982
+      }
+    },
+    {
+      "name": "objects.FlavorList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 986,
+        "end": 986
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 1003,
+        "end": 1003
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1006,
+        "end": 1006
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [
+        {
+          "alias": "urlparse",
+          "name": "parse"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "common"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "flavors"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "matchers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

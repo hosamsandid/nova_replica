@@ -1,0 +1,881 @@
+{
+  "file": "nova/virt/images.py",
+  "hash": "50dda076eedf64e0a96d0dc413b13453961d5bf90394f6584527343ace9692b2",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 49,
+    "code": 198,
+    "comment": 54,
+    "total": 301
+  },
+  "symbols": [
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import processutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import fileutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import imageutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.imageutils import format_inspector",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.image import glance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.privsep.qemu",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "IMAGE_API",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "qemu_img_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 49
+      },
+      "parameters": [
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "format"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imageutils.QemuImgInfo(info, format='json')",
+          "line": 49
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "privileged_qemu_img_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 58
+      },
+      "parameters": [
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "format"
+        },
+        {
+          "default": "'json'",
+          "name": "output_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imageutils.QemuImgInfo(info, format='json')",
+          "line": 58
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "convert_image",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "source"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "in_format"
+        },
+        {
+          "name": "out_format"
+        },
+        {
+          "default": "False",
+          "name": "run_as_root"
+        },
+        {
+          "default": "False",
+          "name": "compress"
+        },
+        {
+          "default": "None",
+          "name": "src_encryption"
+        },
+        {
+          "default": "None",
+          "name": "dest_encryption"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "convert_image_unsafe",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 82
+      },
+      "parameters": [
+        {
+          "name": "source"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "out_format"
+        },
+        {
+          "default": "False",
+          "name": "run_as_root"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_convert_image",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 85,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "name": "source"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "in_format"
+        },
+        {
+          "name": "out_format"
+        },
+        {
+          "name": "run_as_root"
+        },
+        {
+          "default": "False",
+          "name": "compress"
+        },
+        {
+          "default": "None",
+          "name": "src_encryption"
+        },
+        {
+          "default": "None",
+          "name": "dest_encryption"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fetch",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 106,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_href"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "trusted_certs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 113,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_href"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "IMAGE_API.get(context, image_href)",
+          "line": 114
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_vmdk_image",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 117,
+        "end": 142
+      },
+      "parameters": [
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "data"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_image_format",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 145,
+        "end": 166
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper.format",
+          "line": 157
+        },
+        {
+          "expr": "[x for x in wrapper.formats if str(x) == 'iso'][0]",
+          "line": 164
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_image_deep_inspection",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 169,
+        "end": 223
+      },
+      "parameters": [
+        {
+          "name": "img"
+        },
+        {
+          "name": "image_href"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "disk_format",
+          "line": 223
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fetch_to_raw",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 226,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_href"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "trusted_certs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "name": "glance.API",
+      "usage": "call",
+      "via": "nova.image",
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "os.path.exists",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "exception.DiskNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "nova.privsep.qemu.unprivileged_qemu_img_info",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "imageutils.QemuImgInfo",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "name": "nova.privsep.qemu.privileged_qemu_img_info",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "RuntimeError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "nova.privsep.qemu.unprivileged_convert_image",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      }
+    },
+    {
+      "name": "nova.privsep.qemu.convert_image",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 15,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "exception.ImageUnacceptable",
+      "usage": "call",
+      "via": "nova",
+      "count": 15,
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      }
+    },
+    {
+      "name": "fileutils.remove_path_on_error",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 107,
+        "end": 107
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 125,
+        "end": 125
+      }
+    },
+    {
+      "name": "open",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 146,
+        "end": 146
+      }
+    },
+    {
+      "name": "format_inspector.InspectWrapper",
+      "usage": "call",
+      "via": "oslo_utils.imageutils",
+      "count": 1,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 159,
+        "end": 159
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 159,
+        "end": 159
+      }
+    },
+    {
+      "name": "format_inspector.get_inspector",
+      "usage": "call",
+      "via": "oslo_utils.imageutils",
+      "count": 1,
+      "lineRange": {
+        "start": 180,
+        "end": 180
+      }
+    },
+    {
+      "name": "os.unlink",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 291,
+        "end": 291
+      }
+    },
+    {
+      "name": "os.rename",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 299,
+        "end": 299
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "processutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "fileutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "imageutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.imageutils",
+      "names": [
+        {
+          "alias": null,
+          "name": "format_inspector"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.image",
+      "names": [
+        {
+          "alias": null,
+          "name": "glance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.privsep.qemu",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

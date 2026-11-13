@@ -1,0 +1,2133 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_server_groups.py",
+  "hash": "f679ab063ec6ee3543a09778742859b13e7492bf0861d0d57709c31f49a1033a",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 128,
+    "code": 642,
+    "comment": 58,
+    "total": 828
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import api_version_request as avr",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import server_groups as sg_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AttrDict",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getattr__",
+      "kind": "method",
+      "scope": "AttrDict",
+      "lineRange": {
+        "start": 35,
+        "end": 36
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self[k]",
+          "line": 36
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "server_group_template",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 42
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sgroup",
+          "line": 42
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "server_group_resp_template",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 51
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sgroup",
+          "line": 51
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "server_group_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 80
+      },
+      "parameters": [
+        {
+          "name": "sg"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "AttrDict(attrs)",
+          "line": 80
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerGroupTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 83,
+        "end": 661
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "USES_DB_SELF",
+      "kind": "constant",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validation_error",
+      "kind": "field",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 88,
+        "end": 111
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_controller",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 113,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_no_policies",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 116,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_group_normal",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 121,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "policies"
+        },
+        {
+          "default": "None",
+          "name": "policy"
+        },
+        {
+          "default": "None",
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_new_policy_before_264",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 131,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 154,
+        "end": 157
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_rbac_default",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 159,
+        "end": 167
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_instance",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 169,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "cell"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance",
+          "line": 186
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_instance_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 188,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "members"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ig.uuid",
+          "line": 193
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_groups_and_instances",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 195,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(ig_uuid, instances, members)",
+          "line": 203
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_server_group_all",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 205,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "'2.1'",
+          "name": "api_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_server_group_offset_and_limit",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 210,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "'2.1'",
+          "name": "api_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 217,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all"
+        },
+        {
+          "name": "mock_get_by_project"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "'2.1'",
+          "name": "api_version"
+        },
+        {
+          "default": "None",
+          "name": "limited"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_all_server_groups",
+      "kind": "function",
+      "scope": "ServerGroupTestV21._test_list_server_group",
+      "lineRange": {
+        "start": 278,
+        "end": 281
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceGroupList( objects=[objects.InstanceGroup( **server_group_db(sg)) for sg in all_groups])",
+          "line": 279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_tenant_server_groups",
+      "kind": "function",
+      "scope": "ServerGroupTestV21._test_list_server_group",
+      "lineRange": {
+        "start": 285,
+        "end": 288
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceGroupList( objects=[objects.InstanceGroup( **server_group_db(sg)) for sg in tenant_groups])",
+          "line": 286
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_server_group_by_tenant",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 308,
+        "end": 355
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_project"
+        },
+        {
+          "default": "'2.1'",
+          "name": "api_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_server_groups",
+      "kind": "function",
+      "scope": "ServerGroupTestV21._test_list_server_group_by_tenant",
+      "lineRange": {
+        "start": 345,
+        "end": 348
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceGroupList( objects=[objects.InstanceGroup( **server_group_db(sg)) for sg in groups])",
+          "line": 346
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_display_members",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 357,
+        "end": 364
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_display_members_with_nonexistent_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 366,
+        "end": 369
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_display_active_members_only",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 371,
+        "end": 391
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_display_active_members_only_when_listing",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 393,
+        "end": 422
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_display_members_rbac_default",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 424,
+        "end": 436
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_non_alphanumeric_in_name",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 438,
+        "end": 447
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_illegal_name",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 449,
+        "end": 494
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_illegal_policies",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 496,
+        "end": 515
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_conflicting_policies",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 517,
+        "end": 522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_duplicate_policies",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 524,
+        "end": 529
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_not_supported",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 531,
+        "end": 536
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_no_body",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 538,
+        "end": 540
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_no_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 542,
+        "end": 545
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_by_tenant",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 547,
+        "end": 549
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_all_v20",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 551,
+        "end": 552
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_all",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 554,
+        "end": 556
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_offset_and_limit",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 558,
+        "end": 560
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_groups_rbac_default",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 562,
+        "end": 567
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_multiple_param",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 569,
+        "end": 572
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_additional_param",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 574,
+        "end": 577
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_param_as_int",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 579,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_negative_int_as_offset",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 584,
+        "end": 589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_string_int_as_offset",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 591,
+        "end": 596
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_multiparam_string_as_offset",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 598,
+        "end": 603
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_negative_int_as_limit",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 605,
+        "end": 610
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_string_int_as_limit",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 612,
+        "end": 617
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_multiparam_string_as_limit",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 619,
+        "end": 624
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_server_group_by_id",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 627,
+        "end": 646
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_destroy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_server_group",
+      "kind": "function",
+      "scope": "ServerGroupTestV21.test_delete_server_group_by_id",
+      "lineRange": {
+        "start": 630,
+        "end": 632
+      },
+      "parameters": [
+        {
+          "name": "_cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "group_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceGroup(**server_group_db(sg))",
+          "line": 632
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_non_existing_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 648,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_server_group_rbac_default",
+      "kind": "method",
+      "scope": "ServerGroupTestV21",
+      "lineRange": {
+        "start": 652,
+        "end": 661
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerGroupTestV213",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 664,
+        "end": 677
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerGroupTestV213",
+      "lineRange": {
+        "start": 665,
+        "end": 665
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_controller",
+      "kind": "method",
+      "scope": "ServerGroupTestV213",
+      "lineRange": {
+        "start": 667,
+        "end": 668
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_all",
+      "kind": "method",
+      "scope": "ServerGroupTestV213",
+      "lineRange": {
+        "start": 670,
+        "end": 671
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_offset_and_limit",
+      "kind": "method",
+      "scope": "ServerGroupTestV213",
+      "lineRange": {
+        "start": 673,
+        "end": 674
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_by_tenant",
+      "kind": "method",
+      "scope": "ServerGroupTestV213",
+      "lineRange": {
+        "start": 676,
+        "end": 677
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerGroupTestV264",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 680,
+        "end": 813
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 681,
+        "end": 681
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_controller",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 683,
+        "end": 684
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_group_normal",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 686,
+        "end": 698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "policies"
+        },
+        {
+          "default": "None",
+          "name": "policy"
+        },
+        {
+          "default": "None",
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res_dict['server_group']['id']",
+          "line": 698
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_all",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 700,
+        "end": 701
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_and_show_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 703,
+        "end": 710
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_display_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 712,
+        "end": 715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "group",
+          "line": 715
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_and_show_server_group_with_rules",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 719,
+        "end": 726
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_v"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_affinity_server_group_with_invalid_policy",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 728,
+        "end": 734
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_anti_affinity_server_group_with_invalid_rules",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 736,
+        "end": 751
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_low_version_compute_service",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 755,
+        "end": 765
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_v"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 767,
+        "end": 770
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_policies_since_264",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 772,
+        "end": 778
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_without_policy",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 780,
+        "end": 785
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_group_with_illegal_policies",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 787,
+        "end": 807
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_additional_params",
+      "kind": "method",
+      "scope": "ServerGroupTestV264",
+      "lineRange": {
+        "start": 809,
+        "end": 813
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerGroupTestV275",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 816,
+        "end": 828
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerGroupTestV275",
+      "lineRange": {
+        "start": 817,
+        "end": 817
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_additional_param_old_version",
+      "kind": "method",
+      "scope": "ServerGroupTestV275",
+      "lineRange": {
+        "start": 819,
+        "end": 822
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_server_group_additional_param",
+      "kind": "method",
+      "scope": "ServerGroupTestV275",
+      "lineRange": {
+        "start": 824,
+        "end": 828
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "dict",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 89,
+        "end": 89
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.member_req",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 10,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.reader_req",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 5,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 3,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "fixtures.RealPolicyFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      }
+    },
+    {
+      "name": "fixtures.Database",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "fixtures.CellDatabases",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "sg_v21.ServerGroupController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "uuidutils.is_uuid_like",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 142,
+        "end": 142
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 170,
+        "end": 170
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 171,
+        "end": 171
+      }
+    },
+    {
+      "name": "objects.InstanceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 180,
+        "end": 180
+      }
+    },
+    {
+      "name": "objects.InstanceGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 189,
+        "end": 189
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 6,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "avr.APIVersionRequest",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 3,
+      "lineRange": {
+        "start": 226,
+        "end": 226
+      }
+    },
+    {
+      "name": "objects.InstanceGroupList",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 279,
+        "end": 279
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 358,
+        "end": 358
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 362,
+        "end": 362
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 377,
+        "end": 377
+      }
+    },
+    {
+      "name": "itertools.chain.from_iterable",
+      "usage": "call",
+      "via": "itertools",
+      "count": 1,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 642,
+        "end": 642
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": "avr",
+          "name": "api_version_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "sg_v21",
+          "name": "server_groups"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

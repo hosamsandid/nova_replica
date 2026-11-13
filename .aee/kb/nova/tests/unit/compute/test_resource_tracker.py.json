@@ -1,0 +1,5973 @@
+{
+  "file": "nova/tests/unit/compute/test_resource_tracker.py",
+  "hash": "e5900d649b8513f32ed76656d37c9e1d47c219e5e5ef0154dc293ef2b7af925b",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 518,
+    "code": 3987,
+    "comment": 415,
+    "total": 4920
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import datetime",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as ks_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_resource_classes as orc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_traits",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import claims",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute.monitors import base as monitor_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import provider_tree",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import resource_tracker",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception as exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base as obj_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import pci_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import manager as pci_manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import report",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.objects import test_pci_device as fake_pci_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils as nova_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_HOSTNAME",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_NODENAME",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_SERVICE_ID",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_COMPUTE_ID",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_VIRT_DRIVER_AVAIL_RESOURCES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_COMPUTE_NODE_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 112
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_FLAVOR_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 114,
+        "end": 143
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_FLAVOR_OBJ_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 146,
+        "end": 155
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_2MB",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_INSTANCE_NUMA_TOPOLOGIES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 160,
+        "end": 166
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_NUMA_LIMIT_TOPOLOGIES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 168,
+        "end": 172
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_NUMA_PAGE_TOPOLOGIES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 174,
+        "end": 176
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_NUMA_HOST_TOPOLOGIES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 178,
+        "end": 202
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_INSTANCE_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 205,
+        "end": 258
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_MIGRATION_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 260,
+        "end": 317
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_MIGRATION_INSTANCE_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 319,
+        "end": 424
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_MIGRATION_CONTEXT_FIXTURES",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 426,
+        "end": 452
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setup_rt",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 455,
+        "end": 521
+      },
+      "parameters": [
+        {
+          "name": "hostname"
+        },
+        {
+          "default": "_VIRT_DRIVER_AVAIL_RESOURCES",
+          "name": "virt_resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(rt, query_client_mock, report_client_mock, vd)",
+          "line": 521
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_upt",
+      "kind": "function",
+      "scope": "setup_rt",
+      "lineRange": {
+        "start": 470,
+        "end": 504
+      },
+      "parameters": [
+        {
+          "name": "provider_tree"
+        },
+        {
+          "name": "nodename"
+        },
+        {
+          "default": "None",
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compute_update_usage",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 524,
+        "end": 530
+      },
+      "parameters": [
+        {
+          "name": "resources"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "default": "1",
+          "name": "sign"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 530
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "BaseTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 533,
+        "end": 604
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "BaseTestCase",
+      "lineRange": {
+        "start": 535,
+        "end": 560
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_rt",
+      "kind": "method",
+      "scope": "BaseTestCase",
+      "lineRange": {
+        "start": 562,
+        "end": 564
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_VIRT_DRIVER_AVAIL_RESOURCES",
+          "name": "virt_resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_ptree",
+      "kind": "method",
+      "scope": "BaseTestCase",
+      "lineRange": {
+        "start": 566,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "compute"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ptree",
+          "line": 586
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_subtree",
+      "kind": "method",
+      "scope": "BaseTestCase",
+      "lineRange": {
+        "start": 588,
+        "end": 604
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "compute"
+        },
+        {
+          "name": "ptree"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "subtree",
+          "line": 604
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestUpdateAvailableResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 607,
+        "end": 1304
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_available_resources",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 609,
+        "end": 618
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "update_mock",
+          "line": 618
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disabled",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 627,
+        "end": 651
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instances_no_migrations_no_reserved",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 660,
+        "end": 702
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_startup_makes_it_through",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 713,
+        "end": 730
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "rdia"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_startup_new_compute",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 742,
+        "end": 761
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "rdia"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "init_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instances_no_migrations_reserved_disk_ram_and_cpu",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 770,
+        "end": 802
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_some_instances_no_migrations",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 812,
+        "end": 852
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "bfv_check_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instances_source_migration",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 864,
+        "end": 918
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "get_inst_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "mock_is_volume_backed_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instances_dest_migration",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 930,
+        "end": 981
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "get_inst_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "mock_is_volume_backed_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instances_dest_evacuation",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 993,
+        "end": 1041
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "get_inst_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "mock_is_volume_backed_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_some_instances_source_and_dest_migration",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 1054,
+        "end": 1114
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "get_inst_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "get_mig_ctxt_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "bfv_check_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instances_err_migration",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 1126,
+        "end": 1177
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "get_inst_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "mock_is_volume_backed_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_populate_assigned_resources",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 1189,
+        "end": 1230
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instances"
+        },
+        {
+          "name": "mock_get_instance"
+        },
+        {
+          "name": "mock_get_migrations"
+        },
+        {
+          "name": "mock_get_cn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_check_resources_startup_success",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 1242,
+        "end": 1274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instances"
+        },
+        {
+          "name": "mock_get_instance"
+        },
+        {
+          "name": "mock_get_migrations"
+        },
+        {
+          "name": "mock_get_cn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_check_resources_startup_fail",
+      "kind": "method",
+      "scope": "TestUpdateAvailableResources",
+      "lineRange": {
+        "start": 1283,
+        "end": 1304
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instances"
+        },
+        {
+          "name": "mock_get_migrations"
+        },
+        {
+          "name": "mock_get_cn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestInitComputeNode",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1307,
+        "end": 1623
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_op_init_compute_node",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1316,
+        "end": 1331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "service_mock"
+        },
+        {
+          "name": "create_mock"
+        },
+        {
+          "name": "pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_node_loaded",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1339,
+        "end": 1356
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        },
+        {
+          "name": "pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_node",
+      "kind": "function",
+      "scope": "TestInitComputeNode.test_compute_node_loaded",
+      "lineRange": {
+        "start": 1343,
+        "end": 1345
+      },
+      "parameters": [
+        {
+          "name": "_ctx"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 1345
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_node_rebalanced",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1364,
+        "end": 1384
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        },
+        {
+          "name": "pci_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_node",
+      "kind": "function",
+      "scope": "TestInitComputeNode.test_compute_node_rebalanced",
+      "lineRange": {
+        "start": 1371,
+        "end": 1372
+      },
+      "parameters": [
+        {
+          "name": "_ctx"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cn",
+          "line": 1372
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_node_created_on_empty",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1390,
+        "end": 1392
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_node_created_on_empty_rebalance",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1398,
+        "end": 1402
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_node_created_too_many",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1408,
+        "end": 1411
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_compute_node_created",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1413,
+        "end": 1483
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        },
+        {
+          "default": "False",
+          "name": "rebalances_nodes"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_node_create_fail_retry_works",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1491,
+        "end": 1513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_setup_pci"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_node_removed",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1520,
+        "end": 1531
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "update_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "create_mock"
+        },
+        {
+          "name": "get_by_hypervisor_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_undelete_node",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1537,
+        "end": 1561
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pci"
+        },
+        {
+          "name": "mock_update"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_undelete_node_move_host",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1567,
+        "end": 1592
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pci"
+        },
+        {
+          "name": "mock_update"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_failed_conflict",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1598,
+        "end": 1606
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        },
+        {
+          "name": "mock_getcn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init_compute_node_updates_service_id",
+      "kind": "method",
+      "scope": "TestInitComputeNode",
+      "lineRange": {
+        "start": 1608,
+        "end": 1623
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestUpdateComputeNode",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1627,
+        "end": 2259
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_existing_compute_node_updated_same_resources",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1631,
+        "end": 1647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_existing_compute_node_updated_diff_updated_at",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1652,
+        "end": 1669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_existing_compute_node_updated_new_resources",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1674,
+        "end": 1691
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_existing_node_capabilities_as_traits",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1699,
+        "end": 1743
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_sync_disabled"
+        },
+        {
+          "name": "mock_has_remote_managed_device_pools"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_existing_node_update_provider_tree_implemented",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1748,
+        "end": 1830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "mock_sync_disabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_upt",
+      "kind": "function",
+      "scope": "TestUpdateComputeNode.test_existing_node_update_provider_tree_implemented",
+      "lineRange": {
+        "start": 1782,
+        "end": 1784
+      },
+      "parameters": [
+        {
+          "name": "ptree"
+        },
+        {
+          "name": "nodename"
+        },
+        {
+          "default": "None",
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_retry_success",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1841,
+        "end": 1864
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc"
+        },
+        {
+          "name": "mock_resource_change"
+        },
+        {
+          "name": "mock_sync_disabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_retry_raises",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1870,
+        "end": 1895
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resource_change"
+        },
+        {
+          "name": "mock_sync_disabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_reporting",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1908,
+        "end": 1935
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_provider_tree_for_pci"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_reporting_reshape",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1948,
+        "end": 1978
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_provider_tree_for_pci"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_reporting_driver_reshape",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 1992,
+        "end": 2027
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_reshape"
+        },
+        {
+          "name": "mock_update_provider_tree_for_pci"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_reporting_same_host_resize",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2040,
+        "end": 2089
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_provider_tree_for_pci"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_reporting_allocation_in_use_error_propagated",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2100,
+        "end": 2118
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_sync_compute_service_disabled_trait_add",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2122,
+        "end": 2131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_sync_compute_service_disabled_trait_remove",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2135,
+        "end": 2150
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_sync_compute_service_disabled_trait_service_not_found",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2157,
+        "end": 2170
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_log_error"
+        },
+        {
+          "name": "mock_get_by_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_compute_node_save_fails_restores_old_resources",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2176,
+        "end": 2201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_copy_resources_no_update_allocation_ratios",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2203,
+        "end": 2216
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_copy_resources_update_allocation_zero_ratios",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2218,
+        "end": 2239
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_copy_resources_update_allocation_ratios_from_config",
+      "kind": "method",
+      "scope": "TestUpdateComputeNode",
+      "lineRange": {
+        "start": 2241,
+        "end": 2259
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestInstanceClaim",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2262,
+        "end": 2767
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2264,
+        "end": 2285
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertEqualNUMAHostTopology",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2287,
+        "end": 2308
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "expected"
+        },
+        {
+          "name": "got"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 2296
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_disabled",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2310,
+        "end": 2328
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_usage_with_claim",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2332,
+        "end": 2368
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_usage_removed",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2372,
+        "end": 2444
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2448,
+        "end": 2482
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_with_pci",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2488,
+        "end": 2576
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "pci_stats_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_with_resources",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2580,
+        "end": 2602
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_with_resources_from_free",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2606,
+        "end": 2630
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_failed_with_resources",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2634,
+        "end": 2653
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_abort_context_manager",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2660,
+        "end": 2697
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_doit",
+      "kind": "function",
+      "scope": "TestInstanceClaim.test_claim_abort_context_manager",
+      "lineRange": {
+        "start": 2678,
+        "end": 2684
+      },
+      "parameters": [
+        {
+          "name": "mock_clone"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_abort",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2704,
+        "end": 2741
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_claim",
+      "kind": "function",
+      "scope": "TestInstanceClaim.test_claim_abort",
+      "lineRange": {
+        "start": 2712,
+        "end": 2714
+      },
+      "parameters": [
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_clone"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.rt.instance_claim(self.ctx, self.instance, _NODENAME, self.allocations, None)",
+          "line": 2713
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_abort",
+      "kind": "function",
+      "scope": "TestInstanceClaim.test_claim_abort",
+      "lineRange": {
+        "start": 2730,
+        "end": 2731
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_numa",
+      "kind": "method",
+      "scope": "TestInstanceClaim",
+      "lineRange": {
+        "start": 2746,
+        "end": 2767
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "check_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestResize",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2770,
+        "end": 3347
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_claim_same_host",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 2783,
+        "end": 2873
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "is_bfv_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_instance_build_resize",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 2890,
+        "end": 3038
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "get_by_host_and_node_mock"
+        },
+        {
+          "name": "get_in_progress_and_error_mock"
+        },
+        {
+          "name": "get_by_host_and_nodename_mock"
+        },
+        {
+          "name": "pci_get_by_compute_node_mock"
+        },
+        {
+          "name": "pci_get_by_instance_mock"
+        },
+        {
+          "name": "is_bfv_mock"
+        },
+        {
+          "default": "False",
+          "name": "revert"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_instance_build_resize_revert",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 3040,
+        "end": 3041
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_instance_build_resize_confirm",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 3043,
+        "end": 3044
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_claim_dest_host_with_pci",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 3060,
+        "end": 3156
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "pci_req_mock"
+        },
+        {
+          "name": "pci_claim_mock"
+        },
+        {
+          "name": "pci_dev_save_mock"
+        },
+        {
+          "name": "pci_supports_mock"
+        },
+        {
+          "name": "mock_is_volume_backed_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_drop_move_claim_on_revert",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 3158,
+        "end": 3216
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_claim_two_instances",
+      "kind": "method",
+      "scope": "TestResize",
+      "lineRange": {
+        "start": 3230,
+        "end": 3347
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "mock_is_volume_backed_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestRebuild",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3350,
+        "end": 3441
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_claim",
+      "kind": "method",
+      "scope": "TestRebuild",
+      "lineRange": {
+        "start": 3362,
+        "end": 3441
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        },
+        {
+          "name": "get_mock"
+        },
+        {
+          "name": "migr_mock"
+        },
+        {
+          "name": "get_cn_mock"
+        },
+        {
+          "name": "pci_mock"
+        },
+        {
+          "name": "instance_pci_mock"
+        },
+        {
+          "name": "bfv_check_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestLiveMigration",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3444,
+        "end": 3490
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_claim",
+      "kind": "method",
+      "scope": "TestLiveMigration",
+      "lineRange": {
+        "start": 3446,
+        "end": 3490
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestUpdateUsageFromMigration",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3493,
+        "end": 3516
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_missing_old_flavor_outbound_resize",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigration",
+      "lineRange": {
+        "start": 3495,
+        "end": 3516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestUpdateUsageFromMigrations",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3519,
+        "end": 3678
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_migrations",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigrations",
+      "lineRange": {
+        "start": 3522,
+        "end": 3527
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_instance_not_found",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigrations",
+      "lineRange": {
+        "start": 3532,
+        "end": 3548
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instance"
+        },
+        {
+          "name": "mock_update_usage"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_duplicate_migrations_filtered",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigrations",
+      "lineRange": {
+        "start": 3552,
+        "end": 3605
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "upd_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_ignore_stale_migration",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigrations",
+      "lineRange": {
+        "start": 3610,
+        "end": 3636
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "upd_mock"
+        },
+        {
+          "name": "save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_and_resizing_states",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigrations",
+      "lineRange": {
+        "start": 3641,
+        "end": 3658
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrating_state",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromMigrations",
+      "lineRange": {
+        "start": 3663,
+        "end": 3678
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestUpdateUsageFromInstance",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3681,
+        "end": 4124
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3683,
+        "end": 3688
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_usage_dict_return_0_root_gb_for_bfv_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3691,
+        "end": 3708
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_check_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_usage_dict_include_swap",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3711,
+        "end": 3718
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_check_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_building",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3723,
+        "end": 3731
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        },
+        {
+          "name": "mock_check_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offloading",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3736,
+        "end": 3749
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        },
+        {
+          "name": "mock_check_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelving",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3754,
+        "end": 3762
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        },
+        {
+          "name": "mock_check_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_deleted",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3767,
+        "end": 3776
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_usage"
+        },
+        {
+          "name": "mock_check_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_deleted_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3779,
+        "end": 3801
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_deleted_hidden_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3804,
+        "end": 3830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_building_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3833,
+        "end": 3849
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_ignores_migrations",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3852,
+        "end": 3873
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_scheduled_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3876,
+        "end": 3893
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_move_ops",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3895,
+        "end": 3915
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_known_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3917,
+        "end": 3945
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_unknown_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3949,
+        "end": 3990
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        },
+        {
+          "name": "mock_log_warning"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_state_transition_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 3994,
+        "end": 4034
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_get"
+        },
+        {
+          "name": "mock_log_debug"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_deleted_instances_allocations_retrieval_fail",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 4036,
+        "end": 4061
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_allocation_for_shelve_offloaded_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 4063,
+        "end": 4073
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_usage_from_instances_goes_negative",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 4075,
+        "end": 4091
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test",
+      "kind": "function",
+      "scope": "TestUpdateUsageFromInstance.test_update_usage_from_instances_goes_negative",
+      "lineRange": {
+        "start": 4085,
+        "end": 4086
+      },
+      "parameters": [
+        {
+          "name": "uufi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_allocation_for_evacuated_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 4093,
+        "end": 4104
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_ensure_compute_id_for_instance",
+      "kind": "method",
+      "scope": "TestUpdateUsageFromInstance",
+      "lineRange": {
+        "start": 4107,
+        "end": 4124
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestInstanceInResizeState",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4127,
+        "end": 4146
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_active_suspending",
+      "kind": "method",
+      "scope": "TestInstanceInResizeState",
+      "lineRange": {
+        "start": 4128,
+        "end": 4131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resized_suspending",
+      "kind": "method",
+      "scope": "TestInstanceInResizeState",
+      "lineRange": {
+        "start": 4133,
+        "end": 4136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resized_resize_migrating",
+      "kind": "method",
+      "scope": "TestInstanceInResizeState",
+      "lineRange": {
+        "start": 4138,
+        "end": 4141
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resized_resize_finish",
+      "kind": "method",
+      "scope": "TestInstanceInResizeState",
+      "lineRange": {
+        "start": 4143,
+        "end": 4146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestInstanceIsLiveMigrating",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4149,
+        "end": 4178
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrating_active",
+      "kind": "method",
+      "scope": "TestInstanceIsLiveMigrating",
+      "lineRange": {
+        "start": 4150,
+        "end": 4154
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrating_paused",
+      "kind": "method",
+      "scope": "TestInstanceIsLiveMigrating",
+      "lineRange": {
+        "start": 4156,
+        "end": 4160
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrating_other",
+      "kind": "method",
+      "scope": "TestInstanceIsLiveMigrating",
+      "lineRange": {
+        "start": 4162,
+        "end": 4166
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_non_migrating_active",
+      "kind": "method",
+      "scope": "TestInstanceIsLiveMigrating",
+      "lineRange": {
+        "start": 4168,
+        "end": 4172
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_non_migrating_paused",
+      "kind": "method",
+      "scope": "TestInstanceIsLiveMigrating",
+      "lineRange": {
+        "start": 4174,
+        "end": 4178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestSetInstanceHostAndNode",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4181,
+        "end": 4212
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestSetInstanceHostAndNode",
+      "lineRange": {
+        "start": 4183,
+        "end": 4185
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_instance_host_and_node",
+      "kind": "method",
+      "scope": "TestSetInstanceHostAndNode",
+      "lineRange": {
+        "start": 4188,
+        "end": 4195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unset_instance_host_and_node",
+      "kind": "method",
+      "scope": "TestSetInstanceHostAndNode",
+      "lineRange": {
+        "start": 4198,
+        "end": 4205
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_node_by_name",
+      "kind": "method",
+      "scope": "TestSetInstanceHostAndNode",
+      "lineRange": {
+        "start": 4207,
+        "end": 4212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_compute_node",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 4215,
+        "end": 4217
+      },
+      "parameters": [
+        {
+          "name": "node"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ComputeMonitorTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4220,
+        "end": 4303
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase",
+      "lineRange": {
+        "start": 4221,
+        "end": 4226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_host_metrics_none",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase",
+      "lineRange": {
+        "start": 4228,
+        "end": 4231
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_host_metrics_exception",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase",
+      "lineRange": {
+        "start": 4234,
+        "end": 4241
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_LOG_warning"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_host_metrics",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase",
+      "lineRange": {
+        "start": 4244,
+        "end": 4303
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeCPUMonitor",
+      "kind": "class",
+      "scope": "ComputeMonitorTestCase.test_get_host_metrics",
+      "lineRange": {
+        "start": 4247,
+        "end": 4264
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase.test_get_host_metrics.FakeCPUMonitor",
+      "lineRange": {
+        "start": 4251,
+        "end": 4253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_metric_names",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase.test_get_host_metrics.FakeCPUMonitor",
+      "lineRange": {
+        "start": 4255,
+        "end": 4256
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "set([\"cpu.frequency\"])",
+          "line": 4256
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_metrics",
+      "kind": "method",
+      "scope": "ComputeMonitorTestCase.test_get_host_metrics.FakeCPUMonitor",
+      "lineRange": {
+        "start": 4258,
+        "end": 4264
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "monitor_list"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "OverCommitTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4306,
+        "end": 4317
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cpu_allocation_ratio_none_negative",
+      "kind": "method",
+      "scope": "OverCommitTestCase",
+      "lineRange": {
+        "start": 4307,
+        "end": 4309
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_ram_allocation_ratio_none_negative",
+      "kind": "method",
+      "scope": "OverCommitTestCase",
+      "lineRange": {
+        "start": 4311,
+        "end": 4313
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disk_allocation_ratio_none_negative",
+      "kind": "method",
+      "scope": "OverCommitTestCase",
+      "lineRange": {
+        "start": 4315,
+        "end": 4317
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestPciTrackerDelegationMethods",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4320,
+        "end": 4371
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestPciTrackerDelegationMethods",
+      "lineRange": {
+        "start": 4322,
+        "end": 4328
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_pci_devices",
+      "kind": "method",
+      "scope": "TestPciTrackerDelegationMethods",
+      "lineRange": {
+        "start": 4330,
+        "end": 4341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unclaim_pci_devices",
+      "kind": "method",
+      "scope": "TestPciTrackerDelegationMethods",
+      "lineRange": {
+        "start": 4343,
+        "end": 4349
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_allocate_pci_devices_for_instance",
+      "kind": "method",
+      "scope": "TestPciTrackerDelegationMethods",
+      "lineRange": {
+        "start": 4351,
+        "end": 4355
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_free_pci_device_allocations_for_instance",
+      "kind": "method",
+      "scope": "TestPciTrackerDelegationMethods",
+      "lineRange": {
+        "start": 4357,
+        "end": 4363
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_free_pci_device_claims_for_instance",
+      "kind": "method",
+      "scope": "TestPciTrackerDelegationMethods",
+      "lineRange": {
+        "start": 4365,
+        "end": 4371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ResourceTrackerTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4374,
+        "end": 4468
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init_ensure_provided_reportclient_is_used",
+      "kind": "method",
+      "scope": "ResourceTrackerTestCase",
+      "lineRange": {
+        "start": 4376,
+        "end": 4380
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_that_unfair_usage_of_compute_resource_semaphore_is_caught",
+      "kind": "method",
+      "scope": "ResourceTrackerTestCase",
+      "lineRange": {
+        "start": 4382,
+        "end": 4398
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_explict_unfair",
+      "kind": "function",
+      "scope": "ResourceTrackerTestCase.test_that_unfair_usage_of_compute_resource_semaphore_is_caught",
+      "lineRange": {
+        "start": 4383,
+        "end": 4388
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MyResourceTracker",
+      "kind": "class",
+      "scope": "ResourceTrackerTestCase.test_that_unfair_usage_of_compute_resource_semaphore_is_caught._test_explict_unfair",
+      "lineRange": {
+        "start": 4384,
+        "end": 4388
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "foo",
+      "kind": "method",
+      "scope": "ResourceTrackerTestCase.test_that_unfair_usage_of_compute_resource_semaphore_is_caught._test_explict_unfair.MyResourceTracker",
+      "lineRange": {
+        "start": 4387,
+        "end": 4388
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_implicit_unfair",
+      "kind": "function",
+      "scope": "ResourceTrackerTestCase.test_that_unfair_usage_of_compute_resource_semaphore_is_caught",
+      "lineRange": {
+        "start": 4390,
+        "end": 4395
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MyResourceTracker",
+      "kind": "class",
+      "scope": "ResourceTrackerTestCase.test_that_unfair_usage_of_compute_resource_semaphore_is_caught._test_implicit_unfair",
+      "lineRange": {
+        "start": 4391,
+        "end": 4395
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "foo",
+      "kind": "method",
+      "scope": "ResourceTrackerTestCase.test_that_unfair_usage_of_compute_resource_semaphore_is_caught._test_implicit_unfair.MyResourceTracker",
+      "lineRange": {
+        "start": 4394,
+        "end": 4395
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_invalidate_pci_in_placement",
+      "kind": "method",
+      "scope": "ResourceTrackerTestCase",
+      "lineRange": {
+        "start": 4400,
+        "end": 4437
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_service_ref",
+      "kind": "method",
+      "scope": "ResourceTrackerTestCase",
+      "lineRange": {
+        "start": 4439,
+        "end": 4468
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ProviderConfigTestCases",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4471,
+        "end": 4710
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4472,
+        "end": 4475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_provider_config",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4478,
+        "end": 4499
+      },
+      "parameters": [
+        {
+          "default": "uuids.cn1",
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{\"__source_file\": \"test_provider_config.yaml\", \"identification\": { \"uuid\": uuid }, \"inventories\": { \"additional\": [ { orc.normalize_name(uuid): { \"total\": 100, \"reserved\": 0, \"min_unit\": 1, \"max_unit\"",
+          "line": 4479
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_merge_provider_configs",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4501,
+        "end": 4524
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_merge_provider_configs_dup_providers_exception",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4526,
+        "end": 4550
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_merge_provider_configs_additional_traits_exception",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4552,
+        "end": 4585
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_merge_provider_configs_additional_inventories_exception",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4587,
+        "end": 4617
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_merge_provider_configs_adds_owner_nova",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4619,
+        "end": 4631
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test__get_providers_to_update",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4633,
+        "end": 4647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test__get_providers_to_update_roots",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4649,
+        "end": 4671
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test__get_providers_to_update_not_in_tree",
+      "kind": "method",
+      "scope": "ProviderConfigTestCases",
+      "lineRange": {
+        "start": 4674,
+        "end": 4710
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestCleanComputeNodeCache",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4713,
+        "end": 4731
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestCleanComputeNodeCache",
+      "lineRange": {
+        "start": 4715,
+        "end": 4719
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_clean_compute_node_cache",
+      "kind": "method",
+      "scope": "TestCleanComputeNodeCache",
+      "lineRange": {
+        "start": 4722,
+        "end": 4731
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_remove"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestReleaseLeakedMoveClaims",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4734,
+        "end": 4920
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4740,
+        "end": 4752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_migration",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4754,
+        "end": 4767
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.Migration(context=mock.sentinel.ctx, **values)",
+          "line": 4767
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_release",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4769,
+        "end": 4773
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migrations"
+        },
+        {
+          "default": "None",
+          "name": "instance_by_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_leaked_allocation_released",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4776,
+        "end": 4798
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_leaked_claim_released",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4801,
+        "end": 4813
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migration_to_other_dest_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4816,
+        "end": 4825
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migration_to_other_node_on_same_host_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4828,
+        "end": 4835
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_non_error_migration_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4838,
+        "end": 4849
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_instance_present_on_this_node_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4852,
+        "end": 4862
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tracked_migration_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4865,
+        "end": 4874
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_pci_tracker_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4877,
+        "end": 4885
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_nothing_claimed_for_instance_ignored",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4888,
+        "end": 4899
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_only_leaked_migration_released",
+      "kind": "method",
+      "scope": "TestReleaseLeakedMoveClaims",
+      "lineRange": {
+        "start": 4902,
+        "end": 4920
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.ComputeNode",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "objects.HVSpec.from_list",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "objects.InstanceNUMATopology",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 161,
+        "end": 161
+      }
+    },
+    {
+      "name": "objects.InstanceNUMACell",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 162,
+        "end": 162
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 24,
+      "lineRange": {
+        "start": 163,
+        "end": 163
+      }
+    },
+    {
+      "name": "objects.NUMATopologyLimits",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 169,
+        "end": 169
+      }
+    },
+    {
+      "name": "objects.NUMAPagesTopology",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      }
+    },
+    {
+      "name": "objects.NUMATopology",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 179,
+        "end": 179
+      }
+    },
+    {
+      "name": "objects.NUMACell",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 180,
+        "end": 180
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 35,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "objects.Migration",
+      "usage": "call",
+      "via": "nova",
+      "count": 23,
+      "lineRange": {
+        "start": 262,
+        "end": 262
+      }
+    },
+    {
+      "name": "objects.MigrationContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 14,
+      "lineRange": {
+        "start": 427,
+        "end": 427
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 66,
+      "lineRange": {
+        "start": 462,
+        "end": 462
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 34,
+      "lineRange": {
+        "start": 467,
+        "end": 467
+      }
+    },
+    {
+      "name": "compute_utils.convert_mb_to_ceil_gb",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 500,
+        "end": 500
+      }
+    },
+    {
+      "name": "provider_tree.update_inventory",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 504,
+        "end": 504
+      }
+    },
+    {
+      "name": "test.nested",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 510,
+        "end": 510
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 279,
+      "lineRange": {
+        "start": 511,
+        "end": 511
+      }
+    },
+    {
+      "name": "resource_tracker.ResourceTracker",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 5,
+      "lineRange": {
+        "start": 516,
+        "end": 516
+      }
+    },
+    {
+      "name": "objects.Service",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 518,
+        "end": 518
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 533,
+        "end": 533
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 536,
+        "end": 536
+      }
+    },
+    {
+      "name": "objects.Resource",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 552,
+        "end": 552
+      }
+    },
+    {
+      "name": "provider_tree.ProviderTree",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 575,
+        "end": 575
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 38,
+      "lineRange": {
+        "start": 577,
+        "end": 577
+      }
+    },
+    {
+      "name": "provider_tree.ProviderSubTree",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 593,
+        "end": 593
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 62,
+      "lineRange": {
+        "start": 615,
+        "end": 615
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequests",
+      "usage": "call",
+      "via": "nova",
+      "count": 29,
+      "lineRange": {
+        "start": 621,
+        "end": 621
+      }
+    },
+    {
+      "name": "objects.PciDeviceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 28,
+      "lineRange": {
+        "start": 623,
+        "end": 623
+      }
+    },
+    {
+      "name": "obj_base.obj_equal_prims",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 20,
+      "lineRange": {
+        "start": 700,
+        "end": 700
+      }
+    },
+    {
+      "name": "objects.PciDevicePoolList",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 753,
+        "end": 753
+      }
+    },
+    {
+      "name": "objects.ResourceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 1206,
+        "end": 1206
+      }
+    },
+    {
+      "name": "obj_base.obj_to_primitive",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 1479,
+        "end": 1479
+      }
+    },
+    {
+      "name": "exc.ComputeHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1488,
+        "end": 1488
+      }
+    },
+    {
+      "name": "context.get_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1498,
+        "end": 1498
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 4,
+      "lineRange": {
+        "start": 1509,
+        "end": 1509
+      }
+    },
+    {
+      "name": "test.MatchType",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1513,
+        "end": 1513
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 1541,
+        "end": 1541
+      }
+    },
+    {
+      "name": "exc.DuplicateRecord",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1602,
+        "end": 1602
+      }
+    },
+    {
+      "name": "object",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1609,
+        "end": 1609
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 4,
+      "lineRange": {
+        "start": 1655,
+        "end": 1655
+      }
+    },
+    {
+      "name": "datetime.timedelta",
+      "usage": "call",
+      "via": "datetime",
+      "count": 3,
+      "lineRange": {
+        "start": 1656,
+        "end": 1656
+      }
+    },
+    {
+      "name": "pci_manager.PciDevTracker",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 5,
+      "lineRange": {
+        "start": 1714,
+        "end": 1714
+      }
+    },
+    {
+      "name": "utils.ItemsMatcher",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 2,
+      "lineRange": {
+        "start": 1741,
+        "end": 1741
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 2,
+      "lineRange": {
+        "start": 1832,
+        "end": 1832
+      }
+    },
+    {
+      "name": "exc.ResourceProviderUpdateConflict",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1833,
+        "end": 1833
+      }
+    },
+    {
+      "name": "exc.PlacementReshapeConflict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1835,
+        "end": 1835
+      }
+    },
+    {
+      "name": "exc.InventoryInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2109,
+        "end": 2109
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 2127,
+        "end": 2127
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 23,
+      "lineRange": {
+        "start": 2150,
+        "end": 2150
+      }
+    },
+    {
+      "name": "delattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2185,
+        "end": 2185
+      }
+    },
+    {
+      "name": "test.TestingException",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2195,
+        "end": 2195
+      }
+    },
+    {
+      "name": "mock.create_autospec",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 2273,
+        "end": 2273
+      }
+    },
+    {
+      "name": "AssertionError",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 2292,
+        "end": 2292
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2303,
+        "end": 2303
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 2305,
+        "end": 2305
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 2497,
+        "end": 2497
+      }
+    },
+    {
+      "name": "pci_device.PciDevice.create",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 2500,
+        "end": 2500
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2526,
+        "end": 2526
+      }
+    },
+    {
+      "name": "objects.PciDevicePool",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2546,
+        "end": 2546
+      }
+    },
+    {
+      "name": "objects.NUMATopology.obj_from_db_obj",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2766,
+        "end": 2766
+      }
+    },
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 3450,
+        "end": 3450
+      }
+    },
+    {
+      "name": "objects.ImageMeta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3456,
+        "end": 3456
+      }
+    },
+    {
+      "name": "objects.ImageMetaProps",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3456,
+        "end": 3456
+      }
+    },
+    {
+      "name": "exc.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 3533,
+        "end": 3533
+      }
+    },
+    {
+      "name": "objects.MigrationList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 3592,
+        "end": 3592
+      }
+    },
+    {
+      "name": "report.ProviderAllocInfo",
+      "usage": "call",
+      "via": "nova.scheduler.client",
+      "count": 10,
+      "lineRange": {
+        "start": 3782,
+        "end": 3782
+      }
+    },
+    {
+      "name": "exc.ResourceProviderAllocationRetrievalFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 4046,
+        "end": 4046
+      }
+    },
+    {
+      "name": "objects.Instance.save.assert_has_calls",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 4118,
+        "end": 4118
+      }
+    },
+    {
+      "name": "resource_tracker._instance_in_resize_state",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 4,
+      "lineRange": {
+        "start": 4131,
+        "end": 4131
+      }
+    },
+    {
+      "name": "resource_tracker._instance_is_live_migrating",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 5,
+      "lineRange": {
+        "start": 4154,
+        "end": 4154
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 4217,
+        "end": 4217
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 4225,
+        "end": 4225
+      }
+    },
+    {
+      "name": "fixtures.NotificationFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 4245,
+        "end": 4245
+      }
+    },
+    {
+      "name": "monitor_base.MonitorBase",
+      "usage": "inherit",
+      "via": "nova.compute.monitors",
+      "count": 1,
+      "lineRange": {
+        "start": 4247,
+        "end": 4247
+      }
+    },
+    {
+      "name": "objects.MonitorMetric",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 4259,
+        "end": 4259
+      }
+    },
+    {
+      "name": "resource_tracker.ResourceTracker",
+      "usage": "inherit",
+      "via": "nova.compute",
+      "count": 2,
+      "lineRange": {
+        "start": 4384,
+        "end": 4384
+      }
+    },
+    {
+      "name": "nova_utils.synchronized",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 4385,
+        "end": 4385
+      }
+    },
+    {
+      "name": "orc.normalize_name",
+      "usage": "call",
+      "via": "os_resource_classes",
+      "count": 1,
+      "lineRange": {
+        "start": 4486,
+        "end": 4486
+      }
+    },
+    {
+      "name": "os_traits.normalize_name",
+      "usage": "call",
+      "via": "os_traits",
+      "count": 1,
+      "lineRange": {
+        "start": 4498,
+        "end": 4498
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 4663,
+        "end": 4663
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 4756,
+        "end": 4756
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "datetime",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "ks_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": "orc",
+      "module": "os_resource_classes",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_traits",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "claims"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute.monitors",
+      "names": [
+        {
+          "alias": "monitor_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "provider_tree"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "resource_tracker"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "pci_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_manager",
+          "name": "manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "report"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.objects",
+      "names": [
+        {
+          "alias": "fake_pci_device",
+          "name": "test_pci_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

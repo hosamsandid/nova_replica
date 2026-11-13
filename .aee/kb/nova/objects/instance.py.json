@@ -1,0 +1,4253 @@
+{
+  "file": "nova/objects/instance.py",
+  "hash": "a29c0eb01d580187ee97e9fb435795dcde738aa48199381c2206e30cc379cc7a",
+  "language": "Python",
+  "component": "objects",
+  "package": null,
+  "lines": {
+    "blank": 211,
+    "code": 1296,
+    "comment": 208,
+    "total": 1715
+  },
+  "symbols": [
+    {
+      "name": "import contextlib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_db import exception as db_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import sqlalchemy as sa",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from sqlalchemy import sql",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from sqlalchemy.sql import func",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import models",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model as network_model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import notifications",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_INSTANCE_OPTIONAL_JOINED_FIELDS",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_INSTANCE_OPTIONAL_NON_COLUMN_FIELDS",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_INSTANCE_EXTRA_FIELDS",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_MIGRATION_CONTEXT_ATTRS",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 61
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "INSTANCE_OPTIONAL_ATTRS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 66
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__all__",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 68,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "INSTANCE_DEFAULT_FIELDS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 75,
+        "end": 76
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_TAG_COUNT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 79,
+        "end": 79
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_expected_cols",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 106
+      },
+      "parameters": [
+        {
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "expected_attrs",
+          "line": 89
+        },
+        {
+          "expr": "sorted(list(set(expected_cols)), key=expected_cols.index)",
+          "line": 106
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_NO_DATA_SENTINEL",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 109,
+        "end": 109
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Instance",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 114,
+        "end": 1317
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 125,
+        "end": 125
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 127,
+        "end": 235
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_extra_fields",
+      "kind": "field",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_compatible",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 239,
+        "end": 255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "target_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 257,
+        "end": 259
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_meta",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 262,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.ImageMeta.from_instance(self)",
+          "line": 263
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reset_metadata_tracking",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 265,
+        "end": 271
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "fields"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_clone",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 273,
+        "end": 284
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nobj",
+          "line": 284
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_reset_changes",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 286,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "fields"
+        },
+        {
+          "default": "False",
+          "name": "recursive"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_what_changed",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 291,
+        "end": 298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "changes",
+          "line": 298
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_obj_from_primitive",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 301,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "objver"
+        },
+        {
+          "name": "primitive"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self",
+          "line": 305
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "name",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 308,
+        "end": 345
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base_name",
+          "line": 345
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_flavor_from_db",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 347,
+        "end": 380
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "db_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_default_flavor_values",
+      "kind": "function",
+      "scope": "Instance._flavor_from_db",
+      "lineRange": {
+        "start": 358,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_from_db_object",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 383,
+        "end": 453
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "db_inst"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance",
+          "line": 453
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_extra_attributes_from_db_object",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 456,
+        "end": 518
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "db_inst"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_db_instance_get_by_uuid",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 522,
+        "end": 525
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "uuid"
+        },
+        {
+          "name": "columns_to_join"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_by_uuid(context, uuid, columns_to_join=columns_to_join)",
+          "line": 524
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_uuid",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 529,
+        "end": 536
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_inst, expected_attrs)",
+          "line": 535
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_id",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 540,
+        "end": 547
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "inst_id"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_inst, expected_attrs)",
+          "line": 546
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 550,
+        "end": 669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 672,
+        "end": 693
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "hard_delete"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_info_cache",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 695,
+        "end": 698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_security_groups",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 701,
+        "end": 704
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_fault",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 706,
+        "end": 708
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_pci_requests",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 710,
+        "end": 715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_pci_devices",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 717,
+        "end": 721
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_tags",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 723,
+        "end": 725
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_services",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 727,
+        "end": 729
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nullify_flavor_description",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 732,
+        "end": 745
+      },
+      "parameters": [
+        {
+          "name": "flavor_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_flavor",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 747,
+        "end": 760
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 750
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_old_flavor",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 762,
+        "end": 764
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_new_flavor",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 766,
+        "end": 768
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_ec2_ids",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 770,
+        "end": 772
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_keypairs",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 774,
+        "end": 777
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_save_extra_generic",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 779,
+        "end": 785
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "field"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "save",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 790,
+        "end": 894
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "expected_vm_state"
+        },
+        {
+          "default": "None",
+          "name": "expected_task_state"
+        },
+        {
+          "default": "False",
+          "name": "admin_state_reset"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 857
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "refresh",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 897,
+        "end": 923
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_generic",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 925,
+        "end": 941
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attrname"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_fault",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 943,
+        "end": 945
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_numa_topology",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 947,
+        "end": 959
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_topology"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_pci_requests",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 961,
+        "end": 968
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_requests"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_device_metadata",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 970,
+        "end": 980
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_dev_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_flavor",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 982,
+        "end": 992
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_vcpu_model",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 994,
+        "end": 1003
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_vcpu_model"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_ec2_ids",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1005,
+        "end": 1006
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_pci_devices",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1008,
+        "end": 1010
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_migration_context",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1012,
+        "end": 1024
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_keypairs",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1026,
+        "end": 1041
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_keypairs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_tags",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1043,
+        "end": 1045
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_trusted_certs",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1047,
+        "end": 1055
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_trusted_certs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_resources",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1057,
+        "end": 1065
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "_NO_DATA_SENTINEL",
+          "name": "db_resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "apply_migration_context",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1067,
+        "end": 1072
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "revert_migration_context",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1074,
+        "end": 1079
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_migration_context_to_instance",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1081,
+        "end": 1088
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mutated_migration_context",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1091,
+        "end": 1115
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "revert"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1102
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "drop_migration_context",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1118,
+        "end": 1122
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clear_numa_topology",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1124,
+        "end": 1127
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_load_attr",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1130,
+        "end": 1152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attrname"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_obj_load_attr",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1154,
+        "end": 1225
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attrname"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._load_keypairs()",
+          "line": 1188
+        },
+        {
+          "expr": "self._load_trusted_certs()",
+          "line": 1190
+        },
+        {
+          "expr": "self._load_resources()",
+          "line": 1192
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_flavor",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1227,
+        "end": 1239
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "namespace"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "getattr(self, attr)",
+          "line": 1231
+        },
+        {
+          "expr": "None",
+          "line": 1239
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_metadata_key",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1242,
+        "end": 1256
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_network_info",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1258,
+        "end": 1261
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_model.NetworkInfo.hydrate([])",
+          "line": 1260
+        },
+        {
+          "expr": "self.info_cache.network_info",
+          "line": 1261
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bdms",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1263,
+        "end": 1265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.BlockDeviceMappingList.get_by_instance_uuid( self._context, self.uuid)",
+          "line": 1264
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_shares",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1267,
+        "end": 1269
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.ShareMappingList.get_by_instance_uuid( self._context, self.uuid)",
+          "line": 1268
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_pci_device_and_request",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1271,
+        "end": 1277
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_device"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_pci_devices",
+      "kind": "method",
+      "scope": "Instance",
+      "lineRange": {
+        "start": 1279,
+        "end": 1317
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "source",
+          "type": "int | None"
+        },
+        {
+          "default": "None",
+          "name": "request_id",
+          "type": "str | None"
+        }
+      ],
+      "returnType": "list[\"objects.PciDevice\"]",
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 1296
+        },
+        {
+          "expr": "devs",
+          "line": 1317
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_make_instance_list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1320,
+        "end": 1344
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "inst_list"
+        },
+        {
+          "name": "db_inst_list"
+        },
+        {
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "inst_list",
+          "line": 1344
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_instance_compute_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1348,
+        "end": 1368
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "max_count"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "count_all, count_hit",
+          "line": 1368
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InstanceList",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1372,
+        "end": 1715
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1380,
+        "end": 1380
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1382,
+        "end": 1384
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_by_filters_impl",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1388,
+        "end": 1401
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "default": "'created_at'",
+          "name": "sort_key"
+        },
+        {
+          "default": "'desc'",
+          "name": "sort_dir"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db_inst_list",
+          "line": 1401
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_filters",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1405,
+        "end": 1419
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "default": "'created_at'",
+          "name": "sort_key"
+        },
+        {
+          "default": "'desc'",
+          "name": "sort_dir"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_inst_list, expected_attrs)",
+          "line": 1418
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_db_instance_get_all_by_host",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1423,
+        "end": 1426
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "columns_to_join"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_all_by_host(context, host, columns_to_join=columns_to_join)",
+          "line": 1425
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_host",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1430,
+        "end": 1435
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_inst_list, expected_attrs)",
+          "line": 1434
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_host_and_node",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1439,
+        "end": 1444
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "node"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_inst_list, expected_attrs)",
+          "line": 1443
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_uuids_by_host_and_node",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1448,
+        "end": 1451
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "node"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "context.session.query( models.Instance.uuid).filter_by( host=host).filter_by(node=node).filter_by(deleted=0).all()",
+          "line": 1449
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_uuids_by_host_and_node",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1455,
+        "end": 1463
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "node"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._get_uuids_by_host_and_node(context, host, node)",
+          "line": 1463
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_host_and_not_type",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1467,
+        "end": 1472
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "type_id"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_inst_list, expected_attrs)",
+          "line": 1471
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1476,
+        "end": 1481
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_instances, expected_attrs)",
+          "line": 1480
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_hung_in_rebooting",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1485,
+        "end": 1490
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "reboot_window"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_inst_list, expected_attrs)",
+          "line": 1489
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_db_instance_get_active_by_window_joined",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1494,
+        "end": 1499
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "begin"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "columns_to_join"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_active_by_window_joined( context, begin, end, project_id, host, columns_to_join=columns_to_join, limit=limit, marker=marker)",
+          "line": 1497
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_active_by_window_joined",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1503,
+        "end": 1516
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "begin"
+        },
+        {
+          "default": "None",
+          "name": "end"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_make_instance_list(context, cls(), db_inst_list, expected_attrs)",
+          "line": 1515
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_active_by_window_joined",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1519,
+        "end": 1546
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "begin"
+        },
+        {
+          "default": "None",
+          "name": "end"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._get_active_by_window_joined(context, begin, end, project_id, host, expected_attrs, use_slave=use_slave, limit=limit, marker=marker)",
+          "line": 1542
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_security_group_id",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1551,
+        "end": 1552
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_security_group",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1556,
+        "end": 1557
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_grantee_security_group_ids",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1562,
+        "end": 1563
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group_ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fill_faults",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1565,
+        "end": 1596
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "faults_by_uuid.keys()",
+          "line": 1596
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fill_metadata",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1598,
+        "end": 1617
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_uuids_by_host",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1621,
+        "end": 1622
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_all_uuids_by_hosts(context, [host])[host]",
+          "line": 1622
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_uuids_by_hosts",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1626,
+        "end": 1630
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_all_uuids_by_hosts(context, hosts)",
+          "line": 1630
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_count_by_vm_state_in_db",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1634,
+        "end": 1640
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "context.session.query(models.Instance.id).\\ filter_by(deleted=0).\\ filter_by(project_id=project_id).\\ filter_by(user_id=user_id).\\ filter_by(vm_state=vm_state).\\ count()",
+          "line": 1635
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_count_by_vm_state",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1644,
+        "end": 1646
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._get_count_by_vm_state_in_db(context, project_id, user_id, vm_state)",
+          "line": 1645
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_counts_in_db",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1650,
+        "end": 1684
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "counts",
+          "line": 1684
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_counts",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1688,
+        "end": 1704
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._get_counts_in_db(context, project_id, user_id=user_id)",
+          "line": 1704
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_count_by_hosts",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1708,
+        "end": 1711
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "context.session.query(models.Instance).\\ filter_by(deleted=0).\\ filter(models.Instance.host.in_(hosts)).count()",
+          "line": 1709
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_count_by_hosts",
+      "kind": "method",
+      "scope": "InstanceList",
+      "lineRange": {
+        "start": 1714,
+        "end": 1715
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._get_count_by_hosts(context, hosts)",
+          "line": 1715
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "object",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 109,
+        "end": 109
+      }
+    },
+    {
+      "name": "base.NovaObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "base.NovaPersistentObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "base.NovaObjectDictCompat",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      }
+    },
+    {
+      "name": "fields.IntegerField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 10,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "fields.StringField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 27,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "fields.ObjectField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 18,
+      "lineRange": {
+        "start": 146,
+        "end": 146
+      }
+    },
+    {
+      "name": "fields.UUIDField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "fields.DateTimeField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      }
+    },
+    {
+      "name": "fields.BooleanField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 6,
+      "lineRange": {
+        "start": 176,
+        "end": 176
+      }
+    },
+    {
+      "name": "fields.IPV4AddressField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 189,
+        "end": 189
+      }
+    },
+    {
+      "name": "fields.IPV6AddressField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 190,
+        "end": 190
+      }
+    },
+    {
+      "name": "fields.DictOfStringsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 202,
+        "end": 202
+      }
+    },
+    {
+      "name": "fields.DictOfNullableStringsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 203,
+        "end": 203
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 240,
+        "end": 240
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_tuple",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 241,
+        "end": 241
+      }
+    },
+    {
+      "name": "objects.ImageMeta.from_instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 263,
+        "end": 263
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 267,
+        "end": 267
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 280,
+        "end": 280
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 5,
+      "lineRange": {
+        "start": 364,
+        "end": 364
+      }
+    },
+    {
+      "name": "objects.Flavor.obj_from_primitive",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 366,
+        "end": 366
+      }
+    },
+    {
+      "name": "utils.instance_meta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 403,
+        "end": 403
+      }
+    },
+    {
+      "name": "utils.instance_sys_meta",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 405,
+        "end": 405
+      }
+    },
+    {
+      "name": "objects.InstanceFault.get_latest_for_instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 408,
+        "end": 408
+      }
+    },
+    {
+      "name": "objects.InstanceInfoCache",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 418,
+        "end": 418
+      }
+    },
+    {
+      "name": "base.obj_make_list",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 428,
+        "end": 428
+      }
+    },
+    {
+      "name": "objects.PciDeviceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 429,
+        "end": 429
+      }
+    },
+    {
+      "name": "objects.SecurityGroupList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 436,
+        "end": 436
+      }
+    },
+    {
+      "name": "objects.TagList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 441,
+        "end": 441
+      }
+    },
+    {
+      "name": "objects.ServiceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 446,
+        "end": 446
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 514,
+        "end": 514
+      }
+    },
+    {
+      "name": "db.instance_get_by_uuid",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 524,
+        "end": 524
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 535,
+        "end": 535
+      }
+    },
+    {
+      "name": "db.instance_get",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 544,
+        "end": 544
+      }
+    },
+    {
+      "name": "exception.ObjectActionError",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 552,
+        "end": 552
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 7,
+      "lineRange": {
+        "start": 624,
+        "end": 624
+      }
+    },
+    {
+      "name": "db.instance_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 656,
+        "end": 656
+      }
+    },
+    {
+      "name": "db.constraint",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 681,
+        "end": 681
+      }
+    },
+    {
+      "name": "db.equal_any",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 681,
+        "end": 681
+      }
+    },
+    {
+      "name": "db.instance_destroy",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 686,
+        "end": 686
+      }
+    },
+    {
+      "name": "base.get_attrname",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 693,
+        "end": 693
+      }
+    },
+    {
+      "name": "delattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 693,
+        "end": 693
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 781,
+        "end": 781
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 831,
+        "end": 831
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 848,
+        "end": 848
+      }
+    },
+    {
+      "name": "db.instance_extra_update_by_uuid",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 2,
+      "lineRange": {
+        "start": 853,
+        "end": 853
+      }
+    },
+    {
+      "name": "db.instance_update_and_get_original",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 882,
+        "end": 882
+      }
+    },
+    {
+      "name": "notifications.send_update",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 892,
+        "end": 892
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 3,
+      "lineRange": {
+        "start": 934,
+        "end": 934
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 941,
+        "end": 941
+      }
+    },
+    {
+      "name": "objects.InstanceNUMATopology.obj_from_db_obj",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 951,
+        "end": 951
+      }
+    },
+    {
+      "name": "objects.InstanceNUMATopology.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 956,
+        "end": 956
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequests.obj_from_db",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 963,
+        "end": 963
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequests.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 967,
+        "end": 967
+      }
+    },
+    {
+      "name": "objects.InstanceDeviceMetadata.obj_from_db",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 975,
+        "end": 975
+      }
+    },
+    {
+      "name": "objects.InstanceDeviceMetadata.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 979,
+        "end": 979
+      }
+    },
+    {
+      "name": "objects.VirtCPUModel.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 998,
+        "end": 998
+      }
+    },
+    {
+      "name": "objects.VirtCPUModel.obj_from_primitive",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1002,
+        "end": 1002
+      }
+    },
+    {
+      "name": "objects.EC2Ids.get_by_instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1006,
+        "end": 1006
+      }
+    },
+    {
+      "name": "objects.PciDeviceList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1009,
+        "end": 1009
+      }
+    },
+    {
+      "name": "objects.MigrationContext.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1016,
+        "end": 1016
+      }
+    },
+    {
+      "name": "objects.MigrationContext.obj_from_db_obj",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1023,
+        "end": 1023
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1028,
+        "end": 1028
+      }
+    },
+    {
+      "name": "objects.KeyPairList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1035,
+        "end": 1035
+      }
+    },
+    {
+      "name": "objects.KeyPairList.obj_from_primitive",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1039,
+        "end": 1039
+      }
+    },
+    {
+      "name": "objects.TagList.get_by_resource_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1044,
+        "end": 1044
+      }
+    },
+    {
+      "name": "objects.TrustedCerts.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1051,
+        "end": 1051
+      }
+    },
+    {
+      "name": "objects.TrustedCerts.obj_from_primitive",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1054,
+        "end": 1054
+      }
+    },
+    {
+      "name": "objects.ResourceList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1061,
+        "end": 1061
+      }
+    },
+    {
+      "name": "objects.ResourceList.obj_from_primitive",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1064,
+        "end": 1064
+      }
+    },
+    {
+      "name": "exception.OrphanedObjectError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1138,
+        "end": 1138
+      }
+    },
+    {
+      "name": "utils.temporary_mutation",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1151,
+        "end": 1151
+      }
+    },
+    {
+      "name": "db.instance_metadata_delete",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1250,
+        "end": 1250
+      }
+    },
+    {
+      "name": "network_model.NetworkInfo.hydrate",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 1260,
+        "end": 1260
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1264,
+        "end": 1264
+      }
+    },
+    {
+      "name": "objects.ShareMappingList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1268,
+        "end": 1268
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1283,
+        "end": 1283
+      }
+    },
+    {
+      "name": "objects.InstanceFaultList.get_by_instance_uuids",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1327,
+        "end": 1327
+      }
+    },
+    {
+      "name": "inst_cls",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1338,
+        "end": 1338
+      }
+    },
+    {
+      "name": "models.Instance.compute_id.is_",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1350,
+        "end": 1350
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1353,
+        "end": 1353
+      }
+    },
+    {
+      "name": "objects.ComputeNode.get_by_host_and_nodename",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1357,
+        "end": 1357
+      }
+    },
+    {
+      "name": "base.ObjectListBase",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 1372,
+        "end": 1372
+      }
+    },
+    {
+      "name": "fields.ListOfObjectsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 1383,
+        "end": 1383
+      }
+    },
+    {
+      "name": "db.instance_get_all_by_filters_sort",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1393,
+        "end": 1393
+      }
+    },
+    {
+      "name": "db.instance_get_all_by_filters",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1398,
+        "end": 1398
+      }
+    },
+    {
+      "name": "db.instance_get_all_by_host",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1425,
+        "end": 1425
+      }
+    },
+    {
+      "name": "db.instance_get_all_by_host_and_node",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1440,
+        "end": 1440
+      }
+    },
+    {
+      "name": "db.instance_get_all_by_host_and_not_type",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1469,
+        "end": 1469
+      }
+    },
+    {
+      "name": "db.instance_get_all",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1478,
+        "end": 1478
+      }
+    },
+    {
+      "name": "db.instance_get_all_hung_in_rebooting",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1487,
+        "end": 1487
+      }
+    },
+    {
+      "name": "db.instance_get_active_by_window_joined",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1497,
+        "end": 1497
+      }
+    },
+    {
+      "name": "timeutils.parse_isotime",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 1509,
+        "end": 1509
+      }
+    },
+    {
+      "name": "utils.isotime",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1540,
+        "end": 1540
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 1552,
+        "end": 1552
+      }
+    },
+    {
+      "name": "nova_context.scatter_gather_all_cells",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1571,
+        "end": 1571
+      }
+    },
+    {
+      "name": "db.instances_fill_metadata",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1608,
+        "end": 1608
+      }
+    },
+    {
+      "name": "db.instance_get_all_uuids_by_hosts",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 2,
+      "lineRange": {
+        "start": 1622,
+        "end": 1622
+      }
+    },
+    {
+      "name": "sa.or_",
+      "usage": "call",
+      "via": "sqlalchemy",
+      "count": 2,
+      "lineRange": {
+        "start": 1654,
+        "end": 1654
+      }
+    },
+    {
+      "name": "sql.null",
+      "usage": "call",
+      "via": "sqlalchemy",
+      "count": 2,
+      "lineRange": {
+        "start": 1656,
+        "end": 1656
+      }
+    },
+    {
+      "name": "func.count",
+      "usage": "call",
+      "via": "sqlalchemy.sql",
+      "count": 1,
+      "lineRange": {
+        "start": 1659,
+        "end": 1659
+      }
+    },
+    {
+      "name": "func.sum",
+      "usage": "call",
+      "via": "sqlalchemy.sql",
+      "count": 2,
+      "lineRange": {
+        "start": 1660,
+        "end": 1660
+      }
+    },
+    {
+      "name": "sql.false",
+      "usage": "call",
+      "via": "sqlalchemy",
+      "count": 1,
+      "lineRange": {
+        "start": 1670,
+        "end": 1670
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1676,
+        "end": 1676
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1677,
+        "end": 1677
+      }
+    },
+    {
+      "name": "models.Instance.host.in_",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 1711,
+        "end": 1711
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "contextlib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_db",
+      "names": [
+        {
+          "alias": "db_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": "sa",
+      "module": "sqlalchemy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "sqlalchemy",
+      "names": [
+        {
+          "alias": null,
+          "name": "sql"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "sqlalchemy.sql",
+      "names": [
+        {
+          "alias": null,
+          "name": "func"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": null,
+          "name": "models"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "network_model",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "notifications"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

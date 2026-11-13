@@ -1,0 +1,1070 @@
+{
+  "file": "nova/api/validation/parameter_types.py",
+  "hash": "cb4a4067f772e9ded265f4aa3bcf70ba9eb6bb85c639c43db081014de5497bb3",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 87,
+    "code": 372,
+    "comment": 78,
+    "total": 537
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import unicodedata",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import tag",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_REGEX_RANGE_CACHE",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memorize",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 40
+      },
+      "parameters": [
+        {
+          "name": "func"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "memorizer",
+          "line": 40
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memorizer",
+      "kind": "function",
+      "scope": "memorize",
+      "lineRange": {
+        "start": 32,
+        "end": 38
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "value",
+          "line": 38
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reset_cache",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 45
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "single_param",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "schema"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ret",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "multi_params",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "schema"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'type': 'array', 'items': schema}",
+          "line": 61
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "common_query_param",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "common_query_regex_param",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ValidationRegex",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 73,
+        "end": 76
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ValidationRegex",
+      "lineRange": {
+        "start": 74,
+        "end": 76
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "regex"
+        },
+        {
+          "name": "reason"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_printable",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 79,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "char"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(not category.startswith(\"C\") and (not category.startswith(\"Z\") or category == \"Zs\"))",
+          "line": 89
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_all_chars",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 93,
+        "end": 95
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_regex_range",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 163
+      },
+      "parameters": [
+        {
+          "default": "True",
+          "name": "ws"
+        },
+        {
+          "default": "False",
+          "name": "invert"
+        },
+        {
+          "default": "None",
+          "name": "exclude"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "regex",
+          "line": 163
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_char",
+      "kind": "function",
+      "scope": "_build_regex_range",
+      "lineRange": {
+        "start": 135,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "char"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not result",
+          "line": 145
+        },
+        {
+          "expr": "result",
+          "line": 146
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_name_regex_base",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_name_regex",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 168,
+        "end": 173
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_name_leading_trailing_spaces_regex_base",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 176,
+        "end": 178
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_az_name_regex",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 180,
+        "end": 186
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_az_name_leading_trailing_spaces_regex",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 189,
+        "end": 194
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_name_leading_trailing_spaces_regex",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 196,
+        "end": 200
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_description_regex_base",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 202,
+        "end": 202
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "valid_description_regex",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 204,
+        "end": 204
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "boolean",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 206,
+        "end": 212
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "name_or_none",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 215,
+        "end": 220
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "positive_integer",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 222,
+        "end": 227
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "non_negative_integer",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 229,
+        "end": 234
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "hostname",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 261,
+        "end": 266
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fqdn",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 268,
+        "end": 278
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "name",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 280,
+        "end": 289
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "az_name",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 291,
+        "end": 296
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "keypair_name_special_chars",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 298,
+        "end": 308
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "keypair_name_special_chars_v292",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 310,
+        "end": 320
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "az_name_with_leading_trailing_spaces",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 322,
+        "end": 327
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "name_with_leading_trailing_spaces",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 329,
+        "end": 334
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "description",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 336,
+        "end": 341
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "project_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 343,
+        "end": 348
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "user_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 350,
+        "end": 355
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "server_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 357,
+        "end": 360
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 362,
+        "end": 365
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "share_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 367,
+        "end": 369
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "share_tag",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 371,
+        "end": 374
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "share_export_location",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 376,
+        "end": 378
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "share_status",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 380,
+        "end": 383
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_id_or_empty_string",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 385,
+        "end": 390
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 392,
+        "end": 395
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 397,
+        "end": 400
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_type",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 402,
+        "end": 406
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "network_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 408,
+        "end": 411
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "network_port_id",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 413,
+        "end": 416
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "admin_password",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 418,
+        "end": 425
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "flavor_ref",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 427,
+        "end": 429
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "metadata",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 431,
+        "end": 439
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "metadata_with_null",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 441,
+        "end": 441
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mac_address",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 445,
+        "end": 448
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ip_address",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 450,
+        "end": 456
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ipv4",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 458,
+        "end": 460
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ipv6",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 462,
+        "end": 464
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cidr",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 466,
+        "end": 468
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_size",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 470,
+        "end": 477
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_config",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 479,
+        "end": 482
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "accessIPv4",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 484,
+        "end": 487
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "accessIPv6",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 489,
+        "end": 492
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "flavor_param_positive",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 494,
+        "end": 494
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "flavor_param_non_negative",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 496,
+        "end": 496
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "personality",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 499,
+        "end": 512
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tag",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 514,
+        "end": 519
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pagination_parameters",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 521,
+        "end": 524
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "trusted_certs",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 528,
+        "end": 537
+      },
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "name": "hash",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "name": "func",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "unicodedata.category",
+      "usage": "call",
+      "via": "unicodedata",
+      "count": 2,
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "chr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      }
+    },
+    {
+      "name": "re.escape",
+      "usage": "call",
+      "via": "re",
+      "count": 3,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 4,
+      "lineRange": {
+        "start": 173,
+        "end": 173
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 3,
+      "lineRange": {
+        "start": 441,
+        "end": 441
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "unicodedata",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "tag"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

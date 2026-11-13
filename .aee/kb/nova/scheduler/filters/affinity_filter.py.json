@@ -1,0 +1,566 @@
+{
+  "file": "nova/scheduler/filters/affinity_filter.py",
+  "hash": "32b8cd0afafde3d4c60f17871d08658889429d3a46a1a594bfeb23009f35a26a",
+  "language": "Python",
+  "component": "scheduler",
+  "package": null,
+  "lines": {
+    "blank": 34,
+    "code": 95,
+    "comment": 36,
+    "total": 165
+  },
+  "symbols": [
+    {
+      "name": "import netaddr",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import filters",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.filters import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DifferentHostFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "run_filter_once_per_request",
+      "kind": "field",
+      "scope": "DifferentHostFilter",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RUN_ON_REBUILD",
+      "kind": "constant",
+      "scope": "DifferentHostFilter",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "DifferentHostFilter",
+      "lineRange": {
+        "start": 34,
+        "end": 40
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "spec_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not overlap",
+          "line": 38
+        },
+        {
+          "expr": "True",
+          "line": 40
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SameHostFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "run_filter_once_per_request",
+      "kind": "field",
+      "scope": "SameHostFilter",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RUN_ON_REBUILD",
+      "kind": "constant",
+      "scope": "SameHostFilter",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "SameHostFilter",
+      "lineRange": {
+        "start": 52,
+        "end": 58
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "spec_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "overlap",
+          "line": 56
+        },
+        {
+          "expr": "True",
+          "line": 58
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleCIDRAffinityFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 79
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "run_filter_once_per_request",
+      "kind": "field",
+      "scope": "SimpleCIDRAffinityFilter",
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RUN_ON_REBUILD",
+      "kind": "constant",
+      "scope": "SimpleCIDRAffinityFilter",
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "SimpleCIDRAffinityFilter",
+      "lineRange": {
+        "start": 68,
+        "end": 79
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "spec_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "netaddr.IPAddress(host_ip) in affinity_net",
+          "line": 76
+        },
+        {
+          "expr": "True",
+          "line": 79
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_GroupAntiAffinityFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 128
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RUN_ON_REBUILD",
+      "kind": "constant",
+      "scope": "_GroupAntiAffinityFilter",
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "_GroupAntiAffinityFilter",
+      "lineRange": {
+        "start": 89,
+        "end": 128
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "spec_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 94
+        },
+        {
+          "expr": "True",
+          "line": 99
+        },
+        {
+          "expr": "len(servers_on_host) < max_server_per_host",
+          "line": 128
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerGroupAntiAffinityFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 131,
+        "end": 134
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ServerGroupAntiAffinityFilter",
+      "lineRange": {
+        "start": 132,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_GroupAffinityFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 137,
+        "end": 159
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RUN_ON_REBUILD",
+      "kind": "constant",
+      "scope": "_GroupAffinityFilter",
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "_GroupAffinityFilter",
+      "lineRange": {
+        "start": 143,
+        "end": 159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "spec_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 148
+        },
+        {
+          "expr": "host_state.host in group_hosts",
+          "line": 156
+        },
+        {
+          "expr": "True",
+          "line": 159
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerGroupAffinityFilter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 162,
+        "end": 165
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ServerGroupAffinityFilter",
+      "lineRange": {
+        "start": 163,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "name": "filters.BaseHostFilter",
+      "usage": "inherit",
+      "via": "nova.scheduler",
+      "count": 5,
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "name": "utils.instance_uuids_overlap",
+      "usage": "call",
+      "via": "nova.scheduler.filters",
+      "count": 2,
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "name": "netaddr.IPNetwork",
+      "usage": "call",
+      "via": "netaddr",
+      "count": 1,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "netaddr.IPAddress",
+      "usage": "call",
+      "via": "netaddr",
+      "count": 1,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "netaddr",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "filters"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.filters",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

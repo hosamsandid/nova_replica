@@ -1,0 +1,1956 @@
+{
+  "file": "nova/api/metadata/base.py",
+  "hash": "84e9e471b07f03aa29bc42c40ab9b70e52e680417075c976f14b3f4ebe6c389f",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 137,
+    "code": 535,
+    "comment": 74,
+    "total": 746
+  },
+  "symbols": [
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import posixpath",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import base64",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.metadata import password",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.metadata import vendordata_dynamic",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.metadata import vendordata_json",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import security_group_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import virt_device_metadata as metadata_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import netutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSIONS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FOLSOM",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "GRIZZLY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "HAVANA",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LIBERTY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NEWTON_ONE",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NEWTON_TWO",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "OCATA",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ROCKY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VICTORIA",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EPOXY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "OPENSTACK_VERSIONS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 76,
+        "end": 87
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 89,
+        "end": 89
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONTENT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONTENT_DIR",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MD_JSON_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VD_JSON_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VD2_JSON_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NW_JSON_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UD_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 96,
+        "end": 96
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PASS_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MIME_TYPE_TEXT_PLAIN",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MIME_TYPE_APPLICATION_JSON",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InvalidMetadataVersion",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 104,
+        "end": 105
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InvalidMetadataPath",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 109
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InstanceMetadata",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 112,
+        "end": 634
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 115,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "address"
+        },
+        {
+          "default": "None",
+          "name": "content"
+        },
+        {
+          "default": "None",
+          "name": "extra_md"
+        },
+        {
+          "default": "None",
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "network_metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_route_configuration",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 215,
+        "end": 229
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.route_configuration",
+          "line": 217
+        },
+        {
+          "expr": "self.route_configuration",
+          "line": 229
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_mimetype",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 231,
+        "end": 232
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mime_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_mimetype",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 234,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.md_mimetype",
+          "line": 235
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_ec2_metadata",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 237,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data",
+          "line": 305
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_ec2_item",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 307,
+        "end": 310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path_tokens"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "find_path_in_tree(data, path_tokens[1:])",
+          "line": 310
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_openstack_item",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 312,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path_tokens"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._handle_content(path_tokens)",
+          "line": 314
+        },
+        {
+          "expr": "self._route_configuration().handle_path(path_tokens)",
+          "line": 315
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_metadata_as_json",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 317,
+        "end": 369
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.dump_as_bytes(metadata)",
+          "line": 369
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_metadata",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 371,
+        "end": 449
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device_metadata_list",
+          "line": 449
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_dedicated_cpus",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 451,
+        "end": 458
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dedicated_cpus",
+          "line": 458
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_handle_content",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 460,
+        "end": 465
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path_tokens"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.content[path_tokens[1]]",
+          "line": 465
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_handle_version",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 467,
+        "end": 481
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ret",
+          "line": 481
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_user_data",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 483,
+        "end": 486
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.userdata_raw",
+          "line": 486
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_network_data",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 488,
+        "end": 491
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.dump_as_bytes({})",
+          "line": 490
+        },
+        {
+          "expr": "jsonutils.dump_as_bytes(self.network_metadata)",
+          "line": 491
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_password",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 493,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "password.handle_password",
+          "line": 495
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_vendor_data",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 498,
+        "end": 507
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.dump_as_bytes( self.vendordata_providers['StaticJSON'].get())",
+          "line": 504
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_vendor_data2",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 509,
+        "end": 528
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.dump_as_bytes(j)",
+          "line": 526
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_version",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 530,
+        "end": 531
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "required"
+        },
+        {
+          "name": "requested"
+        },
+        {
+          "default": "VERSIONS",
+          "name": "versions"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "versions.index(requested) >= versions.index(required)",
+          "line": 531
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_os_version",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 533,
+        "end": 534
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "required"
+        },
+        {
+          "name": "requested"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._check_version(required, requested, OPENSTACK_VERSIONS)",
+          "line": 534
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_hostname",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 536,
+        "end": 542
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'.'.join([self.instance.hostname, CONF.api.dhcp_domain])",
+          "line": 540
+        },
+        {
+          "expr": "self.instance.hostname",
+          "line": 542
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "lookup",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 544,
+        "end": 588
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "versions",
+          "line": 578
+        },
+        {
+          "expr": "data",
+          "line": 588
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "metadata_for_config_drive",
+      "kind": "method",
+      "scope": "InstanceMetadata",
+      "lineRange": {
+        "start": 590,
+        "end": 634
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RouteConfiguration",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 637,
+        "end": 664
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RouteConfiguration",
+      "lineRange": {
+        "start": 640,
+        "end": 641
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path_handler"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_version",
+      "kind": "method",
+      "scope": "RouteConfiguration",
+      "lineRange": {
+        "start": 643,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "version",
+          "line": 650
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "handle_path",
+      "kind": "method",
+      "scope": "RouteConfiguration",
+      "lineRange": {
+        "start": 652,
+        "end": 664
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path_tokens"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "path_handler(version, path)",
+          "line": 664
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_metadata_by_address",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 667,
+        "end": 675
+      },
+      "parameters": [
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "get_metadata_by_instance_id(fixed_ip['instance_uuid'], address, ctxt)",
+          "line": 673
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_metadata_by_instance_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 678,
+        "end": 702
+      },
+      "parameters": [
+        {
+          "name": "instance_id"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "default": "None",
+          "name": "ctxt"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "InstanceMetadata(instance, address)",
+          "line": 688
+        },
+        {
+          "expr": "InstanceMetadata(instance, address)",
+          "line": 697
+        },
+        {
+          "expr": "InstanceMetadata(instance, address)",
+          "line": 702
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_instance_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 705,
+        "end": 707
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "block_device.instance_block_mapping(instance, bdms)",
+          "line": 707
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ec2_md_print",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 710,
+        "end": 731
+      },
+      "parameters": [
+        {
+          "name": "data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "output[:-1]",
+          "line": 725
+        },
+        {
+          "expr": "'\\n'.join(data)",
+          "line": 727
+        },
+        {
+          "expr": "data",
+          "line": 729
+        },
+        {
+          "expr": "str(data)",
+          "line": 731
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "find_path_in_tree",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 734,
+        "end": 746
+      },
+      "parameters": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "path_tokens"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data",
+          "line": 746
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "Exception",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "objects.Instance.obj_from_primitive",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 142,
+        "end": 142
+      }
+    },
+    {
+      "name": "security_group_api.get_instance_security_groups",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "base64.decode_as_bytes",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 156,
+        "end": 156
+      }
+    },
+    {
+      "name": "utils.instance_meta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 163,
+        "end": 163
+      }
+    },
+    {
+      "name": "password.extract_password",
+      "usage": "call",
+      "via": "nova.api.metadata",
+      "count": 1,
+      "lineRange": {
+        "start": 165,
+        "end": 165
+      }
+    },
+    {
+      "name": "netutils.get_network_metadata",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 178,
+        "end": 178
+      }
+    },
+    {
+      "name": "netutils.get_ec2_ip_info",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 182,
+        "end": 182
+      }
+    },
+    {
+      "name": "netutils.get_injected_network_template",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 185,
+        "end": 185
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 188,
+        "end": 188
+      }
+    },
+    {
+      "name": "vendordata_json.JsonFileVendorData",
+      "usage": "call",
+      "via": "nova.api.metadata",
+      "count": 1,
+      "lineRange": {
+        "start": 210,
+        "end": 210
+      }
+    },
+    {
+      "name": "vendordata_dynamic.DynamicVendorData",
+      "usage": "call",
+      "via": "nova.api.metadata",
+      "count": 1,
+      "lineRange": {
+        "start": 211,
+        "end": 211
+      }
+    },
+    {
+      "name": "base64.encode_as_text",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 357,
+        "end": 357
+      }
+    },
+    {
+      "name": "os.urandom",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 357,
+        "end": 357
+      }
+    },
+    {
+      "name": "jsonutils.dump_as_bytes",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 6,
+      "lineRange": {
+        "start": 369,
+        "end": 369
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 14,
+      "lineRange": {
+        "start": 391,
+        "end": 391
+      }
+    },
+    {
+      "name": "itertools.chain.from_iterable",
+      "usage": "call",
+      "via": "itertools",
+      "count": 1,
+      "lineRange": {
+        "start": 454,
+        "end": 454
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 454,
+        "end": 454
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 454,
+        "end": 454
+      }
+    },
+    {
+      "name": "KeyError",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 462,
+        "end": 462
+      }
+    },
+    {
+      "name": "posixpath.normpath",
+      "usage": "call",
+      "via": "posixpath",
+      "count": 2,
+      "lineRange": {
+        "start": 546,
+        "end": 546
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 569,
+        "end": 569
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 599,
+        "end": 599
+      }
+    },
+    {
+      "name": "path_handler",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 664,
+        "end": 664
+      }
+    },
+    {
+      "name": "neutron.API",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 669,
+        "end": 669
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 686,
+        "end": 686
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 691,
+        "end": 691
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 699,
+        "end": 699
+      }
+    },
+    {
+      "name": "block_device.instance_block_mapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 707,
+        "end": 707
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 718,
+        "end": 718
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 736,
+        "end": 736
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "posixpath",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "base64"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.metadata",
+      "names": [
+        {
+          "alias": null,
+          "name": "password"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.metadata",
+      "names": [
+        {
+          "alias": null,
+          "name": "vendordata_dynamic"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.metadata",
+      "names": [
+        {
+          "alias": null,
+          "name": "vendordata_json"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "security_group_api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "metadata_obj",
+          "name": "virt_device_metadata"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "netutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

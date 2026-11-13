@@ -1,0 +1,5378 @@
+{
+  "file": "nova/tests/functional/libvirt/test_pci_sriov_servers.py",
+  "hash": "6cb94422c135827d2d38c6af73f6454bcacaf90948a08c870305edb7520af444",
+  "language": "Python",
+  "component": "tests-functional",
+  "package": null,
+  "lines": {
+    "blank": 922,
+    "code": 5653,
+    "comment": 634,
+    "total": 7209
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import pprint",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from urllib import parse as urlparse",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from lxml import etree",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import pci_placement_translator",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import constants",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci.utils import parse_address",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import libvirt as fakelibvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.api import client",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.libvirt import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciPlacementHealingFixture",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 94
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PciPlacementHealingFixture",
+      "lineRange": {
+        "start": 60,
+        "end": 65
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PciPlacementHealingFixture",
+      "lineRange": {
+        "start": 67,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapped_update",
+      "kind": "function",
+      "scope": "PciPlacementHealingFixture.setUp",
+      "lineRange": {
+        "start": 72,
+        "end": 80
+      },
+      "parameters": [
+        {
+          "name": "provider_tree"
+        },
+        {
+          "name": "nodename"
+        },
+        {
+          "name": "pci_tracker"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "same_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "updated",
+          "line": 80
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "last_healing",
+      "kind": "method",
+      "scope": "PciPlacementHealingFixture",
+      "lineRange": {
+        "start": 90,
+        "end": 94
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname",
+          "type": "str"
+        }
+      ],
+      "returnType": "tuple[dict, dict] | None",
+      "returns": [
+        {
+          "expr": "before, after",
+          "line": 93
+        },
+        {
+          "expr": "None",
+          "line": 94
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_PCIServersTestBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 97,
+        "end": 310
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADDITIONAL_FILTERS",
+      "kind": "constant",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_RC",
+      "kind": "constant",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 103,
+        "end": 122
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertPCIDeviceCounts",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 124,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "total"
+        },
+        {
+          "name": "free"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_no_pci_healing",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 133,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_rp_by_name",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 151,
+        "end": 155
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "rps"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rp",
+          "line": 154
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_placement_pci_inventory",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 157,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "inventories"
+        },
+        {
+          "name": "traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_placement_pci_usages",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 206,
+        "end": 218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_placement_pci_allocations",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 220,
+        "end": 246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_placement_pci_allocations_on_host",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 248,
+        "end": 281
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_placement_pci_view",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 283,
+        "end": 294
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "inventories"
+        },
+        {
+          "name": "traits"
+        },
+        {
+          "default": "None",
+          "name": "usages"
+        },
+        {
+          "default": "None",
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_to_list_of_json_str",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 297,
+        "end": 298
+      },
+      "parameters": [
+        {
+          "name": "list"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[jsonutils.dumps(x) for x in list]",
+          "line": 298
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_move_allocation",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 301,
+        "end": 303
+      },
+      "parameters": [
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "from_uuid"
+        },
+        {
+          "name": "to_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_move_server_allocation",
+      "kind": "method",
+      "scope": "_PCIServersTestBase",
+      "lineRange": {
+        "start": 305,
+        "end": 310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "server_uuid"
+        },
+        {
+          "default": "False",
+          "name": "revert"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_PCIServersWithMigrationTestBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 313,
+        "end": 350
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_PCIServersWithMigrationTestBase",
+      "lineRange": {
+        "start": 315,
+        "end": 320
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_migrate_stub",
+      "kind": "method",
+      "scope": "_PCIServersWithMigrationTestBase",
+      "lineRange": {
+        "start": 322,
+        "end": 350
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "domain"
+        },
+        {
+          "name": "destination"
+        },
+        {
+          "name": "params"
+        },
+        {
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SRIOVServersTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 354,
+        "end": 3926
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADMIN_API",
+      "kind": "constant",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 358,
+        "end": 358
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 359,
+        "end": 359
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VFS_ALIAS_NAME",
+      "kind": "constant",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 361,
+        "end": 361
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PFS_ALIAS_NAME",
+      "kind": "constant",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 362,
+        "end": 362
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 364,
+        "end": 375
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 379,
+        "end": 391
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 393,
+        "end": 400
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_disable_sriov_in_pf",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 402,
+        "end": 414
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_verify_guest_xml",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 416,
+        "end": 433
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xml"
+        },
+        {
+          "name": "expected_managed"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_run_create_server_test",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 435,
+        "end": 480
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_info"
+        },
+        {
+          "name": "expected_managed"
+        },
+        {
+          "default": "None",
+          "name": "device_spec"
+        },
+        {
+          "default": "None",
+          "name": "libvirt_version"
+        },
+        {
+          "default": "None",
+          "name": "qemu_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_VF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 482,
+        "end": 494
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_VF_and_managed_set_to_yes",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 496,
+        "end": 515
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_VF_and_managed_set_to_no",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 517,
+        "end": 536
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_VF_and_managed_not_set",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 538,
+        "end": 554
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_start_compute_with_live_migratable_fails_version",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 556,
+        "end": 589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_PF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 591,
+        "end": 603
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_PF_no_VF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 605,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_VF_no_PF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 624,
+        "end": 641
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 643,
+        "end": 700
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create",
+      "kind": "function",
+      "scope": "SRIOVServersTest.test_create_server_with_neutron",
+      "lineRange": {
+        "start": 650,
+        "end": 661
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "xml"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_create(xml, host)",
+          "line": 661
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_with_PF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 702,
+        "end": 731
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_with_VF_legacy",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 733,
+        "end": 764
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_success",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 766,
+        "end": 839
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_lm_requested_no_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 841,
+        "end": 909
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_non_lm_requested",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 911,
+        "end": 990
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_non_lm_requested_only_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 992,
+        "end": 1060
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_lm_requested_dev_unspecified",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1062,
+        "end": 1130
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_non_lm_requested_dev_unspecified",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1132,
+        "end": 1200
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_lm_requested_unspecified_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1202,
+        "end": 1280
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_lm_requested_unspecified_no_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1282,
+        "end": 1359
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_lm_requested_unspecif_unspecif_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1361,
+        "end": 1438
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_success_3_VF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1440,
+        "end": 1532
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_dest_no_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1534,
+        "end": 1630
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_dest_unspecified_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1632,
+        "end": 1727
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_alias_mismatch_dev_prod_id",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1729,
+        "end": 1815
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_success_2_aliases",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1817,
+        "end": 1914
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_fails_with_pci_in_placement_no_lm",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 1916,
+        "end": 2021
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_success_with_pci_in_placement",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2023,
+        "end": 2129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_success_with_pip_3_dev_2_requested",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2131,
+        "end": 2252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_success_with_pip_2_aliases",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2254,
+        "end": 2425
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_mixed_mode_success",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2431,
+        "end": 2625
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_mixed_mode_fails_lm_requested_no_lm_dev",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2631,
+        "end": 2770
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_mixed_mode_fails_non_lm_requested",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2776,
+        "end": 2950
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_VF_mixed_mode_and_pip_success",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 2956,
+        "end": 3183
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_xml",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3185,
+        "end": 3191
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "compute"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "xml",
+          "line": 3191
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assertDeviceAddressesPresent",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3193,
+        "end": 3202
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xml_src"
+        },
+        {
+          "name": "xml_dst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_hostdev_addresses",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3204,
+        "end": 3219
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xml"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "addresses",
+          "line": 3219
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assertDeviceAddressesMapped",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3221,
+        "end": 3232
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xml_src"
+        },
+        {
+          "name": "xml_dst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_hostdev_alias_to_addresses",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3234,
+        "end": 3257
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xml"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "alias_addresses_map",
+          "line": 3257
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_move_operation_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3259,
+        "end": 3408
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "move_operation"
+        },
+        {
+          "default": "False",
+          "name": "expect_fail"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_server_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3410,
+        "end": 3417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "SRIOVServersTest.test_unshelve_server_with_neutron",
+      "lineRange": {
+        "start": 3411,
+        "end": 3416
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_server_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3419,
+        "end": 3427
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "SRIOVServersTest.test_cold_migrate_server_with_neutron",
+      "lineRange": {
+        "start": 3420,
+        "end": 3426
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_and_rever_server_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3429,
+        "end": 3590
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_server_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3592,
+        "end": 3599
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "SRIOVServersTest.test_evacuate_server_with_neutron",
+      "lineRange": {
+        "start": 3593,
+        "end": 3598
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_with_neutron",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3601,
+        "end": 3752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_server_diagnostics_server_with_VF",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3754,
+        "end": 3792
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_after_change_in_nonsriov_pf_to_sriov_pf",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3794,
+        "end": 3846
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_change_bound_port_vnic_type_kills_compute_at_restart",
+      "kind": "method",
+      "scope": "SRIOVServersTest",
+      "lineRange": {
+        "start": 3848,
+        "end": 3926
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_ifname_by_pci_address",
+      "kind": "function",
+      "scope": "SRIOVServersTest.test_change_bound_port_vnic_type_kills_compute_at_restart",
+      "lineRange": {
+        "start": 3891,
+        "end": 3905
+      },
+      "parameters": [
+        {
+          "name": "pci_addr",
+          "type": "str"
+        },
+        {
+          "default": "False",
+          "name": "pf_interface"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SRIOVAttachDetachTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3929,
+        "end": 4040
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3931,
+        "end": 3931
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3933,
+        "end": 3944
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3946,
+        "end": 3962
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_attached_port_ids",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3964,
+        "end": 3967
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[ attachment['port_id'] for attachment in self.api.get_port_interfaces(instance_uuid)]",
+          "line": 3965
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_detach_port",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3969,
+        "end": 3972
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_attach_port",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3974,
+        "end": 3979
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_detach_attach",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 3981,
+        "end": 4026
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "first_port_id"
+        },
+        {
+          "name": "second_port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_attach_direct",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 4028,
+        "end": 4030
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_macvtap",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 4032,
+        "end": 4035
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_direct_physical",
+      "kind": "method",
+      "scope": "SRIOVAttachDetachTest",
+      "lineRange": {
+        "start": 4037,
+        "end": 4040
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VDPAServersTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4043,
+        "end": 4606
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADMIN_API",
+      "kind": "constant",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4046,
+        "end": 4046
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4047,
+        "end": 4047
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4052,
+        "end": 4063
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4065,
+        "end": 4065
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUM_PFS",
+      "kind": "constant",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4067,
+        "end": 4067
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUM_VFS",
+      "kind": "constant",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4068,
+        "end": 4068
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4070,
+        "end": 4076
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "start_vdpa_compute",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4078,
+        "end": 4117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "'compute-0'",
+          "name": "hostname"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "super().start_compute(hostname=hostname, pci_info=pci_info, vdpa_info=vdpa_info)",
+          "line": 4116
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_vdpa_port",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4119,
+        "end": 4138
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vdpa_port",
+          "line": 4138
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4140,
+        "end": 4199
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create",
+      "kind": "function",
+      "scope": "VDPAServersTest.test_create_server",
+      "lineRange": {
+        "start": 4145,
+        "end": 4161
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "xml"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_create(xml, host)",
+          "line": 4161
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_port_and_server",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4201,
+        "end": 4205
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vdpa_port, server",
+          "line": 4205
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_common",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4207,
+        "end": 4218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "op"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_service_version_61",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4222,
+        "end": 4229
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4231,
+        "end": 4251
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface_service_version_61",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4255,
+        "end": 4262
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4264,
+        "end": 4274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offload",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4276,
+        "end": 4295
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_to_same_host",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4297,
+        "end": 4320
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_to_different_host",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4322,
+        "end": 4360
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4362,
+        "end": 4402
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_same_host",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4404,
+        "end": 4431
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_different_host",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4433,
+        "end": 4467
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_revert",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4469,
+        "end": 4506
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4508,
+        "end": 4541
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_suspend_and_resume_service_version_62",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4545,
+        "end": 4552
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_suspend_and_resume",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4554,
+        "end": 4564
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_service_version_62",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4568,
+        "end": 4575
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate",
+      "kind": "method",
+      "scope": "VDPAServersTest",
+      "lineRange": {
+        "start": 4577,
+        "end": 4606
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCIServersTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4609,
+        "end": 5686
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADMIN_API",
+      "kind": "constant",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4611,
+        "end": 4611
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4612,
+        "end": 4612
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALIAS_NAME",
+      "kind": "constant",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4614,
+        "end": 4614
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4615,
+        "end": 4620
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4621,
+        "end": 4627
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4629,
+        "end": 4632
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pci_dev_and_numa",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4634,
+        "end": 4668
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pci_dev_and_numa_fails",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4670,
+        "end": 4714
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_with_pci",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4716,
+        "end": 4779
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_pci_to_vanilla",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4781,
+        "end": 4839
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_vanilla_to_pci",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4841,
+        "end": 4903
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_from_one_dev_to_two",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 4905,
+        "end": 5040
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_same_host_resize_with_pci",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5042,
+        "end": 5167
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_confirm_resize",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5169,
+        "end": 5179
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "default": "'host1'",
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_server_with_pci",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5181,
+        "end": 5343
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create",
+      "kind": "function",
+      "scope": "PCIServersTest.test_cold_migrate_server_with_pci",
+      "lineRange": {
+        "start": 5185,
+        "end": 5199
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "xml"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_create(xml, host)",
+          "line": 5199
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_request_two_pci_but_host_has_one",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5345,
+        "end": 5372
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_two_computes",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5374,
+        "end": 5405
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "( test_compute0_placement_pci_view, test_compute1_placement_pci_view, )",
+          "line": 5402
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_two_computes_and_an_instance_on_the_first",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5407,
+        "end": 5431
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "( server, test_compute0_placement_pci_view, test_compute1_placement_pci_view, )",
+          "line": 5427
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5433,
+        "end": 5517
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_after_offload",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5519,
+        "end": 5564
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reschedule",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5566,
+        "end": 5625
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_guest_create",
+      "kind": "function",
+      "scope": "PCIServersTest.test_reschedule",
+      "lineRange": {
+        "start": 5581,
+        "end": 5590
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_guest_create(*args, **kwargs)",
+          "line": 5590
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multi_create",
+      "kind": "method",
+      "scope": "PCIServersTest",
+      "lineRange": {
+        "start": 5627,
+        "end": 5686
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCIResourceRequestReschedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 5689,
+        "end": 5742
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "PCIResourceRequestReschedulingTest",
+      "lineRange": {
+        "start": 5692,
+        "end": 5692
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PFS_ALIAS_NAME",
+      "kind": "constant",
+      "scope": "PCIResourceRequestReschedulingTest",
+      "lineRange": {
+        "start": 5694,
+        "end": 5694
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "PCIResourceRequestReschedulingTest",
+      "lineRange": {
+        "start": 5695,
+        "end": 5700
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "PCIResourceRequestReschedulingTest",
+      "lineRange": {
+        "start": 5701,
+        "end": 5708
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_reschedule_with_proper_pci_device_count",
+      "kind": "method",
+      "scope": "PCIResourceRequestReschedulingTest",
+      "lineRange": {
+        "start": 5710,
+        "end": 5742
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_group_policy",
+      "kind": "function",
+      "scope": "PCIResourceRequestReschedulingTest.test_boot_reschedule_with_proper_pci_device_count",
+      "lineRange": {
+        "start": 5723,
+        "end": 5730
+      },
+      "parameters": [
+        {
+          "name": "manager"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCIServersWithPreferredNUMATest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 5745,
+        "end": 5843
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALIAS_NAME",
+      "kind": "constant",
+      "scope": "PCIServersWithPreferredNUMATest",
+      "lineRange": {
+        "start": 5747,
+        "end": 5747
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "PCIServersWithPreferredNUMATest",
+      "lineRange": {
+        "start": 5748,
+        "end": 5753
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "PCIServersWithPreferredNUMATest",
+      "lineRange": {
+        "start": 5754,
+        "end": 5762
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "expected_state",
+      "kind": "field",
+      "scope": "PCIServersWithPreferredNUMATest",
+      "lineRange": {
+        "start": 5763,
+        "end": 5763
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PCIServersWithPreferredNUMATest",
+      "lineRange": {
+        "start": 5765,
+        "end": 5768
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pci_dev_and_numa",
+      "kind": "method",
+      "scope": "PCIServersWithPreferredNUMATest",
+      "lineRange": {
+        "start": 5770,
+        "end": 5843
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCIServersWithRequiredNUMATest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 5846,
+        "end": 6018
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALIAS_NAME",
+      "kind": "constant",
+      "scope": "PCIServersWithRequiredNUMATest",
+      "lineRange": {
+        "start": 5848,
+        "end": 5848
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "PCIServersWithRequiredNUMATest",
+      "lineRange": {
+        "start": 5849,
+        "end": 5857
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "expected_state",
+      "kind": "field",
+      "scope": "PCIServersWithRequiredNUMATest",
+      "lineRange": {
+        "start": 5858,
+        "end": 5858
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PCIServersWithRequiredNUMATest",
+      "lineRange": {
+        "start": 5860,
+        "end": 5866
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pci_dev_and_numa",
+      "kind": "method",
+      "scope": "PCIServersWithRequiredNUMATest",
+      "lineRange": {
+        "start": 5868,
+        "end": 5933
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pci_dev_and_numa_placement_conflict",
+      "kind": "method",
+      "scope": "PCIServersWithRequiredNUMATest",
+      "lineRange": {
+        "start": 5935,
+        "end": 6018
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 6022,
+        "end": 6201
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALIAS_NAME",
+      "kind": "constant",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6024,
+        "end": 6024
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6025,
+        "end": 6030
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6033,
+        "end": 6041
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_policy",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6047,
+        "end": 6070
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_sriov_numa_affinity_policy_preferred",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6075,
+        "end": 6083
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_sriov_numa_affinity_policy_legacy",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6091,
+        "end": 6100
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_sriov_numa_affinity_policy_required",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6107,
+        "end": 6132
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_socket_policy_pass",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6134,
+        "end": 6153
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_socket_policy_fail",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6155,
+        "end": 6175
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_socket_policy_multi_numa_pass",
+      "kind": "method",
+      "scope": "PCIServersWithSRIOVAffinityPoliciesTest",
+      "lineRange": {
+        "start": 6177,
+        "end": 6201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCIServersWithPortNUMAPoliciesTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 6205,
+        "end": 6434
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALIAS_NAME",
+      "kind": "constant",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6207,
+        "end": 6207
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6208,
+        "end": 6219
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6222,
+        "end": 6230
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6232,
+        "end": 6240
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_port_with_policy",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6242,
+        "end": 6251
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port_id",
+          "line": 6251
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_policy",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6257,
+        "end": 6286
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_sriov_numa_affinity_policy_preferred",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6291,
+        "end": 6299
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_sriov_numa_affinity_policy_legacy",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6307,
+        "end": 6316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_sriov_numa_affinity_policy_required",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6323,
+        "end": 6348
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_socket_policy_pass",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6350,
+        "end": 6374
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_socket_policy_fail",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6376,
+        "end": 6403
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_socket_policy_multi_numa_pass",
+      "kind": "method",
+      "scope": "PCIServersWithPortNUMAPoliciesTest",
+      "lineRange": {
+        "start": 6405,
+        "end": 6434
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RemoteManagedServersTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 6437,
+        "end": 6997
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADMIN_API",
+      "kind": "constant",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6439,
+        "end": 6439
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6440,
+        "end": 6440
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6442,
+        "end": 6471
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6473,
+        "end": 6473
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUM_PFS",
+      "kind": "constant",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6475,
+        "end": 6475
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUM_VFS",
+      "kind": "constant",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6476,
+        "end": 6476
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vf_ratio",
+      "kind": "field",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6477,
+        "end": 6477
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_LIBVIRT_VERSION",
+      "kind": "constant",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6480,
+        "end": 6480
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6482,
+        "end": 6502
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pci_function_number",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6505,
+        "end": 6513
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "pci_addr",
+          "type": "str"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "int(slot, 16) + int(function, 16) - cls.NUM_PFS",
+          "line": 6513
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "start_compute",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6515,
+        "end": 6609
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "'test_compute0'",
+          "name": "hostname"
+        },
+        {
+          "default": "None",
+          "name": "host_info"
+        },
+        {
+          "default": "None",
+          "name": "pci_info"
+        },
+        {
+          "default": "None",
+          "name": "mdev_info"
+        },
+        {
+          "default": "None",
+          "name": "vdpa_info"
+        },
+        {
+          "default": "None",
+          "name": "libvirt_version"
+        },
+        {
+          "default": "None",
+          "name": "qemu_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "super().start_compute( hostname=hostname, host_info=host_info, pci_info=pci_info, mdev_info=mdev_info, vdpa_info=vdpa_info, libvirt_version=libvirt_version or self.FAKE_LIBVIRT_VERSION)",
+          "line": 6606
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_remote_managed_tunnel_port",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6611,
+        "end": 6629
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dpu_tunnel_port",
+          "line": 6629
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_remote_managed_physnet_port",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6631,
+        "end": 6649
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dpu_physnet_port",
+          "line": 6649
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_physnet",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6651,
+        "end": 6681
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_tunnel",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6683,
+        "end": 6711
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_common",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6713,
+        "end": 6717
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "op"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6719,
+        "end": 6739
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6741,
+        "end": 6746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6748,
+        "end": 6753
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_suspend",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6755,
+        "end": 6761
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_move_operation_with_neutron",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6763,
+        "end": 6844
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "move_operation"
+        },
+        {
+          "name": "dpu_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_server_with_neutron",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6846,
+        "end": 6875
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "RemoteManagedServersTest.test_unshelve_server_with_neutron",
+      "lineRange": {
+        "start": 6847,
+        "end": 6853
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_server_with_neutron",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6877,
+        "end": 6904
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "RemoteManagedServersTest.test_cold_migrate_server_with_neutron",
+      "lineRange": {
+        "start": 6878,
+        "end": 6901
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_server_with_neutron_revert",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6906,
+        "end": 6935
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "RemoteManagedServersTest.test_cold_migrate_server_with_neutron_revert",
+      "lineRange": {
+        "start": 6907,
+        "end": 6932
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_server_with_neutron",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6937,
+        "end": 6966
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "RemoteManagedServersTest.test_evacuate_server_with_neutron",
+      "lineRange": {
+        "start": 6938,
+        "end": 6944
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_with_neutron",
+      "kind": "method",
+      "scope": "RemoteManagedServersTest",
+      "lineRange": {
+        "start": 6968,
+        "end": 6997
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "move_operation",
+      "kind": "function",
+      "scope": "RemoteManagedServersTest.test_live_migrate_server_with_neutron",
+      "lineRange": {
+        "start": 6974,
+        "end": 6975
+      },
+      "parameters": [
+        {
+          "name": "source_server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestPackNUMACellsWithPCIDevices",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 7000,
+        "end": 7209
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADMIN_API",
+      "kind": "constant",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7013,
+        "end": 7013
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7014,
+        "end": 7014
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_DEVICE_SPEC",
+      "kind": "constant",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7016,
+        "end": 7019
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ALIAS",
+      "kind": "constant",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7020,
+        "end": 7025
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7027,
+        "end": 7038
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_start_compute_with_pci",
+      "kind": "method",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7040,
+        "end": 7077
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_numa_node"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_scheduler_and_claim_agree_on_non_pci_vm_placement",
+      "kind": "method",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7079,
+        "end": 7145
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spy_numa_fit",
+      "kind": "function",
+      "scope": "TestPackNUMACellsWithPCIDevices.test_scheduler_and_claim_agree_on_non_pci_vm_placement",
+      "lineRange": {
+        "start": 7108,
+        "end": 7111
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 7111
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_non_pci_vm_pack_sequential_avoids_pci_node",
+      "kind": "method",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7147,
+        "end": 7173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pci_vm_lands_on_pci_numa_node_with_pack",
+      "kind": "method",
+      "scope": "TestPackNUMACellsWithPCIDevices",
+      "lineRange": {
+        "start": 7175,
+        "end": 7209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "fixtures.Fixture",
+      "usage": "inherit",
+      "via": "fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 16,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 6,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "orig",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "fixtures.MonkeyPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "tuple",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      }
+    },
+    {
+      "name": "base.ServersTestBase",
+      "usage": "inherit",
+      "via": "nova.tests.functional.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      }
+    },
+    {
+      "name": "pci_filter_class",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 4,
+      "lineRange": {
+        "start": 116,
+        "end": 116
+      }
+    },
+    {
+      "name": "objects.PciDeviceList.get_by_compute_node",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 126,
+        "end": 126
+      }
+    },
+    {
+      "name": "objects.ComputeNode.get_by_nodename",
+      "usage": "call",
+      "via": "nova",
+      "count": 12,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 32,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "pprint.pformat",
+      "usage": "call",
+      "via": "pprint",
+      "count": 2,
+      "lineRange": {
+        "start": 146,
+        "end": 146
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 200,
+        "end": 200
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 68,
+      "lineRange": {
+        "start": 298,
+        "end": 298
+      }
+    },
+    {
+      "name": "urlparse.urlparse",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 326,
+        "end": 326
+      }
+    },
+    {
+      "name": "etree.fromstring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 7,
+      "lineRange": {
+        "start": 346,
+        "end": 346
+      }
+    },
+    {
+      "name": "base.LibvirtNeutronFixture",
+      "usage": "call",
+      "via": "nova.tests.functional.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 5,
+      "lineRange": {
+        "start": 452,
+        "end": 452
+      }
+    },
+    {
+      "name": "fakelibvirt.HostPCIDevicesInfo",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 97,
+      "lineRange": {
+        "start": 485,
+        "end": 485
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 13,
+      "lineRange": {
+        "start": 588,
+        "end": 588
+      }
+    },
+    {
+      "name": "orig_create",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 661,
+        "end": 661
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_int",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 88,
+      "lineRange": {
+        "start": 805,
+        "end": 805
+      }
+    },
+    {
+      "name": "objects.NUMATopology.obj_from_db_obj",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 2571,
+        "end": 2571
+      }
+    },
+    {
+      "name": "instance.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 3188,
+        "end": 3188
+      }
+    },
+    {
+      "name": "hex",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 3201,
+        "end": 3201
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 3201,
+        "end": 3201
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 23,
+      "lineRange": {
+        "start": 3423,
+        "end": 3423
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3877,
+        "end": 3877
+      }
+    },
+    {
+      "name": "exception.PciDeviceNotFoundById",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3905,
+        "end": 3905
+      }
+    },
+    {
+      "name": "nova_fixtures.NeutronFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 3949,
+        "end": 3949
+      }
+    },
+    {
+      "name": "fakelibvirt.HostInfo",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 8,
+      "lineRange": {
+        "start": 3988,
+        "end": 3988
+      }
+    },
+    {
+      "name": "fakelibvirt.HostVDPADevicesInfo",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 4083,
+        "end": 4083
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 4099,
+        "end": 4099
+      }
+    },
+    {
+      "name": "etree.tostring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 1,
+      "lineRange": {
+        "start": 4157,
+        "end": 4157
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 4698,
+        "end": 4698
+      }
+    },
+    {
+      "name": "fakelibvirt.make_libvirtError",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 5584,
+        "end": 5584
+      }
+    },
+    {
+      "name": "orig_guest_create",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 5590,
+        "end": 5590
+      }
+    },
+    {
+      "name": "exception.RescheduledException",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 5728,
+        "end": 5728
+      }
+    },
+    {
+      "name": "objects.PciDeviceList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 5739,
+        "end": 5739
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 6,
+      "lineRange": {
+        "start": 6074,
+        "end": 6074
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 6488,
+        "end": 6488
+      }
+    },
+    {
+      "name": "parse_address",
+      "usage": "call",
+      "via": "nova.pci.utils",
+      "count": 1,
+      "lineRange": {
+        "start": 6511,
+        "end": 6511
+      }
+    },
+    {
+      "name": "op",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 6717,
+        "end": 6717
+      }
+    },
+    {
+      "name": "fakelibvirt.create_mempages",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 7055,
+        "end": 7055
+      }
+    },
+    {
+      "name": "all",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 7075,
+        "end": 7075
+      }
+    },
+    {
+      "name": "orig_fit",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 7109,
+        "end": 7109
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "pprint",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [
+        {
+          "alias": "urlparse",
+          "name": "parse"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "lxml",
+      "names": [
+        {
+          "alias": null,
+          "name": "etree"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "pci_placement_translator"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "constants"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci.utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "parse_address"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": "fakelibvirt",
+          "name": "libvirt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

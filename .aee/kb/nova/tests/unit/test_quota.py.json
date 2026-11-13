@@ -1,0 +1,3806 @@
+{
+  "file": "nova/tests/unit/test_quota.py",
+  "hash": "68b83ab8187aa932b2452f9e4c11cba9306557863684f4f9abad3a02247af291",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 226,
+    "code": 2060,
+    "comment": 101,
+    "total": 2387
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_db.sqlalchemy import enginefacade",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import fixture as limit_fixture",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import models",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import local as local_limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import placement as placement_limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import quota",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_fake_get_usages",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "updates"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_get_usages",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_usages",
+      "kind": "function",
+      "scope": "_get_fake_get_usages",
+      "lineRange": {
+        "start": 51,
+        "end": 52
+      },
+      "parameters": [
+        {
+          "name": "*a"
+        },
+        {
+          "name": "**k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "usages",
+          "line": 52
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QuotaIntegrationTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 246
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "REQUIRES_LOCKING",
+      "kind": "constant",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 61,
+        "end": 85
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_validate_networks",
+      "kind": "function",
+      "scope": "QuotaIntegrationTestCase.setUp",
+      "lineRange": {
+        "start": 79,
+        "end": 80
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "name": "num_instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "num_instances",
+          "line": 80
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_instance",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 87,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "'m1.large'",
+          "name": "flavor_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "inst",
+          "line": 108
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_instances",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 110,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_cores",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 128,
+        "end": 143
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_many_cores_with_unlimited_quota",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 145,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_metadata_items",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 153,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_with_injected_files",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 163,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "files"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_injected_files",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 170,
+        "end": 173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_max_injected_files",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 175,
+        "end": 179
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_injected_files",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 181,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_max_injected_file_content_bytes",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 188,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_injected_file_content_bytes",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 194,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_max_injected_file_path_bytes",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 201,
+        "end": 205
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_injected_file_path_bytes",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 207,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_with_server_group_members",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 214,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "exc",
+          "line": 241
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_with_server_group_members",
+      "kind": "method",
+      "scope": "QuotaIntegrationTestCase",
+      "lineRange": {
+        "start": 243,
+        "end": 246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UnifiedLimitsIntegrationTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 249,
+        "end": 298
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 263,
+        "end": 277
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_instances",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 279,
+        "end": 280
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_too_many_cores",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 282,
+        "end": 283
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_injected_files",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 285,
+        "end": 286
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_max_injected_files",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 288,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_max_injected_file_content_bytes",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 291,
+        "end": 292
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_max_injected_file_path_bytes",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 294,
+        "end": 295
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_with_server_group_members",
+      "kind": "method",
+      "scope": "UnifiedLimitsIntegrationTestCase",
+      "lineRange": {
+        "start": 297,
+        "end": 298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeContext",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 302,
+        "end": 315
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeContext",
+      "lineRange": {
+        "start": 303,
+        "end": 310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "quota_class"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "elevated",
+      "kind": "method",
+      "scope": "FakeContext",
+      "lineRange": {
+        "start": 312,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "elevated",
+          "line": 315
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 318,
+        "end": 360
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 319,
+        "end": 325
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "by_project"
+        },
+        {
+          "default": "None",
+          "name": "by_user"
+        },
+        {
+          "default": "None",
+          "name": "by_class"
+        },
+        {
+          "default": "None",
+          "name": "reservations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_defaults",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 327,
+        "end": 329
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 329
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_class_quotas",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 331,
+        "end": 334
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "quota_class"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 334
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_user_quotas",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 336,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "default": "None",
+          "name": "quota_class"
+        },
+        {
+          "default": "True",
+          "name": "usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 341
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_project_quotas",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 343,
+        "end": 349
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "quota_class"
+        },
+        {
+          "default": "True",
+          "name": "usages"
+        },
+        {
+          "default": "False",
+          "name": "remains"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 349
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "limit_check",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 351,
+        "end": 354
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "values"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "limit_check_project_and_user",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 356,
+        "end": 360
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "default": "None",
+          "name": "project_values"
+        },
+        {
+          "default": "None",
+          "name": "user_values"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "BaseResourceTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 363,
+        "end": 423
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_flag",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 364,
+        "end": 369
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_with_flag",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 371,
+        "end": 378
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_with_flag_no_quota",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 380,
+        "end": 386
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_valid_method_call_check_invalid_input",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 388,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_valid_method_call_check_invalid_method",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 395,
+        "end": 400
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_valid_method_call_check_multiple",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 402,
+        "end": 413
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_valid_method_call_check_wrong_method",
+      "kind": "method",
+      "scope": "BaseResourceTestCase",
+      "lineRange": {
+        "start": 415,
+        "end": 423
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QuotaEngineTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 426,
+        "end": 589
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 427,
+        "end": 429
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init_override_obj",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 431,
+        "end": 433
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init_with_flag_set",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 435,
+        "end": 446
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_quota_engine",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 448,
+        "end": 455
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "driver"
+        },
+        {
+          "default": "None",
+          "name": "resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "quota.QuotaEngine(quota_driver=driver, resources=resources)",
+          "line": 455
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_defaults",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 457,
+        "end": 466
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_class_quotas",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 468,
+        "end": 478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 480,
+        "end": 498
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 500,
+        "end": 516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_count_as_dict_no_resource",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 518,
+        "end": 524
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_count_as_dict_wrong_resource",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 526,
+        "end": 532
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_count_as_dict",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 534,
+        "end": 549
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_count_as_dict",
+      "kind": "function",
+      "scope": "QuotaEngineTestCase.test_count_as_dict",
+      "lineRange": {
+        "start": 535,
+        "end": 538
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'project': {'test_resource5': 5}}",
+          "line": 538
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 551,
+        "end": 565
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 567,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resources",
+      "kind": "method",
+      "scope": "QuotaEngineTestCase",
+      "lineRange": {
+        "start": 584,
+        "end": 589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DbQuotaDriverTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 592,
+        "end": 1896
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 593,
+        "end": 612
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_defaults",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 614,
+        "end": 634
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_quota_class_get_default",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 636,
+        "end": 646
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_qcgd",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_quota_class_get_default",
+      "lineRange": {
+        "start": 638,
+        "end": 645
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict( instances=5, ram=25 * 1024, metadata_items=64, injected_file_content_bytes=5 * 1024, )",
+          "line": 640
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_quota_class_get_all_by_name",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 648,
+        "end": 659
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_qcgabn",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_quota_class_get_all_by_name",
+      "lineRange": {
+        "start": 650,
+        "end": 658
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "quota_class"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict( instances=5, ram=25 * 1024, metadata_items=64, injected_file_content_bytes=5 * 1024, )",
+          "line": 653
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_class_quotas",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 661,
+        "end": 682
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_get_by_project_and_user",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 684,
+        "end": 708
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_qgabpau",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_by_project_and_user",
+      "lineRange": {
+        "start": 685,
+        "end": 693
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict( cores=10, injected_files=2, injected_file_path_bytes=127, )",
+          "line": 689
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_qgabp",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_by_project_and_user",
+      "lineRange": {
+        "start": 695,
+        "end": 702
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'cores': 10, 'injected_files': 2, 'injected_file_path_bytes': 127, }",
+          "line": 698
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_fake_countable_resources",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 710,
+        "end": 742
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 742
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_instances_cores_ram_count",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._get_fake_countable_resources",
+      "lineRange": {
+        "start": 712,
+        "end": 714
+      },
+      "parameters": [
+        {
+          "name": "*a"
+        },
+        {
+          "name": "**k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'project': {'instances': 2, 'cores': 4, 'ram': 1024}, 'user': {'instances': 1, 'cores': 2, 'ram': 512}}",
+          "line": 713
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_server_group_count",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._get_fake_countable_resources",
+      "lineRange": {
+        "start": 716,
+        "end": 718
+      },
+      "parameters": [
+        {
+          "name": "*a"
+        },
+        {
+          "name": "**k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'project': {'server_groups': 5}, 'user': {'server_groups': 3}}",
+          "line": 717
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_usages_for_project",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 744,
+        "end": 757
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_usages_for_user",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 759,
+        "end": 772
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 776,
+        "end": 848
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_get_by_project_and_user_specific",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 850,
+        "end": 859
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_quota_get",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_by_project_and_user_specific",
+      "lineRange": {
+        "start": 851,
+        "end": 858
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "resource"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict( test_resource=dict(in_use=20), )",
+          "line": 856
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_get_by_project",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 861,
+        "end": 883
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_qgabp",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_by_project",
+      "lineRange": {
+        "start": 862,
+        "end": 869
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict( cores=10, injected_files=2, injected_file_path_bytes=127, )",
+          "line": 865
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_quota_get_all",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_by_project",
+      "lineRange": {
+        "start": 871,
+        "end": 877
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[ models.ProjectUserQuota(resource='instances', hard_limit=5), models.ProjectUserQuota(resource='cores', hard_limit=2), ]",
+          "line": 874
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 887,
+        "end": 958
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas_with_remains",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 962,
+        "end": 1048
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas_alt_context_no_class",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1052,
+        "end": 1123
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas_alt_context_no_class",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1127,
+        "end": 1197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas_alt_context_with_class",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1201,
+        "end": 1274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas_alt_context_with_class",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1278,
+        "end": 1350
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas_no_usages",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1352,
+        "end": 1406
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas_no_usages",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1408,
+        "end": 1462
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_get_settable_quotas",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1464,
+        "end": 1525
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_quota_get_all_by_project",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_settable_quotas",
+      "lineRange": {
+        "start": 1466,
+        "end": 1468
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'floating_ips': -1}",
+          "line": 1468
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_project_quotas",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_settable_quotas",
+      "lineRange": {
+        "start": 1470,
+        "end": 1494
+      },
+      "parameters": [
+        {
+          "name": "dbdrv"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "quota_class"
+        },
+        {
+          "default": "True",
+          "name": "usages"
+        },
+        {
+          "default": "False",
+          "name": "remains"
+        },
+        {
+          "default": "None",
+          "name": "project_quotas"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 1494
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_process_quotas_in_get_user_quotas",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_settable_quotas",
+      "lineRange": {
+        "start": 1496,
+        "end": 1512
+      },
+      "parameters": [
+        {
+          "name": "dbdrv"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "quotas"
+        },
+        {
+          "default": "None",
+          "name": "quota_class"
+        },
+        {
+          "default": "None",
+          "name": "usages"
+        },
+        {
+          "default": "False",
+          "name": "remains"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 1512
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_qgabpau",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_settable_quotas",
+      "lineRange": {
+        "start": 1514,
+        "end": 1516
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'instances': 2, 'cores': -1}",
+          "line": 1516
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_settable_quotas_with_user",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1527,
+        "end": 1596
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_settable_quotas_without_user",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1598,
+        "end": 1665
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_settable_quotas_by_user_with_unlimited_value",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1667,
+        "end": 1736
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stub_get_project_quotas",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1738,
+        "end": 1747
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_project_quotas",
+      "kind": "function",
+      "scope": "DbQuotaDriverTestCase._stub_get_project_quotas",
+      "lineRange": {
+        "start": 1739,
+        "end": 1744
+      },
+      "parameters": [
+        {
+          "name": "dbdrv"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "resources"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "quota_class"
+        },
+        {
+          "default": "True",
+          "name": "usages"
+        },
+        {
+          "default": "False",
+          "name": "remains"
+        },
+        {
+          "default": "None",
+          "name": "project_quotas"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{k: dict(limit=v.default) for k, v in resources.items()}",
+          "line": 1744
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_quotas_unknown",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1749,
+        "end": 1755
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_under",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1757,
+        "end": 1763
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_over",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1765,
+        "end": 1771
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_overs",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1773,
+        "end": 1780
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_unlimited",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1782,
+        "end": 1787
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1789,
+        "end": 1793
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_no_values",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1795,
+        "end": 1799
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_under",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1801,
+        "end": 1813
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_over_project",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1815,
+        "end": 1826
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_over_user",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1828,
+        "end": 1840
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_overs",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1842,
+        "end": 1854
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_unlimited",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1856,
+        "end": 1868
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1870,
+        "end": 1880
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_check_project_and_user_zero_values",
+      "kind": "method",
+      "scope": "DbQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1882,
+        "end": 1896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NoopQuotaDriverTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1899,
+        "end": 1976
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1900,
+        "end": 1924
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_defaults",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1926,
+        "end": 1929
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_class_quotas",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1931,
+        "end": 1935
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1937,
+        "end": 1941
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1943,
+        "end": 1948
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas_no_usages",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1950,
+        "end": 1955
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas_no_usages",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1957,
+        "end": 1963
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_settable_quotas_with_user",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1965,
+        "end": 1970
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_settable_quotas_without_user",
+      "kind": "method",
+      "scope": "NoopQuotaDriverTestCase",
+      "lineRange": {
+        "start": 1972,
+        "end": 1976
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UnifiedLimitsDriverTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1979,
+        "end": 2103
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 1980,
+        "end": 2041
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_defaults",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 2044,
+        "end": 2049
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_default"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_class_quotas",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 2052,
+        "end": 2057
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_default"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 2062,
+        "end": 2069
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_count"
+        },
+        {
+          "name": "mock_proj"
+        },
+        {
+          "name": "mock_kcount"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_project_quotas_no_usages",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 2073,
+        "end": 2080
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_count"
+        },
+        {
+          "name": "mock_proj"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 2085,
+        "end": 2092
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_count"
+        },
+        {
+          "name": "mock_proj"
+        },
+        {
+          "name": "mock_kcount"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_user_quotas_no_usages",
+      "kind": "method",
+      "scope": "UnifiedLimitsDriverTestCase",
+      "lineRange": {
+        "start": 2096,
+        "end": 2103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_count"
+        },
+        {
+          "name": "mock_proj"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QuotaCountTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2107,
+        "end": 2289
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cores_ram_count_placement",
+      "kind": "method",
+      "scope": "QuotaCountTestCase",
+      "lineRange": {
+        "start": 2110,
+        "end": 2117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_instances_cores_ram_count_api_db_placement",
+      "kind": "method",
+      "scope": "QuotaCountTestCase",
+      "lineRange": {
+        "start": 2121,
+        "end": 2143
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_placement_count"
+        },
+        {
+          "name": "mock_get_im_count"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_instances_cores_ram_count",
+      "kind": "method",
+      "scope": "QuotaCountTestCase",
+      "lineRange": {
+        "start": 2154,
+        "end": 2210
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "quota_from_placement"
+        },
+        {
+          "name": "uid_qfd_populated"
+        },
+        {
+          "name": "mock_api_db_placement_count"
+        },
+        {
+          "name": "mock_legacy_count"
+        },
+        {
+          "name": "mock_uid_qfd_populated"
+        },
+        {
+          "name": "mock_warn_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_user_id_queued_for_delete_populated_cache_by_project",
+      "kind": "method",
+      "scope": "QuotaCountTestCase",
+      "lineRange": {
+        "start": 2215,
+        "end": 2255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_api_db_placement_count"
+        },
+        {
+          "name": "mock_legacy_count"
+        },
+        {
+          "name": "mock_uid_qfd_populated"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_user_id_queued_for_delete_populated_cache_all",
+      "kind": "method",
+      "scope": "QuotaCountTestCase",
+      "lineRange": {
+        "start": 2262,
+        "end": 2289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_api_db_placement_count"
+        },
+        {
+          "name": "mock_legacy_icr_count"
+        },
+        {
+          "name": "mock_api_db_sgm_count"
+        },
+        {
+          "name": "mock_legacy_sgm_count"
+        },
+        {
+          "name": "mock_uid_qfd_populated"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LegacyGroupMemberQuotaTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2292,
+        "end": 2387
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_cells_no_build_reqs",
+      "kind": "method",
+      "scope": "LegacyGroupMemberQuotaTestCase",
+      "lineRange": {
+        "start": 2296,
+        "end": 2312
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_cell_mappings"
+        },
+        {
+          "name": "mock_inst_get"
+        },
+        {
+          "name": "mock_build_req_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_cells_just_build_reqs",
+      "kind": "method",
+      "scope": "LegacyGroupMemberQuotaTestCase",
+      "lineRange": {
+        "start": 2317,
+        "end": 2337
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_cell_mappings"
+        },
+        {
+          "name": "mock_inst_get"
+        },
+        {
+          "name": "mock_build_req_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cells_and_build_reqs",
+      "kind": "method",
+      "scope": "LegacyGroupMemberQuotaTestCase",
+      "lineRange": {
+        "start": 2342,
+        "end": 2387
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_cell_mappings"
+        },
+        {
+          "name": "mock_inst_get"
+        },
+        {
+          "name": "mock_build_req_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "objects.Flavor.get_by_name",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "nova_fixtures.GlanceFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "compute.API",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "objects.InstanceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "objects.InstanceGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 218,
+        "end": 218
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 246,
+        "end": 246
+      }
+    },
+    {
+      "name": "limit_fixture.LimitFixture",
+      "usage": "call",
+      "via": "oslo_limit",
+      "count": 2,
+      "lineRange": {
+        "start": 277,
+        "end": 277
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 302,
+        "end": 302
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 318,
+        "end": 318
+      }
+    },
+    {
+      "name": "quota.BaseResource",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 365,
+        "end": 365
+      }
+    },
+    {
+      "name": "quota.CountableResource",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 417,
+        "end": 417
+      }
+    },
+    {
+      "name": "quota.QuotaEngine",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 428,
+        "end": 428
+      }
+    },
+    {
+      "name": "quota.AbsoluteResource",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 450,
+        "end": 450
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 162,
+      "lineRange": {
+        "start": 537,
+        "end": 537
+      }
+    },
+    {
+      "name": "quota.DbQuotaDriver",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 608,
+        "end": 608
+      }
+    },
+    {
+      "name": "test.TimeOverride",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 612,
+        "end": 612
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 31,
+      "lineRange": {
+        "start": 774,
+        "end": 774
+      }
+    },
+    {
+      "name": "models.ProjectUserQuota",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 2,
+      "lineRange": {
+        "start": 875,
+        "end": 875
+      }
+    },
+    {
+      "name": "quota.NoopQuotaDriver",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1924,
+        "end": 1924
+      }
+    },
+    {
+      "name": "quota.UnifiedLimitsDriver",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1982,
+        "end": 1982
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 12,
+      "lineRange": {
+        "start": 2043,
+        "end": 2043
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2107,
+        "end": 2107
+      }
+    },
+    {
+      "name": "quota._cores_ram_count_placement",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2111,
+        "end": 2111
+      }
+    },
+    {
+      "name": "quota._instances_cores_ram_count_api_db_placement",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2131,
+        "end": 2131
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 1,
+      "lineRange": {
+        "start": 2145,
+        "end": 2145
+      }
+    },
+    {
+      "name": "quota._instances_cores_ram_count",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 2174,
+        "end": 2174
+      }
+    },
+    {
+      "name": "quota._server_group_count_members_by_user",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2272,
+        "end": 2272
+      }
+    },
+    {
+      "name": "quota._server_group_count_members_by_user_legacy",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2305,
+        "end": 2305
+      }
+    },
+    {
+      "name": "objects.BuildRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2321,
+        "end": 2321
+      }
+    },
+    {
+      "name": "objects.BuildRequestList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2323,
+        "end": 2323
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2345,
+        "end": 2345
+      }
+    },
+    {
+      "name": "objects.CellMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2351,
+        "end": 2351
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2369,
+        "end": 2369
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2384,
+        "end": 2384
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_db.sqlalchemy",
+      "names": [
+        {
+          "alias": null,
+          "name": "enginefacade"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": "limit_fixture",
+          "name": "fixture"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": null,
+          "name": "models"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "local_limit",
+          "name": "local"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "placement_limit",
+          "name": "placement"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "quota"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

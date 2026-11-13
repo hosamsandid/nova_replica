@@ -1,0 +1,1211 @@
+{
+  "file": "nova/tests/unit/conductor/tasks/test_migrate.py",
+  "hash": "6fd53af1c1a90e47cff2db31bd4e2b2ca4dcdb4751d22cad03436f24361f4ce3",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 48,
+    "code": 365,
+    "comment": 29,
+    "total": 442
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import rpcapi as compute_rpcapi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conductor.tasks import migrate",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import query",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import report",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils as scheduler_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.conductor.test_conductor import FakeContext",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_flavor",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MigrationTaskTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 394
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 33,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_generate_task",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 71,
+        "end": 79
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "migrate.MigrationTask(self.context, self.instance, self.flavor, self.request_spec, self.clean_shutdown, compute_rpcapi.ComputeAPI(), query.SchedulerQueryClient(), report.SchedulerReportClient(), host_",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_execute",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 93,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cross_cell_exec_mock"
+        },
+        {
+          "name": "prep_resize_mock"
+        },
+        {
+          "name": "sel_dest_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "az_mock"
+        },
+        {
+          "name": "gmv_mock"
+        },
+        {
+          "name": "cm_mock"
+        },
+        {
+          "name": "sm_mock"
+        },
+        {
+          "name": "cn_mock"
+        },
+        {
+          "name": "rc_mock"
+        },
+        {
+          "name": "gbf_mock"
+        },
+        {
+          "default": "False",
+          "name": "requested_destination"
+        },
+        {
+          "default": "True",
+          "name": "same_cell"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_migration_uuid",
+      "kind": "function",
+      "scope": "MigrationTaskTestCase._test_execute",
+      "lineRange": {
+        "start": 119,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "*a"
+        },
+        {
+          "name": "**k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mock.MagicMock()",
+          "line": 121
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 191,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute_with_destination",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 194,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute_resize",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 197,
+        "end": 200
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute_same_cell_false",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 202,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute_rollback",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 220,
+        "end": 253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prep_resize_mock"
+        },
+        {
+          "name": "sel_dest_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "az_mock"
+        },
+        {
+          "name": "gmv_mock"
+        },
+        {
+          "name": "cm_mock"
+        },
+        {
+          "name": "sm_mock"
+        },
+        {
+          "name": "cn_mock"
+        },
+        {
+          "name": "rc_mock"
+        },
+        {
+          "name": "mock_ra"
+        },
+        {
+          "name": "mock_gbf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_migration_uuid",
+      "kind": "function",
+      "scope": "MigrationTaskTestCase.test_execute_rollback",
+      "lineRange": {
+        "start": 234,
+        "end": 236
+      },
+      "parameters": [
+        {
+          "name": "*a"
+        },
+        {
+          "name": "**k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mock.MagicMock()",
+          "line": 236
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute_reschedule",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 257,
+        "end": 285
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_elevated"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_execute_reschedule_claim_fails_no_more_alternate",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 290,
+        "end": 319
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_elevated"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_fill_provider_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_requested_destination_cell_allow_cross_cell_resize_true",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 325,
+        "end": 340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_debug"
+        },
+        {
+          "name": "mock_get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_requested_destination_cell_allow_cross_cell_resize_true_host",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 346,
+        "end": 359
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_debug"
+        },
+        {
+          "name": "mock_get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_requested_destination_cell_allow_cross_cell_resize_false",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 365,
+        "end": 378
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_debug"
+        },
+        {
+          "name": "mock_get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_is_selected_host_in_source_cell_true",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 380,
+        "end": 386
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_is_selected_host_in_source_cell_false",
+      "kind": "method",
+      "scope": "MigrationTaskTestCase",
+      "lineRange": {
+        "start": 388,
+        "end": 394
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MigrationTaskAllocationUtils",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 397,
+        "end": 442
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_replace_allocation_with_migration_no_host",
+      "kind": "method",
+      "scope": "MigrationTaskAllocationUtils",
+      "lineRange": {
+        "start": 399,
+        "end": 409
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_replace_allocation_with_migration_no_allocs",
+      "kind": "method",
+      "scope": "MigrationTaskAllocationUtils",
+      "lineRange": {
+        "start": 414,
+        "end": 423
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cn"
+        },
+        {
+          "name": "mock_ga"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_replace_allocation_with_migration_allocs_fail",
+      "kind": "method",
+      "scope": "MigrationTaskAllocationUtils",
+      "lineRange": {
+        "start": 430,
+        "end": 442
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cn"
+        },
+        {
+          "name": "mock_ga"
+        },
+        {
+          "name": "mock_pa"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "FakeContext",
+      "usage": "call",
+      "via": "nova.tests.unit.conductor.test_conductor",
+      "count": 1,
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "name": "fake_flavor.fake_flavor_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "fake_instance.fake_db_instance",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "objects.Instance._from_db_object",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "objects.ImageMeta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "objects.RequestSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "objects.Selection",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 28,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "migrate.MigrationTask",
+      "usage": "call",
+      "via": "nova.conductor.tasks",
+      "count": 3,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "compute_rpcapi.ComputeAPI",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "query.SchedulerQueryClient",
+      "usage": "call",
+      "via": "nova.scheduler.client",
+      "count": 3,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "report.SchedulerReportClient",
+      "usage": "call",
+      "via": "nova.scheduler.client",
+      "count": 3,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 14,
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      }
+    },
+    {
+      "name": "objects.MigrationList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      }
+    },
+    {
+      "name": "objects.RequestLevelParams",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      }
+    },
+    {
+      "name": "objects.Destination",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 105,
+        "end": 105
+      }
+    },
+    {
+      "name": "objects.SchedulerRetries.from_dict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 121,
+        "end": 121
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 2,
+      "lineRange": {
+        "start": 271,
+        "end": 271
+      }
+    },
+    {
+      "name": "objects.InstanceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 322,
+        "end": 322
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 323,
+        "end": 323
+      }
+    },
+    {
+      "name": "exception.ComputeHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "objects.Migration",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 401,
+        "end": 401
+      }
+    },
+    {
+      "name": "migrate.replace_allocation_with_migration",
+      "usage": "call",
+      "via": "nova.conductor.tasks",
+      "count": 1,
+      "lineRange": {
+        "start": 421,
+        "end": 421
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 432,
+        "end": 432
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_rpcapi",
+          "name": "rpcapi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conductor.tasks",
+      "names": [
+        {
+          "alias": null,
+          "name": "migrate"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "query"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "report"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": "scheduler_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.conductor.test_conductor",
+      "names": [
+        {
+          "alias": null,
+          "name": "FakeContext"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_flavor"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

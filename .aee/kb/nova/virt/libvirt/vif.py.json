@@ -1,0 +1,2627 @@
+{
+  "file": "nova/virt/libvirt/vif.py",
+  "hash": "289bec486b64923c70827ae6b3c12df1abc78134f3502b8f6d92d955a665e800",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 141,
+    "code": 646,
+    "comment": 135,
+    "total": 922
+  },
+  "symbols": [
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_vif",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from os_vif import exception as osv_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from os_vif.objects import fields as osv_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from os_vif.objects import vif as osv_vifs",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import processutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model as network_model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import os_vif_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import utils as pci_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.privsep.linux_net",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import profiler",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import config as vconfig",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import designer",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import host as libvirt_host",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import osinfo",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTED_VIF_MODELS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 82
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_vif_model_valid_for_virt",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 85,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "vif_model"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 88
+        },
+        {
+          "expr": "vif_model in SUPPORTED_VIF_MODELS[virt_type]",
+          "line": 93
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_vf_interface_vlan",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 96,
+        "end": 112
+      },
+      "parameters": [
+        {
+          "name": "pci_addr"
+        },
+        {
+          "name": "mac_addr"
+        },
+        {
+          "default": "0",
+          "name": "vlan"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_vf_trusted",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 115,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "pci_addr"
+        },
+        {
+          "name": "trusted"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ensure_vlan",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 130,
+        "end": 148
+      },
+      "parameters": [
+        {
+          "name": "vlan_num"
+        },
+        {
+          "name": "bridge_interface"
+        },
+        {
+          "default": "None",
+          "name": "mac_address"
+        },
+        {
+          "default": "None",
+          "name": "mtu"
+        },
+        {
+          "default": "None",
+          "name": "interface"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "interface",
+          "line": 148
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtGenericVIFDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 152,
+        "end": 922
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 155,
+        "end": 157
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "host",
+          "type": "libvirt_host.Host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vif_devname",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 159,
+        "end": 162
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vif['devname']",
+          "line": 161
+        },
+        {
+          "expr": "(\"nic\" + vif['id'])[:network_model.NIC_NAME_LEN]",
+          "line": 162
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vif_model",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 164,
+        "end": 180
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "image_meta"
+        },
+        {
+          "default": "None",
+          "name": "vif_model"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "model",
+          "line": 180
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_base_config",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 182,
+        "end": 251
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "mac"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "vnic_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 203
+        },
+        {
+          "expr": "conf",
+          "line": 218
+        },
+        {
+          "expr": "conf",
+          "line": 251
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_base_hostdev_pci_config",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 253,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 257
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_virtio_mq_settings",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 259,
+        "end": 277
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(driver, vhost_queues)",
+          "line": 277
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_max_tap_queues",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 279,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.libvirt.max_queues",
+          "line": 286
+        },
+        {
+          "expr": "1",
+          "line": 294
+        },
+        {
+          "expr": "8",
+          "line": 296
+        },
+        {
+          "expr": "256",
+          "line": 298
+        },
+        {
+          "expr": "None",
+          "line": 300
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_packed_virtqueue_settings",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 302,
+        "end": 307
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hardware.get_packed_virtqueue_constraint(flavor, image_meta)",
+          "line": 307
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bridge_name",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 309,
+        "end": 310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vif['network']['bridge']",
+          "line": 310
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_veth_pair_names",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 312,
+        "end": 314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "iface_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "((\"qvb%s\" % iface_id)[:network_model.NIC_NAME_LEN], (\"qvo%s\" % iface_id)[:network_model.NIC_NAME_LEN])",
+          "line": 313
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_802qbg",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 316,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 331
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_802qbh",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 333,
+        "end": 350
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 350
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_hw_veb",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 352,
+        "end": 370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 370
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_hostdev_physical",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 372,
+        "end": 375
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_base_hostdev_pci_config(vif)",
+          "line": 375
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_macvtap",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 377,
+        "end": 406
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 406
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_iovisor",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 408,
+        "end": 418
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 418
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_midonet",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 420,
+        "end": 428
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 428
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_tap",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 430,
+        "end": 443
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 443
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_ib_hostdev",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 445,
+        "end": 448
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_base_hostdev_pci_config(vif)",
+          "line": 448
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFGeneric",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 450,
+        "end": 452
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFBridge",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 454,
+        "end": 457
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFOpenVSwitch",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 459,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFVHostUser",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 497,
+        "end": 506
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFHostDevice",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 508,
+        "end": 522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFPortProfileOpenVSwitch",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 524,
+        "end": 527
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "profile"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_config_VIFPortProfile",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 529,
+        "end": 536
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vdpa_dev_path",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 538,
+        "end": 543
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_address",
+          "type": "str"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "self.host.get_vdpa_device_path(pci_address)",
+          "line": 540
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_config_os_vif",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 545,
+        "end": 593
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "vnic_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 593
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 595,
+        "end": 638
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_config_os_vif( instance, vif_obj, image_meta, flavor, virt_type, vnic_type)",
+          "line": 614
+        },
+        {
+          "expr": "self.get_config_iovisor(*args)",
+          "line": 620
+        },
+        {
+          "expr": "self.get_config_802qbg(*args)",
+          "line": 622
+        },
+        {
+          "expr": "self.get_config_802qbh(*args)",
+          "line": 624
+        },
+        {
+          "expr": "self.get_config_hw_veb(*args)",
+          "line": 626
+        },
+        {
+          "expr": "self.get_config_hostdev_physical(*args)",
+          "line": 628
+        },
+        {
+          "expr": "self.get_config_macvtap(*args)",
+          "line": 630
+        },
+        {
+          "expr": "self.get_config_midonet(*args)",
+          "line": 632
+        },
+        {
+          "expr": "self.get_config_tap(*args)",
+          "line": 634
+        },
+        {
+          "expr": "self.get_config_ib_hostdev(*args)",
+          "line": 636
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_ib_hostdev",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 640,
+        "end": 655
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_hw_veb",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 657,
+        "end": 675
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_macvtap",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 677,
+        "end": 684
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_midonet",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 686,
+        "end": 697
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_iovisor",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 699,
+        "end": 714
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_tap",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 716,
+        "end": 731
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_plug_os_vif",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 733,
+        "end": 759
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 761,
+        "end": 803
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 780
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug_ib_hostdev",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 805,
+        "end": 815
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug_hw_veb",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 817,
+        "end": 833
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug_midonet",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 835,
+        "end": 846
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug_tap",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 848,
+        "end": 854
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug_iovisor",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 856,
+        "end": 867
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_unplug_os_vif",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 869,
+        "end": 877
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug",
+      "kind": "method",
+      "scope": "LibvirtGenericVIFDriver",
+      "lineRange": {
+        "start": 879,
+        "end": 922
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 898
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "exception.UnsupportedVirtType",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "pci_utils.get_ifname_by_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 3,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "pci_utils.get_vf_num_by_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 2,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.set_device_macaddr_and_vlan",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.set_device_macaddr",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 2,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.set_device_trust",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 125,
+        "end": 125
+      }
+    },
+    {
+      "name": "utils.synchronized",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.device_exists",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.add_vlan",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.set_device_enabled",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 144,
+        "end": 144
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.set_device_mtu",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 2,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "profiler.trace_cls",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 156,
+        "end": 156
+      }
+    },
+    {
+      "name": "osinfo.HardwareProperties",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 171,
+        "end": 171
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestInterface",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 189,
+        "end": 189
+      }
+    },
+    {
+      "name": "designer.set_vif_guest_frontend_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 201,
+        "end": 201
+      }
+    },
+    {
+      "name": "exception.UnsupportedHardware",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 212,
+        "end": 212
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestHostdevPCI",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 254,
+        "end": 254
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_hostdev_pci_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 256,
+        "end": 256
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 263,
+        "end": 263
+      }
+    },
+    {
+      "name": "objects.ImageMeta.from_dict",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 264,
+        "end": 264
+      }
+    },
+    {
+      "name": "hardware.get_vif_multiqueue_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 3,
+      "lineRange": {
+        "start": 268,
+        "end": 268
+      }
+    },
+    {
+      "name": "os.uname",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 292,
+        "end": 292
+      }
+    },
+    {
+      "name": "hardware.get_packed_virtqueue_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 307,
+        "end": 307
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_802qbg_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 322,
+        "end": 322
+      }
+    },
+    {
+      "name": "designer.set_vif_bandwidth_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 6,
+      "lineRange": {
+        "start": 329,
+        "end": 329
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_802qbh_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 344,
+        "end": 344
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_hw_veb",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 364,
+        "end": 364
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 396,
+        "end": 396
+      }
+    },
+    {
+      "name": "exception.VifDetailsMissingMacvtapParameters",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 397,
+        "end": 397
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_direct_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 401,
+        "end": 401
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_ethernet_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "designer.set_vif_mtu_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 441,
+        "end": 441
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_vhostuser_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 504,
+        "end": 504
+      }
+    },
+    {
+      "name": "exception.InternalError",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 520,
+        "end": 520
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 11,
+      "lineRange": {
+        "start": 521,
+        "end": 521
+      }
+    },
+    {
+      "name": "TypeError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 543,
+        "end": 543
+      }
+    },
+    {
+      "name": "designer.set_vif_host_backend_vdpa_config",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 578,
+        "end": 578
+      }
+    },
+    {
+      "name": "utils.get_obj_repr_unicode",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 600,
+        "end": 600
+      }
+    },
+    {
+      "name": "os_vif_util.nova_to_osvif_vif",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 3,
+      "lineRange": {
+        "start": 612,
+        "end": 612
+      }
+    },
+    {
+      "name": "exception.NetworkMissingPhysicalNetwork",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 643,
+        "end": 643
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.plug_infiniband_vif",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 650,
+        "end": 650
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 672,
+        "end": 672
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.create_tap_dev",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 3,
+      "lineRange": {
+        "start": 694,
+        "end": 694
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.plug_midonet_vif",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 695,
+        "end": 695
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.plug_plumgrid_vif",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 711,
+        "end": 711
+      }
+    },
+    {
+      "name": "os_vif_util.nova_to_osvif_instance",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 2,
+      "lineRange": {
+        "start": 734,
+        "end": 734
+      }
+    },
+    {
+      "name": "os_vif.plug",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 755,
+        "end": 755
+      }
+    },
+    {
+      "name": "exception.VirtualInterfacePlugException",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 772,
+        "end": 772
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.unplug_infiniband_vif",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 813,
+        "end": 813
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.unplug_midonet_vif",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 843,
+        "end": 843
+      }
+    },
+    {
+      "name": "nova.privsep.linux_net.delete_net_dev",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 3,
+      "lineRange": {
+        "start": 844,
+        "end": 844
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.unplug_plumgrid_vif",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 864,
+        "end": 864
+      }
+    },
+    {
+      "name": "os_vif.unplug",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 873,
+        "end": 873
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_vif",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_vif",
+      "names": [
+        {
+          "alias": "osv_exception",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_vif.objects",
+      "names": [
+        {
+          "alias": "osv_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_vif.objects",
+      "names": [
+        {
+          "alias": "osv_vifs",
+          "name": "vif"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "processutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "network_model",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "os_vif_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.privsep.linux_net",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "profiler"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "vconfig",
+          "name": "config"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "designer"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_host",
+          "name": "host"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "osinfo"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

@@ -1,0 +1,1177 @@
+{
+  "file": "nova/scheduler/request_filter.py",
+  "hash": "caf6c86a3029bc6bce11756b204fe2527f29c345803dd35bcbe881a756af1e8a",
+  "language": "Python",
+  "component": "scheduler",
+  "package": null,
+  "lines": {
+    "blank": 109,
+    "code": 463,
+    "comment": 61,
+    "total": 633
+  },
+  "symbols": [
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_traits",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import report",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TENANT_METADATA_KEY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MIN_COMPUTE_VERSION_OWNER_TRAIT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "trace_request_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "fn"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "trace_request_filter",
+      "lineRange": {
+        "start": 41,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ran",
+          "line": 53
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "isolate_aggregates",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 96
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 74
+        },
+        {
+          "expr": "True",
+          "line": 96
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "require_tenant_aggregate",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 100,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 113
+        },
+        {
+          "expr": "True",
+          "line": 140
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "map_az_to_placement_aggregate",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 144,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 153
+        },
+        {
+          "expr": "True",
+          "line": 169
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "require_image_type_support",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 173,
+        "end": 200
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 180
+        },
+        {
+          "expr": "False",
+          "line": 185
+        },
+        {
+          "expr": "False",
+          "line": 193
+        },
+        {
+          "expr": "True",
+          "line": 200
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "transform_image_metadata",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 204,
+        "end": 244
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 211
+        },
+        {
+          "expr": "False",
+          "line": 233
+        },
+        {
+          "expr": "True",
+          "line": 244
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compute_status_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 248,
+        "end": 260
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 260
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "accelerators_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 264,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 276
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "packed_virtqueue_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 280,
+        "end": 292
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 292
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "routed_networks_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 296,
+        "end": 387
+      },
+      "parameters": [
+        {
+          "name": "ctxt",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 312
+        },
+        {
+          "expr": "True",
+          "line": 320
+        },
+        {
+          "expr": "True",
+          "line": 387
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remote_managed_ports_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 391,
+        "end": 414
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "True",
+          "line": 414
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ephemeral_encryption_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 418,
+        "end": 449
+      },
+      "parameters": [
+        {
+          "name": "ctxt",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 432
+        },
+        {
+          "expr": "True",
+          "line": 449
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "virtio_sound_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 453,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "ctxt",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 466
+        },
+        {
+          "expr": "True",
+          "line": 470
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tpm_secret_security_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 474,
+        "end": 504
+      },
+      "parameters": [
+        {
+          "name": "ctxt",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 483
+        },
+        {
+          "expr": "True",
+          "line": 504
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pci_request_ids",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 507,
+        "end": 523
+      },
+      "parameters": [
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "set()",
+          "line": 517
+        },
+        {
+          "expr": "{ req.request_id for req in request_spec.pci_requests.requests if (req.source != objects.InstancePCIRequest.NEUTRON_PORT and req.request_id) }",
+          "line": 518
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_should_filter_by_owner",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 526,
+        "end": 553
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 552
+        },
+        {
+          "expr": "True",
+          "line": 553
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "owner_nova_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 557,
+        "end": 605
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 574
+        },
+        {
+          "expr": "False",
+          "line": 577
+        },
+        {
+          "expr": "True",
+          "line": 605
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALL_REQUEST_FILTERS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 608,
+        "end": 623
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "process_reqspec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 626,
+        "end": 633
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "timeutils.StopWatch",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "fn",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "utils.ResourceRequest.from_request_spec",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "objects.aggregate.AggregateList.get_non_matching_by_metadata_keys",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "objects.Destination",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      }
+    },
+    {
+      "name": "objects.AggregateList.get_by_metadata",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "exception.RequestFilterFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 4,
+      "lineRange": {
+        "start": 138,
+        "end": 138
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 189,
+        "end": 189
+      }
+    },
+    {
+      "name": "hardware.get_packed_virtqueue_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 287,
+        "end": 287
+      }
+    },
+    {
+      "name": "neutron.API",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 2,
+      "lineRange": {
+        "start": 333,
+        "end": 333
+      }
+    },
+    {
+      "name": "report.report_client_singleton",
+      "usage": "call",
+      "via": "nova.scheduler.client",
+      "count": 1,
+      "lineRange": {
+        "start": 334,
+        "end": 334
+      }
+    },
+    {
+      "name": "utils.get_aggregates_for_routed_subnet",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 352,
+        "end": 352
+      }
+    },
+    {
+      "name": "utils.get_aggregates_for_routed_network",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 370,
+        "end": 370
+      }
+    },
+    {
+      "name": "hardware.get_ephemeral_encryption_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 429,
+        "end": 429
+      }
+    },
+    {
+      "name": "hardware.get_ephemeral_encryption_format",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 440,
+        "end": 440
+      }
+    },
+    {
+      "name": "hardware.get_sound_model",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 463,
+        "end": 463
+      }
+    },
+    {
+      "name": "hardware.get_vtpm_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 478,
+        "end": 478
+      }
+    },
+    {
+      "name": "hardware.get_tpm_secret_security_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 485,
+        "end": 485
+      }
+    },
+    {
+      "name": "objects.service.get_minimum_version_all_cells",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 544,
+        "end": 544
+      }
+    },
+    {
+      "name": "filter",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 633,
+        "end": 633
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_traits",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "report"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

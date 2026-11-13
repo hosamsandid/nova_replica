@@ -1,0 +1,8609 @@
+{
+  "file": "nova/virt/libvirt/config.py",
+  "hash": "743baced023aab0f8a3fcdccf1f812767fd4f265e7a8ec5f0211346677ff609c",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 891,
+    "code": 3239,
+    "comment": 141,
+    "total": 4271
+  },
+  "symbols": [
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from collections import OrderedDict",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from lxml import etree",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import utils as pci_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NOVA_NS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "make_libvirt_device_alias",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 47
+      },
+      "parameters": [
+        {
+          "name": "identifier"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'ua-%s' % identifier",
+          "line": 47
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_libvirt_device_alias",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "alias"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "alias.split('-', 1)[1]",
+          "line": 52
+        },
+        {
+          "expr": "alias",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigObject",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 122
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 59,
+        "end": 64
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*"
+        },
+        {
+          "name": "root_name"
+        },
+        {
+          "default": "None",
+          "name": "ns_prefix"
+        },
+        {
+          "default": "None",
+          "name": "ns_uri"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_new_node",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 66,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "node_name"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "etree.Element(node_name, **kwargs)",
+          "line": 68
+        },
+        {
+          "expr": "etree.Element(\"{\" + self.ns_uri + \"}\" + node_name, nsmap={self.ns_prefix: self.ns_uri}, **kwargs)",
+          "line": 70
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_text_node",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 74,
+        "end": 78
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "node_name"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "child",
+          "line": 78
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 80,
+        "end": 81
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._new_node(self.root_name)",
+          "line": 81
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_str",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 83,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmlstr"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 90,
+        "end": 94
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "to_xml",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 96,
+        "end": 100
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "pretty_print"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "xml_str",
+          "line": 100
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_on_off_str",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 103,
+        "end": 111
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "value",
+          "type": "str | None"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "value == 'on'",
+          "line": 111
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_yes_no_str",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 114,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "'yes' if value else 'no'",
+          "line": 115
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_on_off_str",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 118,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "'on' if value else 'off'",
+          "line": 119
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__repr__",
+      "kind": "method",
+      "scope": "LibvirtConfigObject",
+      "lineRange": {
+        "start": 121,
+        "end": 122
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.to_xml(pretty_print=False)",
+          "line": 122
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCaps",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 125,
+        "end": 154
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCaps",
+      "lineRange": {
+        "start": 127,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCaps",
+      "lineRange": {
+        "start": 133,
+        "end": 144
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCaps",
+      "lineRange": {
+        "start": 146,
+        "end": 154
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "caps",
+          "line": 154
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCaps",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 157,
+        "end": 217
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 159,
+        "end": 166
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 168,
+        "end": 185
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "features",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 188,
+        "end": 191
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 190
+        },
+        {
+          "expr": "self._features.features",
+          "line": 191
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "machine_type",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 194,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"\"",
+          "line": 196
+        },
+        {
+          "expr": "self._machine",
+          "line": 197
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "machine_type_alias",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 200,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._machine",
+          "line": 202
+        },
+        {
+          "expr": "self._alias",
+          "line": 203
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "machine_type_alias",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 206,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "alias"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "devices",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 210,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 212
+        },
+        {
+          "expr": "self._devices",
+          "line": 213
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "os",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCaps",
+      "lineRange": {
+        "start": 216,
+        "end": 217
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._os",
+          "line": 217
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsVideoModels",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 220,
+        "end": 233
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsVideoModels",
+      "lineRange": {
+        "start": 222,
+        "end": 225
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsVideoModels",
+      "lineRange": {
+        "start": 227,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsDiskBuses",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 236,
+        "end": 249
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDiskBuses",
+      "lineRange": {
+        "start": 238,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDiskBuses",
+      "lineRange": {
+        "start": 243,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsTpm",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 252,
+        "end": 283
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsTpm",
+      "lineRange": {
+        "start": 254,
+        "end": 261
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsTpm",
+      "lineRange": {
+        "start": 263,
+        "end": 283
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsDevices",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 286,
+        "end": 323
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEVICE_PARSERS",
+      "kind": "constant",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 287,
+        "end": 291
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 293,
+        "end": 295
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 297,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 307,
+        "end": 311
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "device_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device",
+          "line": 310
+        },
+        {
+          "expr": "None",
+          "line": 311
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 314,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_device('disk')",
+          "line": 315
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "video",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 318,
+        "end": 319
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_device('video')",
+          "line": 319
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tpm",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsDevices",
+      "lineRange": {
+        "start": 322,
+        "end": 323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_device('tpm')",
+          "line": 323
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsFeatures",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 326,
+        "end": 358
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatures",
+      "lineRange": {
+        "start": 328,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatures",
+      "lineRange": {
+        "start": 333,
+        "end": 351
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatures",
+      "lineRange": {
+        "start": 357,
+        "end": 358
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsFeatureSev",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 361,
+        "end": 379
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatureSev",
+      "lineRange": {
+        "start": 363,
+        "end": 367
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatureSev",
+      "lineRange": {
+        "start": 369,
+        "end": 379
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsFeatureLaunchSecurity",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 382,
+        "end": 399
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatureLaunchSecurity",
+      "lineRange": {
+        "start": 384,
+        "end": 387
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatureLaunchSecurity",
+      "lineRange": {
+        "start": 389,
+        "end": 399
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsFeatureTDX",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 402,
+        "end": 412
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatureTDX",
+      "lineRange": {
+        "start": 404,
+        "end": 406
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsFeatureTDX",
+      "lineRange": {
+        "start": 408,
+        "end": 412
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigDomainCapsOS",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 415,
+        "end": 456
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsOS",
+      "lineRange": {
+        "start": 417,
+        "end": 425
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigDomainCapsOS",
+      "lineRange": {
+        "start": 427,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsNUMATopology",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 459,
+        "end": 487
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMATopology",
+      "lineRange": {
+        "start": 461,
+        "end": 466
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMATopology",
+      "lineRange": {
+        "start": 468,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMATopology",
+      "lineRange": {
+        "start": 477,
+        "end": 487
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "topo",
+          "line": 487
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsNUMACell",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 490,
+        "end": 537
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMACell",
+      "lineRange": {
+        "start": 492,
+        "end": 499
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMACell",
+      "lineRange": {
+        "start": 501,
+        "end": 516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMACell",
+      "lineRange": {
+        "start": 518,
+        "end": 537
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cell",
+          "line": 537
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsNUMACPU",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 540,
+        "end": 576
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMACPU",
+      "lineRange": {
+        "start": 542,
+        "end": 549
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMACPU",
+      "lineRange": {
+        "start": 551,
+        "end": 562
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMACPU",
+      "lineRange": {
+        "start": 564,
+        "end": 576
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cpu",
+          "line": 576
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsNUMAPages",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 579,
+        "end": 601
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMAPages",
+      "lineRange": {
+        "start": 581,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMAPages",
+      "lineRange": {
+        "start": 588,
+        "end": 592
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsNUMAPages",
+      "lineRange": {
+        "start": 594,
+        "end": 601
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "pages",
+          "line": 601
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsHost",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 604,
+        "end": 638
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsHost",
+      "lineRange": {
+        "start": 606,
+        "end": 612
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsHost",
+      "lineRange": {
+        "start": 614,
+        "end": 626
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsHost",
+      "lineRange": {
+        "start": 628,
+        "end": 638
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "caps",
+          "line": 638
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsGuest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 641,
+        "end": 722
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuest",
+      "lineRange": {
+        "start": 643,
+        "end": 652
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuest",
+      "lineRange": {
+        "start": 654,
+        "end": 661
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_arch",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuest",
+      "lineRange": {
+        "start": 663,
+        "end": 696
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuest",
+      "lineRange": {
+        "start": 698,
+        "end": 707
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "caps",
+          "line": 707
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_arch",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuest",
+      "lineRange": {
+        "start": 709,
+        "end": 722
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "arch",
+          "line": 722
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCapsGuestDomain",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 725,
+        "end": 778
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuestDomain",
+      "lineRange": {
+        "start": 726,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuestDomain",
+      "lineRange": {
+        "start": 740,
+        "end": 746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_child",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuestDomain",
+      "lineRange": {
+        "start": 748,
+        "end": 752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_domain",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuestDomain",
+      "lineRange": {
+        "start": 754,
+        "end": 758
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_machine",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuestDomain",
+      "lineRange": {
+        "start": 760,
+        "end": 764
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCapsGuestDomain",
+      "lineRange": {
+        "start": 766,
+        "end": 778
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "domain",
+          "line": 778
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestTimer",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 781,
+        "end": 803
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestTimer",
+      "lineRange": {
+        "start": 783,
+        "end": 790
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestTimer",
+      "lineRange": {
+        "start": 792,
+        "end": 803
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "tm",
+          "line": 803
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestClock",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 806,
+        "end": 832
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestClock",
+      "lineRange": {
+        "start": 808,
+        "end": 815
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestClock",
+      "lineRange": {
+        "start": 817,
+        "end": 829
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "clk",
+          "line": 829
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_timer",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestClock",
+      "lineRange": {
+        "start": 831,
+        "end": 832
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "tm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCPUFeature",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 835,
+        "end": 866
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUFeature",
+      "lineRange": {
+        "start": 837,
+        "end": 842
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "name"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUFeature",
+      "lineRange": {
+        "start": 844,
+        "end": 848
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUFeature",
+      "lineRange": {
+        "start": 850,
+        "end": 855
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ft",
+          "line": 855
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUFeature",
+      "lineRange": {
+        "start": 857,
+        "end": 860
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 859
+        },
+        {
+          "expr": "other.name == self.name",
+          "line": 860
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__ne__",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUFeature",
+      "lineRange": {
+        "start": 862,
+        "end": 863
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj.name != self.name",
+          "line": 863
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__hash__",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUFeature",
+      "lineRange": {
+        "start": 865,
+        "end": 866
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hash(self.name)",
+          "line": 866
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCPUMaxPhysAddr",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 869,
+        "end": 893
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUMaxPhysAddr",
+      "lineRange": {
+        "start": 871,
+        "end": 876
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUMaxPhysAddr",
+      "lineRange": {
+        "start": 878,
+        "end": 883
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCPUMaxPhysAddr",
+      "lineRange": {
+        "start": 885,
+        "end": 893
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "m",
+          "line": 893
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUMaxPhysAddr",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 896,
+        "end": 897
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigCPU",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 900,
+        "end": 970
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigCPU",
+      "lineRange": {
+        "start": 902,
+        "end": 916
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCPU",
+      "lineRange": {
+        "start": 918,
+        "end": 939
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigCPU",
+      "lineRange": {
+        "start": 941,
+        "end": 967
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cpu",
+          "line": 967
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_feature",
+      "kind": "method",
+      "scope": "LibvirtConfigCPU",
+      "lineRange": {
+        "start": 969,
+        "end": 970
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "feat"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUFeature",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 973,
+        "end": 985
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUFeature",
+      "lineRange": {
+        "start": 975,
+        "end": 978
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "name"
+        },
+        {
+          "default": "\"require\"",
+          "name": "policy"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUFeature",
+      "lineRange": {
+        "start": 980,
+        "end": 985
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ft",
+          "line": 985
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUNUMACell",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 988,
+        "end": 1020
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUNUMACell",
+      "lineRange": {
+        "start": 990,
+        "end": 996
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUNUMACell",
+      "lineRange": {
+        "start": 998,
+        "end": 1005
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUNUMACell",
+      "lineRange": {
+        "start": 1007,
+        "end": 1020
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cell",
+          "line": 1020
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUNUMA",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1023,
+        "end": 1046
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUNUMA",
+      "lineRange": {
+        "start": 1025,
+        "end": 1029
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUNUMA",
+      "lineRange": {
+        "start": 1031,
+        "end": 1038
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUNUMA",
+      "lineRange": {
+        "start": 1040,
+        "end": 1046
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "numa",
+          "line": 1046
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPU",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1049,
+        "end": 1082
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPU",
+      "lineRange": {
+        "start": 1051,
+        "end": 1057
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPU",
+      "lineRange": {
+        "start": 1059,
+        "end": 1071
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPU",
+      "lineRange": {
+        "start": 1073,
+        "end": 1082
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cpu",
+          "line": 1082
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSMBIOS",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1085,
+        "end": 1097
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSMBIOS",
+      "lineRange": {
+        "start": 1087,
+        "end": 1091
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSMBIOS",
+      "lineRange": {
+        "start": 1093,
+        "end": 1097
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "smbios",
+          "line": 1097
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSysinfo",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1100,
+        "end": 1162
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSysinfo",
+      "lineRange": {
+        "start": 1102,
+        "end": 1114
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSysinfo",
+      "lineRange": {
+        "start": 1116,
+        "end": 1162
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sysinfo",
+          "line": 1162
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDevice",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1165,
+        "end": 1168
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDevice",
+      "lineRange": {
+        "start": 1167,
+        "end": 1168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestVTPM",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1171,
+        "end": 1195
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVTPM",
+      "lineRange": {
+        "start": 1173,
+        "end": 1178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vtpm_config"
+        },
+        {
+          "name": "vtpm_secret_uuid"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVTPM",
+      "lineRange": {
+        "start": 1180,
+        "end": 1195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 1195
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDisk",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1198,
+        "end": 1476
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDisk",
+      "lineRange": {
+        "start": 1200,
+        "end": 1247
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_iotune",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDisk",
+      "lineRange": {
+        "start": 1249,
+        "end": 1305
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDisk",
+      "lineRange": {
+        "start": 1307,
+        "end": 1410
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 1410
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDisk",
+      "lineRange": {
+        "start": 1412,
+        "end": 1476
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDiskBackingStore",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1479,
+        "end": 1516
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskBackingStore",
+      "lineRange": {
+        "start": 1480,
+        "end": 1493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskBackingStore",
+      "lineRange": {
+        "start": 1495,
+        "end": 1516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSnapshotDisk",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1519,
+        "end": 1647
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSnapshotDisk",
+      "lineRange": {
+        "start": 1528,
+        "end": 1550
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSnapshotDisk",
+      "lineRange": {
+        "start": 1552,
+        "end": 1609
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 1609
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSnapshotDisk",
+      "lineRange": {
+        "start": 1611,
+        "end": 1647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFilesys",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1650,
+        "end": 1708
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFilesys",
+      "lineRange": {
+        "start": 1652,
+        "end": 1663
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFilesys",
+      "lineRange": {
+        "start": 1665,
+        "end": 1685
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 1685
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFilesys",
+      "lineRange": {
+        "start": 1687,
+        "end": 1708
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDiskEncryptionSecret",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1711,
+        "end": 1726
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskEncryptionSecret",
+      "lineRange": {
+        "start": 1712,
+        "end": 1716
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskEncryptionSecret",
+      "lineRange": {
+        "start": 1718,
+        "end": 1720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskEncryptionSecret",
+      "lineRange": {
+        "start": 1722,
+        "end": 1726
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 1726
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDiskEncryption",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1729,
+        "end": 1752
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskEncryption",
+      "lineRange": {
+        "start": 1733,
+        "end": 1737
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskEncryption",
+      "lineRange": {
+        "start": 1739,
+        "end": 1745
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskEncryption",
+      "lineRange": {
+        "start": 1747,
+        "end": 1752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 1752
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDiskMirror",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1755,
+        "end": 1763
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskMirror",
+      "lineRange": {
+        "start": 1757,
+        "end": 1760
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDiskMirror",
+      "lineRange": {
+        "start": 1762,
+        "end": 1763
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestIDMap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1766,
+        "end": 1788
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestIDMap",
+      "lineRange": {
+        "start": 1768,
+        "end": 1774
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestIDMap",
+      "lineRange": {
+        "start": 1776,
+        "end": 1779
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestIDMap",
+      "lineRange": {
+        "start": 1781,
+        "end": 1788
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 1788
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestUIDMap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1791,
+        "end": 1795
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestUIDMap",
+      "lineRange": {
+        "start": 1793,
+        "end": 1795
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestGIDMap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1798,
+        "end": 1802
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestGIDMap",
+      "lineRange": {
+        "start": 1800,
+        "end": 1802
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDeviceAddress",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1805,
+        "end": 1826
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddress",
+      "lineRange": {
+        "start": 1806,
+        "end": 1809
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "type"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddress",
+      "lineRange": {
+        "start": 1811,
+        "end": 1814
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "xml",
+          "line": 1814
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddress",
+      "lineRange": {
+        "start": 1817,
+        "end": 1826
+      },
+      "parameters": [
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1824
+        },
+        {
+          "expr": "obj",
+          "line": 1826
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDeviceAddressDrive",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1829,
+        "end": 1859
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressDrive",
+      "lineRange": {
+        "start": 1830,
+        "end": 1836
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressDrive",
+      "lineRange": {
+        "start": 1838,
+        "end": 1850
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "xml",
+          "line": 1850
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressDrive",
+      "lineRange": {
+        "start": 1852,
+        "end": 1856
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_address",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressDrive",
+      "lineRange": {
+        "start": 1858,
+        "end": 1859
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1859
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestDeviceAddressPCI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1862,
+        "end": 1896
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressPCI",
+      "lineRange": {
+        "start": 1863,
+        "end": 1869
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressPCI",
+      "lineRange": {
+        "start": 1871,
+        "end": 1883
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "xml",
+          "line": 1883
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressPCI",
+      "lineRange": {
+        "start": 1885,
+        "end": 1889
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_address",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestDeviceAddressPCI",
+      "lineRange": {
+        "start": 1891,
+        "end": 1896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "pci_utils.get_pci_address(self.domain[2:], self.bus[2:], self.slot[2:], self.function[2:])",
+          "line": 1893
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestInterface",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1899,
+        "end": 2175
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInterface",
+      "lineRange": {
+        "start": 1901,
+        "end": 1935
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInterface",
+      "lineRange": {
+        "start": 1937,
+        "end": 1953
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 1939
+        },
+        {
+          "expr": "( self.mac_addr == other.mac_addr and self.net_type == other.net_type and self.source_dev == other.source_dev and (self.net_type == 'vhostuser' or not self.target_dev or self.target_dev == other.targe",
+          "line": 1947
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInterface",
+      "lineRange": {
+        "start": 1955,
+        "end": 2078
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2078
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInterface",
+      "lineRange": {
+        "start": 2080,
+        "end": 2169
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_filter_param",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInterface",
+      "lineRange": {
+        "start": 2171,
+        "end": 2172
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_vport_param",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInterface",
+      "lineRange": {
+        "start": 2174,
+        "end": 2175
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestInput",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2178,
+        "end": 2193
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInput",
+      "lineRange": {
+        "start": 2180,
+        "end": 2185
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestInput",
+      "lineRange": {
+        "start": 2187,
+        "end": 2193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2193
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestGraphics",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2196,
+        "end": 2247
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestGraphics",
+      "lineRange": {
+        "start": 2198,
+        "end": 2212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestGraphics",
+      "lineRange": {
+        "start": 2214,
+        "end": 2247
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2247
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigSeclabel",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2250,
+        "end": 2265
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigSeclabel",
+      "lineRange": {
+        "start": 2252,
+        "end": 2256
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigSeclabel",
+      "lineRange": {
+        "start": 2258,
+        "end": 2265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "seclabel",
+          "line": 2265
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestVideo",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2268,
+        "end": 2292
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVideo",
+      "lineRange": {
+        "start": 2270,
+        "end": 2276
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVideo",
+      "lineRange": {
+        "start": 2278,
+        "end": 2292
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2292
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigMemoryBalloon",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2295,
+        "end": 2310
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigMemoryBalloon",
+      "lineRange": {
+        "start": 2296,
+        "end": 2301
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigMemoryBalloon",
+      "lineRange": {
+        "start": 2303,
+        "end": 2310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2310
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2313,
+        "end": 2333
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestController",
+      "lineRange": {
+        "start": 2315,
+        "end": 2321
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestController",
+      "lineRange": {
+        "start": 2323,
+        "end": 2333
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "controller",
+          "line": 2333
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestUSBHostController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2336,
+        "end": 2340
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestUSBHostController",
+      "lineRange": {
+        "start": 2338,
+        "end": 2340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestPCIeRootController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2343,
+        "end": 2349
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestPCIeRootController",
+      "lineRange": {
+        "start": 2345,
+        "end": 2349
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestPCIeRootPortController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2352,
+        "end": 2358
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestPCIeRootPortController",
+      "lineRange": {
+        "start": 2354,
+        "end": 2358
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestHostdev",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2361,
+        "end": 2384
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdev",
+      "lineRange": {
+        "start": 2362,
+        "end": 2370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdev",
+      "lineRange": {
+        "start": 2372,
+        "end": 2377
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2377
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdev",
+      "lineRange": {
+        "start": 2379,
+        "end": 2384
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(xmldoc)",
+          "line": 2384
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestHostdevPCI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2387,
+        "end": 2446
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevPCI",
+      "lineRange": {
+        "start": 2388,
+        "end": 2404
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevPCI",
+      "lineRange": {
+        "start": 2406,
+        "end": 2417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 2408
+        },
+        {
+          "expr": "( int(self.domain, 16) == int(other.domain, 16) and int(self.bus, 16) == int(other.bus, 16) and int(self.slot, 16) == int(other.slot, 16) and int(self.function, 16) == int(other.function, 16))",
+          "line": 2413
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevPCI",
+      "lineRange": {
+        "start": 2419,
+        "end": 2433
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2433
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevPCI",
+      "lineRange": {
+        "start": 2435,
+        "end": 2446
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestHostdevMDEV",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2449,
+        "end": 2481
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevMDEV",
+      "lineRange": {
+        "start": 2450,
+        "end": 2459
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevMDEV",
+      "lineRange": {
+        "start": 2461,
+        "end": 2470
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2470
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestHostdevMDEV",
+      "lineRange": {
+        "start": 2472,
+        "end": 2481
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 2481
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCharBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2484,
+        "end": 2513
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCharBase",
+      "lineRange": {
+        "start": 2486,
+        "end": 2493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCharBase",
+      "lineRange": {
+        "start": 2495,
+        "end": 2513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2513
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestChar",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2516,
+        "end": 2535
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestChar",
+      "lineRange": {
+        "start": 2518,
+        "end": 2522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestChar",
+      "lineRange": {
+        "start": 2524,
+        "end": 2535
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2535
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCharDeviceLog",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2538,
+        "end": 2556
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCharDeviceLog",
+      "lineRange": {
+        "start": 2541,
+        "end": 2545
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCharDeviceLog",
+      "lineRange": {
+        "start": 2547,
+        "end": 2550
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCharDeviceLog",
+      "lineRange": {
+        "start": 2552,
+        "end": 2556
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "log",
+          "line": 2556
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSerial",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2559,
+        "end": 2563
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSerial",
+      "lineRange": {
+        "start": 2561,
+        "end": 2563
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestConsole",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2566,
+        "end": 2570
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestConsole",
+      "lineRange": {
+        "start": 2568,
+        "end": 2570
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestChannel",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2573,
+        "end": 2590
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestChannel",
+      "lineRange": {
+        "start": 2575,
+        "end": 2580
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestChannel",
+      "lineRange": {
+        "start": 2582,
+        "end": 2590
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2590
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestWatchdog",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2593,
+        "end": 2607
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestWatchdog",
+      "lineRange": {
+        "start": 2594,
+        "end": 2599
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestWatchdog",
+      "lineRange": {
+        "start": 2601,
+        "end": 2607
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 2607
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUTuneVCPUPin",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2610,
+        "end": 2628
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneVCPUPin",
+      "lineRange": {
+        "start": 2612,
+        "end": 2618
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneVCPUPin",
+      "lineRange": {
+        "start": 2620,
+        "end": 2628
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2628
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUTuneEmulatorPin",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2631,
+        "end": 2647
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneEmulatorPin",
+      "lineRange": {
+        "start": 2633,
+        "end": 2638
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneEmulatorPin",
+      "lineRange": {
+        "start": 2640,
+        "end": 2647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2647
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUTuneIOThreadPin",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2650,
+        "end": 2669
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneIOThreadPin",
+      "lineRange": {
+        "start": 2652,
+        "end": 2658
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneIOThreadPin",
+      "lineRange": {
+        "start": 2660,
+        "end": 2669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2669
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUTuneVCPUSched",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2672,
+        "end": 2694
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneVCPUSched",
+      "lineRange": {
+        "start": 2674,
+        "end": 2681
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTuneVCPUSched",
+      "lineRange": {
+        "start": 2683,
+        "end": 2694
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2694
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestCPUTune",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2697,
+        "end": 2732
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTune",
+      "lineRange": {
+        "start": 2699,
+        "end": 2708
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestCPUTune",
+      "lineRange": {
+        "start": 2710,
+        "end": 2732
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2732
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMemoryBacking",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2735,
+        "end": 2770
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMemoryBacking",
+      "lineRange": {
+        "start": 2737,
+        "end": 2747
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMemoryBacking",
+      "lineRange": {
+        "start": 2749,
+        "end": 2770
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2770
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMemoryBackingPage",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2773,
+        "end": 2789
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMemoryBackingPage",
+      "lineRange": {
+        "start": 2775,
+        "end": 2780
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMemoryBackingPage",
+      "lineRange": {
+        "start": 2782,
+        "end": 2789
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "page",
+          "line": 2789
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMemoryTune",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2792,
+        "end": 2823
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMemoryTune",
+      "lineRange": {
+        "start": 2794,
+        "end": 2801
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMemoryTune",
+      "lineRange": {
+        "start": 2803,
+        "end": 2823
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2823
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestNUMATuneMemory",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2826,
+        "end": 2841
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestNUMATuneMemory",
+      "lineRange": {
+        "start": 2828,
+        "end": 2833
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestNUMATuneMemory",
+      "lineRange": {
+        "start": 2835,
+        "end": 2841
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2841
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestNUMATuneMemNode",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2844,
+        "end": 2861
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestNUMATuneMemNode",
+      "lineRange": {
+        "start": 2846,
+        "end": 2852
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestNUMATuneMemNode",
+      "lineRange": {
+        "start": 2854,
+        "end": 2861
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2861
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestNUMATune",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2864,
+        "end": 2881
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestNUMATune",
+      "lineRange": {
+        "start": 2866,
+        "end": 2871
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestNUMATune",
+      "lineRange": {
+        "start": 2873,
+        "end": 2881
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2881
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeature",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2884,
+        "end": 2893
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeature",
+      "lineRange": {
+        "start": 2886,
+        "end": 2888
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeature",
+      "lineRange": {
+        "start": 2890,
+        "end": 2893
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 2892
+        },
+        {
+          "expr": "other.root_name == self.root_name",
+          "line": 2893
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureACPI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2896,
+        "end": 2900
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureACPI",
+      "lineRange": {
+        "start": 2898,
+        "end": 2900
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureAPIC",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2903,
+        "end": 2907
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureAPIC",
+      "lineRange": {
+        "start": 2905,
+        "end": 2907
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureKvmHidden",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2910,
+        "end": 2921
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureKvmHidden",
+      "lineRange": {
+        "start": 2912,
+        "end": 2914
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureKvmHidden",
+      "lineRange": {
+        "start": 2916,
+        "end": 2921
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2921
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureSMM",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2924,
+        "end": 2939
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureSMM",
+      "lineRange": {
+        "start": 2926,
+        "end": 2932
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureSMM",
+      "lineRange": {
+        "start": 2934,
+        "end": 2939
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2939
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureTCG",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2942,
+        "end": 2954
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureTCG",
+      "lineRange": {
+        "start": 2944,
+        "end": 2947
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cache_size"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureTCG",
+      "lineRange": {
+        "start": 2949,
+        "end": 2954
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2954
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeaturePMU",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2957,
+        "end": 2970
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeaturePMU",
+      "lineRange": {
+        "start": 2959,
+        "end": 2965
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeaturePMU",
+      "lineRange": {
+        "start": 2967,
+        "end": 2970
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2970
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureIOAPIC",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2973,
+        "end": 2982
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureIOAPIC",
+      "lineRange": {
+        "start": 2975,
+        "end": 2977
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureIOAPIC",
+      "lineRange": {
+        "start": 2979,
+        "end": 2982
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 2982
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureHyperV",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2985,
+        "end": 3044
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MIN_SPINLOCK_RETRIES",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestFeatureHyperV",
+      "lineRange": {
+        "start": 2988,
+        "end": 2988
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SPOOFED_VENDOR_ID",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestFeatureHyperV",
+      "lineRange": {
+        "start": 2990,
+        "end": 2990
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureHyperV",
+      "lineRange": {
+        "start": 2992,
+        "end": 3010
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureHyperV",
+      "lineRange": {
+        "start": 3012,
+        "end": 3044
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 3044
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSEVLaunchSecurity",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3047,
+        "end": 3078
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_POLICY_NODEBG",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3050,
+        "end": 3050
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_POLICY_NOKS",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3051,
+        "end": 3051
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_POLICY_ES",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3052,
+        "end": 3052
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_POLICY_NOSEND",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3053,
+        "end": 3053
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_POLICY_DOMAIN",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3054,
+        "end": 3054
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_POLICY_SEV",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3055,
+        "end": 3055
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEFAULT_SEV_POLICY",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3057,
+        "end": 3059
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEFAULT_SEV_ES_POLICY",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3060,
+        "end": 3061
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3063,
+        "end": 3068
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSEVLaunchSecurity",
+      "lineRange": {
+        "start": 3070,
+        "end": 3078
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 3078
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSEVSNPLaunchSecurity",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3081,
+        "end": 3108
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_SNP_POLICY_SMT",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVSNPLaunchSecurity",
+      "lineRange": {
+        "start": 3082,
+        "end": 3082
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_SNP_POLICY_RESERVED",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVSNPLaunchSecurity",
+      "lineRange": {
+        "start": 3083,
+        "end": 3083
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEFAULT_SEV_SNP_POLICY",
+      "kind": "constant",
+      "scope": "LibvirtConfigGuestSEVSNPLaunchSecurity",
+      "lineRange": {
+        "start": 3085,
+        "end": 3086
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSEVSNPLaunchSecurity",
+      "lineRange": {
+        "start": 3088,
+        "end": 3094
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSEVSNPLaunchSecurity",
+      "lineRange": {
+        "start": 3096,
+        "end": 3108
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 3108
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestTDXLaunchSecurity",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3111,
+        "end": 3131
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestTDXLaunchSecurity",
+      "lineRange": {
+        "start": 3118,
+        "end": 3120
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestTDXLaunchSecurity",
+      "lineRange": {
+        "start": 3122,
+        "end": 3131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 3131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestFeatureVMCoreInfo",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3134,
+        "end": 3137
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestFeatureVMCoreInfo",
+      "lineRange": {
+        "start": 3136,
+        "end": 3137
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3140,
+        "end": 3509
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3142,
+        "end": 3188
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_basic_props",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3190,
+        "end": 3215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_os",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3217,
+        "end": 3291
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_features",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3293,
+        "end": 3298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_devices",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3300,
+        "end": 3306
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 3302
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_idmaps",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3308,
+        "end": 3314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 3310
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_perf_events",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3316,
+        "end": 3323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 3318
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_sev",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3325,
+        "end": 3327
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "root"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3329,
+        "end": 3363
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 3363
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_parse_basic_props",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3365,
+        "end": 3377
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_parse_os",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3379,
+        "end": 3423
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3425,
+        "end": 3497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_feature",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3499,
+        "end": 3500
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "LibvirtConfigGuestFeature"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_device",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3502,
+        "end": 3503
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "LibvirtConfigGuestDevice"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_perf_event",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3505,
+        "end": 3506
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "event"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_clock",
+      "kind": "method",
+      "scope": "LibvirtConfigGuest",
+      "lineRange": {
+        "start": 3508,
+        "end": 3509
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "clk"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSnapshot",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3512,
+        "end": 3538
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSnapshot",
+      "lineRange": {
+        "start": 3514,
+        "end": 3520
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSnapshot",
+      "lineRange": {
+        "start": 3522,
+        "end": 3535
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ss",
+          "line": 3535
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_disk",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSnapshot",
+      "lineRange": {
+        "start": 3537,
+        "end": 3538
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "disk"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDevice",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3541,
+        "end": 3588
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevice",
+      "lineRange": {
+        "start": 3544,
+        "end": 3553
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevice",
+      "lineRange": {
+        "start": 3555,
+        "end": 3563
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 3563
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevice",
+      "lineRange": {
+        "start": 3565,
+        "end": 3588
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDeviceVDPACap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3591,
+        "end": 3601
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVDPACap",
+      "lineRange": {
+        "start": 3592,
+        "end": 3595
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVDPACap",
+      "lineRange": {
+        "start": 3597,
+        "end": 3601
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDevicePciCap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3604,
+        "end": 3671
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevicePciCap",
+      "lineRange": {
+        "start": 3607,
+        "end": 3625
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevicePciCap",
+      "lineRange": {
+        "start": 3627,
+        "end": 3667
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pci_address",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevicePciCap",
+      "lineRange": {
+        "start": 3669,
+        "end": 3671
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"%04x:%02x:%02x.%01x\" % ( self.domain, self.bus, self.slot, self.function)",
+          "line": 3670
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDevicePciSubFunctionCap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3674,
+        "end": 3689
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevicePciSubFunctionCap",
+      "lineRange": {
+        "start": 3675,
+        "end": 3679
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDevicePciSubFunctionCap",
+      "lineRange": {
+        "start": 3681,
+        "end": 3689
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDeviceMdevCapableSubFunctionCap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3692,
+        "end": 3716
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceMdevCapableSubFunctionCap",
+      "lineRange": {
+        "start": 3693,
+        "end": 3700
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceMdevCapableSubFunctionCap",
+      "lineRange": {
+        "start": 3702,
+        "end": 3716
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDeviceMdevInformation",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3719,
+        "end": 3751
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceMdevInformation",
+      "lineRange": {
+        "start": 3720,
+        "end": 3725
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceMdevInformation",
+      "lineRange": {
+        "start": 3727,
+        "end": 3740
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 3740
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceMdevInformation",
+      "lineRange": {
+        "start": 3742,
+        "end": 3751
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigNodeDeviceVpdCap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3754,
+        "end": 3846
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3756,
+        "end": 3767
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_custom_field",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3770,
+        "end": 3773
+      },
+      "parameters": [
+        {
+          "name": "fields_dict"
+        },
+        {
+          "name": "field_element"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_parse_ro_fields",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3775,
+        "end": 3786
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fields_element"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_parse_rw_fields",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3788,
+        "end": 3795
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fields_element"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3797,
+        "end": 3810
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "card_name",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3813,
+        "end": 3814
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._card_name",
+          "line": 3814
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "change_level",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3817,
+        "end": 3818
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._change_level",
+          "line": 3818
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "manufacture_id",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3821,
+        "end": 3822
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._manufacture_id",
+          "line": 3822
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "part_number",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3825,
+        "end": 3826
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._part_number",
+          "line": 3826
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "card_serial_number",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3829,
+        "end": 3830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._serial_number",
+          "line": 3830
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "asset_tag",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3833,
+        "end": 3834
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._asset_tag",
+          "line": 3834
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ro_vendor_fields",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3837,
+        "end": 3838
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._ro_vendor_fields",
+          "line": 3838
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rw_vendor_fields",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3841,
+        "end": 3842
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._rw_vendor_fields",
+          "line": 3842
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rw_system_fields",
+      "kind": "method",
+      "scope": "LibvirtConfigNodeDeviceVpdCap",
+      "lineRange": {
+        "start": 3845,
+        "end": 3846
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._rw_system_fields",
+          "line": 3846
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestRng",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3849,
+        "end": 3877
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestRng",
+      "lineRange": {
+        "start": 3851,
+        "end": 3859
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestRng",
+      "lineRange": {
+        "start": 3861,
+        "end": 3877
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev",
+          "line": 3877
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaInstance",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3880,
+        "end": 3925
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaInstance",
+      "lineRange": {
+        "start": 3882,
+        "end": 3896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaInstance",
+      "lineRange": {
+        "start": 3898,
+        "end": 3925
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 3925
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaFlavor",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3928,
+        "end": 3963
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaFlavor",
+      "lineRange": {
+        "start": 3930,
+        "end": 3943
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaFlavor",
+      "lineRange": {
+        "start": 3945,
+        "end": 3963
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 3963
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaFlavorExtraSpecs",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3966,
+        "end": 3981
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaFlavorExtraSpecs",
+      "lineRange": {
+        "start": 3968,
+        "end": 3972
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaFlavorExtraSpecs",
+      "lineRange": {
+        "start": 3974,
+        "end": 3981
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 3981
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaImage",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3984,
+        "end": 4013
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaImage",
+      "lineRange": {
+        "start": 3986,
+        "end": 3997
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaImage",
+      "lineRange": {
+        "start": 3999,
+        "end": 4013
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4013
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaImageProperties",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4016,
+        "end": 4031
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaImageProperties",
+      "lineRange": {
+        "start": 4018,
+        "end": 4022
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaImageProperties",
+      "lineRange": {
+        "start": 4024,
+        "end": 4031
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4031
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaOwner",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4034,
+        "end": 4057
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaOwner",
+      "lineRange": {
+        "start": 4036,
+        "end": 4045
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaOwner",
+      "lineRange": {
+        "start": 4047,
+        "end": 4057
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4057
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigSecret",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4060,
+        "end": 4089
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigSecret",
+      "lineRange": {
+        "start": 4062,
+        "end": 4070
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigSecret",
+      "lineRange": {
+        "start": 4072,
+        "end": 4089
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root",
+          "line": 4089
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestVPMEM",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4092,
+        "end": 4146
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVPMEM",
+      "lineRange": {
+        "start": 4093,
+        "end": 4105
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVPMEM",
+      "lineRange": {
+        "start": 4107,
+        "end": 4129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "memory",
+          "line": 4129
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestVPMEM",
+      "lineRange": {
+        "start": 4131,
+        "end": 4146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestIOMMU",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4149,
+        "end": 4193
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestIOMMU",
+      "lineRange": {
+        "start": 4152,
+        "end": 4159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestIOMMU",
+      "lineRange": {
+        "start": 4161,
+        "end": 4178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "iommu",
+          "line": 4178
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestIOMMU",
+      "lineRange": {
+        "start": 4180,
+        "end": 4193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmldoc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaPorts",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4196,
+        "end": 4208
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaPorts",
+      "lineRange": {
+        "start": 4198,
+        "end": 4202
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaPorts",
+      "lineRange": {
+        "start": 4204,
+        "end": 4208
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4208
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaPort",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4211,
+        "end": 4225
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaPort",
+      "lineRange": {
+        "start": 4213,
+        "end": 4218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "ips"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaPort",
+      "lineRange": {
+        "start": 4220,
+        "end": 4225
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4225
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestMetaNovaIp",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4228,
+        "end": 4243
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaIp",
+      "lineRange": {
+        "start": 4230,
+        "end": 4236
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ip_type"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "name": "ip_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestMetaNovaIp",
+      "lineRange": {
+        "start": 4238,
+        "end": 4243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4243
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestSound",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4246,
+        "end": 4255
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSound",
+      "lineRange": {
+        "start": 4248,
+        "end": 4250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "model"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestSound",
+      "lineRange": {
+        "start": 4252,
+        "end": 4255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4255
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtConfigGuestUSBRedirect",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4258,
+        "end": 4271
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestUSBRedirect",
+      "lineRange": {
+        "start": 4260,
+        "end": 4265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "format_dom",
+      "kind": "method",
+      "scope": "LibvirtConfigGuestUSBRedirect",
+      "lineRange": {
+        "start": 4267,
+        "end": 4271
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "meta",
+          "line": 4271
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 230,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "etree.Element",
+      "usage": "call",
+      "via": "lxml",
+      "count": 132,
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 89,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "etree.fromstring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 3,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "etree.tostring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 1,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 225,
+        "end": 225
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 300,
+        "end": 300
+      }
+    },
+    {
+      "name": "device",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 303,
+        "end": 303
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "RuntimeError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 358,
+        "end": 358
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 51,
+      "lineRange": {
+        "start": 377,
+        "end": 377
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 481,
+        "end": 481
+      }
+    },
+    {
+      "name": "hardware.parse_cpu_spec",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 3,
+      "lineRange": {
+        "start": 561,
+        "end": 561
+      }
+    },
+    {
+      "name": "hardware.format_cpu_spec",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 10,
+      "lineRange": {
+        "start": 574,
+        "end": 574
+      }
+    },
+    {
+      "name": "OrderedDict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 651,
+        "end": 651
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 858,
+        "end": 858
+      }
+    },
+    {
+      "name": "hash",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 866,
+        "end": 866
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 964,
+        "end": 964
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1312,
+        "end": 1312
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1345,
+        "end": 1345
+      }
+    },
+    {
+      "name": "pci_utils.get_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 2,
+      "lineRange": {
+        "start": 1893,
+        "end": 1893
+      }
+    },
+    {
+      "name": "pci_utils.get_pci_address_fields",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 2007,
+        "end": 2007
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2139,
+        "end": 2139
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 2965,
+        "end": 2965
+      }
+    },
+    {
+      "name": "time.strftime",
+      "usage": "call",
+      "via": "time",
+      "count": 1,
+      "lineRange": {
+        "start": 3907,
+        "end": 3907
+      }
+    },
+    {
+      "name": "time.gmtime",
+      "usage": "call",
+      "via": "time",
+      "count": 1,
+      "lineRange": {
+        "start": 3908,
+        "end": 3908
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 4005,
+        "end": 4005
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 4172,
+        "end": 4172
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [
+        {
+          "alias": null,
+          "name": "OrderedDict"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "lxml",
+      "names": [
+        {
+          "alias": null,
+          "name": "etree"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

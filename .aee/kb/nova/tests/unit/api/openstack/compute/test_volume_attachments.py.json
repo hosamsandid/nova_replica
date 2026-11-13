@@ -1,0 +1,3063 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_volume_attachments.py",
+  "hash": "f2b4c298e95fd68eda8135ef79d80a081000da0f5a924307e60cad58876b1ed7",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 161,
+    "code": 1330,
+    "comment": 43,
+    "total": 1534
+  },
+  "symbols": [
+    {
+      "name": "import datetime",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from webob import exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import api_version_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import common",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import volume_attachments",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import block_device as block_device_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.volume import cinder",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID_A",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID_B",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID_C",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_instance.fake_instance_obj( context, id=1, uuid=instance_id, project_id=context.project_id)",
+          "line": 53
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_volume",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'id': id, 'status': status, 'attach_status': attach_status, 'migration_status': migration_status }",
+          "line": 74
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_bdm_get_by_volume_and_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 81,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.BlockDeviceMapping._from_db_object( ctxt, objects.BlockDeviceMapping(), db_bdm)",
+          "line": 97
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachmentPaginationTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 102,
+        "end": 161
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachmentPaginationTest",
+      "lineRange": {
+        "start": 104,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pagination",
+      "kind": "method",
+      "scope": "VolumeAttachmentPaginationTest",
+      "lineRange": {
+        "start": 112,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "microversion"
+        },
+        {
+          "name": "mock_get_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_page",
+      "kind": "function",
+      "scope": "VolumeAttachmentPaginationTest.test_pagination",
+      "lineRange": {
+        "start": 136,
+        "end": 141
+      },
+      "parameters": [
+        {
+          "name": "query"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[item['volumeId'] for item in result['volumeAttachments']]",
+          "line": 141
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 164,
+        "end": 660
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 165,
+        "end": 165
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_prefix",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 168,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_request",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 188,
+        "end": 190
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "''",
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fakes.HTTPRequest.blank( self._prefix + url, version=self.microversion)",
+          "line": 189
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 192,
+        "end": 194
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_no_instance",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 199,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_mr"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_no_bdms",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 210,
+        "end": 215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_mr"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_bdms_no_mountpoint",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 217,
+        "end": 224
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 226,
+        "end": 244
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_vol_shelved_not_supported",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 247,
+        "end": 261
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_vol_shelved_supported",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 265,
+        "end": 278
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instance"
+        },
+        {
+          "name": "mock_detach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_vol_not_found",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 280,
+        "end": 288
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_vol_root",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 293,
+        "end": 299
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_isroot"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_volume_from_locked_server",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 302,
+        "end": 313
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_detach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_volume_compute_down",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 316,
+        "end": 327
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_detach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 329,
+        "end": 344
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_volume_attach_not_supported",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 348,
+        "end": 352
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_vol_shelved_not_supported",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 355,
+        "end": 367
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_vol_shelved_supported",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 372,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instance"
+        },
+        {
+          "name": "mock_attach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_with_auto_device",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 397,
+        "end": 409
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_to_locked_server",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 414,
+        "end": 430
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_bad_id",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 432,
+        "end": 445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_device_in_use",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 449,
+        "end": 459
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_without_volumeId",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 461,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_with_extra_arg",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 477,
+        "end": 485
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_with_invalid_input",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 488,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_swap",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 504,
+        "end": 506
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attachments"
+        },
+        {
+          "default": "uuids.source_swap_vol",
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "attachments.update(self.req, uuids.instance, uuid, body=body)",
+          "line": 506
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_for_locked_server",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 511,
+        "end": 524
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_swap_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 527,
+        "end": 546
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_swap_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_with_nonexistent_uri",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 548,
+        "end": 550
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_with_nonexistent_dest_in_body",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 553,
+        "end": 563
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_without_volumeId",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 565,
+        "end": 570
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_with_extra_arg",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 572,
+        "end": 579
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_for_bdm_not_found",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 588,
+        "end": 610
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm"
+        },
+        {
+          "name": "mock_swap_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_with_invalid_filter",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 612,
+        "end": 617
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_non_int_limit",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 619,
+        "end": 620
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 622,
+        "end": 623
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 625,
+        "end": 627
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_non_int_offset",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 629,
+        "end": 630
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_string_offset",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 632,
+        "end": 633
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_with_invalid_string_offset",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 635,
+        "end": 637
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 641,
+        "end": 651
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_additional_filter",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV21",
+      "lineRange": {
+        "start": 655,
+        "end": 660
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV249",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 663,
+        "end": 699
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV249",
+      "lineRange": {
+        "start": 665,
+        "end": 669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_volume_attach_invalid_tag_comma",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV249",
+      "lineRange": {
+        "start": 671,
+        "end": 676
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_volume_attach_invalid_tag_slash",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV249",
+      "lineRange": {
+        "start": 678,
+        "end": 683
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_volume_attach_invalid_tag_too_long",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV249",
+      "lineRange": {
+        "start": 685,
+        "end": 691
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_volume_attach_valid_tag",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV249",
+      "lineRange": {
+        "start": 695,
+        "end": 699
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV260",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 702,
+        "end": 769
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV260",
+      "lineRange": {
+        "start": 705,
+        "end": 711
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_post_attach",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV260",
+      "lineRange": {
+        "start": 713,
+        "end": 721
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.controller.create(req, FAKE_UUID, body=body)",
+          "line": 721
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_with_multiattach_fails_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV260",
+      "lineRange": {
+        "start": 723,
+        "end": 736
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_with_multiattach_fails_not_supported_by_driver",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV260",
+      "lineRange": {
+        "start": 738,
+        "end": 754
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_with_multiattach_fails_for_shelved_offloaded_server",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV260",
+      "lineRange": {
+        "start": 756,
+        "end": 769
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV275",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 772,
+        "end": 799
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV275",
+      "lineRange": {
+        "start": 773,
+        "end": 773
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV275",
+      "lineRange": {
+        "start": 775,
+        "end": 783
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_additional_filter_old_version",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV275",
+      "lineRange": {
+        "start": 787,
+        "end": 793
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_additional_filter",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV275",
+      "lineRange": {
+        "start": 795,
+        "end": 799
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV279",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 802,
+        "end": 959
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 803,
+        "end": 803
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 805,
+        "end": 815
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_req",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 817,
+        "end": 824
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "default": "None",
+          "name": "microversion"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "req",
+          "line": 824
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_attach_pre_v279",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 826,
+        "end": 836
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_pre_v279",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 839,
+        "end": 850
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_with_delete_on_termination_default_value",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 853,
+        "end": 871
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_attach_invalid_delete_on_termination_empty",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 873,
+        "end": 881
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_attach_invalid_delete_on_termination_value",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 883,
+        "end": 899
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_v279",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 902,
+        "end": 916
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_pre_v279",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 918,
+        "end": 927
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_pre_v279",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV279",
+      "lineRange": {
+        "start": 930,
+        "end": 959
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV285",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 962,
+        "end": 1326
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 963,
+        "end": 963
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 968,
+        "end": 984
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save_bdm"
+        },
+        {
+          "name": "mock_get_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_volume_with_extra_arg",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 986,
+        "end": 996
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1002,
+        "end": 1028
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        },
+        {
+          "name": "mock_swap"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_bool_from_string",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1034,
+        "end": 1076
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        },
+        {
+          "name": "mock_swap"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_swap",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1082,
+        "end": 1109
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        },
+        {
+          "name": "mock_swap"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_swap_only_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1115,
+        "end": 1138
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        },
+        {
+          "name": "mock_swap"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_invalid_volume_id",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1144,
+        "end": 1152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_mr"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_changed_attachment_id",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1156,
+        "end": 1179
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_changed_attachment_id_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1183,
+        "end": 1195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_changed_serverId",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1199,
+        "end": 1222
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_changed_serverId_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1226,
+        "end": 1238
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_changed_device",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1242,
+        "end": 1264
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_device_name_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1266,
+        "end": 1276
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_changed_tag",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1280,
+        "end": 1302
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_vol_and_inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_tag_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1304,
+        "end": 1314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_with_delete_flag_old_microversion",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV285",
+      "lineRange": {
+        "start": 1316,
+        "end": 1326
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV289",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1329,
+        "end": 1438
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV289",
+      "lineRange": {
+        "start": 1330,
+        "end": 1330
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV289",
+      "lineRange": {
+        "start": 1332,
+        "end": 1345
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_pre_v289",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV289",
+      "lineRange": {
+        "start": 1347,
+        "end": 1353
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_no_attachment_id",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV289",
+      "lineRange": {
+        "start": 1356,
+        "end": 1372
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV289",
+      "lineRange": {
+        "start": 1375,
+        "end": 1438
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VolumeAttachTestsV2101",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1441,
+        "end": 1458
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VolumeAttachTestsV2101",
+      "lineRange": {
+        "start": 1442,
+        "end": 1442
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV2101",
+      "lineRange": {
+        "start": 1444,
+        "end": 1446
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_atttach_volume_v2101",
+      "kind": "method",
+      "scope": "VolumeAttachTestsV2101",
+      "lineRange": {
+        "start": 1449,
+        "end": 1458
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach_volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SwapVolumeMultiattachTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1461,
+        "end": 1534
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_swap_multiattach_multiple_readonly_attachments_fails",
+      "kind": "method",
+      "scope": "SwapVolumeMultiattachTestCase",
+      "lineRange": {
+        "start": 1466,
+        "end": 1534
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_roll_detaching"
+        },
+        {
+          "name": "mock_begin_detaching"
+        },
+        {
+          "name": "mock_get_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_volume_get",
+      "kind": "function",
+      "scope": "SwapVolumeMultiattachTestCase.test_swap_multiattach_multiple_readonly_attachments_fails",
+      "lineRange": {
+        "start": 1473,
+        "end": 1497
+      },
+      "parameters": [
+        {
+          "name": "_context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'id': volume_id, 'size': 1, 'multiattach': True, 'migration_status': 'migrating', 'attachments': { uuids.server1: { 'attachment_id': uuids.attachment_id1, 'mountpoint': '/dev/vdb' }, uuids.server2: ",
+          "line": 1475
+        },
+        {
+          "expr": "{ 'id': volume_id, 'size': 1, 'attach_status': 'detached' }",
+          "line": 1492
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_attachment_get",
+      "kind": "function",
+      "scope": "SwapVolumeMultiattachTestCase.test_swap_multiattach_multiple_readonly_attachments_fails",
+      "lineRange": {
+        "start": 1499,
+        "end": 1500
+      },
+      "parameters": [
+        {
+          "name": "_context"
+        },
+        {
+          "name": "attachment_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'attach_mode': 'rw'}",
+          "line": 1500
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 7,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "exception.VolumeNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "exception.VolumeBDMNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "fake_block_device.FakeDbBlockDeviceDict",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMapping._from_db_object",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 15,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 105,
+        "end": 105
+      }
+    },
+    {
+      "name": "volume_attachments.VolumeAttachmentController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 8,
+      "lineRange": {
+        "start": 107,
+        "end": 107
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 1,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 53,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 121,
+        "end": 121
+      }
+    },
+    {
+      "name": "chr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 123,
+        "end": 123
+      }
+    },
+    {
+      "name": "ord",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 123,
+        "end": 123
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "api_version_request.APIVersionRequest",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 131,
+        "end": 131
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 12,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "jsonutils.dump_as_bytes",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 8,
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 198,
+        "end": 198
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 236,
+        "end": 236
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 14,
+      "lineRange": {
+        "start": 290,
+        "end": 290
+      }
+    },
+    {
+      "name": "exception.InstanceIsLocked",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 303,
+        "end": 303
+      }
+    },
+    {
+      "name": "test.MatchType",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "exception.ServiceUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      }
+    },
+    {
+      "name": "api_version_request.is_supported",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 6,
+      "lineRange": {
+        "start": 340,
+        "end": 340
+      }
+    },
+    {
+      "name": "exception.VolumeTaggedAttachNotSupported",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 347,
+        "end": 347
+      }
+    },
+    {
+      "name": "exception.DevicePathInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 448,
+        "end": 448
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 489,
+        "end": 489
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 4,
+      "lineRange": {
+        "start": 562,
+        "end": 562
+      }
+    },
+    {
+      "name": "map",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 686,
+        "end": 686
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 686,
+        "end": 686
+      }
+    },
+    {
+      "name": "fakes.HTTPRequestV21.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 715,
+        "end": 715
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 12,
+      "lineRange": {
+        "start": 736,
+        "end": 736
+      }
+    },
+    {
+      "name": "exception.MultiattachNotSupportedByVirtDriver",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 746,
+        "end": 746
+      }
+    },
+    {
+      "name": "datetime.datetime",
+      "usage": "call",
+      "via": "datetime",
+      "count": 1,
+      "lineRange": {
+        "start": 1505,
+        "end": 1505
+      }
+    },
+    {
+      "name": "test.nested",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1508,
+        "end": 1508
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "datetime",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [
+        {
+          "alias": null,
+          "name": "exc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "api_version_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "common"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "volume_attachments"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "block_device_obj",
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.volume",
+      "names": [
+        {
+          "alias": null,
+          "name": "cinder"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

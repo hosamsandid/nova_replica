@@ -1,0 +1,973 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_server_external_events.py",
+  "hash": "33fa625e11352dd193fdcd9800f3fd9e6aa4e5ac271ea9ae074f564b0a249254",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 45,
+    "code": 232,
+    "comment": 17,
+    "total": 294
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures as fx",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import server_external_events \\",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import instance as instance_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_instances",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_instance_uuids",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MISSING_UUID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_cells",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_instance_mappings",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_by_filters",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=[ inst for inst in fake_instances.values() if inst.uuid in filters['uuid']])",
+          "line": 60
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_by_instance_uuids",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 66,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceMappingList(objects=mappings)",
+          "line": 69
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerExternalEventsTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 76,
+        "end": 199
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "server_external_events",
+      "kind": "field",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "invalid_error",
+      "kind": "field",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 79,
+        "end": 79
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 81,
+        "end": 100
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_call",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 102,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "expected_uuids"
+        },
+        {
+          "name": "expected_events"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result, code",
+          "line": 131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 133,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_one_bad_instance",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 141,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_event_instance_has_no_host",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 151,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_no_good_instances",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 163,
+        "end": 171
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bad_status",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 173,
+        "end": 177
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_extra_gorp",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 179,
+        "end": 183
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bad_events",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 185,
+        "end": 188
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bad_body",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 190,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_unknown_events",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV21",
+      "lineRange": {
+        "start": 195,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerExternalEventsTestV251",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 206,
+        "end": 219
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerExternalEventsTestV251",
+      "lineRange": {
+        "start": 207,
+        "end": 207
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_missing_tag",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV251",
+      "lineRange": {
+        "start": 209,
+        "end": 219
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerExternalEventsTestV276",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 226,
+        "end": 263
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerExternalEventsTestV276",
+      "lineRange": {
+        "start": 227,
+        "end": 227
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV276",
+      "lineRange": {
+        "start": 229,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_missing_tag",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV276",
+      "lineRange": {
+        "start": 235,
+        "end": 248
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_event_auth_pre_2_76_fails",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV276",
+      "lineRange": {
+        "start": 250,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerExternalEventsTestV282",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 270,
+        "end": 294
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServerExternalEventsTestV282",
+      "lineRange": {
+        "start": 271,
+        "end": 271
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV282",
+      "lineRange": {
+        "start": 273,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_accelerator_request_bound_event",
+      "kind": "method",
+      "scope": "ServerExternalEventsTestV282",
+      "lineRange": {
+        "start": 278,
+        "end": 294
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "objects.InstanceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "objects.InstanceMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 8,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "fx.EnvironmentVariable",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 231,
+        "end": 231
+      }
+    },
+    {
+      "name": "fixtures.StandardLogging",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 2,
+      "lineRange": {
+        "start": 233,
+        "end": 233
+      }
+    },
+    {
+      "name": "fakes.HTTPRequestV21.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 256,
+        "end": 256
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 263,
+        "end": 263
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": "fx",
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "server_external_events_v21",
+          "name": "server_external_events"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "instance_obj",
+          "name": "instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

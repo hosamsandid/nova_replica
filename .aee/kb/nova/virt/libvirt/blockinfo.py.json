@@ -1,0 +1,1616 @@
+{
+  "file": "nova/virt/libvirt/blockinfo.py",
+  "hash": "3224e0ed3c62bec333b16e0850d1c252ad3401b024be8a342750c9a0d2fdf32c",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 164,
+    "code": 573,
+    "comment": 46,
+    "total": 783
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import operator",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base as obj_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import configdrive",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import utils as libvirt_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import osinfo",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "BOOT_DEV_FOR_TYPE",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 92,
+        "end": 93
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTED_DEVICE_BUSES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 96,
+        "end": 105
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTED_DEVICE_TYPES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_disk_dev",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 109,
+        "end": 123
+      },
+      "parameters": [
+        {
+          "name": "mapping"
+        },
+        {
+          "name": "disk_dev"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 122
+        },
+        {
+          "expr": "False",
+          "line": 123
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_dev_prefix_for_disk_bus",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 126,
+        "end": 157
+      },
+      "parameters": [
+        {
+          "name": "disk_bus"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.libvirt.disk_prefix",
+          "line": 139
+        },
+        {
+          "expr": "\"hd\"",
+          "line": 141
+        },
+        {
+          "expr": "\"vd\"",
+          "line": 143
+        },
+        {
+          "expr": "\"sd\"",
+          "line": 145
+        },
+        {
+          "expr": "\"sd\"",
+          "line": 147
+        },
+        {
+          "expr": "\"fd\"",
+          "line": 149
+        },
+        {
+          "expr": "None",
+          "line": 151
+        },
+        {
+          "expr": "\"sd\"",
+          "line": 153
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_dev_count_for_disk_bus",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 160,
+        "end": 175
+      },
+      "parameters": [
+        {
+          "name": "disk_bus"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "4",
+          "line": 171
+        },
+        {
+          "expr": "None",
+          "line": 174
+        },
+        {
+          "expr": "CONF.compute.max_disk_devices_to_attach",
+          "line": 175
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "find_disk_dev_for_disk_bus",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 178,
+        "end": 210
+      },
+      "parameters": [
+        {
+          "name": "mapping"
+        },
+        {
+          "name": "bus"
+        },
+        {
+          "default": "None",
+          "name": "assigned_devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 193
+        },
+        {
+          "expr": "disk_dev",
+          "line": 207
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_disk_bus_valid_for_virt",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 213,
+        "end": 216
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "disk_bus"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "disk_bus in SUPPORTED_DEVICE_BUSES[virt_type]",
+          "line": 216
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_disk_bus_for_device_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 219,
+        "end": 285
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "default": "\"disk\"",
+          "name": "device_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "disk_bus",
+          "line": 245
+        },
+        {
+          "expr": "\"scsi\"",
+          "line": 259
+        },
+        {
+          "expr": "\"sata\"",
+          "line": 267
+        },
+        {
+          "expr": "\"ide\"",
+          "line": 269
+        },
+        {
+          "expr": "\"virtio\"",
+          "line": 271
+        },
+        {
+          "expr": "\"fdc\"",
+          "line": 273
+        },
+        {
+          "expr": "\"lxc\"",
+          "line": 275
+        },
+        {
+          "expr": "\"ide\"",
+          "line": 278
+        },
+        {
+          "expr": "\"scsi\"",
+          "line": 280
+        },
+        {
+          "expr": "None",
+          "line": 285
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_disk_bus_for_disk_dev",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 288,
+        "end": 311
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "disk_dev"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"ide\"",
+          "line": 299
+        },
+        {
+          "expr": "\"scsi\"",
+          "line": 304
+        },
+        {
+          "expr": "\"virtio\"",
+          "line": 306
+        },
+        {
+          "expr": "\"fdc\"",
+          "line": 308
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_next_disk_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 314,
+        "end": 337
+      },
+      "parameters": [
+        {
+          "name": "mapping"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "default": "'disk'",
+          "name": "device_type"
+        },
+        {
+          "default": "None",
+          "name": "boot_index"
+        },
+        {
+          "default": "None",
+          "name": "assigned_devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "info",
+          "line": 337
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_eph_disk",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 340,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'disk.eph' + str(index)",
+          "line": 341
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config_drive_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 344,
+        "end": 361
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_drive_type",
+          "line": 361
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_info_from_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 364,
+        "end": 416
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "bdm"
+        },
+        {
+          "default": "None",
+          "name": "mapping"
+        },
+        {
+          "default": "None",
+          "name": "disk_bus"
+        },
+        {
+          "default": "None",
+          "name": "dev_type"
+        },
+        {
+          "default": "None",
+          "name": "allowed_types"
+        },
+        {
+          "default": "None",
+          "name": "assigned_devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bdm_info",
+          "line": 416
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 419,
+        "end": 424
+      },
+      "parameters": [
+        {
+          "name": "bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bdm.device_name",
+          "line": 422
+        },
+        {
+          "expr": "bdm.get('device_name') or bdm.get('mount_device')",
+          "line": 424
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_root_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 427,
+        "end": 460
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "root_bdm"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "cdrom_bus"
+        },
+        {
+          "default": "None",
+          "name": "root_device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'bus': root_device_bus, 'type': root_device_type, 'dev': block_device.strip_dev(root_device_name), 'boot_index': '1'}",
+          "line": 444
+        },
+        {
+          "expr": "get_info_from_bdm( instance, virt_type, image_meta, root_bdm_copy, {}, disk_bus, )",
+          "line": 458
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "default_device_names",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 463,
+        "end": 474
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_default_ephemeral_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 477,
+        "end": 485
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "name": "mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 480
+        },
+        {
+          "expr": "None",
+          "line": 484
+        },
+        {
+          "expr": "info",
+          "line": 485
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 488,
+        "end": 497
+      },
+      "parameters": [
+        {
+          "name": "bdm"
+        },
+        {
+          "name": "info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_disk_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 500,
+        "end": 527
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "cdrom_bus"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "False",
+          "name": "rescue"
+        },
+        {
+          "default": "None",
+          "name": "rescue_image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_rescue_disk_mapping( virt_type, instance, disk_bus, image_meta)",
+          "line": 514
+        },
+        {
+          "expr": "_get_stable_device_rescue_mapping( virt_type, instance, disk_bus, cdrom_bus, image_meta, block_device_info, rescue_image_meta)",
+          "line": 520
+        },
+        {
+          "expr": "_get_disk_mapping( virt_type, instance, disk_bus, cdrom_bus, image_meta, block_device_info)",
+          "line": 525
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_rescue_disk_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 530,
+        "end": 564
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mapping",
+          "line": 564
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_disk_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 567,
+        "end": 670
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "cdrom_bus"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mapping",
+          "line": 670
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_stable_device_rescue_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 673,
+        "end": 699
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "cdrom_bus"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "name": "rescue_image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mapping",
+          "line": 699
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_disk_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 702,
+        "end": 730
+      },
+      "parameters": [
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "False",
+          "name": "rescue"
+        },
+        {
+          "default": "None",
+          "name": "rescue_image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'disk_bus': disk_bus, 'cdrom_bus': cdrom_bus, 'mapping': mapping}",
+          "line": 728
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_boot_order",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 733,
+        "end": 744
+      },
+      "parameters": [
+        {
+          "name": "disk_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "uniq(boot_devs_dup)",
+          "line": 744
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "uniq",
+      "kind": "function",
+      "scope": "get_boot_order",
+      "lineRange": {
+        "start": 740,
+        "end": 742
+      },
+      "parameters": [
+        {
+          "name": "lst"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[el for el in lst if el not in s and not s.add(el)]",
+          "line": 742
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_rescue_device",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 747,
+        "end": 760
+      },
+      "parameters": [
+        {
+          "name": "rescue_image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rescue_device",
+          "line": 760
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_rescue_bus",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 763,
+        "end": 783
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "virt_type"
+        },
+        {
+          "name": "rescue_image_meta"
+        },
+        {
+          "name": "rescue_device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rescue_bus",
+          "line": 778
+        },
+        {
+          "expr": "get_disk_bus_for_device_type(instance, virt_type, rescue_image_meta, device_type=rescue_device)",
+          "line": 782
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "exception.InternalError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 155,
+        "end": 155
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 2,
+      "lineRange": {
+        "start": 156,
+        "end": 156
+      }
+    },
+    {
+      "name": "exception.TooManyDiskDevices",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 203,
+        "end": 203
+      }
+    },
+    {
+      "name": "block_device.generate_device_name",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 204,
+        "end": 204
+      }
+    },
+    {
+      "name": "exception.UnsupportedVirtType",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "osinfo.HardwareProperties",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      }
+    },
+    {
+      "name": "exception.UnsupportedHardware",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 243,
+        "end": 243
+      }
+    },
+    {
+      "name": "libvirt_utils.get_arch",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 250,
+        "end": 250
+      }
+    },
+    {
+      "name": "libvirt_utils.get_machine_type",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 260,
+        "end": 260
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 335,
+        "end": 335
+      }
+    },
+    {
+      "name": "exception.ConfigDriveUnknownFormat",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 358,
+        "end": 358
+      }
+    },
+    {
+      "name": "block_device.strip_dev",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 370,
+        "end": 370
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 413,
+        "end": 413
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 421,
+        "end": 421
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 449,
+        "end": 449
+      }
+    },
+    {
+      "name": "itertools.chain",
+      "usage": "call",
+      "via": "itertools",
+      "count": 2,
+      "lineRange": {
+        "start": 467,
+        "end": 467
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_ephemerals",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 3,
+      "lineRange": {
+        "start": 478,
+        "end": 478
+      }
+    },
+    {
+      "name": "block_device.volume_in_mapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 483,
+        "end": 483
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 493,
+        "end": 493
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 493,
+        "end": 493
+      }
+    },
+    {
+      "name": "block_device.prepend_dev",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 496,
+        "end": 496
+      }
+    },
+    {
+      "name": "configdrive.required_by",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 2,
+      "lineRange": {
+        "start": 553,
+        "end": 553
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_image",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 4,
+      "lineRange": {
+        "start": 583,
+        "end": 583
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_swap",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 2,
+      "lineRange": {
+        "start": 585,
+        "end": 585
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_mapping",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 4,
+      "lineRange": {
+        "start": 586,
+        "end": 586
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 596,
+        "end": 596
+      }
+    },
+    {
+      "name": "block_device.get_root_bdm",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 599,
+        "end": 599
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_root_device",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 602,
+        "end": 602
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 628,
+        "end": 628
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 737,
+        "end": 737
+      }
+    },
+    {
+      "name": "operator.itemgetter",
+      "usage": "call",
+      "via": "operator",
+      "count": 1,
+      "lineRange": {
+        "start": 738,
+        "end": 738
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 741,
+        "end": 741
+      }
+    },
+    {
+      "name": "exception.UnsupportedRescueDevice",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 759,
+        "end": 759
+      }
+    },
+    {
+      "name": "exception.UnsupportedRescueBus",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 780,
+        "end": 780
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "alias": null,
+      "module": "operator",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "configdrive"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "osinfo"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

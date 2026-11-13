@@ -1,0 +1,681 @@
+{
+  "file": "nova/virt/libvirt/volume/vzstorage.py",
+  "hash": "31a2bb8a20102bfe17580cc62c24e1f4c97ea0224d403732dba922a7a78078e4",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 27,
+    "code": 90,
+    "comment": 22,
+    "total": 139
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import warnings",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from os_brick import initiator",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from os_brick.initiator import connector",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt.volume import fs",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VzShare",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtVZStorageVolumeDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 139
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SHARE_FORMAT_REGEX",
+      "kind": "constant",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SHARE_LOCK_NAME",
+      "kind": "constant",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 40,
+        "end": 67
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mount_point_base",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 69,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.libvirt.vzstorage_mount_point_base",
+          "line": 70
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_config",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 72,
+        "end": 81
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "disk_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conf",
+          "line": 81
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_parse_vz_share",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 83,
+        "end": 97
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vz_share"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "VzShare(cluster_name=m.group(2), mds_list=mds_list, password=m.group(3))",
+          "line": 95
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mount_opts",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 99,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vz_share"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "' '.join(mount_opts)",
+          "line": 115
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "connect_volume",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 117,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_connect_volume(connection_info, instance)",
+          "line": 131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_connect_volume",
+      "kind": "function",
+      "scope": "LibvirtVZStorageVolumeDriver.connect_volume",
+      "lineRange": {
+        "start": 123,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disconnect_volume",
+      "kind": "method",
+      "scope": "LibvirtVZStorageVolumeDriver",
+      "lineRange": {
+        "start": 133,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "False",
+          "name": "force"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "name": "collections.namedtuple",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "fs.LibvirtBaseFileSystemVolumeDriver",
+      "usage": "inherit",
+      "via": "nova.virt.libvirt.volume",
+      "count": 1,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "warnings.warn",
+      "usage": "call",
+      "via": "warnings",
+      "count": 1,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 2,
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "name": "exception.InternalError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "connector.InitiatorConnector.factory",
+      "usage": "call",
+      "via": "os_brick.initiator",
+      "count": 1,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "utils.get_root_helper",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "name": "re.match",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "exception.InvalidVolume",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      }
+    },
+    {
+      "name": "utils.synchronized",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 122,
+        "end": 122
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "warnings",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_brick",
+      "names": [
+        {
+          "alias": null,
+          "name": "initiator"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_brick.initiator",
+      "names": [
+        {
+          "alias": null,
+          "name": "connector"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt.volume",
+      "names": [
+        {
+          "alias": null,
+          "name": "fs"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

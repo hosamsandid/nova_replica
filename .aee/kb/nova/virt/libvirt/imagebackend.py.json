@@ -1,0 +1,4044 @@
+{
+  "file": "nova/virt/libvirt/imagebackend.py",
+  "hash": "1a2a0dea4b2aebac90f5af2d96729c296517ee6ab2b666c2bb04bc2eef42221a",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 217,
+    "code": 1020,
+    "comment": 177,
+    "total": 1414
+  },
+  "symbols": [
+    {
+      "name": "import abc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import base64",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import contextlib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import errno",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import shutil",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from castellan import key_manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import processutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_service import loopingcall",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import fileutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.imageutils import format_inspector",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.image import glance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.privsep.libvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.privsep.path",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.storage import rbd_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.disk import api as disk",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.image import model as imgmodel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import images",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import config as vconfig",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt.storage import dmcrypt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt.storage import lvm",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import utils as libvirt_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "IMAGE_API",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_utime_ignore_eacces",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 79
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Image",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 546
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTS_CLONE",
+      "kind": "constant",
+      "scope": "Image",
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTS_LUKS",
+      "kind": "constant",
+      "scope": "Image",
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 87,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "source_type"
+        },
+        {
+          "name": "driver_format"
+        },
+        {
+          "default": "False",
+          "name": "is_block_dev"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_supports_encryption",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 131,
+        "end": 135
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 135
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 138,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_image",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 154,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "libvirt_info",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 162,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cache_mode"
+        },
+        {
+          "name": "extra_specs"
+        },
+        {
+          "default": "None",
+          "name": "boot_order"
+        },
+        {
+          "default": "None",
+          "name": "disk_unit"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "info",
+          "line": 209
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_scsi",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 211,
+        "end": 226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "info"
+        },
+        {
+          "name": "disk_unit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_qos",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 228,
+        "end": 236
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "info"
+        },
+        {
+          "name": "extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "libvirt_fs_info",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 238,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "default": "None",
+          "name": "driver_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "info",
+          "line": 263
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exists",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 265,
+        "end": 266
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "os.path.exists(self.path)",
+          "line": 266
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cache",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 268,
+        "end": 316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fetch_func"
+        },
+        {
+          "name": "filename"
+        },
+        {
+          "default": "None",
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fetch_func_sync",
+      "kind": "function",
+      "scope": "Image.cache",
+      "lineRange": {
+        "start": 288,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "target"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_can_fallocate",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 318,
+        "end": 332
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "can_fallocate",
+          "line": 332
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "verify_base_size",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 334,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "0",
+          "name": "base_size"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 350
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_disk_size",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 364,
+        "end": 365
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "disk.get_disk_size(name)",
+          "line": 365
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_extract",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 368,
+        "end": 377
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "out_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_driver_format",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 379,
+        "end": 380
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver_format",
+          "line": 380
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resolve_driver_format",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 382,
+        "end": 437
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "driver_format",
+          "line": 430
+        },
+        {
+          "expr": "driver_format",
+          "line": 437
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_dict_from_line",
+      "kind": "function",
+      "scope": "Image.resolve_driver_format",
+      "lineRange": {
+        "start": 391,
+        "end": 400
+      },
+      "parameters": [
+        {
+          "name": "line"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 393
+        },
+        {
+          "expr": "jsonutils.loads(line)",
+          "line": 395
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "write_to_disk_info_file",
+      "kind": "function",
+      "scope": "Image.resolve_driver_format",
+      "lineRange": {
+        "start": 404,
+        "end": 420
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_shared_block_storage",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 440,
+        "end": 442
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 442
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_file_in_instance_path",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 445,
+        "end": 447
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 447
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clone",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 449,
+        "end": 462
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_id_or_uri"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "flatten",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 464,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "direct_snapshot",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 472,
+        "end": 483
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "snapshot_name"
+        },
+        {
+          "name": "image_format"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "base_image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup_direct_snapshot",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 485,
+        "end": 492
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "location"
+        },
+        {
+          "default": "False",
+          "name": "also_destroy_volume"
+        },
+        {
+          "default": "False",
+          "name": "ignore_errors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_lock_name",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 494,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "base"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "os.path.split(base)[-1]",
+          "line": 496
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_model",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 499,
+        "end": 504
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import_file",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 506,
+        "end": 521
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "local_file"
+        },
+        {
+          "name": "remote_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_snap",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 523,
+        "end": 529
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_snap",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 531,
+        "end": 538
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "False",
+          "name": "ignore_errors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rollback_to_snap",
+      "kind": "method",
+      "scope": "Image",
+      "lineRange": {
+        "start": 540,
+        "end": 546
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Flat",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 549,
+        "end": 650
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 556,
+        "end": 572
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "disk_name"
+        },
+        {
+          "default": "None",
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_driver_format",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 574,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data.file_format",
+          "line": 577
+        },
+        {
+          "expr": "'raw'",
+          "line": 582
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_supports_encryption",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 584,
+        "end": 594
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 592
+        },
+        {
+          "expr": "True",
+          "line": 594
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "correct_format",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 596,
+        "end": 598
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 600,
+        "end": 635
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "copy_raw_image",
+      "kind": "function",
+      "scope": "Flat.create_image",
+      "lineRange": {
+        "start": 605,
+        "end": 608
+      },
+      "parameters": [
+        {
+          "name": "base"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_image",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 637,
+        "end": 639
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_extract",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 641,
+        "end": 642
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "out_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_file_in_instance_path",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 645,
+        "end": 646
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 646
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_model",
+      "kind": "method",
+      "scope": "Flat",
+      "lineRange": {
+        "start": 648,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imgmodel.LocalFileImage(self.path, imgmodel.FORMAT_RAW)",
+          "line": 649
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Qcow2",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 653,
+        "end": 752
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Qcow2",
+      "lineRange": {
+        "start": 654,
+        "end": 669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "disk_name"
+        },
+        {
+          "default": "None",
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "method",
+      "scope": "Qcow2",
+      "lineRange": {
+        "start": 671,
+        "end": 735
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_qcow2_image",
+      "kind": "function",
+      "scope": "Qcow2.create_image",
+      "lineRange": {
+        "start": 676,
+        "end": 678
+      },
+      "parameters": [
+        {
+          "name": "base"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_image",
+      "kind": "method",
+      "scope": "Qcow2",
+      "lineRange": {
+        "start": 737,
+        "end": 739
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_extract",
+      "kind": "method",
+      "scope": "Qcow2",
+      "lineRange": {
+        "start": 741,
+        "end": 744
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "out_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_file_in_instance_path",
+      "kind": "method",
+      "scope": "Qcow2",
+      "lineRange": {
+        "start": 747,
+        "end": 748
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 748
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_model",
+      "kind": "method",
+      "scope": "Qcow2",
+      "lineRange": {
+        "start": 750,
+        "end": 752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imgmodel.LocalFileImage(self.path, imgmodel.FORMAT_QCOW2)",
+          "line": 751
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Lvm",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 755,
+        "end": 897
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "escape",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 757,
+        "end": 758
+      },
+      "parameters": [
+        {
+          "name": "filename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "filename.replace('_', '__')",
+          "line": 758
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 760,
+        "end": 803
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "disk_name"
+        },
+        {
+          "default": "None",
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_supports_encryption",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 805,
+        "end": 806
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 806
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_can_fallocate",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 808,
+        "end": 809
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 809
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 811,
+        "end": 873
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "encrypt_lvm_image",
+      "kind": "function",
+      "scope": "Lvm.create_image",
+      "lineRange": {
+        "start": 813,
+        "end": 818
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_lvm_image",
+      "kind": "function",
+      "scope": "Lvm.create_image",
+      "lineRange": {
+        "start": 823,
+        "end": 843
+      },
+      "parameters": [
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_image",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 877,
+        "end": 878
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_volume_on_error",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 881,
+        "end": 890
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_extract",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 892,
+        "end": 894
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "out_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_model",
+      "kind": "method",
+      "scope": "Lvm",
+      "lineRange": {
+        "start": 896,
+        "end": 897
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imgmodel.LocalBlockImage(self.path)",
+          "line": 897
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Rbd",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 900,
+        "end": 1267
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTS_CLONE",
+      "kind": "constant",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 902,
+        "end": 902
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 904,
+        "end": 933
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "disk_name"
+        },
+        {
+          "default": "None",
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "libvirt_info",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 935,
+        "end": 975
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cache_mode"
+        },
+        {
+          "name": "extra_specs"
+        },
+        {
+          "default": "None",
+          "name": "boot_order"
+        },
+        {
+          "default": "None",
+          "name": "disk_unit"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "info",
+          "line": 975
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_can_fallocate",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 977,
+        "end": 978
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 978
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exists",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 980,
+        "end": 981
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.exists(self.rbd_name)",
+          "line": 981
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_disk_size",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 983,
+        "end": 989
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.size(self.rbd_name)",
+          "line": 989
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_remove_non_raw_cache_image",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 992,
+        "end": 1007
+      },
+      "parameters": [
+        {
+          "name": "base"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1000
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1009,
+        "end": 1023
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_image",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1025,
+        "end": 1026
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_extract",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1028,
+        "end": 1029
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "out_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_shared_block_storage",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1032,
+        "end": 1033
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1033
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "copy_to_store",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1035,
+        "end": 1103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_wait_for_copy",
+      "kind": "function",
+      "scope": "Rbd.copy_to_store",
+      "lineRange": {
+        "start": 1051,
+        "end": 1066
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1066
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clone",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1105,
+        "end": 1130
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_id_or_uri"
+        },
+        {
+          "default": "True",
+          "name": "copy_to_store"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.clone(location, self.rbd_name)",
+          "line": 1120
+        },
+        {
+          "expr": "self.clone(context, image_id_or_uri, copy_to_store=False)",
+          "line": 1126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "flatten",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1132,
+        "end": 1143
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_model",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1145,
+        "end": 1162
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imgmodel.RBDImage(self.rbd_name, self.driver.pool, self.driver.rbd_user, secret, servers)",
+          "line": 1158
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import_file",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1164,
+        "end": 1168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "local_file"
+        },
+        {
+          "name": "remote_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_snap",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1170,
+        "end": 1171
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.create_snap(self.rbd_name, name)",
+          "line": 1171
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_snap",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1173,
+        "end": 1174
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "False",
+          "name": "ignore_errors"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.remove_snap(self.rbd_name, name, ignore_errors)",
+          "line": 1174
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rollback_to_snap",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1176,
+        "end": 1177
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.rollback_to_snap(self.rbd_name, name)",
+          "line": 1177
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_parent_pool",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1179,
+        "end": 1216
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "base_image_id"
+        },
+        {
+          "name": "fsid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "parent_pool",
+          "line": 1216
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "direct_snapshot",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1218,
+        "end": 1252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "snapshot_name"
+        },
+        {
+          "name": "image_format"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "base_image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "('rbd://%(fsid)s/%(pool)s/%(image)s/snap' % dict(fsid=fsid, pool=parent_pool, image=image_id))",
+          "line": 1251
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup_direct_snapshot",
+      "kind": "method",
+      "scope": "Rbd",
+      "lineRange": {
+        "start": 1254,
+        "end": 1267
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "location"
+        },
+        {
+          "default": "False",
+          "name": "also_destroy_volume"
+        },
+        {
+          "default": "False",
+          "name": "ignore_errors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Ploop",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1270,
+        "end": 1360
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Ploop",
+      "lineRange": {
+        "start": 1271,
+        "end": 1281
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "disk_name"
+        },
+        {
+          "default": "None",
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "method",
+      "scope": "Ploop",
+      "lineRange": {
+        "start": 1285,
+        "end": 1346
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "safe"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1310
+        },
+        {
+          "expr": "",
+          "line": 1323
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_copy_ploop_image",
+      "kind": "function",
+      "scope": "Ploop.create_image",
+      "lineRange": {
+        "start": 1292,
+        "end": 1302
+      },
+      "parameters": [
+        {
+          "name": "base"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_image",
+      "kind": "method",
+      "scope": "Ploop",
+      "lineRange": {
+        "start": 1348,
+        "end": 1350
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_extract",
+      "kind": "method",
+      "scope": "Ploop",
+      "lineRange": {
+        "start": 1352,
+        "end": 1357
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "out_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_model",
+      "kind": "method",
+      "scope": "Ploop",
+      "lineRange": {
+        "start": 1359,
+        "end": 1360
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "connection"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imgmodel.LocalFileImage(self.path, imgmodel.FORMAT_PLOOP)",
+          "line": 1360
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Backend",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1363,
+        "end": 1414
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Backend",
+      "lineRange": {
+        "start": 1364,
+        "end": 1373
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "use_cow"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "backend",
+      "kind": "method",
+      "scope": "Backend",
+      "lineRange": {
+        "start": 1375,
+        "end": 1381
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "image_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image",
+          "line": 1381
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "by_name",
+      "kind": "method",
+      "scope": "Backend",
+      "lineRange": {
+        "start": 1383,
+        "end": 1401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "image_type"
+        },
+        {
+          "default": "None",
+          "name": "disk_info_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "backend( instance=instance, disk_name=name, disk_info_mapping=disk_info_mapping)",
+          "line": 1399
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "by_libvirt_path",
+      "kind": "method",
+      "scope": "Backend",
+      "lineRange": {
+        "start": 1403,
+        "end": 1414
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "image_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "backend(instance=instance, path=path)",
+          "line": 1414
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "glance.API",
+      "usage": "call",
+      "via": "nova.image",
+      "count": 1,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "nova.privsep.path.utime",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 14,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "exception.InternalError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os",
+      "count": 12,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "AttributeError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 172,
+        "end": 172
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestDisk",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestDiskEncryption",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 196,
+        "end": 196
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestDiskEncryptionSecret",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 197,
+        "end": 197
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestDeviceAddressDrive",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 221,
+        "end": 221
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 234,
+        "end": 234
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 236,
+        "end": 236
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestFilesys",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 245,
+        "end": 245
+      }
+    },
+    {
+      "name": "os.path.exists",
+      "usage": "call",
+      "via": "os",
+      "count": 18,
+      "lineRange": {
+        "start": 266,
+        "end": 266
+      }
+    },
+    {
+      "name": "fileutils.ensure_tree",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 284,
+        "end": 284
+      }
+    },
+    {
+      "name": "utils.synchronized",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 287,
+        "end": 287
+      }
+    },
+    {
+      "name": "fetch_func",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 301,
+        "end": 301
+      }
+    },
+    {
+      "name": "os.access",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 315,
+        "end": 315
+      }
+    },
+    {
+      "name": "processutils.execute",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 1,
+      "lineRange": {
+        "start": 316,
+        "end": 316
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 322,
+        "end": 322
+      }
+    },
+    {
+      "name": "processutils.trycmd",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 1,
+      "lineRange": {
+        "start": 325,
+        "end": 325
+      }
+    },
+    {
+      "name": "fileutils.delete_if_exists",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 326,
+        "end": 326
+      }
+    },
+    {
+      "name": "exception.FlavorDiskSmallerThanImage",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 361,
+        "end": 361
+      }
+    },
+    {
+      "name": "disk.get_disk_size",
+      "usage": "call",
+      "via": "nova.virt.disk",
+      "count": 2,
+      "lineRange": {
+        "start": 365,
+        "end": 365
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 377,
+        "end": 377
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 395,
+        "end": 395
+      }
+    },
+    {
+      "name": "exception.InvalidDiskInfo",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "os.open",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 406,
+        "end": 406
+      }
+    },
+    {
+      "name": "os.fdopen",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 407,
+        "end": 407
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 419,
+        "end": 419
+      }
+    },
+    {
+      "name": "os.rename",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 420,
+        "end": 420
+      }
+    },
+    {
+      "name": "open",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 425,
+        "end": 425
+      }
+    },
+    {
+      "name": "os.path.dirname",
+      "usage": "call",
+      "via": "os",
+      "count": 3,
+      "lineRange": {
+        "start": 433,
+        "end": 433
+      }
+    },
+    {
+      "name": "exception.DiskInfoReadWriteFail",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 436,
+        "end": 436
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 436,
+        "end": 436
+      }
+    },
+    {
+      "name": "exception.ImageUnacceptable",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 461,
+        "end": 461
+      }
+    },
+    {
+      "name": "os.path.split",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 496,
+        "end": 496
+      }
+    },
+    {
+      "name": "libvirt_utils.get_instance_path",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 560,
+        "end": 560
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 562,
+        "end": 562
+      }
+    },
+    {
+      "name": "strutils.to_slug",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 568,
+        "end": 568
+      }
+    },
+    {
+      "name": "images.qemu_img_info",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 2,
+      "lineRange": {
+        "start": 576,
+        "end": 576
+      }
+    },
+    {
+      "name": "libvirt_utils.copy_image",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 606,
+        "end": 606
+      }
+    },
+    {
+      "name": "prepare_template",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 614,
+        "end": 614
+      }
+    },
+    {
+      "name": "fileutils.remove_path_on_error",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 5,
+      "lineRange": {
+        "start": 632,
+        "end": 632
+      }
+    },
+    {
+      "name": "imgmodel.LocalFileImage",
+      "usage": "call",
+      "via": "nova.virt.image",
+      "count": 7,
+      "lineRange": {
+        "start": 638,
+        "end": 638
+      }
+    },
+    {
+      "name": "disk.extend",
+      "usage": "call",
+      "via": "nova.virt.disk",
+      "count": 4,
+      "lineRange": {
+        "start": 639,
+        "end": 639
+      }
+    },
+    {
+      "name": "images.convert_image",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 3,
+      "lineRange": {
+        "start": 642,
+        "end": 642
+      }
+    },
+    {
+      "name": "libvirt_utils.create_image",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 677,
+        "end": 677
+      }
+    },
+    {
+      "name": "images.get_image_format",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 691,
+        "end": 691
+      }
+    },
+    {
+      "name": "libvirt_utils.get_disk_backing_file",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 714,
+        "end": 714
+      }
+    },
+    {
+      "name": "os.path.basename",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 716,
+        "end": 716
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 720,
+        "end": 720
+      }
+    },
+    {
+      "name": "libvirt_utils.extract_snapshot",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 742,
+        "end": 742
+      }
+    },
+    {
+      "name": "key_manager.API",
+      "usage": "call",
+      "via": "castellan",
+      "count": 1,
+      "lineRange": {
+        "start": 767,
+        "end": 767
+      }
+    },
+    {
+      "name": "lvm.volume_info",
+      "usage": "call",
+      "via": "nova.virt.libvirt.storage",
+      "count": 1,
+      "lineRange": {
+        "start": 773,
+        "end": 773
+      }
+    },
+    {
+      "name": "RuntimeError",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 780,
+        "end": 780
+      }
+    },
+    {
+      "name": "dmcrypt.volume_name",
+      "usage": "call",
+      "via": "nova.virt.libvirt.storage",
+      "count": 1,
+      "lineRange": {
+        "start": 790,
+        "end": 790
+      }
+    },
+    {
+      "name": "dmcrypt.create_volume",
+      "usage": "call",
+      "via": "nova.virt.libvirt.storage",
+      "count": 1,
+      "lineRange": {
+        "start": 814,
+        "end": 814
+      }
+    },
+    {
+      "name": "lvm.create_volume",
+      "usage": "call",
+      "via": "nova.virt.libvirt.storage",
+      "count": 2,
+      "lineRange": {
+        "start": 828,
+        "end": 828
+      }
+    },
+    {
+      "name": "images.convert_image_unsafe",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 840,
+        "end": 840
+      }
+    },
+    {
+      "name": "disk.resize2fs",
+      "usage": "call",
+      "via": "nova.virt.disk",
+      "count": 1,
+      "lineRange": {
+        "start": 843,
+        "end": 843
+      }
+    },
+    {
+      "name": "lvm.remove_volumes",
+      "usage": "call",
+      "via": "nova.virt.libvirt.storage",
+      "count": 2,
+      "lineRange": {
+        "start": 887,
+        "end": 887
+      }
+    },
+    {
+      "name": "dmcrypt.delete_volume",
+      "usage": "call",
+      "via": "nova.virt.libvirt.storage",
+      "count": 1,
+      "lineRange": {
+        "start": 889,
+        "end": 889
+      }
+    },
+    {
+      "name": "imgmodel.LocalBlockImage",
+      "usage": "call",
+      "via": "nova.virt.image",
+      "count": 1,
+      "lineRange": {
+        "start": 897,
+        "end": 897
+      }
+    },
+    {
+      "name": "exception.InvalidDevicePath",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 916,
+        "end": 916
+      }
+    },
+    {
+      "name": "rbd_utils.RBDDriver",
+      "usage": "call",
+      "via": "nova.storage",
+      "count": 1,
+      "lineRange": {
+        "start": 920,
+        "end": 920
+      }
+    },
+    {
+      "name": "os.remove",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 1004,
+        "end": 1004
+      }
+    },
+    {
+      "name": "loopingcall.LoopingCallDone",
+      "usage": "call",
+      "via": "oslo_service",
+      "count": 2,
+      "lineRange": {
+        "start": 1055,
+        "end": 1055
+      }
+    },
+    {
+      "name": "loopingcall.FixedIntervalWithTimeoutLoopingCall",
+      "usage": "call",
+      "via": "oslo_service",
+      "count": 1,
+      "lineRange": {
+        "start": 1073,
+        "end": 1073
+      }
+    },
+    {
+      "name": "base64.b64encode",
+      "usage": "call",
+      "via": "base64",
+      "count": 1,
+      "lineRange": {
+        "start": 1150,
+        "end": 1150
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1156,
+        "end": 1156
+      }
+    },
+    {
+      "name": "imgmodel.RBDImage",
+      "usage": "call",
+      "via": "nova.virt.image",
+      "count": 1,
+      "lineRange": {
+        "start": 1158,
+        "end": 1158
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1233,
+        "end": 1233
+      }
+    },
+    {
+      "name": "nova.privsep.libvirt.ploop_restore_descriptor",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 1298,
+        "end": 1298
+      }
+    },
+    {
+      "name": "functools.partial",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 1306,
+        "end": 1306
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1363,
+        "end": 1363
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "abc",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "base64",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "contextlib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "errno",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "shutil",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "castellan",
+      "names": [
+        {
+          "alias": null,
+          "name": "key_manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "processutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_service",
+      "names": [
+        {
+          "alias": null,
+          "name": "loopingcall"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "fileutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.imageutils",
+      "names": [
+        {
+          "alias": null,
+          "name": "format_inspector"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.image",
+      "names": [
+        {
+          "alias": null,
+          "name": "glance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.privsep.libvirt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.privsep.path",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.storage",
+      "names": [
+        {
+          "alias": null,
+          "name": "rbd_utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.disk",
+      "names": [
+        {
+          "alias": "disk",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.image",
+      "names": [
+        {
+          "alias": "imgmodel",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "images"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "vconfig",
+          "name": "config"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt.storage",
+      "names": [
+        {
+          "alias": null,
+          "name": "dmcrypt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt.storage",
+      "names": [
+        {
+          "alias": null,
+          "name": "lvm"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

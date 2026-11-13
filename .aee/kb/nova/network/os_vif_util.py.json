@@ -1,0 +1,912 @@
+{
+  "file": "nova/network/os_vif_util.py",
+  "hash": "989c61c84328470af44367edc3caf46da190124cee13d7db9faa5f5b28d96c5a",
+  "language": "Python",
+  "component": "network",
+  "package": null,
+  "lines": {
+    "blank": 114,
+    "code": 396,
+    "comment": 41,
+    "total": 551
+  },
+  "symbols": [
+    {
+      "name": "from os_vif import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LEGACY_VIFS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vif_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vif['devname']",
+          "line": 53
+        },
+        {
+          "expr": "('nic' + vif['id'])[:model.NIC_NAME_LEN]",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_hybrid_bridge_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 68
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "('qbr' + vif['id'])[:model.NIC_NAME_LEN]",
+          "line": 68
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_vhostuser_settings",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        },
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "nova_to_osvif_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 91,
+        "end": 107
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "info",
+          "line": 107
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_ip",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 110,
+        "end": 120
+      },
+      "parameters": [
+        {
+          "name": "ip"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.fixed_ip.FixedIP( address=ip['address'], floating_ips=floating_ips)",
+          "line": 118
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_ips",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 123,
+        "end": 132
+      },
+      "parameters": [
+        {
+          "name": "ips"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.fixed_ip.FixedIPList( objects=[_nova_to_osvif_ip(ip) for ip in ips])",
+          "line": 131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_route",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 135,
+        "end": 153
+      },
+      "parameters": [
+        {
+          "name": "route"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 153
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_routes",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 156,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "routes"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.route.RouteList( objects=[_nova_to_osvif_route(route) for route in routes])",
+          "line": 164
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_subnet",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 168,
+        "end": 187
+      },
+      "parameters": [
+        {
+          "name": "subnet"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 187
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_subnets",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 190,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "subnets"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.subnet.SubnetList( objects=[_nova_to_osvif_subnet(subnet) for subnet in subnets])",
+          "line": 198
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_network",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 202,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "network"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "netobj",
+          "line": 233
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vif_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 236,
+        "end": 253
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        },
+        {
+          "name": "cls"
+        },
+        {
+          "name": "plugin"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls( id=vif['id'], address=vif['address'], network=_nova_to_osvif_network(vif['network']), has_traffic_filtering=vif.is_neutron_filtering_enabled(), preserve_on_delete=vif['preserve_on_delete'], activ",
+          "line": 245
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_representor_datapath_offload_settings",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 256,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        },
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vnic_direct_vif_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 273,
+        "end": 294
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        },
+        {
+          "name": "port_profile"
+        },
+        {
+          "name": "plugin"
+        },
+        {
+          "default": "True",
+          "name": "set_bridge"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 294
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_ovs_representor_port_profile",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 297,
+        "end": 312
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.vif.VIFPortProfileOVSRepresentor( interface_id=vif.get('ovs_interfaceid') or vif['id'], representor_name=_get_vif_name(vif), representor_address=vif[\"profile\"]['pci_slot'])",
+          "line": 309
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_vif_ovs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 316,
+        "end": 368
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 368
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_vif_agilio_ovs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 372,
+        "end": 394
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 394
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_vif_vhostuser",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 398,
+        "end": 446
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 421
+        },
+        {
+          "expr": "obj",
+          "line": 434
+        },
+        {
+          "expr": "obj",
+          "line": 440
+        },
+        {
+          "expr": "obj",
+          "line": 446
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_vif_ivs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 450,
+        "end": 464
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 464
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nova_to_osvif_vif_vrouter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 468,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj",
+          "line": 495
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "nova_to_osvif_vif",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 498,
+        "end": 551
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 519
+        },
+        {
+          "expr": "None",
+          "line": 531
+        },
+        {
+          "expr": "vif_obj",
+          "line": 551
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "exception.VifDetailsMissingVhostuserSockPath",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "name": "objects.instance_info.InstanceInfo",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      }
+    },
+    {
+      "name": "objects.fixed_ip.FixedIP",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "objects.fixed_ip.FixedIPList",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 131,
+        "end": 131
+      }
+    },
+    {
+      "name": "objects.route.Route",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 143,
+        "end": 143
+      }
+    },
+    {
+      "name": "objects.route.RouteList",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 164,
+        "end": 164
+      }
+    },
+    {
+      "name": "objects.subnet.Subnet",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 178,
+        "end": 178
+      }
+    },
+    {
+      "name": "objects.subnet.SubnetList",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 198,
+        "end": 198
+      }
+    },
+    {
+      "name": "objects.network.Network",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 210,
+        "end": 210
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 1,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "exception.NovaException",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 245,
+        "end": 245
+      }
+    },
+    {
+      "name": "objects.vif.DatapathOffloadRepresentor",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 267,
+        "end": 267
+      }
+    },
+    {
+      "name": "objects.vif.VIFPortProfileOVSRepresentor",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "objects.vif.VIFPortProfileOpenVSwitch",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 2,
+      "lineRange": {
+        "start": 319,
+        "end": 319
+      }
+    },
+    {
+      "name": "objects.vif.VIFPortProfileFPOpenVSwitch",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 401,
+        "end": 401
+      }
+    },
+    {
+      "name": "objects.vif.VIFPortProfileFPBridge",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 1,
+      "lineRange": {
+        "start": 413,
+        "end": 413
+      }
+    },
+    {
+      "name": "objects.vif.VIFPortProfileBase",
+      "usage": "call",
+      "via": "os_vif",
+      "count": 2,
+      "lineRange": {
+        "start": 480,
+        "end": 480
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 494,
+        "end": 494
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os_vif",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

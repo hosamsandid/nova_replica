@@ -1,0 +1,1513 @@
+{
+  "file": "nova/objects/base.py",
+  "hash": "4625f763328418d795beb76dd47946d5cb0d0502c48e66874f7653de60303676",
+  "language": "Python",
+  "component": "objects",
+  "package": null,
+  "lines": {
+    "blank": 73,
+    "code": 322,
+    "comment": 48,
+    "total": 443
+  },
+  "symbols": [
+    {
+      "name": "import contextlib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import datetime",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import traceback",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import netaddr",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import oslo_messaging as messaging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_versionedobjects import base as ovoo_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_versionedobjects import exception as ovoo_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "all_things_equal",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 52
+      },
+      "parameters": [
+        {
+          "name": "obj_a"
+        },
+        {
+          "name": "obj_b"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 40
+        },
+        {
+          "expr": "False",
+          "line": 46
+        },
+        {
+          "expr": "False",
+          "line": 51
+        },
+        {
+          "expr": "True",
+          "line": 52
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_attrname",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 59
+      },
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'_obj_' + name",
+          "line": 59
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "raise_on_too_new_values",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 68
+      },
+      "parameters": [
+        {
+          "name": "version"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "name": "new_values"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaObjectRegistry",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 104
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notification_classes",
+      "kind": "field",
+      "scope": "NovaObjectRegistry",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "registration_hook",
+      "kind": "method",
+      "scope": "NovaObjectRegistry",
+      "lineRange": {
+        "start": 74,
+        "end": 85
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cls"
+        },
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "register_notification",
+      "kind": "method",
+      "scope": "NovaObjectRegistry",
+      "lineRange": {
+        "start": 88,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "notification_cls"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "notification_cls",
+          "line": 95
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "register_notification_objects",
+      "kind": "method",
+      "scope": "NovaObjectRegistry",
+      "lineRange": {
+        "start": 98,
+        "end": 104
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remotable",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 107,
+        "end": 107
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_list",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaObjectDictCompat",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 109,
+        "end": 109
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaTimestampObject",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "object_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 113,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'%s<%s>' % (obj.obj_name(), ident)",
+          "line": 121
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "lazy_load_counter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 124,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "fn"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper",
+          "line": 138
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "lazy_load_counter",
+      "lineRange": {
+        "start": 127,
+        "end": 136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attrname"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fn(self, attrname)",
+          "line": 129
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaObject",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 141,
+        "end": 178
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "OBJ_SERIAL_NAMESPACE",
+      "kind": "constant",
+      "scope": "NovaObject",
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "OBJ_PROJECT_NAMESPACE",
+      "kind": "constant",
+      "scope": "NovaObject",
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_lazy_loads",
+      "kind": "field",
+      "scope": "NovaObject",
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "should_migrate_data",
+      "kind": "method",
+      "scope": "NovaObject",
+      "lineRange": {
+        "start": 162,
+        "end": 168
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_alternate_context",
+      "kind": "method",
+      "scope": "NovaObject",
+      "lineRange": {
+        "start": 172,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaPersistentObject",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 181,
+        "end": 191
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "NovaPersistentObject",
+      "lineRange": {
+        "start": 186,
+        "end": 191
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EphemeralObject",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 197,
+        "end": 220
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "EphemeralObject",
+      "lineRange": {
+        "start": 217,
+        "end": 220
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaEphemeralObject",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 223,
+        "end": 234
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ObjectListBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 237,
+        "end": 251
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_obj_primitive_key",
+      "kind": "method",
+      "scope": "ObjectListBase",
+      "lineRange": {
+        "start": 241,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "field"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'nova_object.%s' % field",
+          "line": 242
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_obj_primitive_field",
+      "kind": "method",
+      "scope": "ObjectListBase",
+      "lineRange": {
+        "start": 245,
+        "end": 251
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "default": "obj_fields.UnspecifiedDefault",
+          "name": "default"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "primitive[key]",
+          "line": 249
+        },
+        {
+          "expr": "primitive.get(key, default)",
+          "line": 251
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NovaObjectSerializer",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 254,
+        "end": 327
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "conductor",
+      "kind": "method",
+      "scope": "NovaObjectSerializer",
+      "lineRange": {
+        "start": 264,
+        "end": 268
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._conductor",
+          "line": 268
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import conductor",
+      "kind": "import",
+      "scope": "NovaObjectSerializer.conductor",
+      "lineRange": {
+        "start": 266,
+        "end": 266
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_object",
+      "kind": "method",
+      "scope": "NovaObjectSerializer",
+      "lineRange": {
+        "start": 270,
+        "end": 288
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "objprim"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._process_object(context, objprim)",
+          "line": 280
+        },
+        {
+          "expr": "objinst",
+          "line": 288
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_iterable",
+      "kind": "method",
+      "scope": "NovaObjectSerializer",
+      "lineRange": {
+        "start": 290,
+        "end": 310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "action_fn"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "iterable(**{k: action_fn(context, v) for k, v in values.items()})",
+          "line": 300
+        },
+        {
+          "expr": "iterable([action_fn(context, value) for value in values])",
+          "line": 310
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "serialize_entity",
+      "kind": "method",
+      "scope": "NovaObjectSerializer",
+      "lineRange": {
+        "start": 312,
+        "end": 319
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "entity"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "entity",
+          "line": 319
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "deserialize_entity",
+      "kind": "method",
+      "scope": "NovaObjectSerializer",
+      "lineRange": {
+        "start": 321,
+        "end": 327
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "entity"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "entity",
+          "line": 327
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_to_primitive",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 330,
+        "end": 349
+      },
+      "parameters": [
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[obj_to_primitive(x) for x in obj]",
+          "line": 337
+        },
+        {
+          "expr": "result",
+          "line": 343
+        },
+        {
+          "expr": "str(obj)",
+          "line": 345
+        },
+        {
+          "expr": "str(obj)",
+          "line": 347
+        },
+        {
+          "expr": "obj",
+          "line": 349
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_dict_of_lists",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 352,
+        "end": 371
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "list_cls"
+        },
+        {
+          "name": "obj_list"
+        },
+        {
+          "name": "item_key"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "obj_lists",
+          "line": 371
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "serialize_args",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 374,
+        "end": 408
+      },
+      "parameters": [
+        {
+          "name": "fn"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(functools.wraps(fn)(wrapper) if hasattr(fn, '__call__') else classmethod(wrapper))",
+          "line": 407
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "serialize_args",
+      "lineRange": {
+        "start": 376,
+        "end": 402
+      },
+      "parameters": [
+        {
+          "name": "obj"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fn(obj, *args, **kwargs)",
+          "line": 400
+        },
+        {
+          "expr": "fn.__get__(None, obj)(*args, **kwargs)",
+          "line": 402
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_equal_prims",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 411,
+        "end": 443
+      },
+      "parameters": [
+        {
+          "name": "obj_1"
+        },
+        {
+          "name": "obj_2"
+        },
+        {
+          "default": "None",
+          "name": "ignore"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "prim_1 == prim_2",
+          "line": 443
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_strip",
+      "kind": "function",
+      "scope": "obj_equal_prims",
+      "lineRange": {
+        "start": 426,
+        "end": 435
+      },
+      "parameters": [
+        {
+          "name": "prim"
+        },
+        {
+          "name": "keys"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "prim",
+          "line": 435
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "exception.ObjectActionError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "ovoo_base.VersionedObjectRegistry",
+      "usage": "inherit",
+      "via": "oslo_versionedobjects",
+      "count": 1,
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_tuple",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 79,
+        "end": 79
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 2,
+      "lineRange": {
+        "start": 126,
+        "end": 126
+      }
+    },
+    {
+      "name": "fn",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      }
+    },
+    {
+      "name": "ovoo_base.VersionedObject",
+      "usage": "inherit",
+      "via": "oslo_versionedobjects",
+      "count": 1,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 168,
+        "end": 168
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "obj_fields.DateTimeField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 187,
+        "end": 187
+      }
+    },
+    {
+      "name": "obj_fields.BooleanField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 190,
+        "end": 190
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 218,
+        "end": 218
+      }
+    },
+    {
+      "name": "ovoo_base.ObjectListBase",
+      "usage": "inherit",
+      "via": "oslo_versionedobjects",
+      "count": 1,
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      }
+    },
+    {
+      "name": "messaging.NoOpSerializer",
+      "usage": "inherit",
+      "via": "oslo_messaging",
+      "count": 1,
+      "lineRange": {
+        "start": 254,
+        "end": 254
+      }
+    },
+    {
+      "name": "conductor.API",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 267,
+        "end": 267
+      }
+    },
+    {
+      "name": "ovoo_base.obj_tree_get_versions",
+      "usage": "call",
+      "via": "oslo_versionedobjects",
+      "count": 1,
+      "lineRange": {
+        "start": 282,
+        "end": 282
+      }
+    },
+    {
+      "name": "issubclass",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 299,
+        "end": 299
+      }
+    },
+    {
+      "name": "action_fn",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 300,
+        "end": 300
+      }
+    },
+    {
+      "name": "iterable",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 300,
+        "end": 300
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 13,
+      "lineRange": {
+        "start": 313,
+        "end": 313
+      }
+    },
+    {
+      "name": "callable",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 345,
+        "end": 345
+      }
+    },
+    {
+      "name": "list_cls",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 365,
+        "end": 365
+      }
+    },
+    {
+      "name": "utils.strtime",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 377,
+        "end": 377
+      }
+    },
+    {
+      "name": "traceback.format_tb",
+      "usage": "call",
+      "via": "traceback",
+      "count": 1,
+      "lineRange": {
+        "start": 396,
+        "end": 396
+      }
+    },
+    {
+      "name": "classmethod",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 408,
+        "end": 408
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "contextlib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "datetime",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "traceback",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "netaddr",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": "messaging",
+      "module": "oslo_messaging",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_versionedobjects",
+      "names": [
+        {
+          "alias": "ovoo_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_versionedobjects",
+      "names": [
+        {
+          "alias": "ovoo_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "conductor"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 266,
+        "end": 266
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

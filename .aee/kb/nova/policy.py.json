@@ -1,0 +1,793 @@
+{
+  "file": "nova/policy.py",
+  "hash": "ddd3396bad4731e30f3759ef01de0f8a9a26bae79a69bcc1f95a7de57487362d",
+  "language": "Python",
+  "component": "nova",
+  "package": null,
+  "lines": {
+    "blank": 56,
+    "code": 189,
+    "comment": 40,
+    "total": 285
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import lockutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_policy import policy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ENFORCER",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "USER_BASED_RESOURCES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "saved_file_rules",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KEY_EXPR",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reset",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 49
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "policy_file"
+        },
+        {
+          "default": "None",
+          "name": "rules"
+        },
+        {
+          "default": "None",
+          "name": "default_rule"
+        },
+        {
+          "default": "True",
+          "name": "use_conf"
+        },
+        {
+          "default": "False",
+          "name": "suppress_deprecation_warnings"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_serialize_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sorted(result, key=lambda rule: rule[0])",
+          "line": 114
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_warning_for_deprecated_user_based_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 117,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 136,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "rules"
+        },
+        {
+          "default": "True",
+          "name": "overwrite"
+        },
+        {
+          "default": "False",
+          "name": "use_conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "authorize",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 149,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "default": "None",
+          "name": "target"
+        },
+        {
+          "default": "True",
+          "name": "do_raise"
+        },
+        {
+          "default": "None",
+          "name": "exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 206
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "default_target",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 209,
+        "end": 210
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'project_id': context.project_id, 'user_id': context.user_id}",
+          "line": 210
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_is_admin",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 213,
+        "end": 221
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_ENFORCER.authorize('context_is_admin', target, context)",
+          "line": 221
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "IsAdminCheck",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 225,
+        "end": 238
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "IsAdminCheck",
+      "lineRange": {
+        "start": 228,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "kind"
+        },
+        {
+          "name": "match"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__call__",
+      "kind": "method",
+      "scope": "IsAdminCheck",
+      "lineRange": {
+        "start": 235,
+        "end": 238
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "creds"
+        },
+        {
+          "name": "enforcer"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "creds['is_admin'] == self.expected",
+          "line": 238
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 241,
+        "end": 243
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_ENFORCER.rules",
+          "line": 243
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "register_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 246,
+        "end": 247
+      },
+      "parameters": [
+        {
+          "name": "enforcer"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_enforcer",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 250,
+        "end": 255
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_ENFORCER",
+          "line": 255
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "verify_deprecated_policy",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 258,
+        "end": 285
+      },
+      "parameters": [
+        {
+          "name": "old_policy"
+        },
+        {
+          "name": "new_policy"
+        },
+        {
+          "name": "default_rule"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 283
+        },
+        {
+          "expr": "False",
+          "line": 285
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "lockutils.lock",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 1,
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      }
+    },
+    {
+      "name": "policy.Enforcer",
+      "usage": "call",
+      "via": "oslo_policy",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 105,
+        "end": 105
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 192,
+        "end": 192
+      }
+    },
+    {
+      "name": "exc",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 199,
+        "end": 199
+      }
+    },
+    {
+      "name": "policy.register",
+      "usage": "call",
+      "via": "oslo_policy",
+      "count": 1,
+      "lineRange": {
+        "start": 224,
+        "end": 224
+      }
+    },
+    {
+      "name": "policy.Check",
+      "usage": "inherit",
+      "via": "oslo_policy",
+      "count": 1,
+      "lineRange": {
+        "start": 225,
+        "end": 225
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 233,
+        "end": 233
+      }
+    },
+    {
+      "name": "policies.list_rules",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 247,
+        "end": 247
+      }
+    },
+    {
+      "name": "cfg.CONF",
+      "usage": "call",
+      "via": "oslo_config",
+      "count": 1,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "lockutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_policy",
+      "names": [
+        {
+          "alias": null,
+          "name": "policy"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "policies"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

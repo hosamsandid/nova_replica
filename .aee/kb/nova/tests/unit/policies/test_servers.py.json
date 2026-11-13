@@ -1,0 +1,2887 @@
+{
+  "file": "nova/tests/unit/policies/test_servers.py",
+  "hash": "69560bde4dbf7292de87515382734cefaa20e7b1b6fb26c048169302e107f322",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 142,
+    "code": 1135,
+    "comment": 139,
+    "total": 1416
+  },
+  "symbols": [
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import migrate_server",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import servers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects.instance_group import InstanceGroup",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import base as base_policy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import extended_server_attributes as ea_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import servers as policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_flavor",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.policies import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_add_security_grps",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 48
+      },
+      "parameters": [
+        {
+          "name": "req"
+        },
+        {
+          "name": "servers"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "default": "False",
+          "name": "create_request"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServersPolicyTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 1376
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 59,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 191,
+        "end": 210
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_index_server_policy",
+      "lineRange": {
+        "start": 193,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 199
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_all_project_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 212,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_index_all_project_server_policy",
+      "lineRange": {
+        "start": 221,
+        "end": 227
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 227
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detail_list_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 240,
+        "end": 259
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_detail_list_server_policy",
+      "lineRange": {
+        "start": 242,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 248
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detail_list_all_project_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 261,
+        "end": 286
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_detail_list_all_project_server_policy",
+      "lineRange": {
+        "start": 270,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 276
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_server_allow_all_filters_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 288,
+        "end": 314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_index_server_allow_all_filters_policy",
+      "lineRange": {
+        "start": 295,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 304
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detail_server_allow_all_filters_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 316,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_detail_server_allow_all_filters_policy",
+      "lineRange": {
+        "start": 323,
+        "end": 332
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 332
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 344,
+        "end": 351
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_show_with_extra_specs_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 356,
+        "end": 371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_block"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_detail_with_extra_specs_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 374,
+        "end": 401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_server_detail_with_extra_specs_policy",
+      "lineRange": {
+        "start": 376,
+        "end": 384
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 382
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_rebuild_with_extra_specs_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 406,
+        "end": 424
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_update_with_extra_specs_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 429,
+        "end": 452
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update"
+        },
+        {
+          "name": "mock_group"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 455,
+        "end": 461
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_forced_host_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 468,
+        "end": 481
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_az"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_attach_volume_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 484,
+        "end": 504
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_attach_network_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 507,
+        "end": 530
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_trusted_certs_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 533,
+        "end": 559
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 562,
+        "end": 567
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_delete"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_server_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 569,
+        "end": 581
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_server_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 584,
+        "end": 590
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_delete"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 593,
+        "end": 601
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_server_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 603,
+        "end": 616
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_server_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 619,
+        "end": 629
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_resize_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 632,
+        "end": 639
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_confirm_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_resize_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 642,
+        "end": 649
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_revert_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 652,
+        "end": 659
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_reboot"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 662,
+        "end": 668
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 670,
+        "end": 683
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 686,
+        "end": 693
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_start_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 696,
+        "end": 703
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_start"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_stop_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 706,
+        "end": 713
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_stop"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_stop_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 715,
+        "end": 728
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_stop_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 731,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_stop"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 741,
+        "end": 747
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 749,
+        "end": 762
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 765,
+        "end": 772
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_trusted_certs_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 775,
+        "end": 796
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_trusted_certs_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 798,
+        "end": 819
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_trusted_certs_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 822,
+        "end": 837
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 842,
+        "end": 849
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_snapshot"
+        },
+        {
+          "name": "mock_image"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_allow_volume_backed_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 854,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_snapshot"
+        },
+        {
+          "name": "mock_image"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_trigger_crash_dump_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 873,
+        "end": 880
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_crash"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_trigger_crash_dump_policy_failed_with_other_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 882,
+        "end": 896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_trigger_crash_dump_overridden_policy_pass_with_same_user",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 899,
+        "end": 907
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_crash"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_detail_with_extended_attr_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 909,
+        "end": 932
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_server_detail_with_extended_attr_policy",
+      "lineRange": {
+        "start": 910,
+        "end": 914
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 914
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_show_with_extended_attr_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 936,
+        "end": 952
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_block"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_rebuild_with_extended_attr_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 958,
+        "end": 981
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_update_with_extended_attr_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 987,
+        "end": 1012
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_update"
+        },
+        {
+          "name": "mock_group"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_detail_with_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1014,
+        "end": 1036
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_server_detail_with_host_status_policy",
+      "lineRange": {
+        "start": 1015,
+        "end": 1019
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 1019
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_show_with_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1041,
+        "end": 1058
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_block"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_rebuild_with_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1064,
+        "end": 1083
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_update_with_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1089,
+        "end": 1113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_update"
+        },
+        {
+          "name": "mock_group"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_detail_with_unknown_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1116,
+        "end": 1147
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_all",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_server_detail_with_unknown_host_status_policy",
+      "lineRange": {
+        "start": 1117,
+        "end": 1121
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "None",
+          "name": "sort_keys"
+        },
+        {
+          "default": "None",
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "all_tenants"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=self.servers)",
+          "line": 1121
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_show_with_unknown_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1151,
+        "end": 1174
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_block"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_rebuild_with_unknown_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1179,
+        "end": 1204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_server_update_with_unknown_host_status_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1210,
+        "end": 1240
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update"
+        },
+        {
+          "name": "mock_group"
+        },
+        {
+          "name": "mock_status"
+        },
+        {
+          "name": "mock_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_requested_destination_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1243,
+        "end": 1279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_create_requested_destination_server_policy",
+      "lineRange": {
+        "start": 1254,
+        "end": 1260
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "([self.instance], '')",
+          "line": 1260
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cross_cell_resize_server_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1292,
+        "end": 1342
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_rs"
+        },
+        {
+          "name": "mock_allow"
+        },
+        {
+          "name": "m_net"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_cross_cell_resize_server_policy",
+      "lineRange": {
+        "start": 1304,
+        "end": 1321
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "inst",
+          "line": 1321
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_validate",
+      "kind": "function",
+      "scope": "ServersPolicyTest.test_cross_cell_resize_server_policy",
+      "lineRange": {
+        "start": 1325,
+        "end": 1331
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host_name"
+        },
+        {
+          "name": "allow_cross_cell_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.ComputeNode(host=1, hypervisor_hostname=2)",
+          "line": 1331
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_network_attach_external_network_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1344,
+        "end": 1357
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_zero_disk_flavor_policy",
+      "kind": "method",
+      "scope": "ServersPolicyTest",
+      "lineRange": {
+        "start": 1359,
+        "end": 1376
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServersNoLegacyTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1379,
+        "end": 1416
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "without_deprecated_rules",
+      "kind": "field",
+      "scope": "ServersNoLegacyTest",
+      "lineRange": {
+        "start": 1382,
+        "end": 1382
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rules_without_deprecation",
+      "kind": "field",
+      "scope": "ServersNoLegacyTest",
+      "lineRange": {
+        "start": 1383,
+        "end": 1386
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServersNoLegacyTest",
+      "lineRange": {
+        "start": 1388,
+        "end": 1416
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "base.BasePolicyTest",
+      "usage": "inherit",
+      "via": "nova.tests.unit.policies",
+      "count": 1,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "servers.ServersController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "migrate_server.MigrateServerController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 35,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 5,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 2,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 3,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "fake_flavor.fake_flavor_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "fixtures.MockPatchObject",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 100,
+        "end": 100
+      }
+    },
+    {
+      "name": "model.NetworkInfo",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "fixtures.MonkeyPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 109,
+        "end": 109
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 4,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "fakes.stub_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 123,
+        "end": 123
+      }
+    },
+    {
+      "name": "fakes.stub_out_secgroup_api",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 154,
+        "end": 154
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 199,
+        "end": 199
+      }
+    },
+    {
+      "name": "functools.partial",
+      "usage": "call",
+      "via": "functools",
+      "count": 9,
+      "lineRange": {
+        "start": 231,
+        "end": 231
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 73,
+      "lineRange": {
+        "start": 239,
+        "end": 239
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 5,
+      "lineRange": {
+        "start": 427,
+        "end": 427
+      }
+    },
+    {
+      "name": "objects.InstanceGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 433,
+        "end": 433
+      }
+    },
+    {
+      "name": "objects.ImageMeta.from_dict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1286,
+        "end": 1286
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 1310,
+        "end": 1310
+      }
+    },
+    {
+      "name": "objects.ServiceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1311,
+        "end": 1311
+      }
+    },
+    {
+      "name": "objects.Service",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1313,
+        "end": 1313
+      }
+    },
+    {
+      "name": "objects.ComputeNode",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1331,
+        "end": 1331
+      }
+    },
+    {
+      "name": "neutron.API",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 1348,
+        "end": 1348
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1364,
+        "end": 1364
+      }
+    },
+    {
+      "name": "compute.API",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 1366,
+        "end": 1366
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "migrate_server"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects.instance_group",
+      "names": [
+        {
+          "alias": null,
+          "name": "InstanceGroup"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "base_policy",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "ea_policies",
+          "name": "extended_server_attributes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "policies",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_flavor"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.policies",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

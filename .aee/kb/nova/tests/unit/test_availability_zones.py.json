@@ -1,0 +1,920 @@
+{
+  "file": "nova/tests/unit/test_availability_zones.py",
+  "hash": "679f6b15f80f053463352c668ee57648f4bfbd93cddb563d11ea11e6c0175e99",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 55,
+    "code": 205,
+    "comment": 36,
+    "total": 296
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import availability_zones as az",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AvailabilityZoneTestCases",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 296
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 38,
+        "end": 45
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tearDown",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 47,
+        "end": 49
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_az",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 51,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "agg_name"
+        },
+        {
+          "name": "az_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "agg",
+          "line": 57
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_az",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 59,
+        "end": 60
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "aggregate"
+        },
+        {
+          "name": "az_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_service_with_topic",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 62,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "topic"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "False",
+          "name": "disabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.service_create(self.context, values)",
+          "line": 69
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_destroy_service",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 71,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "service"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.service_destroy(self.context, service['id'])",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_to_aggregate",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 74,
+        "end": 75
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "aggregate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_from_aggregate",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 77,
+        "end": 78
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "aggregate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rest_availability_zone_reset_cache",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 80,
+        "end": 83
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_host_availability_zone_cache",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 85,
+        "end": 97
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_availability_zone_compute_service",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 99,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_availability_zone_unicode_key",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 118,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_availability_zone_not_compute_service",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 128,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_host_availability_zone",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 136,
+        "end": 145
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_host_availability_zone",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 147,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_host_availability_zone",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 163,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_availability_zones",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 178,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_availability_zone_default_value",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 235,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_availability_zone_from_aggregate",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 243,
+        "end": 253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_availability_zone_cache_differs",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 256,
+        "end": 266
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cache_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_availability_zone_no_host",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 268,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_availability_zone_no_host_set",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 275,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_availability_zone_no_host_no_az",
+      "kind": "method",
+      "scope": "AvailabilityZoneTestCases",
+      "lineRange": {
+        "start": 291,
+        "end": 296
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "objects.Aggregate",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "objects.Aggregate.get_by_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "db.service_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "db.service_destroy",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "az._get_cache",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      }
+    },
+    {
+      "name": "az.reset_cache",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "az._make_cache_key",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "az.update_host_availability_zone_cache",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "db.service_get_all",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 3,
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      }
+    },
+    {
+      "name": "az.set_availability_zones",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "az.get_host_availability_zone",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "compute_api.HostAPI",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 214,
+        "end": 214
+      }
+    },
+    {
+      "name": "az.get_availability_zones",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      }
+    },
+    {
+      "name": "az.get_instance_availability_zone",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 241,
+        "end": 241
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 255,
+        "end": 255
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "az",
+          "name": "availability_zones"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

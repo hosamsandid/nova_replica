@@ -1,0 +1,530 @@
+{
+  "file": "nova/compute/migration_list.py",
+  "hash": "527aa8505faad00ddb6284c0247844707de8a551446582f71f8676351ca225de",
+  "language": "Python",
+  "component": "compute",
+  "package": null,
+  "lines": {
+    "blank": 15,
+    "code": 53,
+    "comment": 17,
+    "total": 85
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import multi_cell_list",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MigrationSortContext",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "MigrationSortContext",
+      "lineRange": {
+        "start": 24,
+        "end": 39
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MigrationLister",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 78
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "MigrationLister",
+      "lineRange": {
+        "start": 43,
+        "end": 45
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "marker_identifier",
+      "kind": "method",
+      "scope": "MigrationLister",
+      "lineRange": {
+        "start": 48,
+        "end": 49
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'uuid'",
+          "line": 49
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_marker_record",
+      "kind": "method",
+      "scope": "MigrationLister",
+      "lineRange": {
+        "start": 51,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cell_uuid, db_migration",
+          "line": 66
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_marker_by_values",
+      "kind": "method",
+      "scope": "MigrationLister",
+      "lineRange": {
+        "start": 68,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.migration_get_by_sort_filters(ctx, self.sort_ctx.sort_keys, self.sort_ctx.sort_dirs, values)",
+          "line": 69
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_filters",
+      "kind": "method",
+      "scope": "MigrationLister",
+      "lineRange": {
+        "start": 74,
+        "end": 78
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.migration_get_all_by_filters( ctx, filters, limit=limit, marker=marker, sort_keys=self.sort_ctx.sort_keys, sort_dirs=self.sort_ctx.sort_dirs)",
+          "line": 75
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_migration_objects_sorted",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 81,
+        "end": 85
+      },
+      "parameters": [
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(ctx, objects.MigrationList(), mig_generator)",
+          "line": 85
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "multi_cell_list.RecordSortContext",
+      "usage": "inherit",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 2,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "name": "multi_cell_list.CrossCellLister",
+      "usage": "inherit",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "context.scatter_gather_skip_cell0",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "context.is_cell_failure_sentinel",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "exception.MarkerNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "db.migration_get_by_sort_filters",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "db.migration_get_all_by_filters",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "base.obj_make_list",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "objects.MigrationList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "multi_cell_list"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

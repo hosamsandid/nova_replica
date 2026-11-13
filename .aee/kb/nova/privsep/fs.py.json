@@ -1,0 +1,937 @@
+{
+  "file": "nova/privsep/fs.py",
+  "hash": "d286b6b732d590033b058d5b780a54581cc81fdc1a6ef994de2b85c0200f8f7d",
+  "language": "Python",
+  "component": "privsep",
+  "package": null,
+  "lines": {
+    "blank": 75,
+    "code": 188,
+    "comment": 42,
+    "total": 305
+  },
+  "symbols": [
+    {
+      "name": "import hashlib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import processutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.privsep",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 39
+      },
+      "parameters": [
+        {
+          "name": "fstype"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "mountpoint"
+        },
+        {
+          "name": "options"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute(*mount_cmd)",
+          "line": 39
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "umount",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 44
+      },
+      "parameters": [
+        {
+          "name": "mountpoint"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "lvcreate",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 58
+      },
+      "parameters": [
+        {
+          "name": "size"
+        },
+        {
+          "name": "lv"
+        },
+        {
+          "name": "vg"
+        },
+        {
+          "default": "None",
+          "name": "preallocated"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vginfo",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "name": "vg"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute( 'vgs', '--noheadings', '--nosuffix', '--separator', '|', '--units', 'b', '-o', 'vg_size,vg_free', vg, attempts=3, delay_on_retry=True, )",
+          "line": 65
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "lvlist",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "vg"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute( 'lvs', '--noheadings', '-o', 'lv_name', vg, attempts=3, delay_on_retry=True)",
+          "line": 75
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "lvinfo",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 81,
+        "end": 83
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('lvs', '-o', 'vg_all,lv_all', '--separator', '|', path)",
+          "line": 82
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "lvremove",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 87,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "blockdev_size",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 92,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('blockdev', '--getsize64', path)",
+          "line": 93
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "blockdev_flush",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 97,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('blockdev', '--flushbufs', path)",
+          "line": 98
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clear",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 102,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "name": "path"
+        },
+        {
+          "name": "volume_size"
+        },
+        {
+          "default": "False",
+          "name": "shred"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "loopsetup",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 113,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('losetup', '--find', '--show', path)",
+          "line": 114
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "loopremove",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 118,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('losetup', '--detach', device, attempts=3)",
+          "line": 119
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "nbd_connect",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 123,
+        "end": 124
+      },
+      "parameters": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('qemu-nbd', '-c', device, image)",
+          "line": 124
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "nbd_disconnect",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 128,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('qemu-nbd', '-d', device)",
+          "line": 129
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_device_maps",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 133,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('kpartx', '-a', device)",
+          "line": 134
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_device_maps",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 138,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "processutils.execute('kpartx', '-d', device)",
+          "line": 139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "e2fsck",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 143,
+        "end": 144
+      },
+      "parameters": [
+        {
+          "name": "image"
+        },
+        {
+          "default": "'-fp'",
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unprivileged_e2fsck",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 150,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "image"
+        },
+        {
+          "default": "'-fp'",
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize2fs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 155,
+        "end": 156
+      },
+      "parameters": [
+        {
+          "name": "image"
+        },
+        {
+          "name": "check_exit_code"
+        },
+        {
+          "default": "None",
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unprivileged_resize2fs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 162,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "image"
+        },
+        {
+          "name": "check_exit_code"
+        },
+        {
+          "default": "None",
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_MKFS_COMMAND",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_DEFAULT_MKFS_COMMAND",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 182,
+        "end": 182
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FS_FORMAT_EXT2",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FS_FORMAT_EXT3",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 185,
+        "end": 185
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FS_FORMAT_EXT4",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 186,
+        "end": 186
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FS_FORMAT_XFS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 187,
+        "end": 187
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FS_FORMAT_NTFS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 188,
+        "end": 188
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FS_FORMAT_VFAT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 189,
+        "end": 189
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTED_FS_TO_EXTEND",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 191,
+        "end": 194
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_DEFAULT_FILE_SYSTEM",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 196,
+        "end": 196
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_DEFAULT_FS_BY_OSTYPE",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 197,
+        "end": 198
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "load_mkfs_command",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 201,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "name": "os_type"
+        },
+        {
+          "name": "command"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_fs_type_for_os_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 209,
+        "end": 210
+      },
+      "parameters": [
+        {
+          "name": "os_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "os_type if _MKFS_COMMAND.get(os_type) else 'default'",
+          "line": 210
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_hash_str",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 215,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "base_str"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hashlib.md5(base_str, usedforsecurity=False).hexdigest()",
+          "line": 222
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_file_extension_for_os_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 225,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "os_type"
+        },
+        {
+          "name": "default_ephemeral_format"
+        },
+        {
+          "default": "None",
+          "name": "specified_fs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_hash_str(extension)[:7]",
+          "line": 237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mkfs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 241,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "fs"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "label"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unprivileged_mkfs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 248,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "fs"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "None",
+          "name": "label"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_inner_configurable_mkfs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 274,
+        "end": 277
+      },
+      "parameters": [
+        {
+          "name": "os_type"
+        },
+        {
+          "name": "fs_label"
+        },
+        {
+          "name": "target"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "configurable_mkfs",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 281,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "os_type"
+        },
+        {
+          "name": "fs_label"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "run_as_root"
+        },
+        {
+          "name": "default_ephemeral_format"
+        },
+        {
+          "default": "None",
+          "name": "specified_fs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "name": "processutils.execute",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 21,
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 164,
+        "end": 164
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 220,
+        "end": 220
+      }
+    },
+    {
+      "name": "hashlib.md5",
+      "usage": "call",
+      "via": "hashlib",
+      "count": 1,
+      "lineRange": {
+        "start": 222,
+        "end": 222
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "hashlib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "processutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.privsep",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

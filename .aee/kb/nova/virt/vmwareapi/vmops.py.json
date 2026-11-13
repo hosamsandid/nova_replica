@@ -1,0 +1,5342 @@
+{
+  "file": "nova/virt/vmwareapi/vmops.py",
+  "hash": "3cca90ff803b6ca865c9b2f578c03ba2a289a28c9d971a6c1f191dc096423b3b",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 257,
+    "code": 1723,
+    "comment": 179,
+    "total": 2159
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import decorator",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import lockutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import exceptions as vexc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware.objects import datastore as ds_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import vim_util as vutil",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.metadata import base as instance_metadata",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.console import type as ctype",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import version",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import configdrive",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import constants",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import ds_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import error_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import imagecache",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import images",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import vif as vmwarevif",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import vim_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import vm_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RESIZE_TOTAL_STEPS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VirtualMachineInstanceConfigInfo",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 73,
+        "end": 104
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "VirtualMachineInstanceConfigInfo",
+      "lineRange": {
+        "start": 76,
+        "end": 89
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_info"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "image_cache"
+        },
+        {
+          "default": "None",
+          "name": "extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cache_image_folder",
+      "kind": "method",
+      "scope": "VirtualMachineInstanceConfigInfo",
+      "lineRange": {
+        "start": 92,
+        "end": 96
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 94
+        },
+        {
+          "expr": "self._image_cache.get_image_cache_folder( self.datastore, self.ii.image_id)",
+          "line": 95
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cache_image_path",
+      "kind": "method",
+      "scope": "VirtualMachineInstanceConfigInfo",
+      "lineRange": {
+        "start": 99,
+        "end": 104
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 101
+        },
+        {
+          "expr": "self.cache_image_folder.join(cached_image_file_name)",
+          "line": 104
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_time_sleep_wrapper",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 111,
+        "end": 112
+      },
+      "parameters": [
+        {
+          "name": "delay"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "retry_if_task_in_progress",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 116,
+        "end": 127
+      },
+      "parameters": [
+        {
+          "name": "f"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 125
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VMwareVMOps",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 130,
+        "end": 2159
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 133,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "session"
+        },
+        {
+          "name": "virtapi"
+        },
+        {
+          "name": "volumeops"
+        },
+        {
+          "default": "None",
+          "name": "cluster"
+        },
+        {
+          "default": "None",
+          "name": "datastore_regex"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_base_folder",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 151,
+        "end": 163
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base_folder",
+          "line": 163
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_extend_virtual_disk",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 165,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "requested_size"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_datastore_file",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 191,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "datastore_path"
+        },
+        {
+          "name": "dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_extend_if_required",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 203,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "image_info"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "root_vmdk_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_configure_config_drive",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 211,
+        "end": 230
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_metadata",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 232,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "''.join(['%s:%s\\n' % (k, v) for k, v in metadata])",
+          "line": 249
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_folders",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 251,
+        "end": 264
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "parent_folder"
+        },
+        {
+          "name": "folder_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "folder_ref",
+          "line": 264
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_folder_name",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 266,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "id_"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'%s (%s)' % (name[:40], id_[:36])",
+          "line": 270
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "build_virtual_machine",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 272,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_info"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "extra_specs"
+        },
+        {
+          "name": "metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vm_ref",
+          "line": 305
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_extra_specs",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 307,
+        "end": 347
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "default": "None",
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "extra_specs",
+          "line": 347
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_esx_host_and_cookies",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 349,
+        "end": 361
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "dc_path"
+        },
+        {
+          "name": "file_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "host_name, [Cookie(name, value)]",
+          "line": 361
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fetch_vsphere_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 363,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fetch_image_as_file",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 395,
+        "end": 428
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fetch_image_as_vapp",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 430,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fetch_image_as_ova",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 458,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_prepare_sparse_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 477,
+        "end": 483
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "tmp_dir_loc, tmp_image_ds_loc",
+          "line": 483
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_prepare_flat_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 485,
+        "end": 501
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "tmp_dir_loc, flat_vmdk_ds_loc",
+          "line": 501
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_prepare_stream_optimized_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 503,
+        "end": 508
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "tmp_dir_loc, tmp_image_ds_loc",
+          "line": 508
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_prepare_iso_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 510,
+        "end": 515
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "tmp_dir_loc, tmp_image_ds_loc",
+          "line": 515
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_move_to_cache",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 517,
+        "end": 530
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "src_folder_ds_path"
+        },
+        {
+          "name": "dst_folder_ds_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cache_sparse_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 532,
+        "end": 547
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "tmp_image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cache_flat_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 549,
+        "end": 552
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "tmp_image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cache_stream_optimized_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 554,
+        "end": 561
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "tmp_image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cache_iso_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 563,
+        "end": 566
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        },
+        {
+          "name": "tmp_image_ds_loc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_config_info",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 568,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_info"
+        },
+        {
+          "name": "extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "VirtualMachineInstanceConfigInfo(instance, image_info, datastore, dc_info, self._imagecache, extra_specs)",
+          "line": 586
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_image_callbacks",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 593,
+        "end": 620
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image_prepare, image_fetch, image_cache",
+          "line": 620
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fetch_image_if_missing",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 622,
+        "end": 647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_and_attach_thin_disk",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 649,
+        "end": 662
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "adapter_type"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_ephemeral",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 664,
+        "end": 686
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bdi"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "folder"
+        },
+        {
+          "name": "adapter_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_swap",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 688,
+        "end": 710
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bdi"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "folder"
+        },
+        {
+          "name": "adapter_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_vnic_index",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 712,
+        "end": 716
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_image_size",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 718,
+        "end": 730
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "prepare_for_spawn",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 732,
+        "end": 736
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 738,
+        "end": 836
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_bdm_valid",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 838,
+        "end": 850
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "block_device_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_config_drive",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 852,
+        "end": 888
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "data_store_name"
+        },
+        {
+          "name": "dc_name"
+        },
+        {
+          "name": "upload_folder"
+        },
+        {
+          "name": "cookies"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "upload_iso_path",
+          "line": 884
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_attach_cdrom_to_vm",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 890,
+        "end": 910
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "file_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_vm_snapshot",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 912,
+        "end": 928
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "snapshot",
+          "line": 928
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_vm_snapshot",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 931,
+        "end": 938
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "snapshot"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_linked_clone_from_snapshot",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 940,
+        "end": 969
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "snapshot_ref"
+        },
+        {
+          "name": "dc_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "task_info.result",
+          "line": 969
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 971,
+        "end": 1033
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "update_task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_and_vmdk_attribs",
+      "kind": "function",
+      "scope": "VMwareVMOps.snapshot",
+      "lineRange": {
+        "start": 988,
+        "end": 1003
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(vmdk, datastores, os_type)",
+          "line": 1003
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reboot",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1035,
+        "end": 1067
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "\"SOFT\"",
+          "name": "reboot_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_destroy_instance",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1069,
+        "end": 1131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "True",
+          "name": "destroy_disks"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1133,
+        "end": 1143
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "True",
+          "name": "destroy_disks"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pause",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1145,
+        "end": 1147
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unpause",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1149,
+        "end": 1151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "suspend",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1153,
+        "end": 1173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resume",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1175,
+        "end": 1191
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_rescue_device",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1193,
+        "end": 1196
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vm_util.find_rescue_device(hardware_devices, instance)",
+          "line": 1195
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rescue",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1198,
+        "end": 1244
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unrescue",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1246,
+        "end": 1261
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_off",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1263,
+        "end": 1277
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "0",
+          "name": "timeout"
+        },
+        {
+          "default": "0",
+          "name": "retry_interval"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1275
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_clean_shutdown",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1279,
+        "end": 1327
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "retry_interval"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 1298
+        },
+        {
+          "expr": "True",
+          "line": 1317
+        },
+        {
+          "expr": "False",
+          "line": 1327
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_props",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1329,
+        "end": 1335
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._session._call_method(vutil, \"get_object_properties_dict\", vm_ref, lst_properties)",
+          "line": 1333
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_on",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1337,
+        "end": 1338
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_instance_progress",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1340,
+        "end": 1357
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "step"
+        },
+        {
+          "name": "total_steps"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_resize_vm",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1359,
+        "end": 1370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_resize_disk",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1372,
+        "end": 1400
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "vmdk"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_remove_ephemerals_and_swap",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1402,
+        "end": 1409
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_resize_create_ephemerals_and_swap",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1411,
+        "end": 1424
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1416
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "migrate_disk_and_power_off",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1426,
+        "end": 1472
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "confirm_migration",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1474,
+        "end": 1491
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1479
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_revert_migration_update_disks",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1493,
+        "end": 1521
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vmdk"
+        },
+        {
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "finish_revert_migration",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1523,
+        "end": 1548
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "finish_migration",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1550,
+        "end": 1569
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_info"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "default": "False",
+          "name": "resize_instance"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_esx_host",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1571,
+        "end": 1584
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cluster_ref"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cluster_host",
+          "line": 1584
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_datastore_for_migration",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1586,
+        "end": 1614
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "cluster_ref"
+        },
+        {
+          "name": "datastore_regex"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1600
+        },
+        {
+          "expr": "ds",
+          "line": 1611
+        },
+        {
+          "expr": "ds_util.get_datastore(self._session, cluster_ref, datastore_regex)",
+          "line": 1613
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1616,
+        "end": 1667
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "post_method"
+        },
+        {
+          "name": "recover_method"
+        },
+        {
+          "name": "block_migration"
+        },
+        {
+          "name": "migrate_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "poll_rebooting_instances",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1669,
+        "end": 1682
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_info",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1684,
+        "end": 1697
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hardware.InstanceInfo( state=constants.POWER_STATES[vm_props['runtime.powerState']])",
+          "line": 1696
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_diagnostics",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1699,
+        "end": 1714
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data",
+          "line": 1714
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_diagnostics",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1716,
+        "end": 1720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'vmware:' + k: v for k, v in data.items()}",
+          "line": 1720
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_diagnostics",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1722,
+        "end": 1739
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "diags",
+          "line": 1739
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vnc_console_connection",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1741,
+        "end": 1754
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'port': port, 'internal_access_path': None}",
+          "line": 1753
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_machine_id_str",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1757,
+        "end": 1782
+      },
+      "parameters": [
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "machine_id_str",
+          "line": 1782
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_machine_id",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1784,
+        "end": 1800
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_and_set_vnc_config",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1803,
+        "end": 1815
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_ds_browser",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1817,
+        "end": 1826
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ds_browser",
+          "line": 1826
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_folder_if_missing",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1828,
+        "end": 1849
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_name"
+        },
+        {
+          "name": "ds_ref"
+        },
+        {
+          "name": "folder"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_cache_folder",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1851,
+        "end": 1853
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_name"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "inject_network_info",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1855,
+        "end": 1860
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "manage_image_cache",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1862,
+        "end": 1874
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1865
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_valid_vms_from_retrieve_result",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1876,
+        "end": 1896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "retrieve_result"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "lst_vm_names",
+          "line": 1896
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "instance_exists",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1898,
+        "end": 1903
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1901
+        },
+        {
+          "expr": "False",
+          "line": 1903
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attach_interface",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1905,
+        "end": 1937
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach_interface",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1939,
+        "end": 1978
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_use_disk_image_as_full_clone",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 1980,
+        "end": 2002
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_sized_image_exists",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2004,
+        "end": 2008
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sized_disk_ds_loc"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ds_util.file_exists( self._session, ds_browser, sized_disk_ds_loc.parent, sized_disk_ds_loc.basename)",
+          "line": 2006
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_use_disk_image_as_linked_clone",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2010,
+        "end": 2075
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_use_iso_image",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2077,
+        "end": 2106
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "vi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_datacenter_ref_and_name",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2108,
+        "end": 2110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ds_util.get_dc_info(self._session, ds_ref)",
+          "line": 2110
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_instances",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2112,
+        "end": 2126
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "lst_vm_names",
+          "line": 2126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vnc_console",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2128,
+        "end": 2146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ctype.ConsoleVNC(**vnc_console)",
+          "line": 2146
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_mks_console",
+      "kind": "method",
+      "scope": "VMwareVMOps",
+      "lineRange": {
+        "start": 2148,
+        "end": 2159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ctype.ConsoleMKS(ticket.host, ticket.port, internal_access_path)",
+          "line": 2159
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "time.sleep",
+      "usage": "call",
+      "via": "time",
+      "count": 2,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "max",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 119,
+        "end": 119
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 122,
+        "end": 122
+      }
+    },
+    {
+      "name": "f",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "compute.API",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "vm_util.get_res_pool_ref",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "imagecache.ImageCacheManager",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "neutron.API",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 5,
+      "lineRange": {
+        "start": 180,
+        "end": 180
+      }
+    },
+    {
+      "name": "ds_obj.DatastorePath.parse",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 10,
+      "lineRange": {
+        "start": 186,
+        "end": 186
+      }
+    },
+    {
+      "name": "ds_util.file_delete",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 3,
+      "lineRange": {
+        "start": 193,
+        "end": 193
+      }
+    },
+    {
+      "name": "vutil.get_inventory_path",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 2,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 34,
+      "lineRange": {
+        "start": 230,
+        "end": 230
+      }
+    },
+    {
+      "name": "version.version_string_with_package",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 247,
+        "end": 247
+      }
+    },
+    {
+      "name": "vm_util.folder_ref_cache_get",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 257,
+        "end": 257
+      }
+    },
+    {
+      "name": "vm_util.create_folder",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 259,
+        "end": 259
+      }
+    },
+    {
+      "name": "vm_util.folder_ref_cache_update",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 262,
+        "end": 262
+      }
+    },
+    {
+      "name": "vmwarevif.get_vif_info",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 275,
+        "end": 275
+      }
+    },
+    {
+      "name": "vm_util.get_storage_profile_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 282,
+        "end": 282
+      }
+    },
+    {
+      "name": "vm_util.get_vm_create_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 288,
+        "end": 288
+      }
+    },
+    {
+      "name": "vm_util.create_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 303,
+        "end": 303
+      }
+    },
+    {
+      "name": "objects.ImageMeta.from_dict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 308,
+        "end": 308
+      }
+    },
+    {
+      "name": "vm_util.ExtraSpecs",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 318,
+        "end": 318
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 332,
+        "end": 332
+      }
+    },
+    {
+      "name": "exception.RequestedVRamTooHigh",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 335,
+        "end": 335
+      }
+    },
+    {
+      "name": "hardware.get_best_cpu_topology",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 344,
+        "end": 344
+      }
+    },
+    {
+      "name": "ds_obj.Datastore.choose_host",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 351,
+        "end": 351
+      }
+    },
+    {
+      "name": "ds_obj.DatastoreURL",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 354,
+        "end": 354
+      }
+    },
+    {
+      "name": "collections.namedtuple",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 360,
+        "end": 360
+      }
+    },
+    {
+      "name": "Cookie",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 361,
+        "end": 361
+      }
+    },
+    {
+      "name": "ds_obj.DatastoreURL.urlparse",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 376,
+        "end": 376
+      }
+    },
+    {
+      "name": "ds_util.get_datacenter_ref",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 378,
+        "end": 378
+      }
+    },
+    {
+      "name": "ds_obj.DatastorePath",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 9,
+      "lineRange": {
+        "start": 382,
+        "end": 382
+      }
+    },
+    {
+      "name": "ds_util.file_copy",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 383,
+        "end": 383
+      }
+    },
+    {
+      "name": "images.fetch_image",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 420,
+        "end": 420
+      }
+    },
+    {
+      "name": "images.fetch_image_stream_optimized",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 445,
+        "end": 445
+      }
+    },
+    {
+      "name": "images.fetch_image_ova",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 465,
+        "end": 465
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 5,
+      "lineRange": {
+        "start": 479,
+        "end": 479
+      }
+    },
+    {
+      "name": "ds_util.mkdir",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 4,
+      "lineRange": {
+        "start": 482,
+        "end": 482
+      }
+    },
+    {
+      "name": "vm_util.create_virtual_disk",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 3,
+      "lineRange": {
+        "start": 491,
+        "end": 491
+      }
+    },
+    {
+      "name": "ds_util.file_move",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 519,
+        "end": 519
+      }
+    },
+    {
+      "name": "vm_util.copy_virtual_disk",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 3,
+      "lineRange": {
+        "start": 537,
+        "end": 537
+      }
+    },
+    {
+      "name": "ds_util.disk_move",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 4,
+      "lineRange": {
+        "start": 558,
+        "end": 558
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 12,
+      "lineRange": {
+        "start": 574,
+        "end": 574
+      }
+    },
+    {
+      "name": "exception.InstanceUnacceptable",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 575,
+        "end": 575
+      }
+    },
+    {
+      "name": "ds_util.get_allowed_datastore_types",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 577,
+        "end": 577
+      }
+    },
+    {
+      "name": "ds_util.get_datastore",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 579,
+        "end": 579
+      }
+    },
+    {
+      "name": "exception.InvalidDiskInfo",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 619,
+        "end": 619
+      }
+    },
+    {
+      "name": "lockutils.lock",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 4,
+      "lineRange": {
+        "start": 626,
+        "end": 626
+      }
+    },
+    {
+      "name": "ds_util.file_exists",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 4,
+      "lineRange": {
+        "start": 630,
+        "end": 630
+      }
+    },
+    {
+      "name": "image_prepare",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 634,
+        "end": 634
+      }
+    },
+    {
+      "name": "image_fetch",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 637,
+        "end": 637
+      }
+    },
+    {
+      "name": "image_cache",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 639,
+        "end": 639
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_ephemerals",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 668,
+        "end": 668
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 669,
+        "end": 669
+      }
+    },
+    {
+      "name": "vm_util.get_ephemeral_name",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 672,
+        "end": 672
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_swap",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 694,
+        "end": 694
+      }
+    },
+    {
+      "name": "driver.swap_is_usable",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 695,
+        "end": 695
+      }
+    },
+    {
+      "name": "ds_util.file_size",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 727,
+        "end": 727
+      }
+    },
+    {
+      "name": "images.VMwareImage.from_image",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 742,
+        "end": 742
+      }
+    },
+    {
+      "name": "vm_util.vm_ref_cache_update",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 763,
+        "end": 763
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_mapping",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 780,
+        "end": 780
+      }
+    },
+    {
+      "name": "strutils.mask_password",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 799,
+        "end": 799
+      }
+    },
+    {
+      "name": "configdrive.required_by",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 2,
+      "lineRange": {
+        "start": 826,
+        "end": 826
+      }
+    },
+    {
+      "name": "vm_util.rename_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 834,
+        "end": 834
+      }
+    },
+    {
+      "name": "vm_util.power_on_instance",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 6,
+      "lineRange": {
+        "start": 836,
+        "end": 836
+      }
+    },
+    {
+      "name": "exception.UnsupportedHardware",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 849,
+        "end": 849
+      }
+    },
+    {
+      "name": "exception.InstancePowerOnFailure",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 858,
+        "end": 858
+      }
+    },
+    {
+      "name": "instance_metadata.InstanceMetadata",
+      "usage": "call",
+      "via": "nova.api.metadata",
+      "count": 1,
+      "lineRange": {
+        "start": 865,
+        "end": 865
+      }
+    },
+    {
+      "name": "configdrive.ConfigDriveBuilder",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 870,
+        "end": 870
+      }
+    },
+    {
+      "name": "utils.tempdir",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 871,
+        "end": 871
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 872,
+        "end": 872
+      }
+    },
+    {
+      "name": "images.upload_iso_to_datastore",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 876,
+        "end": 876
+      }
+    },
+    {
+      "name": "vm_util.get_hardware_devices",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 4,
+      "lineRange": {
+        "start": 894,
+        "end": 894
+      }
+    },
+    {
+      "name": "vm_util.allocate_controller_key_and_unit_number",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 896,
+        "end": 896
+      }
+    },
+    {
+      "name": "vm_util.get_cdrom_attach_config_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 900,
+        "end": 900
+      }
+    },
+    {
+      "name": "vm_util.reconfigure_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 8,
+      "lineRange": {
+        "start": 908,
+        "end": 908
+      }
+    },
+    {
+      "name": "vm_util.relocate_vm_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 945,
+        "end": 945
+      }
+    },
+    {
+      "name": "vm_util.clone_vm_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 950,
+        "end": 950
+      }
+    },
+    {
+      "name": "vm_util.get_vm_ref",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 21,
+      "lineRange": {
+        "start": 986,
+        "end": 986
+      }
+    },
+    {
+      "name": "vm_util.get_vmdk_info",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 7,
+      "lineRange": {
+        "start": 990,
+        "end": 990
+      }
+    },
+    {
+      "name": "error_util.NoRootDiskDefined",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 994,
+        "end": 994
+      }
+    },
+    {
+      "name": "update_task_state",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1009,
+        "end": 1009
+      }
+    },
+    {
+      "name": "images.upload_image_stream_optimized",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1024,
+        "end": 1024
+      }
+    },
+    {
+      "name": "vm_util.destroy_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1029,
+        "end": 1029
+      }
+    },
+    {
+      "name": "exception.InstanceRebootFailure",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1051,
+        "end": 1051
+      }
+    },
+    {
+      "name": "vm_util.power_off_instance",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 6,
+      "lineRange": {
+        "start": 1089,
+        "end": 1089
+      }
+    },
+    {
+      "name": "vm_util.vm_ref_cache_delete",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1131,
+        "end": 1131
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1147,
+        "end": 1147
+      }
+    },
+    {
+      "name": "exception.InstanceSuspendFailure",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1170,
+        "end": 1170
+      }
+    },
+    {
+      "name": "exception.InstanceResumeFailure",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1191,
+        "end": 1191
+      }
+    },
+    {
+      "name": "vm_util.find_rescue_device",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1195,
+        "end": 1195
+      }
+    },
+    {
+      "name": "ds_obj.get_datastore_by_ref",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 1208,
+        "end": 1208
+      }
+    },
+    {
+      "name": "ds_util.disk_copy",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 1232,
+        "end": 1232
+      }
+    },
+    {
+      "name": "vm_util.get_vm_boot_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1241,
+        "end": 1241
+      }
+    },
+    {
+      "name": "float",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1350,
+        "end": 1350
+      }
+    },
+    {
+      "name": "round",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1350,
+        "end": 1350
+      }
+    },
+    {
+      "name": "vm_util.get_vm_resize_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 1365,
+        "end": 1365
+      }
+    },
+    {
+      "name": "vm_util.get_ephemerals",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1403,
+        "end": 1403
+      }
+    },
+    {
+      "name": "vm_util.get_swap",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1404,
+        "end": 1404
+      }
+    },
+    {
+      "name": "vm_util.detach_devices_from_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1409,
+        "end": 1409
+      }
+    },
+    {
+      "name": "exception.InstanceFaultRollback",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1439,
+        "end": 1439
+      }
+    },
+    {
+      "name": "exception.ResizeError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1440,
+        "end": 1440
+      }
+    },
+    {
+      "name": "ds_util.disk_delete",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 1490,
+        "end": 1490
+      }
+    },
+    {
+      "name": "vutil.get_moref_value",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 5,
+      "lineRange": {
+        "start": 1581,
+        "end": 1581
+      }
+    },
+    {
+      "name": "vm_util.get_cluster_ref_by_name",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1622,
+        "end": 1622
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 1624,
+        "end": 1624
+      }
+    },
+    {
+      "name": "exception.HostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1631,
+        "end": 1631
+      }
+    },
+    {
+      "name": "vmwarevif.get_vif_dict",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 1650,
+        "end": 1650
+      }
+    },
+    {
+      "name": "vmwarevif.get_network_device",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 1652,
+        "end": 1652
+      }
+    },
+    {
+      "name": "vm_util.update_vif_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1654,
+        "end": 1654
+      }
+    },
+    {
+      "name": "vm_util.relocate_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1661,
+        "end": 1661
+      }
+    },
+    {
+      "name": "recover_method",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1666,
+        "end": 1666
+      }
+    },
+    {
+      "name": "post_method",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1667,
+        "end": 1667
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1671,
+        "end": 1671
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1673,
+        "end": 1673
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 1673,
+        "end": 1673
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1695,
+        "end": 1695
+      }
+    },
+    {
+      "name": "hardware.InstanceInfo",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 1696,
+        "end": 1696
+      }
+    },
+    {
+      "name": "vim_util.object_to_dict",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1712,
+        "end": 1712
+      }
+    },
+    {
+      "name": "objects.Diagnostics",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1730,
+        "end": 1730
+      }
+    },
+    {
+      "name": "objects.MemoryDiagnostics",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1735,
+        "end": 1735
+      }
+    },
+    {
+      "name": "exception.ConsoleTypeUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1751,
+        "end": 1751
+      }
+    },
+    {
+      "name": "vm_util.get_machine_id_change_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1792,
+        "end": 1792
+      }
+    },
+    {
+      "name": "utils.synchronized",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1802,
+        "end": 1802
+      }
+    },
+    {
+      "name": "vm_util.get_vnc_port",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1805,
+        "end": 1805
+      }
+    },
+    {
+      "name": "vm_util.get_vnc_config_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1806,
+        "end": 1806
+      }
+    },
+    {
+      "name": "ds_util.get_available_datastores",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1867,
+        "end": 1867
+      }
+    },
+    {
+      "name": "vutil.WithRetrieval",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 1879,
+        "end": 1879
+      }
+    },
+    {
+      "name": "vm_util.convert_vif_model",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1909,
+        "end": 1909
+      }
+    },
+    {
+      "name": "vm_util.get_attach_port_index",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1916,
+        "end": 1916
+      }
+    },
+    {
+      "name": "vm_util.get_network_attach_config_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1920,
+        "end": 1920
+      }
+    },
+    {
+      "name": "exception.InterfaceAttachFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1931,
+        "end": 1931
+      }
+    },
+    {
+      "name": "vm_util.get_vm_detach_port_index",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1945,
+        "end": 1945
+      }
+    },
+    {
+      "name": "exception.NotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1951,
+        "end": 1951
+      }
+    },
+    {
+      "name": "vm_util.get_network_detach_config_spec",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1966,
+        "end": 1966
+      }
+    },
+    {
+      "name": "exception.InterfaceDetachFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1976,
+        "end": 1976
+      }
+    },
+    {
+      "name": "ds_util.get_dc_info",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 2110,
+        "end": 2110
+      }
+    },
+    {
+      "name": "vm_util.get_host_name_for_vm",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 2137,
+        "end": 2137
+      }
+    },
+    {
+      "name": "ctype.ConsoleVNC",
+      "usage": "call",
+      "via": "nova.console",
+      "count": 1,
+      "lineRange": {
+        "start": 2146,
+        "end": 2146
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 2158,
+        "end": 2158
+      }
+    },
+    {
+      "name": "ctype.ConsoleMKS",
+      "usage": "call",
+      "via": "nova.console",
+      "count": 1,
+      "lineRange": {
+        "start": 2159,
+        "end": 2159
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "decorator",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "lockutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vexc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware.objects",
+      "names": [
+        {
+          "alias": "ds_obj",
+          "name": "datastore"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vutil",
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.metadata",
+      "names": [
+        {
+          "alias": "instance_metadata",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.console",
+      "names": [
+        {
+          "alias": "ctype",
+          "name": "type"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "version"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "configdrive"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "constants"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "ds_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "error_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "imagecache"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "images"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": "vmwarevif",
+          "name": "vif"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

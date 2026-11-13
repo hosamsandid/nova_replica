@@ -1,0 +1,1165 @@
+{
+  "file": "nova/objects/numa.py",
+  "hash": "9f0f9f7586bc26973666c0bd52c9125472ea8a256333a92c0d6e7c0d063206f0",
+  "language": "Python",
+  "component": "objects",
+  "package": null,
+  "lines": {
+    "blank": 52,
+    "code": 208,
+    "comment": 36,
+    "total": 296
+  },
+  "symbols": [
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__all__",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMACell",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 168
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 41,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_compatible",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 55,
+        "end": 63
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "target_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 65,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.all_things_equal(self, other)",
+          "line": 66
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__ne__",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 68,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not (self == other)",
+          "line": 69
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "free_pcpus",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 72,
+        "end": 74
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.pcpuset - self.pinned_cpus or set()",
+          "line": 74
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "free_siblings",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 77,
+        "end": 79
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[sibling_set & self.free_pcpus for sibling_set in self.siblings]",
+          "line": 79
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "avail_pcpus",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 82,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "len(self.free_pcpus)",
+          "line": 84
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "avail_memory",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 87,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.memory - self.memory_usage",
+          "line": 88
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_threads",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 91,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "any(len(sibling_set) > 1 for sibling_set in self.siblings)",
+          "line": 93
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pin_cpus",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 95,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cpus"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unpin_cpus",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 107,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cpus"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pin_cpus_with_siblings",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 119,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cpus"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unpin_cpus_with_siblings",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 136,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cpus"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "can_fit_pagesize",
+      "kind": "method",
+      "scope": "NUMACell",
+      "lineRange": {
+        "start": 151,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pagesize"
+        },
+        {
+          "name": "memory"
+        },
+        {
+          "default": "True",
+          "name": "use_free"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "memory <= avail_kb and (memory % pages.size_kb) == 0",
+          "line": 167
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMAPagesTopology",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 172,
+        "end": 214
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 177,
+        "end": 182
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_compatible",
+      "kind": "method",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 184,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "target_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 191,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.all_things_equal(self, other)",
+          "line": 192
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__ne__",
+      "kind": "method",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 194,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not (self == other)",
+          "line": 195
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "free",
+      "kind": "method",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 198,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.total - self.used - self.reserved",
+          "line": 204
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "free_kb",
+      "kind": "method",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 207,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.free * self.size_kb",
+          "line": 209
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "total_kb",
+      "kind": "method",
+      "scope": "NUMAPagesTopology",
+      "lineRange": {
+        "start": 212,
+        "end": 214
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.total * self.size_kb",
+          "line": 214
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMATopology",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 218,
+        "end": 276
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 222,
+        "end": 222
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 224,
+        "end": 226
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 228,
+        "end": 229
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.all_things_equal(self, other)",
+          "line": 229
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__ne__",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 231,
+        "end": 232
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not (self == other)",
+          "line": 232
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_threads",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 235,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "any(cell.has_threads for cell in self.cells)",
+          "line": 237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_to_json",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 239,
+        "end": 240
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.dumps(self.obj_to_primitive())",
+          "line": 240
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_from_db_obj",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 243,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "db_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls.obj_from_primitive(jsonutils.loads(db_obj))",
+          "line": 249
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_legacy_object",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 252,
+        "end": 272
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "primitive",
+          "type": "str"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "topology._to_json()",
+          "line": 272
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__len__",
+      "kind": "method",
+      "scope": "NUMATopology",
+      "lineRange": {
+        "start": 274,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "len(self.cells)",
+          "line": 276
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMATopologyLimits",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 280,
+        "end": 296
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "NUMATopologyLimits",
+      "lineRange": {
+        "start": 283,
+        "end": 283
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "NUMATopologyLimits",
+      "lineRange": {
+        "start": 285,
+        "end": 289
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_compatible",
+      "kind": "method",
+      "scope": "NUMATopologyLimits",
+      "lineRange": {
+        "start": 291,
+        "end": 296
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "target_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "base.NovaObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "obj_fields.IntegerField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 9,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "obj_fields.SetOfIntegersField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "obj_fields.ListOfSetsOfIntegersField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "name": "obj_fields.ListOfObjectsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "obj_fields.ObjectField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_tuple",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "base.all_things_equal",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "exception.CPUPinningUnknown",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "exception.CPUPinningInvalid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      }
+    },
+    {
+      "name": "exception.CPUUnpinningUnknown",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 109,
+        "end": 109
+      }
+    },
+    {
+      "name": "exception.CPUUnpinningInvalid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 113,
+        "end": 113
+      }
+    },
+    {
+      "name": "exception.MemoryPageSizeNotSupported",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 168,
+        "end": 168
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 240,
+        "end": 240
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 2,
+      "lineRange": {
+        "start": 249,
+        "end": 249
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 258,
+        "end": 258
+      }
+    },
+    {
+      "name": "hardware.parse_cpu_spec",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 262,
+        "end": 262
+      }
+    },
+    {
+      "name": "obj_fields.FloatField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 286,
+        "end": 286
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

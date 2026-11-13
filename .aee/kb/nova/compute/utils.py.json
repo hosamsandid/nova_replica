@@ -1,0 +1,3932 @@
+{
+  "file": "nova/compute/utils.py",
+  "hash": "06f1dd1da35888f4de150577e0f866707106063d1d29b766e2743ce3f8ee5a8e",
+  "language": "Python",
+  "component": "compute",
+  "package": null,
+  "lines": {
+    "blank": 261,
+    "code": 1287,
+    "comment": 130,
+    "total": 1678
+  },
+  "symbols": [
+    {
+      "name": "import contextlib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import inspect",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import math",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import socket",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import traceback",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import psutil",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.accelerator import cyborg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import notifications",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import aggregate as aggregate_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import base as notification_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import compute_task as task_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import exception as notification_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import flavor as flavor_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import instance as instance_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import keypair as keypair_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import libvirt as libvirt_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import metrics as metrics_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import request_spec as reqspec_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import scheduler as scheduler_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import server_group as sg_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications.objects import volume as volume_notification",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import rpc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import safe_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NON_INHERITABLE_IMAGE_PROPERTIES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NON_INHERITABLE_IMAGE_NAMESPACES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 75,
+        "end": 77
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exception_to_dict",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 80,
+        "end": 128
+      },
+      "parameters": [
+        {
+          "name": "fault"
+        },
+        {
+          "default": "None",
+          "name": "message"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fault_dict",
+          "line": 128
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_fault_details",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 131,
+        "end": 141
+      },
+      "parameters": [
+        {
+          "name": "exc_info"
+        },
+        {
+          "name": "error_code"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "str(details)",
+          "line": 141
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_instance_fault_from_exc",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 144,
+        "end": 154
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "fault"
+        },
+        {
+          "default": "None",
+          "name": "exc_info"
+        },
+        {
+          "default": "None",
+          "name": "fault_message"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_name_for_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 157,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "bdms"
+        },
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "get_next_device_name(instance, mappings.values(), mappings['root'], device)",
+          "line": 167
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "default_device_names_for_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 171,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "root_device_name"
+        },
+        {
+          "name": "*block_device_lists"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_max_disk_devices_to_attach",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 196,
+        "end": 202
+      },
+      "parameters": [
+        {
+          "name": "num_devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 199
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_next_device_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 205,
+        "end": 255
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "device_name_list"
+        },
+        {
+          "default": "None",
+          "name": "root_device_name"
+        },
+        {
+          "default": "None",
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "prefix + req_letter",
+          "line": 255
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_root_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 258,
+        "end": 267
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bdms.root_bdm()",
+          "line": 267
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_volume_backed_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 270,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root_bdm.is_volume",
+          "line": 273
+        },
+        {
+          "expr": "not instance.image_ref",
+          "line": 277
+        },
+        {
+          "expr": "not instance['image_ref']",
+          "line": 279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "heal_reqspec_is_bfv",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 282,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 297
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "convert_mb_to_ceil_gb",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 304,
+        "end": 310
+      },
+      "parameters": [
+        {
+          "name": "mb_value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "gb_int",
+          "line": 310
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_unused_letter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 313,
+        "end": 320
+      },
+      "parameters": [
+        {
+          "name": "used_letters"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "letter",
+          "line": 319
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_value_from_system_metadata",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 323,
+        "end": 339
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "default"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "type(value)",
+          "line": 333
+        },
+        {
+          "expr": "default",
+          "line": 339
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_usage_exists",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 342,
+        "end": 405
+      },
+      "parameters": [
+        {
+          "name": "notifier"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_ref"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "False",
+          "name": "current_period"
+        },
+        {
+          "default": "True",
+          "name": "ignore_missing_network_data"
+        },
+        {
+          "default": "None",
+          "name": "system_metadata"
+        },
+        {
+          "default": "None",
+          "name": "extra_usage_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_usage",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 408,
+        "end": 446
+      },
+      "parameters": [
+        {
+          "name": "notifier"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "event_suffix"
+        },
+        {
+          "default": "None",
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "extra_usage_info"
+        },
+        {
+          "default": "None",
+          "name": "fault"
+        },
+        {
+          "default": "False",
+          "name": "best_effort"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_fault_and_priority_from_exception",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 449,
+        "end": 459
+      },
+      "parameters": [
+        {
+          "name": "exception",
+          "type": "Exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fault, priority",
+          "line": 454
+        },
+        {
+          "expr": "fault, priority",
+          "line": 459
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 463,
+        "end": 499
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "default": "None",
+          "name": "phase"
+        },
+        {
+          "default": "fields.NotificationSource.COMPUTE",
+          "name": "source"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        },
+        {
+          "default": "False",
+          "name": "best_effort"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_create",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 503,
+        "end": 531
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "phase"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_scheduler_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 535,
+        "end": 556
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "default": "None",
+          "name": "phase"
+        },
+        {
+          "default": "fields.NotificationSource.SCHEDULER",
+          "name": "source"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_volume_attach_detach",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 560,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "name": "phase"
+        },
+        {
+          "default": "None",
+          "name": "volume_id"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_share_attach_detach",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 590,
+        "end": 617
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "name": "phase"
+        },
+        {
+          "default": "None",
+          "name": "share_id"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_rescue_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 621,
+        "end": 649
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "rescue_image_ref"
+        },
+        {
+          "default": "None",
+          "name": "phase"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_keypair_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 653,
+        "end": 671
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "keypair"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "name": "phase"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_volume_swap",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 675,
+        "end": 705
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "phase"
+        },
+        {
+          "name": "old_volume_id"
+        },
+        {
+          "name": "new_volume_id"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_snapshot",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 709,
+        "end": 735
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "phase"
+        },
+        {
+          "name": "snapshot_image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_resize_prep_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 739,
+        "end": 766
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "phase"
+        },
+        {
+          "name": "new_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_server_group_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 769,
+        "end": 777
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "event_suffix"
+        },
+        {
+          "name": "sg_payload"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_aggregate_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 780,
+        "end": 797
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "event_suffix"
+        },
+        {
+          "name": "aggregate_payload"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 792
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_aggregate_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 801,
+        "end": 812
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "name": "phase"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_aggregate_cache",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 816,
+        "end": 851
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "image_status"
+        },
+        {
+          "name": "index"
+        },
+        {
+          "name": "total"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_host_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 854,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "event_suffix"
+        },
+        {
+          "name": "host_payload"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 866
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_server_group_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 874,
+        "end": 884
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "action"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_server_group_add_member",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 888,
+        "end": 899
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "group_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_rebuild",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 903,
+        "end": 935
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "fields.NotificationAction.REBUILD",
+          "name": "action"
+        },
+        {
+          "default": "None",
+          "name": "phase"
+        },
+        {
+          "default": "fields.NotificationSource.COMPUTE",
+          "name": "source"
+        },
+        {
+          "default": "None",
+          "name": "exception"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_metrics_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 939,
+        "end": 963
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "host_ip"
+        },
+        {
+          "name": "nodename"
+        },
+        {
+          "name": "monitor_metric_list"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_libvirt_connect_error",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 967,
+        "end": 985
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "ip"
+        },
+        {
+          "name": "exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_volume_usage",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 989,
+        "end": 1007
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "vol_usage"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_compute_task_error",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1011,
+        "end": 1042
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "refresh_info_cache_for_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1045,
+        "end": 1057
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_reboot_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1060,
+        "end": 1066
+      },
+      "parameters": [
+        {
+          "name": "task_state"
+        },
+        {
+          "name": "current_power_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'HARD'",
+          "line": 1063
+        },
+        {
+          "expr": "'SOFT'",
+          "line": 1065
+        },
+        {
+          "expr": "'HARD'",
+          "line": 1066
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_machine_ips",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1069,
+        "end": 1089
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "addresses",
+          "line": 1089
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "upsize_quota_delta",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1092,
+        "end": 1107
+      },
+      "parameters": [
+        {
+          "name": "new_flavor"
+        },
+        {
+          "name": "old_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "deltas",
+          "line": 1107
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_quota_delta",
+      "kind": "function",
+      "scope": "upsize_quota_delta",
+      "lineRange": {
+        "start": 1098,
+        "end": 1099
+      },
+      "parameters": [
+        {
+          "name": "resource"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(new_flavor[resource] - old_flavor[resource])",
+          "line": 1099
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_headroom",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1110,
+        "end": 1131
+      },
+      "parameters": [
+        {
+          "name": "quotas"
+        },
+        {
+          "name": "usages"
+        },
+        {
+          "name": "deltas"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "headroom",
+          "line": 1131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_num_instances_quota",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1134,
+        "end": 1230
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "min_count"
+        },
+        {
+          "name": "max_count"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        },
+        {
+          "default": "None",
+          "name": "orig_num_req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "check_num_instances_quota( context, flavor, min_count, allowed, project_id=project_id, user_id=user_id)",
+          "line": 1200
+        },
+        {
+          "expr": "max_count",
+          "line": 1230
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_over_quota_detail",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1233,
+        "end": 1243
+      },
+      "parameters": [
+        {
+          "name": "headroom"
+        },
+        {
+          "name": "overs"
+        },
+        {
+          "name": "quotas"
+        },
+        {
+          "name": "requested"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "overs, reqs, total_alloweds, useds",
+          "line": 1243
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_shelved_keys_from_system_metadata",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1246,
+        "end": 1250
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1253,
+        "end": 1283
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "image_type"
+        },
+        {
+          "name": "image_api"
+        },
+        {
+          "default": "None",
+          "name": "extra_properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image_api.create(context, image_meta)",
+          "line": 1283
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "initialize_instance_snapshot_metadata",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1286,
+        "end": 1336
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "extra_properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image_meta",
+          "line": 1336
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_image",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1339,
+        "end": 1362
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_api"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "default": "False",
+          "name": "log_exc_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "may_have_ports_or_volumes",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1365,
+        "end": 1380
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1379
+        },
+        {
+          "expr": "False",
+          "line": 1380
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_stashed_volume_connector",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1383,
+        "end": 1415
+      },
+      "parameters": [
+        {
+          "name": "bdm"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "connector",
+          "line": 1402
+        },
+        {
+          "expr": "connector",
+          "line": 1415
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EventReporter",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1418,
+        "end": 1454
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "EventReporter",
+      "lineRange": {
+        "start": 1425,
+        "end": 1431
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "event_name"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "*instance_uuids"
+        },
+        {
+          "default": "False",
+          "name": "graceful_exit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__enter__",
+      "kind": "method",
+      "scope": "EventReporter",
+      "lineRange": {
+        "start": 1433,
+        "end": 1439
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self",
+          "line": 1439
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__exit__",
+      "kind": "method",
+      "scope": "EventReporter",
+      "lineRange": {
+        "start": 1441,
+        "end": 1454
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc_type"
+        },
+        {
+          "name": "exc_val"
+        },
+        {
+          "name": "exc_tb"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1453
+        },
+        {
+          "expr": "False",
+          "line": 1454
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrap_instance_event",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1457,
+        "end": 1485
+      },
+      "parameters": [
+        {
+          "name": "prefix"
+        },
+        {
+          "default": "False",
+          "name": "graceful_exit"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "helper",
+          "line": 1485
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "helper",
+      "kind": "function",
+      "scope": "wrap_instance_event",
+      "lineRange": {
+        "start": 1470,
+        "end": 1484
+      },
+      "parameters": [
+        {
+          "name": "function"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "decorated_function",
+          "line": 1484
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "decorated_function",
+      "kind": "function",
+      "scope": "wrap_instance_event.helper",
+      "lineRange": {
+        "start": 1473,
+        "end": 1483
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "function(self, context, *args, **kwargs)",
+          "line": 1483
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UnlimitedSemaphore",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1488,
+        "end": 1497
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__enter__",
+      "kind": "method",
+      "scope": "UnlimitedSemaphore",
+      "lineRange": {
+        "start": 1489,
+        "end": 1490
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__exit__",
+      "kind": "method",
+      "scope": "UnlimitedSemaphore",
+      "lineRange": {
+        "start": 1492,
+        "end": 1493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc_type"
+        },
+        {
+          "name": "exc_val"
+        },
+        {
+          "name": "exc_tb"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "balance",
+      "kind": "method",
+      "scope": "UnlimitedSemaphore",
+      "lineRange": {
+        "start": 1496,
+        "end": 1497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "0",
+          "line": 1497
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_ops_semaphore",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 1503,
+        "end": 1503
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "notify_about_instance_delete",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1507,
+        "end": 1535
+      },
+      "parameters": [
+        {
+          "name": "notifier"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "'delete'",
+          "name": "delete_type"
+        },
+        {
+          "default": "fields.NotificationSource.API",
+          "name": "source"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_pci_request_with_placement_allocations",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1538,
+        "end": 1608
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "report_client"
+        },
+        {
+          "name": "pci_requests"
+        },
+        {
+          "name": "provider_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1557
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "needs_update_due_to_qos",
+      "kind": "function",
+      "scope": "update_pci_request_with_placement_allocations",
+      "lineRange": {
+        "start": 1559,
+        "end": 1561
+      },
+      "parameters": [
+        {
+          "name": "pci_request"
+        },
+        {
+          "name": "mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(pci_request.requester_id and pci_request.requester_id in mapping)",
+          "line": 1560
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_group_mapping_for_flavor_based_pci_request",
+      "kind": "function",
+      "scope": "update_pci_request_with_placement_allocations",
+      "lineRange": {
+        "start": 1563,
+        "end": 1573
+      },
+      "parameters": [
+        {
+          "name": "pci_request"
+        },
+        {
+          "name": "mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ group_id: rp_uuids[0] for group_id, rp_uuids in mapping.items() if group_id.startswith(pci_request.request_id) }",
+          "line": 1569
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_arqs_if_needed",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1611,
+        "end": 1638
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "arq_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1620
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_attach_and_reserve_volume",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1641,
+        "end": 1678
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_api"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "bdm"
+        },
+        {
+          "default": "False",
+          "name": "supports_multiattach"
+        },
+        {
+          "default": "True",
+          "name": "validate_az"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "log.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "name": "frozenset",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "utils.safe_truncate",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 125,
+        "end": 125
+      }
+    },
+    {
+      "name": "traceback.format_exception",
+      "usage": "call",
+      "via": "traceback",
+      "count": 1,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "objects.InstanceFault",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 148,
+        "end": 148
+      }
+    },
+    {
+      "name": "block_device.instance_block_mapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      }
+    },
+    {
+      "name": "itertools.chain",
+      "usage": "call",
+      "via": "itertools",
+      "count": 2,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "exception.TooManyDiskDevices",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 202,
+        "end": 202
+      }
+    },
+    {
+      "name": "block_device.match_device",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 225,
+        "end": 225
+      }
+    },
+    {
+      "name": "exception.InvalidDevicePath",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 227,
+        "end": 227
+      }
+    },
+    {
+      "name": "block_device.prepend_dev",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 234,
+        "end": 234
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 242,
+        "end": 242
+      }
+    },
+    {
+      "name": "block_device.get_device_letter",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 244,
+        "end": 244
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 247,
+        "end": 247
+      }
+    },
+    {
+      "name": "exception.DevicePathInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 260,
+        "end": 260
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 264,
+        "end": 264
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "math.ceil",
+      "usage": "call",
+      "via": "math",
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "block_device.generate_device_letter",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 333,
+        "end": 333
+      }
+    },
+    {
+      "name": "notifications.audit_period_bounds",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 364,
+        "end": 364
+      }
+    },
+    {
+      "name": "utils.instance_sys_meta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 367,
+        "end": 367
+      }
+    },
+    {
+      "name": "notifications.image_meta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 370,
+        "end": 370
+      }
+    },
+    {
+      "name": "instance_notification.AuditPeriodPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 382,
+        "end": 382
+      }
+    },
+    {
+      "name": "instance_notification.InstanceExistsPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 387,
+        "end": 387
+      }
+    },
+    {
+      "name": "instance_notification.InstanceExistsNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 393,
+        "end": 393
+      }
+    },
+    {
+      "name": "notification_base.NotificationPublisher",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 20,
+      "lineRange": {
+        "start": 396,
+        "end": 396
+      }
+    },
+    {
+      "name": "notification_base.EventType",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 20,
+      "lineRange": {
+        "start": 399,
+        "end": 399
+      }
+    },
+    {
+      "name": "notifications.info_from_instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 425,
+        "end": 425
+      }
+    },
+    {
+      "name": "method",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 440,
+        "end": 440
+      }
+    },
+    {
+      "name": "notification_exception.ExceptionPayload.from_exception",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 456,
+        "end": 456
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 477,
+        "end": 477
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 482,
+        "end": 482
+      }
+    },
+    {
+      "name": "instance_notification.InstanceCreatePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 516,
+        "end": 516
+      }
+    },
+    {
+      "name": "instance_notification.InstanceCreateNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 521,
+        "end": 521
+      }
+    },
+    {
+      "name": "reqspec_notification.RequestSpecPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 544,
+        "end": 544
+      }
+    },
+    {
+      "name": "scheduler_notification.SelectDestinationsNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 546,
+        "end": 546
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionVolumePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 571,
+        "end": 571
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionVolumeNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 576,
+        "end": 576
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionSharePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 601,
+        "end": 601
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionShareNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 607,
+        "end": 607
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionRescuePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 633,
+        "end": 633
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionRescueNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 639,
+        "end": 639
+      }
+    },
+    {
+      "name": "keypair_notification.KeypairPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 661,
+        "end": 661
+      }
+    },
+    {
+      "name": "keypair_notification.KeypairNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 662,
+        "end": 662
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionVolumeSwapPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 689,
+        "end": 689
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionVolumeSwapNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 696,
+        "end": 696
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionSnapshotPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 720,
+        "end": 720
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionSnapshotNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 726,
+        "end": 726
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionResizePrepPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 751,
+        "end": 751
+      }
+    },
+    {
+      "name": "flavor_notification.FlavorPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 755,
+        "end": 755
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionResizePrepNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 757,
+        "end": 757
+      }
+    },
+    {
+      "name": "rpc.get_notifier",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 775,
+        "end": 775
+      }
+    },
+    {
+      "name": "aggregate_notification.AggregatePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 802,
+        "end": 802
+      }
+    },
+    {
+      "name": "aggregate_notification.AggregateNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 803,
+        "end": 803
+      }
+    },
+    {
+      "name": "aggregate_notification.AggregateCachePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 831,
+        "end": 831
+      }
+    },
+    {
+      "name": "aggregate_notification.AggregateCacheNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 842,
+        "end": 842
+      }
+    },
+    {
+      "name": "sg_notification.ServerGroupPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 875,
+        "end": 875
+      }
+    },
+    {
+      "name": "sg_notification.ServerGroupNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 876,
+        "end": 876
+      }
+    },
+    {
+      "name": "objects.InstanceGroup.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 889,
+        "end": 889
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionRebuildPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 920,
+        "end": 920
+      }
+    },
+    {
+      "name": "instance_notification.InstanceActionRebuildNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 925,
+        "end": 925
+      }
+    },
+    {
+      "name": "metrics_notification.MetricsPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 949,
+        "end": 949
+      }
+    },
+    {
+      "name": "metrics_notification.MetricsNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 954,
+        "end": 954
+      }
+    },
+    {
+      "name": "libvirt_notification.LibvirtErrorPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 975,
+        "end": 975
+      }
+    },
+    {
+      "name": "libvirt_notification.LibvirtErrorNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 976,
+        "end": 976
+      }
+    },
+    {
+      "name": "volume_notification.VolumeUsagePayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 996,
+        "end": 996
+      }
+    },
+    {
+      "name": "volume_notification.VolumeUsageNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 998,
+        "end": 998
+      }
+    },
+    {
+      "name": "objects.RequestSpec.from_primitives",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1026,
+        "end": 1026
+      }
+    },
+    {
+      "name": "task_notification.ComputeTaskPayload",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 1030,
+        "end": 1030
+      }
+    },
+    {
+      "name": "task_notification.ComputeTaskNotification",
+      "usage": "call",
+      "via": "nova.notifications.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 1033,
+        "end": 1033
+      }
+    },
+    {
+      "name": "psutil.net_if_addrs",
+      "usage": "call",
+      "via": "psutil",
+      "count": 1,
+      "lineRange": {
+        "start": 1075,
+        "end": 1075
+      }
+    },
+    {
+      "name": "objects.Quotas.get_all_by_project_and_user",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1147,
+        "end": 1147
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1149,
+        "end": 1149
+      }
+    },
+    {
+      "name": "objects.Quotas.check_deltas",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1159,
+        "end": 1159
+      }
+    },
+    {
+      "name": "exception.TooManyInstances",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1181,
+        "end": 1181
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1191,
+        "end": 1191
+      }
+    },
+    {
+      "name": "map",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1241,
+        "end": 1241
+      }
+    },
+    {
+      "name": "utils.get_image_from_system_metadata",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1299,
+        "end": 1299
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 1399,
+        "end": 1399
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1418,
+        "end": 1418
+      }
+    },
+    {
+      "name": "objects.InstanceActionEvent.event_start",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1435,
+        "end": 1435
+      }
+    },
+    {
+      "name": "objects.InstanceActionEvent.event_finish_with_failure",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1444,
+        "end": 1444
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 1450,
+        "end": 1450
+      }
+    },
+    {
+      "name": "utils.expects_func_args",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1469,
+        "end": 1469
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 1472,
+        "end": 1472
+      }
+    },
+    {
+      "name": "safe_utils.get_wrapped_function",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1474,
+        "end": 1474
+      }
+    },
+    {
+      "name": "inspect.getcallargs",
+      "usage": "call",
+      "via": "inspect",
+      "count": 1,
+      "lineRange": {
+        "start": 1475,
+        "end": 1475
+      }
+    },
+    {
+      "name": "function",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1483,
+        "end": 1483
+      }
+    },
+    {
+      "name": "exception.AmbiguousResourceProviderForPCIRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1589,
+        "end": 1589
+      }
+    },
+    {
+      "name": "ex",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1602,
+        "end": 1602
+      }
+    },
+    {
+      "name": "cyborg.get_client",
+      "usage": "call",
+      "via": "nova.accelerator",
+      "count": 1,
+      "lineRange": {
+        "start": 1622,
+        "end": 1622
+      }
+    },
+    {
+      "name": "exception.MultiattachNotSupportedOldMicroversion",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1666,
+        "end": 1666
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "contextlib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "inspect",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "math",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "socket",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "traceback",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": null,
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "psutil",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.accelerator",
+      "names": [
+        {
+          "alias": null,
+          "name": "cyborg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "notifications"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "aggregate_notification",
+          "name": "aggregate"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "notification_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "task_notification",
+          "name": "compute_task"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "notification_exception",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "flavor_notification",
+          "name": "flavor"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "instance_notification",
+          "name": "instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "keypair_notification",
+          "name": "keypair"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "libvirt_notification",
+          "name": "libvirt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "metrics_notification",
+          "name": "metrics"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "reqspec_notification",
+          "name": "request_spec"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "scheduler_notification",
+          "name": "scheduler"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "sg_notification",
+          "name": "server_group"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications.objects",
+      "names": [
+        {
+          "alias": "volume_notification",
+          "name": "volume"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "rpc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "safe_utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

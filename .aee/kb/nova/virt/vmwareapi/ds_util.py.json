@@ -1,0 +1,1158 @@
+{
+  "file": "nova/virt/vmwareapi/ds_util.py",
+  "hash": "24b64a2fa68408dfb1b942943b2b3fe545bd9e96c510ffdcdd681d260ad5a0ea",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 83,
+    "code": 403,
+    "comment": 27,
+    "total": 513
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import exceptions as vexc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware.objects import datastore as ds_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import pbm",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import vim_util as vutil",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import constants",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import vim_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import vm_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALL_SUPPORTED_DS_TYPES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DcInfo",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_DS_DC_MAPPING",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_select_datastore",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 87
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "datastores"
+        },
+        {
+          "name": "best_match"
+        },
+        {
+          "default": "None",
+          "name": "datastore_regex"
+        },
+        {
+          "default": "None",
+          "name": "storage_policy"
+        },
+        {
+          "default": "ALL_SUPPORTED_DS_TYPES",
+          "name": "allowed_ds_types"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "best_match",
+          "line": 65
+        },
+        {
+          "expr": "best_match",
+          "line": 87
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_datastore_valid",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 90,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "propdict"
+        },
+        {
+          "name": "datastore_regex"
+        },
+        {
+          "name": "ds_types"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(propdict.get('summary.accessible') and (propdict.get('summary.maintenanceMode') is None or propdict.get('summary.maintenanceMode') == 'normal') and propdict['summary.type'] in ds_types and (datastore",
+          "line": 105
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_datastore",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 113,
+        "end": 156
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "cluster"
+        },
+        {
+          "default": "None",
+          "name": "datastore_regex"
+        },
+        {
+          "default": "None",
+          "name": "storage_policy"
+        },
+        {
+          "default": "ALL_SUPPORTED_DS_TYPES",
+          "name": "allowed_ds_types"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "best_match",
+          "line": 145
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_allowed_datastores",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 159,
+        "end": 172
+      },
+      "parameters": [
+        {
+          "name": "datastores"
+        },
+        {
+          "name": "datastore_regex"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_datastores",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 175,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "default": "None",
+          "name": "cluster"
+        },
+        {
+          "default": "None",
+          "name": "datastore_regex"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 182
+        },
+        {
+          "expr": "list(_get_allowed_datastores(datastores, datastore_regex))",
+          "line": 193
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_allowed_datastore_types",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 196,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "disk_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ALL_SUPPORTED_DS_TYPES",
+          "line": 198
+        },
+        {
+          "expr": "ALL_SUPPORTED_DS_TYPES - frozenset([constants.DATASTORE_TYPE_VSAN])",
+          "line": 199
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_datacenter_ref",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 202,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "session._call_method( session.vim, \"FindByInventoryPath\", session.vim.service_content.searchIndex, inventoryPath=dc_path)",
+          "line": 203
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "file_delete",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 210,
+        "end": 220
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "file_copy",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 223,
+        "end": 236
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "src_file"
+        },
+        {
+          "name": "src_dc_ref"
+        },
+        {
+          "name": "dst_file"
+        },
+        {
+          "name": "dst_dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_move",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 239,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "src_file"
+        },
+        {
+          "name": "dst_file"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_copy",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 279,
+        "end": 294
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "src_file"
+        },
+        {
+          "name": "dst_file"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disk_delete",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 297,
+        "end": 307
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "file_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "file_move",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 310,
+        "end": 346
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "src_file"
+        },
+        {
+          "name": "dst_file"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "search_datastore_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 349,
+        "end": 358
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "file_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "search_spec",
+          "line": 358
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "file_exists",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 361,
+        "end": 377
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "ds_browser"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "file_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 373
+        },
+        {
+          "expr": "file_exists",
+          "line": 377
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "file_size",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 380,
+        "end": 391
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "ds_browser"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "file_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "task_info.result.file[0].fileSize",
+          "line": 391
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mkdir",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 394,
+        "end": 404
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_sub_folders",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 407,
+        "end": 424
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "ds_browser"
+        },
+        {
+          "name": "ds_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "set()",
+          "line": 420
+        },
+        {
+          "expr": "set([file.path for file in task_info.result.file])",
+          "line": 423
+        },
+        {
+          "expr": "set()",
+          "line": 424
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_datastores_matching_storage_policy",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 427,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "datastores"
+        },
+        {
+          "name": "storage_policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 439
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_datacenter_cache_from_objects",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 459,
+        "end": 478
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dcs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_dc_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 481,
+        "end": 489
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dc_info",
+          "line": 489
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "dc_cache_reset",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 492,
+        "end": 494
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_connected_hosts",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 497,
+        "end": 513
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "datastore"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 507
+        },
+        {
+          "expr": "connected_hosts",
+          "line": 513
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "frozenset",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "name": "collections.namedtuple",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "vm_util.propset_dict",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 3,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "ds_obj.Datastore",
+      "usage": "call",
+      "via": "oslo_vmware.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "exception.DatastoreNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "vutil.WithRetrieval",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 3,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 2,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 193,
+        "end": 193
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 12,
+      "lineRange": {
+        "start": 217,
+        "end": 217
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 375,
+        "end": 375
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 420,
+        "end": 420
+      }
+    },
+    {
+      "name": "pbm.get_profile_id_by_name",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 435,
+        "end": 435
+      }
+    },
+    {
+      "name": "vim_util.get_moref_value",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 448,
+        "end": 448
+      }
+    },
+    {
+      "name": "pbm.convert_datastores_to_hubs",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 450,
+        "end": 450
+      }
+    },
+    {
+      "name": "pbm.filter_hubs_by_profile",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 451,
+        "end": 451
+      }
+    },
+    {
+      "name": "vutil.get_moref_value",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 4,
+      "lineRange": {
+        "start": 472,
+        "end": 472
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vexc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware.objects",
+      "names": [
+        {
+          "alias": "ds_obj",
+          "name": "datastore"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": null,
+          "name": "pbm"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vutil",
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "constants"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

@@ -1,0 +1,1027 @@
+{
+  "file": "nova/objects/keypair.py",
+  "hash": "6abfc2877a7e6a197d29f190b7bbda137e1d78dc33084e9452c7a138c48b250e",
+  "language": "Python",
+  "component": "objects",
+  "package": null,
+  "lines": {
+    "blank": 38,
+    "code": 143,
+    "comment": 27,
+    "total": 208
+  },
+  "symbols": [
+    {
+      "name": "from oslo_db import exception as db_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_db.sqlalchemy import utils as sqlalchemyutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.api import api as api_db_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.api import models as api_models",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KEYPAIR_TYPE_SSH",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KEYPAIR_TYPE_X509",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__all__",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 58
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "default": "None",
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db_keypair",
+          "line": 45
+        },
+        {
+          "expr": "query.all()",
+          "line": 58
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_count_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 65
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "context.session.query(api_models.KeyPair).\\ filter(api_models.KeyPair.user_id == user_id).\\ count()",
+          "line": 63
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_in_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 76
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "kp",
+          "line": 76
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_destroy_in_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 80,
+        "end": 86
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeyPair",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 91,
+        "end": 173
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 100,
+        "end": 107
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_make_compatible",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 109,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "primitive"
+        },
+        {
+          "name": "target_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_from_db_object",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 116,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "keypair"
+        },
+        {
+          "name": "db_keypair"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "keypair",
+          "line": 126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_from_db",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 129,
+        "end": 130
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_from_db(context, user_id, name=name)",
+          "line": 130
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_destroy_in_db",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 133,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_destroy_in_db(context, user_id, name)",
+          "line": 134
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_in_db",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 137,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_create_in_db(context, values)",
+          "line": 138
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_name",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 143,
+        "end": 150
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "False",
+          "name": "localonly"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_keypair)",
+          "line": 150
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy_by_name",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 154,
+        "end": 155
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 158,
+        "end": 164
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 166,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy",
+      "kind": "method",
+      "scope": "KeyPair",
+      "lineRange": {
+        "start": 172,
+        "end": 173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeyPairList",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 177,
+        "end": 208
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "KeyPairList",
+      "lineRange": {
+        "start": 183,
+        "end": 183
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "KeyPairList",
+      "lineRange": {
+        "start": 185,
+        "end": 187
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_from_db",
+      "kind": "method",
+      "scope": "KeyPairList",
+      "lineRange": {
+        "start": 190,
+        "end": 191
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_from_db(context, user_id, limit=limit, marker=marker)",
+          "line": 191
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_count_from_db",
+      "kind": "method",
+      "scope": "KeyPairList",
+      "lineRange": {
+        "start": 194,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_count_from_db(context, user_id)",
+          "line": 195
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_user",
+      "kind": "method",
+      "scope": "KeyPairList",
+      "lineRange": {
+        "start": 199,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(context, cls(context), api_db_keypairs)",
+          "line": 203
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_count_by_user",
+      "kind": "method",
+      "scope": "KeyPairList",
+      "lineRange": {
+        "start": 207,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._get_count_from_db(context, user_id)",
+          "line": 208
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "name": "exception.KeypairNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "exception.MarkerNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "sqlalchemyutils.paginate_query",
+      "usage": "call",
+      "via": "oslo_db.sqlalchemy",
+      "count": 1,
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "name": "api_models.KeyPair",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 1,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "exception.KeyPairExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "base.NovaObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "base.NovaPersistentObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "base.NovaObjectDictCompat",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "fields.IntegerField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "fields.StringField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 5,
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_tuple",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "exception.ObjectActionError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "base.ObjectListBase",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 177,
+        "end": 177
+      }
+    },
+    {
+      "name": "fields.ListOfObjectsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 186,
+        "end": 186
+      }
+    },
+    {
+      "name": "base.obj_make_list",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 203,
+        "end": 203
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "oslo_db",
+      "names": [
+        {
+          "alias": "db_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_db.sqlalchemy",
+      "names": [
+        {
+          "alias": "sqlalchemyutils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.api",
+      "names": [
+        {
+          "alias": "api_db_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.api",
+      "names": [
+        {
+          "alias": "api_models",
+          "name": "models"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

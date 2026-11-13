@@ -1,0 +1,4887 @@
+{
+  "file": "nova/virt/libvirt/host.py",
+  "hash": "a793e1b0186ae160ea3ccc0823917eb5f83c8589c0194d7bb79e5f67cdfbf72b",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 378,
+    "code": 1740,
+    "comment": 222,
+    "total": 2340
+  },
+  "symbols": [
+    {
+      "name": "from collections.abc import Callable",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from collections.abc import Mapping",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from collections import defaultdict",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import inspect",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import operator",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import queue",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import threading",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import typing as ty",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from lxml import etree",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_traits as ot",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import utils as pci_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import rpc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import thread_pool_factory",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import event as virtevent",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import config as vconfig",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import event as libvirtevent",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import guest as libvirt_guest",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import migration as libvirt_migrate",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import utils as libvirt_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.virt.node",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import libvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "libvirt",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "HV_DRIVER_QEMU",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SEV_KERNEL_PARAM_FILE",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MIN_QEMU_SEV_ES_VERSION",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MISC_CONTROL_GROUP_CAPACITY_FILE",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtEventHandler",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 87,
+        "end": 105
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "LibvirtEventHandler",
+      "lineRange": {
+        "start": 88,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "conn_event_handler"
+        },
+        {
+          "default": "None",
+          "name": "lifecycle_event_handler"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_queue_event",
+      "kind": "method",
+      "scope": "LibvirtEventHandler",
+      "lineRange": {
+        "start": 92,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "event"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "start",
+      "kind": "method",
+      "scope": "LibvirtEventHandler",
+      "lineRange": {
+        "start": 95,
+        "end": 96
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "LibvirtEventHandler",
+      "lineRange": {
+        "start": 99,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "default": "None",
+          "name": "conn_event_handler"
+        },
+        {
+          "default": "None",
+          "name": "lifecycle_event_handler"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_ThreadingLibvirtEventHandler( conn_event_handler, lifecycle_event_handler)",
+          "line": 101
+        },
+        {
+          "expr": "_EventletLibvirtEventHandler( conn_event_handler, lifecycle_event_handler)",
+          "line": 104
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_EventletLibvirtEventHandler",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 235
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "_EventletLibvirtEventHandler",
+      "lineRange": {
+        "start": 109,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "conn_event_handler"
+        },
+        {
+          "default": "None",
+          "name": "lifecycle_event_handler"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "start",
+      "kind": "method",
+      "scope": "_EventletLibvirtEventHandler",
+      "lineRange": {
+        "start": 133,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_queue_event",
+      "kind": "method",
+      "scope": "_EventletLibvirtEventHandler",
+      "lineRange": {
+        "start": 151,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "event"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 160
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_native_thread",
+      "kind": "method",
+      "scope": "_EventletLibvirtEventHandler",
+      "lineRange": {
+        "start": 170,
+        "end": 184
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_dispatch_thread",
+      "kind": "method",
+      "scope": "_EventletLibvirtEventHandler",
+      "lineRange": {
+        "start": 186,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_dispatch_events",
+      "kind": "method",
+      "scope": "_EventletLibvirtEventHandler",
+      "lineRange": {
+        "start": 197,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 210
+        },
+        {
+          "expr": "",
+          "line": 217
+        },
+        {
+          "expr": "",
+          "line": 230
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ThreadingLibvirtEventHandler",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 238,
+        "end": 282
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "_ThreadingLibvirtEventHandler",
+      "lineRange": {
+        "start": 239,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "conn_event_handler"
+        },
+        {
+          "default": "None",
+          "name": "lifecycle_event_handler"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "start",
+      "kind": "method",
+      "scope": "_ThreadingLibvirtEventHandler",
+      "lineRange": {
+        "start": 245,
+        "end": 255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_queue_event",
+      "kind": "method",
+      "scope": "_ThreadingLibvirtEventHandler",
+      "lineRange": {
+        "start": 257,
+        "end": 271
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "event"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_native_thread",
+      "kind": "method",
+      "scope": "_ThreadingLibvirtEventHandler",
+      "lineRange": {
+        "start": 273,
+        "end": 282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Host",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 285,
+        "end": 2340
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 287,
+        "end": 337
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "uri"
+        },
+        {
+          "default": "False",
+          "name": "read_only"
+        },
+        {
+          "default": "None",
+          "name": "conn_event_handler"
+        },
+        {
+          "default": "None",
+          "name": "lifecycle_event_handler"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_libvirt_proxy_classes",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 340,
+        "end": 350
+      },
+      "parameters": [
+        {
+          "name": "libvirt_module"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "tuple([cls[1] for cls in classes if cls[0].startswith(\"vir\")])",
+          "line": 350
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_wrap_libvirt_proxy",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 352,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "utils.tpool_wrap(obj, autowrap=self._libvirt_proxy_classes)",
+          "line": 362
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_conn_event_thread",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 364,
+        "end": 370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_dispatch_conn_event",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 372,
+        "end": 382
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_event_device_removed_callback",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 385,
+        "end": 396
+      },
+      "parameters": [
+        {
+          "name": "conn"
+        },
+        {
+          "name": "dom"
+        },
+        {
+          "name": "dev"
+        },
+        {
+          "name": "opaque"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_event_device_removal_failed_callback",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 399,
+        "end": 410
+      },
+      "parameters": [
+        {
+          "name": "conn"
+        },
+        {
+          "name": "dom"
+        },
+        {
+          "name": "dev"
+        },
+        {
+          "name": "opaque"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_event_lifecycle_callback",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 413,
+        "end": 461
+      },
+      "parameters": [
+        {
+          "name": "conn"
+        },
+        {
+          "name": "dom"
+        },
+        {
+          "name": "event"
+        },
+        {
+          "name": "detail"
+        },
+        {
+          "name": "opaque"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_close_callback",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 463,
+        "end": 465
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "conn"
+        },
+        {
+          "name": "reason"
+        },
+        {
+          "name": "opaque"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_connection",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 468,
+        "end": 479
+      },
+      "parameters": [
+        {
+          "name": "conn"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 471
+        },
+        {
+          "expr": "False",
+          "line": 478
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_connect_auth_cb",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 482,
+        "end": 487
+      },
+      "parameters": [
+        {
+          "name": "creds"
+        },
+        {
+          "name": "opaque"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "0",
+          "line": 484
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_connect",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 489,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "uri"
+        },
+        {
+          "name": "read_only"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._libvirt_proxy.openAuth(uri, auth, flags)",
+          "line": 502
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_connection_closed",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 504,
+        "end": 511
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "conn"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_event_emit_delayed",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 513,
+        "end": 539
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "event"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_event_emit",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 541,
+        "end": 543
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "event"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_init_events",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 545,
+        "end": 558
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_new_connection",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 560,
+        "end": 596
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapped_conn",
+          "line": 596
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_queue_conn_event_handler",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 598,
+        "end": 605
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 600
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "handler",
+      "kind": "function",
+      "scope": "Host._queue_conn_event_handler",
+      "lineRange": {
+        "start": 602,
+        "end": 603
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._conn_event_handler(*args, **kwargs)",
+          "line": 603
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_connection",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 607,
+        "end": 638
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._wrapped_conn",
+          "line": 638
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_connection",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 640,
+        "end": 661
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conn",
+          "line": 661
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_libvirt_error_handler",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 664,
+        "end": 666
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "err"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "initialize",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 668,
+        "end": 678
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 670
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 680,
+        "end": 695
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_version_check",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 697,
+        "end": 724
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "lv_ver"
+        },
+        {
+          "default": "None",
+          "name": "hv_ver"
+        },
+        {
+          "default": "None",
+          "name": "hv_type"
+        },
+        {
+          "default": "operator.lt",
+          "name": "op"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 709
+        },
+        {
+          "expr": "False",
+          "line": 715
+        },
+        {
+          "expr": "False",
+          "line": 720
+        },
+        {
+          "expr": "True",
+          "line": 722
+        },
+        {
+          "expr": "False",
+          "line": 724
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_min_version",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 726,
+        "end": 728
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "lv_ver"
+        },
+        {
+          "default": "None",
+          "name": "hv_ver"
+        },
+        {
+          "default": "None",
+          "name": "hv_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._version_check( lv_ver=lv_ver, hv_ver=hv_ver, hv_type=hv_type, op=operator.lt)",
+          "line": 727
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_version",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 730,
+        "end": 732
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "lv_ver"
+        },
+        {
+          "default": "None",
+          "name": "hv_ver"
+        },
+        {
+          "default": "None",
+          "name": "hv_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._version_check( lv_ver=lv_ver, hv_ver=hv_ver, hv_type=hv_type, op=operator.ne)",
+          "line": 731
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_guest",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 734,
+        "end": 746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "libvirt_guest.Guest(self._get_domain(instance))",
+          "line": 746
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_domain",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 748,
+        "end": 773
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conn.lookupByUUIDString(instance.uuid)",
+          "line": 762
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_guests",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 775,
+        "end": 785
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "only_running"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[libvirt_guest.Guest(dom) for dom in domains]",
+          "line": 785
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_instance_domains",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 787,
+        "end": 813
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "only_running"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "doms",
+          "line": 813
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_cpus",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 815,
+        "end": 821
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{cpu for cpu in range(cpus)}",
+          "line": 821
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_online_cpus",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 823,
+        "end": 835
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "online_cpus",
+          "line": 835
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_cpu_model_names",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 837,
+        "end": 843
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().getCPUModelNames(arch)",
+          "line": 843
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_log_host_capabilities",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 846,
+        "end": 850
+      },
+      "parameters": [
+        {
+          "name": "xmlstr"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_capabilities",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 852,
+        "end": 898
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._caps",
+          "line": 863
+        },
+        {
+          "expr": "self._caps",
+          "line": 898
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_domain_capabilities",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 900,
+        "end": 1005
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._domain_caps",
+          "line": 975
+        },
+        {
+          "expr": "self._domain_caps",
+          "line": 1005
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_machine_types",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1007,
+        "end": 1024
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "arch"
+        },
+        {
+          "name": "domain"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mtypes",
+          "line": 1024
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_to_domain_capabilities",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1026,
+        "end": 1095
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "emulator_bin"
+        },
+        {
+          "name": "arch"
+        },
+        {
+          "name": "domain_caps"
+        },
+        {
+          "name": "machine_type"
+        },
+        {
+          "name": "virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1072
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_domain_capabilities",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1097,
+        "end": 1110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "emulator_bin"
+        },
+        {
+          "default": "None",
+          "name": "arch"
+        },
+        {
+          "default": "None",
+          "name": "machine_type"
+        },
+        {
+          "default": "None",
+          "name": "virt_type"
+        },
+        {
+          "default": "0",
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "caps",
+          "line": 1110
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_driver_type",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1112,
+        "end": 1119
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().getType()",
+          "line": 1119
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_version",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1121,
+        "end": 1128
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().getVersion()",
+          "line": 1128
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_hostname",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1130,
+        "end": 1139
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._hostname",
+          "line": 1139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_node_uuid",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1141,
+        "end": 1145
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._node_uuid",
+          "line": 1145
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "find_secret",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1147,
+        "end": 1170
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "usage_type"
+        },
+        {
+          "name": "usage_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "conn.secretLookupByUsage(usage_type_const, usage_id)",
+          "line": 1167
+        },
+        {
+          "expr": "None",
+          "line": 1170
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_secret",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1172,
+        "end": 1217
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "usage_type"
+        },
+        {
+          "name": "usage_id"
+        },
+        {
+          "default": "None",
+          "name": "password"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "ephemeral"
+        },
+        {
+          "default": "None",
+          "name": "private"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "secret",
+          "line": 1214
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_secret",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1219,
+        "end": 1227
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "usage_type"
+        },
+        {
+          "name": "usage_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_hardware_info",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1229,
+        "end": 1234
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().getInfo()",
+          "line": 1234
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_memory_mb_total",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1236,
+        "end": 1244
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.libvirt.file_backed_memory",
+          "line": 1242
+        },
+        {
+          "expr": "self._get_hardware_info()[1]",
+          "line": 1244
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_sum_domain_memory_mb",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1246,
+        "end": 1260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "used // units.Ki",
+          "line": 1260
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_avail_memory_kb",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1263,
+        "end": 1272
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "avail",
+          "line": 1272
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_memory_mb_used",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1274,
+        "end": 1285
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._sum_domain_memory_mb()",
+          "line": 1282
+        },
+        {
+          "expr": "(self.get_memory_mb_total() - (self._get_avail_memory_kb() // units.Ki))",
+          "line": 1284
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_cpu_stats",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1287,
+        "end": 1294
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "stats",
+          "line": 1294
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_machine_type",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1296,
+        "end": 1313
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "caps"
+        },
+        {
+          "name": "mach_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "write_instance_config",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1315,
+        "end": 1323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xml"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "libvirt_guest.Guest(domain)",
+          "line": 1323
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "device_lookup_by_name",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1325,
+        "end": 1331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().nodeDeviceLookupByName(name)",
+          "line": 1331
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "device_create",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1333,
+        "end": 1343
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().nodeDeviceCreateXML(device_xml, flags=0)",
+          "line": 1343
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "device_define",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1345,
+        "end": 1355
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().nodeDeviceDefineXML(device_xml, flags=0)",
+          "line": 1355
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "device_start",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1357,
+        "end": 1368
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "device_set_autostart",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1370,
+        "end": 1384
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev"
+        },
+        {
+          "default": "True",
+          "name": "autostart"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pcinet_info",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1386,
+        "end": 1398
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "'libvirt.virNodeDevice'"
+        },
+        {
+          "name": "net_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        }
+      ],
+      "returnType": "list[str] | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1394
+        },
+        {
+          "expr": "cfgdev.pci_capability.features",
+          "line": 1398
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vf_parent_pci_vpd_info",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1400,
+        "end": 1423
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vf_device",
+          "type": "'libvirt.virNodeDevice'"
+        },
+        {
+          "name": "parent_pf_name",
+          "type": "str"
+        },
+        {
+          "name": "candidate_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        }
+      ],
+      "returnType": "vconfig.LibvirtConfigNodeDeviceVpdCap | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1418
+        },
+        {
+          "expr": "cfgdev.pci_capability.vpd_capability",
+          "line": 1423
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vpd_card_serial_number",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1426,
+        "end": 1436
+      },
+      "parameters": [
+        {
+          "name": "dev",
+          "type": "'libvirt.virNodeDevice'"
+        }
+      ],
+      "returnType": "list[str] | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1435
+        },
+        {
+          "expr": "vpd_cap.card_serial_number",
+          "line": 1436
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pf_details",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1438,
+        "end": 1450
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "device",
+          "type": "dict"
+        },
+        {
+          "name": "pci_address",
+          "type": "str"
+        }
+      ],
+      "returnType": "dict",
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 1440
+        },
+        {
+          "expr": "{ 'mac_address': pci_utils.get_mac_by_pci_address(pci_address) }",
+          "line": 1443
+        },
+        {
+          "expr": "{}",
+          "line": 1450
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pcidev_info",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1452,
+        "end": 1655
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "devname",
+          "type": "str"
+        },
+        {
+          "name": "dev",
+          "type": "'libvirt.virNodeDevice'"
+        },
+        {
+          "name": "net_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        },
+        {
+          "name": "vdpa_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        },
+        {
+          "name": "pci_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        }
+      ],
+      "returnType": "dict[str, str | dict]",
+      "returns": [
+        {
+          "expr": "device",
+          "line": 1655
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_type",
+      "kind": "function",
+      "scope": "Host._get_pcidev_info",
+      "lineRange": {
+        "start": 1462,
+        "end": 1519
+      },
+      "parameters": [
+        {
+          "name": "cfgdev",
+          "type": "vconfig.LibvirtConfigNodeDevice"
+        },
+        {
+          "name": "pci_address",
+          "type": "str"
+        },
+        {
+          "name": "device",
+          "type": "'libvirt.virNodeDevice'"
+        },
+        {
+          "name": "net_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        },
+        {
+          "name": "vdpa_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        }
+      ],
+      "returnType": "dict[str, str]",
+      "returns": [
+        {
+          "expr": "{ 'dev_type': fields.PciDeviceType.SRIOV_PF, }",
+          "line": 1479
+        },
+        {
+          "expr": "result",
+          "line": 1517
+        },
+        {
+          "expr": "{'dev_type': fields.PciDeviceType.STANDARD}",
+          "line": 1519
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vpd_details",
+      "kind": "function",
+      "scope": "Host._get_pcidev_info",
+      "lineRange": {
+        "start": 1521,
+        "end": 1563
+      },
+      "parameters": [
+        {
+          "name": "device_dict",
+          "type": "dict"
+        },
+        {
+          "name": "device",
+          "type": "'libvirt.virNodeDevice'"
+        },
+        {
+          "name": "pci_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        }
+      ],
+      "returnType": "dict[str, ty.Any]",
+      "returns": [
+        {
+          "expr": "vpd_info",
+          "line": 1553
+        },
+        {
+          "expr": "vpd_info",
+          "line": 1563
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_sriov_netdev_details",
+      "kind": "function",
+      "scope": "Host._get_pcidev_info",
+      "lineRange": {
+        "start": 1565,
+        "end": 1594
+      },
+      "parameters": [
+        {
+          "name": "device_dict",
+          "type": "dict"
+        },
+        {
+          "name": "device",
+          "type": "'libvirt.virNodeDevice'"
+        }
+      ],
+      "returnType": "dict[str, dict[str, ty.Any]]",
+      "returns": [
+        {
+          "expr": "sriov_info",
+          "line": 1573
+        },
+        {
+          "expr": "{}",
+          "line": 1588
+        },
+        {
+          "expr": "sriov_info",
+          "line": 1594
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_capabilities",
+      "kind": "function",
+      "scope": "Host._get_pcidev_info",
+      "lineRange": {
+        "start": 1596,
+        "end": 1627
+      },
+      "parameters": [
+        {
+          "name": "device_dict",
+          "type": "dict"
+        },
+        {
+          "name": "device",
+          "type": "'libvirt.virNodeDevice'"
+        },
+        {
+          "name": "pci_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        },
+        {
+          "name": "net_devs",
+          "type": "list['libvirt.virNodeDevice']"
+        }
+      ],
+      "returnType": "dict[str, ty.Any]",
+      "returns": [
+        {
+          "expr": "{'capabilities': caps}",
+          "line": 1625
+        },
+        {
+          "expr": "caps",
+          "line": 1627
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vdpa_nodedev_by_address",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1657,
+        "end": 1685
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_address",
+          "type": "str"
+        }
+      ],
+      "returnType": "vconfig.LibvirtConfigNodeDevice",
+      "returns": [
+        {
+          "expr": "cfgdev",
+          "line": 1685
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vdpa_device_path",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1687,
+        "end": 1697
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_address",
+          "type": "str"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "nodedev.vdpa_capability.dev_path",
+          "line": 1697
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_pci_devices",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1699,
+        "end": 1704
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "0",
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "self._list_devices(\"pci\", flags=flags)",
+          "line": 1704
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_mdev_capable_devices",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1706,
+        "end": 1711
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "0",
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "self._list_devices(\"mdev_types\", flags=flags)",
+          "line": 1711
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_mediated_devices",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1713,
+        "end": 1718
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "0",
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "self._list_devices(\"mdev\", flags=flags)",
+          "line": 1718
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_list_devices",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1720,
+        "end": 1735
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cap"
+        },
+        {
+          "default": "0",
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "self.get_connection().listDevices(cap, flags)",
+          "line": 1726
+        },
+        {
+          "expr": "[]",
+          "line": 1733
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_all_devices",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1737,
+        "end": 1752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "0",
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "returnType": "list['libvirt.virNodeDevice']",
+      "returns": [
+        {
+          "expr": "alldevs",
+          "line": 1749
+        },
+        {
+          "expr": "[]",
+          "line": 1752
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compare_cpu",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1754,
+        "end": 1756
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmlDesc"
+        },
+        {
+          "default": "0",
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().compareCPU(xmlDesc, flags)",
+          "line": 1756
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compare_hypervisor_cpu",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1758,
+        "end": 1772
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "xmlDesc"
+        },
+        {
+          "default": "0",
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_connection().compareHypervisorCPU( emulator, arch, machine, virttype, xmlDesc, flags)",
+          "line": 1771
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_cpu_control_policy_capable",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1774,
+        "end": 1781
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_cgroupsv1_cpu_controller() or \\ self._has_cgroupsv2_cpu_controller()",
+          "line": 1780
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_has_cgroupsv1_cpu_controller",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1783,
+        "end": 1800
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1793
+        },
+        {
+          "expr": "False",
+          "line": 1795
+        },
+        {
+          "expr": "False",
+          "line": 1800
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_has_cgroupsv2_cpu_controller",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1802,
+        "end": 1818
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1811
+        },
+        {
+          "expr": "False",
+          "line": 1813
+        },
+        {
+          "expr": "False",
+          "line": 1818
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_canonical_machine_type",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1820,
+        "end": 1846
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "arch"
+        },
+        {
+          "name": "machine"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "machine",
+          "line": 1840
+        },
+        {
+          "expr": "guest.domains[domain].aliases[machine]['canonical']",
+          "line": 1843
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_file_backed_memory_support",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1848,
+        "end": 1876
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 1850
+        },
+        {
+          "expr": "True",
+          "line": 1876
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_hyperthreading",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1879,
+        "end": 1896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._has_hyperthreading",
+          "line": 1885
+        },
+        {
+          "expr": "self._has_hyperthreading",
+          "line": 1896
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_uefi",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1899,
+        "end": 1924
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._supports_uefi",
+          "line": 1908
+        },
+        {
+          "expr": "True",
+          "line": 1920
+        },
+        {
+          "expr": "False",
+          "line": 1924
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_virtio_fs",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1927,
+        "end": 1928
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "CONF.libvirt.virt_type in ('qemu', 'kvm')",
+          "line": 1928
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_mem_backing_file",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1931,
+        "end": 1932
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._check_file_backed_memory_support()",
+          "line": 1932
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_secure_boot",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1935,
+        "end": 1963
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._supports_secure_boot",
+          "line": 1944
+        },
+        {
+          "expr": "True",
+          "line": 1959
+        },
+        {
+          "expr": "False",
+          "line": 1963
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_vtpm",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1966,
+        "end": 1975
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "(_tpm.supported and 'emulator' in _tpm.backend_models)",
+          "line": 1973
+        },
+        {
+          "expr": "False",
+          "line": 1975
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tpm_versions",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1978,
+        "end": 1991
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list[str] | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 1988
+        },
+        {
+          "expr": "_tpm.backend_versions",
+          "line": 1989
+        },
+        {
+          "expr": "[]",
+          "line": 1991
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tpm_models",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 1994,
+        "end": 2003
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "_tpm.models",
+          "line": 2001
+        },
+        {
+          "expr": "[]",
+          "line": 2003
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_kernel_supports_amd_sev",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2005,
+        "end": 2017
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "'sev'",
+          "name": "model"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 2012
+        },
+        {
+          "expr": "strutils.bool_from_string(content)",
+          "line": 2017
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_amd_sev",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2020,
+        "end": 2062
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._supports_amd_sev",
+          "line": 2032
+        },
+        {
+          "expr": "self._supports_amd_sev",
+          "line": 2038
+        },
+        {
+          "expr": "self._supports_amd_sev",
+          "line": 2042
+        },
+        {
+          "expr": "self._supports_amd_sev",
+          "line": 2047
+        },
+        {
+          "expr": "self._supports_amd_sev",
+          "line": 2059
+        },
+        {
+          "expr": "self._supports_amd_sev",
+          "line": 2062
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_amd_sev_es",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2065,
+        "end": 2096
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._supports_amd_sev_es",
+          "line": 2075
+        },
+        {
+          "expr": "self._supports_amd_sev_es",
+          "line": 2079
+        },
+        {
+          "expr": "self._supports_amd_sev_es",
+          "line": 2083
+        },
+        {
+          "expr": "self._supports_amd_sev_es",
+          "line": 2087
+        },
+        {
+          "expr": "False",
+          "line": 2092
+        },
+        {
+          "expr": "self._supports_amd_sev_es",
+          "line": 2096
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_amd_sev_snp",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2099,
+        "end": 2140
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._supports_amd_sev_snp",
+          "line": 2109
+        },
+        {
+          "expr": "self._supports_amd_sev_snp",
+          "line": 2113
+        },
+        {
+          "expr": "self._supports_amd_sev_snp",
+          "line": 2117
+        },
+        {
+          "expr": "self._supports_amd_sev_snp",
+          "line": 2122
+        },
+        {
+          "expr": "self._supports_amd_sev_snp",
+          "line": 2134
+        },
+        {
+          "expr": "self._supports_amd_sev_snp",
+          "line": 2140
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_intel_tdx",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2143,
+        "end": 2193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._supports_intel_tdx",
+          "line": 2158
+        },
+        {
+          "expr": "self._supports_intel_tdx",
+          "line": 2164
+        },
+        {
+          "expr": "self._supports_intel_tdx",
+          "line": 2176
+        },
+        {
+          "expr": "self._supports_intel_tdx",
+          "line": 2190
+        },
+        {
+          "expr": "self._supports_intel_tdx",
+          "line": 2193
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_cgroup_tdx_capacity",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2195,
+        "end": 2223
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 2207
+        },
+        {
+          "expr": "int(parts[1])",
+          "line": 2216
+        },
+        {
+          "expr": "None",
+          "line": 2221
+        },
+        {
+          "expr": "None",
+          "line": 2223
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_tdx_capacity",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2225,
+        "end": 2255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "0",
+          "line": 2243
+        },
+        {
+          "expr": "conf_capacity",
+          "line": 2244
+        },
+        {
+          "expr": "conf_capacity",
+          "line": 2253
+        },
+        {
+          "expr": "cgroup_capacity",
+          "line": 2255
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "max_intel_tdx_guests",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2258,
+        "end": 2265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "0",
+          "line": 2262
+        },
+        {
+          "expr": "self._max_intel_tdx_guests",
+          "line": 2265
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_mem_encryption",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2268,
+        "end": 2279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self.supports_amd_sev or self.supports_intel_tdx",
+          "line": 2279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_mem_encryption_inventories",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2281,
+        "end": 2307
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "dict[str, ty.Any]",
+      "returns": [
+        {
+          "expr": "inventories",
+          "line": 2307
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_slots_amd_sev",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2309,
+        "end": 2313
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "self._max_sev_guests",
+          "line": 2311
+        },
+        {
+          "expr": "0",
+          "line": 2313
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_traits_amd_sev",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2315,
+        "end": 2316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "[ot.HW_CPU_X86_AMD_SEV]",
+          "line": 2316
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_slots_amd_sev_es",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2318,
+        "end": 2322
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "self._max_sev_es_guests",
+          "line": 2320
+        },
+        {
+          "expr": "0",
+          "line": 2322
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_traits_amd_sev_es",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2324,
+        "end": 2325
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "[ot.HW_CPU_X86_AMD_SEV_ES]",
+          "line": 2325
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_slots_amd_sev_snp",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2327,
+        "end": 2331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "self._max_sev_es_guests",
+          "line": 2329
+        },
+        {
+          "expr": "0",
+          "line": 2331
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_traits_amd_sev_snp",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2333,
+        "end": 2334
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "[ot.HW_CPU_X86_AMD_SEV_SNP]",
+          "line": 2334
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_slots_intel_tdx",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2336,
+        "end": 2337
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "self.max_intel_tdx_guests",
+          "line": 2337
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_mem_encryption_traits_intel_tdx",
+      "kind": "method",
+      "scope": "Host",
+      "lineRange": {
+        "start": 2339,
+        "end": 2340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "[ot.HW_CPU_X86_INTEL_TDX]",
+          "line": 2340
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "utils.concurrency_mode_threading",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 100,
+        "end": 100
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "utils.get_eventlet",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "os.pipe",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "libvirt.virEventRegisterDefaultImpl",
+      "usage": "call",
+      "via": "libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 140,
+        "end": 140
+      }
+    },
+    {
+      "name": "thread_pool_factory.spawn",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "libvirt.virEventRunDefaultImpl",
+      "usage": "call",
+      "via": "libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      }
+    },
+    {
+      "name": "issubclass",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 222,
+        "end": 222
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 222,
+        "end": 222
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 233,
+        "end": 233
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 13,
+      "lineRange": {
+        "start": 234,
+        "end": 234
+      }
+    },
+    {
+      "name": "threading.Thread",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 285,
+        "end": 285
+      }
+    },
+    {
+      "name": "queue.Queue",
+      "usage": "call",
+      "via": "queue",
+      "count": 1,
+      "lineRange": {
+        "start": 303,
+        "end": 303
+      }
+    },
+    {
+      "name": "threading.Lock",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 311,
+        "end": 311
+      }
+    },
+    {
+      "name": "inspect.getmembers",
+      "usage": "call",
+      "via": "inspect",
+      "count": 1,
+      "lineRange": {
+        "start": 346,
+        "end": 346
+      }
+    },
+    {
+      "name": "tuple",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 350,
+        "end": 350
+      }
+    },
+    {
+      "name": "utils.tpool_wrap",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 362,
+        "end": 362
+      }
+    },
+    {
+      "name": "libvirtevent.DeviceRemovedEvent",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 396,
+        "end": 396
+      }
+    },
+    {
+      "name": "libvirtevent.DeviceRemovalFailedEvent",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 410,
+        "end": 410
+      }
+    },
+    {
+      "name": "libvirt_guest.Guest",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 440,
+        "end": 440
+      }
+    },
+    {
+      "name": "libvirt_migrate.find_job_type",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 445,
+        "end": 445
+      }
+    },
+    {
+      "name": "virtevent.LifecycleEvent",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 461,
+        "end": 461
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 483,
+        "end": 483
+      }
+    },
+    {
+      "name": "exception.InternalError",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 485,
+        "end": 485
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 518,
+        "end": 518
+      }
+    },
+    {
+      "name": "thread_pool_factory.StaticallyDelayingCancellableTaskExecutorWrapper",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 549,
+        "end": 549
+      }
+    },
+    {
+      "name": "thread_pool_factory.get_executor",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 550,
+        "end": 550
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 623,
+        "end": 623
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 653,
+        "end": 653
+      }
+    },
+    {
+      "name": "rpc.get_notifier",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 654,
+        "end": 654
+      }
+    },
+    {
+      "name": "compute_utils.notify_about_libvirt_connect_error",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 657,
+        "end": 657
+      }
+    },
+    {
+      "name": "exception.HypervisorUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 659,
+        "end": 659
+      }
+    },
+    {
+      "name": "libvirt.registerErrorHandler",
+      "usage": "call",
+      "via": "libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 675,
+        "end": 675
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 691,
+        "end": 691
+      }
+    },
+    {
+      "name": "op",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 707,
+        "end": 707
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_int",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 708,
+        "end": 708
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 766,
+        "end": 766
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 821,
+        "end": 821
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 830,
+        "end": 830
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigCaps",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 867,
+        "end": 867
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigCPU",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 885,
+        "end": 885
+      }
+    },
+    {
+      "name": "defaultdict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 977,
+        "end": 977
+      }
+    },
+    {
+      "name": "libvirt_utils.get_default_machine_type",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1019,
+        "end": 1019
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigDomainCaps",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1108,
+        "end": 1108
+      }
+    },
+    {
+      "name": "nova.virt.node.get_local_node_uuid",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 1144,
+        "end": 1144
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigSecret",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1184,
+        "end": 1184
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 1252,
+        "end": 1252
+      }
+    },
+    {
+      "name": "open",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 1264,
+        "end": 1264
+      }
+    },
+    {
+      "name": "etree.fromstring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 1,
+      "lineRange": {
+        "start": 1304,
+        "end": 1304
+      }
+    },
+    {
+      "name": "exception.InvalidMachineType",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1310,
+        "end": 1310
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 23,
+      "lineRange": {
+        "start": 1389,
+        "end": 1389
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigNodeDevice",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 5,
+      "lineRange": {
+        "start": 1396,
+        "end": 1396
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 1413,
+        "end": 1413
+      }
+    },
+    {
+      "name": "pci_utils.get_mac_by_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 2,
+      "lineRange": {
+        "start": 1444,
+        "end": 1444
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 1459,
+        "end": 1459
+      }
+    },
+    {
+      "name": "pci_utils.get_ifname_by_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 1504,
+        "end": 1504
+      }
+    },
+    {
+      "name": "pci_utils.get_vf_num_by_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 1590,
+        "end": 1590
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1892,
+        "end": 1892
+      }
+    },
+    {
+      "name": "os.path.exists",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 2010,
+        "end": 2010
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 2017,
+        "end": 2017
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 2293,
+        "end": 2293
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections.abc",
+      "names": [
+        {
+          "alias": null,
+          "name": "Callable"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "collections.abc",
+      "names": [
+        {
+          "alias": null,
+          "name": "Mapping"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [
+        {
+          "alias": null,
+          "name": "defaultdict"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "inspect",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "operator",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "queue",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "threading",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": "ty",
+      "module": "typing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "lxml",
+      "names": [
+        {
+          "alias": null,
+          "name": "etree"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": "ot",
+      "module": "os_traits",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "rpc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "thread_pool_factory"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": "virtevent",
+          "name": "event"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "vconfig",
+          "name": "config"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirtevent",
+          "name": "event"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_guest",
+          "name": "guest"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_migrate",
+          "name": "migration"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.node",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "alias": null,
+      "module": "libvirt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

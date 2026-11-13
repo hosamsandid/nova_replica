@@ -1,0 +1,2035 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_attach_interfaces.py",
+  "hash": "f028293273edd2af6caedaee3cd8a63595b3f1ad7f40e8a27c69c711172c522e",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 83,
+    "code": 570,
+    "comment": 18,
+    "total": 671
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from webob import exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import common",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import attach_interfaces \\",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_network_cache_model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID1",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID2",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_PORT_ID1",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_PORT_ID2",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_PORT_ID3",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_NOT_FOUND_PORT_ID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_NET_ID1",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_NET_ID2",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_NET_ID3",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_BAD_NET_ID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "port_data1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 56
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "port_data2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "port_data3",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 80
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_networks",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ports",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_show_port",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 86,
+        "end": 91
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'port': port}",
+          "line": 89
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_list_ports",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 94,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'ports': ports}",
+          "line": 95
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_attach_interface",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 98,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_id"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "default": "'192.168.1.3'",
+          "name": "requested_ip"
+        },
+        {
+          "default": "None",
+          "name": "tag"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vif",
+          "line": 114
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_detach_interface",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 117,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 120
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 124,
+        "end": 127
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_instance.fake_instance_obj( context, id=1, uuid=instance_id, project_id=context.project_id)",
+          "line": 126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InterfaceAttachTestsV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 130,
+        "end": 586
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "controller_cls",
+      "kind": "field",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 131,
+        "end": 131
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_exc",
+      "kind": "field",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "in_use_exc",
+      "kind": "field",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 133,
+        "end": 133
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "not_found_exc",
+      "kind": "field",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "not_usable_exc",
+      "kind": "field",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 137,
+        "end": 148
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_instance_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 152,
+        "end": 155
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "func"
+        },
+        {
+          "name": "args"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "default": "None",
+          "name": "kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_instance_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 157,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_instance_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 160,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface_instance_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 163,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_instance_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 167,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 171,
+        "end": 180
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_port_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 182,
+        "end": 185
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_forbidden",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 187,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_invalid_query_params",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 194,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 206,
+        "end": 231
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_invalid_query_params",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 233,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 244,
+        "end": 265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface_instance_locked",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 267,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_detach_interface_from_locked_server",
+      "kind": "function",
+      "scope": "InterfaceAttachTestsV21.test_detach_interface_instance_locked",
+      "lineRange": {
+        "start": 268,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_interface_not_found",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 281,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_instance_locked",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 291,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_attach_interface_to_locked_server",
+      "kind": "function",
+      "scope": "InterfaceAttachTestsV21.test_attach_interface_instance_locked",
+      "lineRange": {
+        "start": 292,
+        "end": 294
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_id"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "requested_ip"
+        },
+        {
+          "default": "None",
+          "name": "tag"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_without_network_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 303,
+        "end": 309
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_tagged_attach_not_supported",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 314,
+        "end": 317
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_vdpa_interface_not_supported",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 323,
+        "end": 326
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface_vdpa_interface_not_supported",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 332,
+        "end": 334
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_detach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_with_network_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 336,
+        "end": 342
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_attach_interface_bad_request_case",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 344,
+        "end": 349
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_attach_interface_not_found_case",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 351,
+        "end": 356
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_with_port_and_network_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 358,
+        "end": 365
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_with_not_found_network_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 367,
+        "end": 373
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_with_not_found_port_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 375,
+        "end": 381
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_with_invalid_state",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 383,
+        "end": 394
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_attach_interface_invalid_state",
+      "kind": "function",
+      "scope": "InterfaceAttachTestsV21.test_attach_interface_with_invalid_state",
+      "lineRange": {
+        "start": 384,
+        "end": 387
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_port_limit_exceeded",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 396,
+        "end": 408
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface_with_invalid_state",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 410,
+        "end": 422
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_detach_interface_invalid_state",
+      "kind": "function",
+      "scope": "InterfaceAttachTestsV21.test_detach_interface_with_invalid_state",
+      "lineRange": {
+        "start": 411,
+        "end": 414
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_interface_with_not_implemented",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 426,
+        "end": 429
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_invalid_fixed_ip",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 431,
+        "end": 440
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_fixed_ip_already_in_use",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 444,
+        "end": 462
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attach_mock"
+        },
+        {
+          "name": "get_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_port_in_use",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 466,
+        "end": 484
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attach_mock"
+        },
+        {
+          "name": "get_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_port_not_usable",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 488,
+        "end": 507
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attach_mock"
+        },
+        {
+          "name": "get_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_failed_no_network",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 511,
+        "end": 525
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attach_mock"
+        },
+        {
+          "name": "get_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_no_more_fixed_ips",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 529,
+        "end": 547
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attach_mock"
+        },
+        {
+          "name": "get_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_failed_securitygroup_cannot_be_applied",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 551,
+        "end": 566
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attach_mock"
+        },
+        {
+          "name": "get_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_attach_interface_with_invalid_parameter",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 568,
+        "end": 574
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "param"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_instance_with_non_uuid_net_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 576,
+        "end": 578
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_instance_with_non_uuid_port_id",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 580,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_instance_with_non_array_fixed_ips",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV21",
+      "lineRange": {
+        "start": 584,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InterfaceAttachTestsV249",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 589,
+        "end": 628
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "controller_cls",
+      "kind": "field",
+      "scope": "InterfaceAttachTestsV249",
+      "lineRange": {
+        "start": 590,
+        "end": 590
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV249",
+      "lineRange": {
+        "start": 592,
+        "end": 601
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_interface_attach_invalid_tag_comma",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV249",
+      "lineRange": {
+        "start": 603,
+        "end": 607
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_interface_attach_invalid_tag_slash",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV249",
+      "lineRange": {
+        "start": 609,
+        "end": 613
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_interface_attach_invalid_tag_too_long",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV249",
+      "lineRange": {
+        "start": 615,
+        "end": 620
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_interface_attach_valid_tag",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV249",
+      "lineRange": {
+        "start": 623,
+        "end": 628
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InterfaceAttachTestsV270",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 631,
+        "end": 671
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV270",
+      "lineRange": {
+        "start": 634,
+        "end": 639
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_interface_no_vif",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV270",
+      "lineRange": {
+        "start": 642,
+        "end": 653
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_interfaces_no_vifs",
+      "kind": "method",
+      "scope": "InterfaceAttachTestsV270",
+      "lineRange": {
+        "start": 657,
+        "end": 671
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "exception.PortNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 91,
+        "end": 91
+      }
+    },
+    {
+      "name": "exception.NetworkNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 105,
+        "end": 105
+      }
+    },
+    {
+      "name": "fake_network_cache_model.new_vif",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 126,
+        "end": 126
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 138,
+        "end": 138
+      }
+    },
+    {
+      "name": "fixtures.MockPatchObject",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 3,
+      "lineRange": {
+        "start": 143,
+        "end": 143
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 5,
+      "lineRange": {
+        "start": 148,
+        "end": 148
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 23,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 248,
+        "end": 248
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 256,
+        "end": 256
+      }
+    },
+    {
+      "name": "exception.InstanceIsLocked",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 270,
+        "end": 270
+      }
+    },
+    {
+      "name": "exception.NetworkInterfaceTaggedAttachNotSupported",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 313,
+        "end": 313
+      }
+    },
+    {
+      "name": "exception.OperationNotSupportedForVDPAInterface",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 321,
+        "end": 321
+      }
+    },
+    {
+      "name": "exception.InstanceInvalidState",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 385,
+        "end": 385
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 408,
+        "end": 408
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 425,
+        "end": 425
+      }
+    },
+    {
+      "name": "exception.FixedIpAlreadyInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 451,
+        "end": 451
+      }
+    },
+    {
+      "name": "exception.PortInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 473,
+        "end": 473
+      }
+    },
+    {
+      "name": "exception.PortNotUsable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 495,
+        "end": 495
+      }
+    },
+    {
+      "name": "exception.InterfaceAttachFailedNoNetwork",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 517,
+        "end": 517
+      }
+    },
+    {
+      "name": "exception.NoMoreFixedIps",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 536,
+        "end": 536
+      }
+    },
+    {
+      "name": "exception.SecurityGroupCannotBeApplied",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 558,
+        "end": 558
+      }
+    },
+    {
+      "name": "map",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 616,
+        "end": 616
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 616,
+        "end": 616
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 622,
+        "end": 622
+      }
+    },
+    {
+      "name": "attach_interfaces_v21.InterfaceAttachmentController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 637,
+        "end": 637
+      }
+    },
+    {
+      "name": "objects.VirtualInterfaceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 656,
+        "end": 656
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [
+        {
+          "alias": null,
+          "name": "exc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "common"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "attach_interfaces_v21",
+          "name": "attach_interfaces"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_network_cache_model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

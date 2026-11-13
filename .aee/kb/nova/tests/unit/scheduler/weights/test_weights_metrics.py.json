@@ -1,0 +1,737 @@
+{
+  "file": "nova/tests/unit/scheduler/weights/test_weights_metrics.py",
+  "hash": "69dc89850b8c8d96d5d27b132f4a0c5529005d592f8ec79b58cdcd598d8f3bfd",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 28,
+    "code": 158,
+    "comment": 57,
+    "total": 243
+  },
+  "symbols": [
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import monitor_metric",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import weights",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.weights import metrics",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.scheduler import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "idle",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "kernel",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "user",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_metric",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 32
+      },
+      "parameters": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "monitor_metric.MonitorMetric(name=name, value=value)",
+          "line": 32
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 37
+      },
+      "parameters": [
+        {
+          "name": "objs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "monitor_metric.MonitorMetricList(objects=m_list)",
+          "line": 37
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MetricsWeigherTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 243
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 41,
+        "end": 45
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_weighed_host",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 47,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hosts"
+        },
+        {
+          "name": "setting"
+        },
+        {
+          "default": "None",
+          "name": "weight_properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.weight_handler.get_weighed_objects(self.weighers, hosts, weight_properties)[0]",
+          "line": 52
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_all_hosts",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 55,
+        "end": 73
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[fakes.FakeHostState(host, node, values) for host, node, values in host_values]",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_test",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 75,
+        "end": 79
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "settings"
+        },
+        {
+          "name": "expected_weight"
+        },
+        {
+          "name": "expected_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_single_resource_no_metrics",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 81,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_single_resource",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 90,
+        "end": 97
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiple_resource",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 99,
+        "end": 106
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_single_resource_duplicate_setting",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 108,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_single_resourcenegative_ratio",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 117,
+        "end": 124
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiple_resource_missing_ratio",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 126,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiple_resource_wrong_ratio",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 135,
+        "end": 142
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_parsing_result",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 144,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "weigher"
+        },
+        {
+          "name": "setting"
+        },
+        {
+          "name": "results"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_parse_setting",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 151,
+        "end": 167
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_metric_not_found_required",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 169,
+        "end": 175
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_metric_not_found_non_required",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 177,
+        "end": 187
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_metrics_weigher_multiplier",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 189,
+        "end": 221
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_with_agg",
+      "kind": "method",
+      "scope": "MetricsWeigherTestCase",
+      "lineRange": {
+        "start": 223,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "monitor_metric.MonitorMetric",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "monitor_metric.MonitorMetricList",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "weights.HostWeightHandler",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "metrics.MetricsWeigher",
+      "usage": "call",
+      "via": "nova.scheduler.weights",
+      "count": 2,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "fakes.FakeHostState",
+      "usage": "call",
+      "via": "nova.tests.unit.scheduler",
+      "count": 4,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "objects.Aggregate",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 197,
+        "end": 197
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "monitor_metric"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "weights"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.weights",
+      "names": [
+        {
+          "alias": null,
+          "name": "metrics"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

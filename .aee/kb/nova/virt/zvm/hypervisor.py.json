@@ -1,0 +1,909 @@
+{
+  "file": "nova/virt/zvm/hypervisor.py",
+  "hash": "0902d99b9d0dddd551efc009329f84ea17254709dd7aa2314b0cd06146805e6c",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 42,
+    "code": 106,
+    "comment": 19,
+    "total": 167
+  },
+  "symbols": [
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import pwd",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state as compute_power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.zvm import utils as zvmutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Hypervisor",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 167
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 33,
+        "end": 46
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "zcc_url"
+        },
+        {
+          "default": "None",
+          "name": "ca_file"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_host_info",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 48,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "host_stats",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_resource",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 56,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_host_info()",
+          "line": 57
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_nodes",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 59,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "refresh"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[self._hypervisor_hostname]",
+          "line": 62
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_names",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 64,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._reqh.call('guest_list')",
+          "line": 66
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_uptime",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 68,
+        "end": 71
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "host_info['ipl_time']",
+          "line": 71
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_exists",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 73,
+        "end": 74
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance.name.upper() in self.list_names()",
+          "line": 74
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_get_power_state",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 76,
+        "end": 89
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "power_state",
+          "line": 89
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_create",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 91,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "vcpus"
+        },
+        {
+          "name": "memory_mb"
+        },
+        {
+          "name": "disk_list"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_deploy",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 95,
+        "end": 97
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "image_name"
+        },
+        {
+          "name": "transportfiles"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_delete",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 99,
+        "end": 100
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_start",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 102,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_create_network_interface",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 105,
+        "end": 107
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "distro"
+        },
+        {
+          "name": "nets"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_config_minidisks",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 109,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "disk_list"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_capture",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 112,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_softstop",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 115,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "0",
+          "name": "timeout"
+        },
+        {
+          "default": "0",
+          "name": "retry_interval"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_pause",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 119,
+        "end": 120
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_unpause",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 122,
+        "end": 123
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_reboot",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 125,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_reset",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 128,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "guest_get_console_output",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 131,
+        "end": 136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._reqh.call('guest_get_console_output', name)",
+          "line": 136
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_query",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 138,
+        "end": 144
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "imagename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._reqh.call('image_query', imagename=imagename)",
+          "line": 144
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_get_root_disk_size",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 146,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "imagename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._reqh.call('image_get_root_disk_size', imagename)",
+          "line": 151
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_import",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 153,
+        "end": 155
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_href"
+        },
+        {
+          "name": "image_url"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_export",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 157,
+        "end": 164
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "dest_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resp",
+          "line": 164
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_delete",
+      "kind": "method",
+      "scope": "Hypervisor",
+      "lineRange": {
+        "start": 166,
+        "end": 167
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "zvmutils.ConnectorClient",
+      "usage": "call",
+      "via": "nova.virt.zvm",
+      "count": 1,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "os.geteuid",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "pwd.getpwuid",
+      "usage": "call",
+      "via": "pwd",
+      "count": 1,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "pwd",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_power_state",
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "conf"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.zvm",
+      "names": [
+        {
+          "alias": "zvmutils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

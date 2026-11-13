@@ -1,0 +1,998 @@
+{
+  "file": "nova/api/openstack/compute/server_tags.py",
+  "hash": "280e9a1691ac30b68f7aedbb2de06740304105f024e604771318e7c912e8fc8a",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 38,
+    "code": 182,
+    "comment": 12,
+    "total": 232
+  },
+  "symbols": [
+    {
+      "name": "import jsonschema",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import common",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.schemas import server_tags as schema",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.views import server_tags",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api import validation",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.validation import parameter_types",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.notifications import base as notifications_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import server_tags as st_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_tags_names",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 33
+      },
+      "parameters": [
+        {
+          "name": "tags"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[t.tag for t in tags]",
+          "line": 33
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 41
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "server_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceMapping.get_by_instance_uuid(context, server_id)",
+          "line": 38
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerTagsController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 232
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_view_builder_class",
+      "kind": "field",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 48,
+        "end": 50
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_instance_in_valid_state",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 52,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "server_id"
+        },
+        {
+          "name": "action"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance",
+          "line": 62
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 69,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "server_id"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "index",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 90,
+        "end": 102
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "server_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'tags': _get_tags_names(tags)}",
+          "line": 102
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 108,
+        "end": 156
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "server_id"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "webob.Response(status_int=204)",
+          "line": 139
+        },
+        {
+          "expr": "response",
+          "line": 156
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_all",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 162,
+        "end": 182
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "server_id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'tags': _get_tags_names(tags)}",
+          "line": 182
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 188,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "server_id"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_all",
+      "kind": "method",
+      "scope": "ServerTagsController",
+      "lineRange": {
+        "start": 214,
+        "end": 232
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "server_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "name": "webob.exc.HTTPNotFound",
+      "usage": "call",
+      "via": "webob",
+      "count": 9,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "wsgi.Controller",
+      "usage": "inherit",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "name": "compute.API",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "common.get_instance",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "exception.InstanceInvalidState",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "common.raise_http_conflict_for_instance_invalid_state",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "wsgi.api_version",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 6,
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "name": "wsgi.response",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 3,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "wsgi.expected_errors",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 6,
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "name": "validation.query_schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 2,
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "name": "validation.response_body_schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 6,
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "name": "nova_context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 11,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "objects.Tag.exists",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 3,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "objects.TagList.get_by_resource_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "validation.schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 2,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "jsonschema.validate",
+      "usage": "call",
+      "via": "jsonschema",
+      "count": 1,
+      "lineRange": {
+        "start": 119,
+        "end": 119
+      }
+    },
+    {
+      "name": "webob.exc.HTTPBadRequest",
+      "usage": "call",
+      "via": "webob",
+      "count": 2,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "webob.Response",
+      "usage": "call",
+      "via": "webob",
+      "count": 2,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "objects.Tag",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 143,
+        "end": 143
+      }
+    },
+    {
+      "name": "notifications_base.send_instance_update_notification",
+      "usage": "call",
+      "via": "nova.notifications",
+      "count": 4,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "objects.TagList.create",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 174,
+        "end": 174
+      }
+    },
+    {
+      "name": "objects.Tag.destroy",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 200,
+        "end": 200
+      }
+    },
+    {
+      "name": "objects.TagList.destroy",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 226,
+        "end": 226
+      }
+    },
+    {
+      "name": "objects.TagList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 227,
+        "end": 227
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "jsonschema",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "common"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.schemas",
+      "names": [
+        {
+          "alias": "schema",
+          "name": "server_tags"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.views",
+      "names": [
+        {
+          "alias": null,
+          "name": "server_tags"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "validation"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.validation",
+      "names": [
+        {
+          "alias": null,
+          "name": "parameter_types"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.notifications",
+      "names": [
+        {
+          "alias": "notifications_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "st_policies",
+          "name": "server_tags"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

@@ -1,0 +1,1777 @@
+{
+  "file": "nova/pci/stats.py",
+  "hash": "98f5db6565bac5431fd8a2789546686c3c10a94d392a87edf9cdebe2d72198bc",
+  "language": "Python",
+  "component": "pci",
+  "package": null,
+  "lines": {
+    "blank": 150,
+    "code": 746,
+    "comment": 179,
+    "total": 1075
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import collections.abc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import typing as ty",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import pci_device_pool",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci.request import PCI_REMOTE_MANAGED_TAG",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import whitelist",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Pool",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciDeviceStats",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 1075
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pool_keys",
+      "kind": "field",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ignored_spec_tags",
+      "kind": "field",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 83,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "numa_topology",
+          "type": "'objects.NUMATopology'"
+        },
+        {
+          "default": "None",
+          "name": "stats",
+          "type": "'objects.PciDevicePoolList | None'"
+        },
+        {
+          "default": "None",
+          "name": "dev_filter",
+          "type": "whitelist.Whitelist | None"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_equal_properties",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 97,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "Pool"
+        },
+        {
+          "name": "entry",
+          "type": "Pool"
+        },
+        {
+          "name": "matching_keys",
+          "type": "list[str]"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "all(dev.get(prop) == entry.get(prop) for prop in matching_keys)",
+          "line": 100
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_pool",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 103,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev_pool",
+          "type": "Pool"
+        }
+      ],
+      "returnType": "Pool | None",
+      "returns": [
+        {
+          "expr": "pool",
+          "line": 114
+        },
+        {
+          "expr": "None",
+          "line": 116
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ensure_remote_managed_tag",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 119,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "dev",
+          "type": "'objects.PciDevice'"
+        },
+        {
+          "name": "pool",
+          "type": "Pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 130
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_pool_keys_from_dev",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 140,
+        "end": 182
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "Pool | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 152
+        },
+        {
+          "expr": "pool",
+          "line": 182
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pool_with_device_type_mismatch",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 184,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "tuple[Pool, 'objects.PciDevice'] | None",
+      "returns": [
+        {
+          "expr": "pool, device",
+          "line": 196
+        },
+        {
+          "expr": "None",
+          "line": 197
+        },
+        {
+          "expr": "None",
+          "line": 199
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_device",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 201,
+        "end": 210
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 205
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_device",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 212,
+        "end": 224
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_decrease_pool_count",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 227,
+        "end": 240
+      },
+      "parameters": [
+        {
+          "name": "pool_list",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "pool",
+          "type": "Pool"
+        },
+        {
+          "default": "1",
+          "name": "count",
+          "type": "int"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "count",
+          "line": 240
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_device",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 242,
+        "end": 251
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_free_devs",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 253,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "list['objects.PciDevice']",
+      "returns": [
+        {
+          "expr": "free_devs",
+          "line": 257
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_allocate_devs",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 259,
+        "end": 268
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pool",
+          "type": "Pool"
+        },
+        {
+          "name": "num",
+          "type": "int"
+        },
+        {
+          "name": "request_id",
+          "type": "str"
+        }
+      ],
+      "returnType": "list[\"objects.PciDevice\"]",
+      "returns": [
+        {
+          "expr": "alloc_devices",
+          "line": 268
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "consume_requests",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 270,
+        "end": 332
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_requests",
+          "type": "'objects.InstancePCIRequests'"
+        },
+        {
+          "default": "None",
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell'] | None"
+        }
+      ],
+      "returnType": "list['objects.PciDevice'] | None",
+      "returns": [
+        {
+          "expr": "alloc_devices",
+          "line": 332
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_handle_device_dependents",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 334,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_dev",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "None",
+      "returns": [
+        {
+          "expr": "",
+          "line": 362
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_spec",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 364,
+        "end": 391
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "[ pool for pool in pools if utils.pci_device_prop_match(pool, request_specs) ]",
+          "line": 388
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ignore_keys",
+      "kind": "function",
+      "scope": "PciDeviceStats._filter_pools_for_spec",
+      "lineRange": {
+        "start": 380,
+        "end": 385
+      },
+      "parameters": [
+        {
+          "name": "spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ k: v for k, v in spec.items() if k not in self.ignored_spec_tags }",
+          "line": 381
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_numa_cells",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 393,
+        "end": 474
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        },
+        {
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell'] | None"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "pools",
+          "line": 419
+        },
+        {
+          "expr": "filtered_pools",
+          "line": 440
+        },
+        {
+          "expr": "self._filter_pools_for_socket_affinity(pools, numa_cells)",
+          "line": 449
+        },
+        {
+          "expr": "filtered_pools",
+          "line": 468
+        },
+        {
+          "expr": "sorted( pools, key=lambda pool: pool.get('numa_node') not in numa_cell_ids)",
+          "line": 473
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_socket_affinity",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 476,
+        "end": 511
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell']"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 488
+        },
+        {
+          "expr": "[ pool for pool in pools if any( utils.pci_device_prop_match(pool, [{'numa_node': numa_node}]) for numa_node in allowed_numa_nodes ) ]",
+          "line": 506
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_unrequested_pfs",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 513,
+        "end": 535
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "pools",
+          "line": 535
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_unrequested_vdpa_devices",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 537,
+        "end": 561
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "pools",
+          "line": 561
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_unrequested_remote_managed_devices",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 563,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "pools",
+          "line": 582
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_based_on_placement_allocation",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 584,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        },
+        {
+          "name": "rp_uuids",
+          "type": "list[str]"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "pools",
+          "line": 597
+        },
+        {
+          "expr": "matching_pools",
+          "line": 622
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools_for_live_migratable_devices",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 624,
+        "end": 654
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        }
+      ],
+      "returnType": "list[Pool]",
+      "returns": [
+        {
+          "expr": "pools",
+          "line": 654
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_pools",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 656,
+        "end": 790
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        },
+        {
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell'] | None"
+        },
+        {
+          "name": "rp_uuids",
+          "type": "list[str]"
+        }
+      ],
+      "returnType": "list[Pool] | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 700
+        },
+        {
+          "expr": "None",
+          "line": 717
+        },
+        {
+          "expr": "None",
+          "line": 734
+        },
+        {
+          "expr": "None",
+          "line": 788
+        },
+        {
+          "expr": "pools",
+          "line": 790
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "support_requests",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 792,
+        "end": 834
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "requests",
+          "type": "list['objects.InstancePCIRequest']"
+        },
+        {
+          "name": "provider_mapping",
+          "type": "dict[str, list[str]] | None"
+        },
+        {
+          "default": "None",
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell'] | None"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 832
+        },
+        {
+          "expr": "True",
+          "line": 834
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_apply_request",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 836,
+        "end": 896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        },
+        {
+          "name": "rp_uuids",
+          "type": "list[str]"
+        },
+        {
+          "default": "None",
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell'] | None"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 869
+        },
+        {
+          "expr": "False",
+          "line": 883
+        },
+        {
+          "expr": "True",
+          "line": 896
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_rp_uuids_for_request",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 898,
+        "end": 938
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "provider_mapping",
+          "type": "dict[str, list[str]] | None"
+        },
+        {
+          "name": "request",
+          "type": "'objects.InstancePCIRequest'"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 913
+        },
+        {
+          "expr": "[]",
+          "line": 924
+        },
+        {
+          "expr": "rp_uuids.split(',')",
+          "line": 928
+        },
+        {
+          "expr": "[ rp_uuids[0] for group_id, rp_uuids in provider_mapping.items() if group_id.startswith(request.request_id) ]",
+          "line": 934
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "apply_requests",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 940,
+        "end": 973
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "requests",
+          "type": "list['objects.InstancePCIRequest']"
+        },
+        {
+          "name": "provider_mapping",
+          "type": "dict[str, list[str]] | None"
+        },
+        {
+          "default": "None",
+          "name": "numa_cells",
+          "type": "list['objects.InstanceNUMACell'] | None"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__iter__",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 975,
+        "end": 983
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "collections.abc.Iterator[Pool]",
+      "returns": [
+        {
+          "expr": "iter(pools)",
+          "line": 983
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clear",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 985,
+        "end": 987
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__eq__",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 989,
+        "end": 992
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other",
+          "type": "object"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "NotImplemented",
+          "line": 991
+        },
+        {
+          "expr": "self.pools == other.pools",
+          "line": 992
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "to_device_pools_obj",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 994,
+        "end": 997
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "'objects.PciDevicePoolList'",
+      "returns": [
+        {
+          "expr": "pci_device_pool.from_pci_stats(stats)",
+          "line": 997
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_remote_managed_device_pools",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 999,
+        "end": 1010
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "bool(pools)",
+          "line": 1010
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_pools_metadata_from_assigned_devices",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 1012,
+        "end": 1047
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_one_pool_per_rp_uuid",
+      "kind": "method",
+      "scope": "PciDeviceStats",
+      "lineRange": {
+        "start": 1050,
+        "end": 1075
+      },
+      "parameters": [
+        {
+          "name": "pools",
+          "type": "list[Pool]"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "not split_rp_uuids",
+          "line": 1075
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "whitelist.Whitelist",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 44,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "all",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 100,
+        "end": 100
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 113,
+        "end": 113
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 154,
+        "end": 154
+      }
+    },
+    {
+      "name": "tuple",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 186,
+        "end": 186
+      }
+    },
+    {
+      "name": "exception.PciDevicePoolEmpty",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 248,
+        "end": 248
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 263,
+        "end": 263
+      }
+    },
+    {
+      "name": "exception.PciDeviceRequestFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 298,
+        "end": 298
+      }
+    },
+    {
+      "name": "collections.Counter",
+      "usage": "call",
+      "via": "collections",
+      "count": 3,
+      "lineRange": {
+        "start": 322,
+        "end": 322
+      }
+    },
+    {
+      "name": "utils.pci_device_prop_match",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 4,
+      "lineRange": {
+        "start": 390,
+        "end": 390
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 431,
+        "end": 431
+      }
+    },
+    {
+      "name": "sum",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 438,
+        "end": 438
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 473,
+        "end": 473
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 493,
+        "end": 493
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 577,
+        "end": 577
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 795,
+        "end": 795
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 2,
+      "lineRange": {
+        "start": 828,
+        "end": 828
+      }
+    },
+    {
+      "name": "iter",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 983,
+        "end": 983
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 990,
+        "end": 990
+      }
+    },
+    {
+      "name": "pci_device_pool.from_pci_stats",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 997,
+        "end": 997
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1005,
+        "end": 1005
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1010,
+        "end": 1010
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1035,
+        "end": 1035
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1047,
+        "end": 1047
+      }
+    },
+    {
+      "name": "collections.defaultdict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 1057,
+        "end": 1057
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "collections.abc",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": "ty",
+      "module": "typing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "pci_device_pool"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci.request",
+      "names": [
+        {
+          "alias": null,
+          "name": "PCI_REMOTE_MANAGED_TAG"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": null,
+          "name": "whitelist"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

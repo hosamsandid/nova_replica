@@ -1,0 +1,4306 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_security_groups.py",
+  "hash": "70f3ae7dccacc7c441e78daec333fb1506d8e2f5742027531277da89563b7d8b",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 285,
+    "code": 1310,
+    "comment": 34,
+    "total": 1629
+  },
+  "symbols": [
+    {
+      "name": "from neutronclient.common import exceptions as n_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import encodeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import security_groups as secgroups_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as context_maker",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.db.main.api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron as neutron_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import security_group_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import instance as instance_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID1",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID2",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UUID_SERVER",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AttrDict",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getattr__",
+      "kind": "method",
+      "scope": "AttrDict",
+      "lineRange": {
+        "start": 45,
+        "end": 46
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "k"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self[k]",
+          "line": 46
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "security_group_request_template",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sg",
+          "line": 53
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "security_group_template",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sg",
+          "line": 61
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "security_group_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "security_group"
+        },
+        {
+          "default": "None",
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "AttrDict(attrs)",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "security_group_rule_template",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 75,
+        "end": 81
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rule",
+          "line": 81
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "security_group_rule_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 84,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "rule"
+        },
+        {
+          "default": "None",
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "AttrDict(attrs)",
+          "line": 88
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_security_group_by_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 91,
+        "end": 94
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "group_name"
+        },
+        {
+          "default": "None",
+          "name": "columns_to_join"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'id': 1, 'name': group_name, \"instances\": [{'id': 1, 'uuid': UUID_SERVER}]}",
+          "line": 93
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MockClient",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 97,
+        "end": 372
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_security_groups",
+      "kind": "field",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 100,
+        "end": 100
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_ports",
+      "kind": "field",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_networks",
+      "kind": "field",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_subnets",
+      "kind": "field",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_security_group_rules",
+      "kind": "field",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 106,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reset",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 115,
+        "end": 120
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_security_group",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 122,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_group': ret}",
+          "line": 140
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_network",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 142,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'network': ret}",
+          "line": 151
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_subnet",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 153,
+        "end": 166
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'subnet': ret}",
+          "line": 166
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_port",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 168,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'port': ret}",
+          "line": 201
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_security_group_rule",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 203,
+        "end": 214
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_group_rules': [ret]}",
+          "line": 214
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_security_group",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 216,
+        "end": 226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "security_group"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_group': sg}",
+          "line": 226
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_security_group_rule",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 228,
+        "end": 234
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "security_group_rule"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_group_rule': self._fake_security_group_rules[security_group_rule]}",
+          "line": 230
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_network",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 236,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "network"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'network': self._fake_networks[network]}",
+          "line": 238
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_port",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 244,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'port': self._fake_ports[port]}",
+          "line": 246
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_subnet",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 252,
+        "end": 258
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "subnet"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'subnet': self._fake_subnets[subnet]}",
+          "line": 254
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_security_groups",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 260,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_groups': ret}",
+          "line": 279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_networks",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 281,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'networks': []}",
+          "line": 286
+        },
+        {
+          "expr": "{'networks': [network for network in self._fake_networks.values()]}",
+          "line": 288
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_ports",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 291,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'ports': ret}",
+          "line": 300
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_subnets",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 302,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'subnets': [subnet for subnet in self._fake_subnets.values()]}",
+          "line": 303
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_floatingips",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 306,
+        "end": 307
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'floatingips': []}",
+          "line": 307
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_security_group",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 309,
+        "end": 319
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "security_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_security_group_rule",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 321,
+        "end": 323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "security_group_rule"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_network",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 325,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "network"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_port",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 333,
+        "end": 335
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_port",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 337,
+        "end": 340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "default": "None",
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'port': self._fake_ports[port]}",
+          "line": 340
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_extensions",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 342,
+        "end": 343
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**_parms"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'extensions': []}",
+          "line": 343
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_ports_on_network",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 345,
+        "end": 352
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "network"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "find_resource",
+      "kind": "method",
+      "scope": "MockClient",
+      "lineRange": {
+        "start": 354,
+        "end": 372
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "resource"
+        },
+        {
+          "name": "name_or_id"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "cmd_resource"
+        },
+        {
+          "default": "None",
+          "name": "parent_id"
+        },
+        {
+          "default": "None",
+          "name": "fields"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sg",
+          "line": 360
+        },
+        {
+          "expr": "res",
+          "line": 370
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_client",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 375,
+        "end": 376
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "False",
+          "name": "admin"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "MockClient()",
+          "line": 376
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestSecurityGroupsV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 379,
+        "end": 934
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "secgrp_ctl_cls",
+      "kind": "field",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 380,
+        "end": 380
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "server_secgrp_ctl_cls",
+      "kind": "field",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 381,
+        "end": 381
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "secgrp_act_ctl_cls",
+      "kind": "field",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 382,
+        "end": 382
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 384,
+        "end": 408
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tearDown",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 410,
+        "end": 413
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_sg_template",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 415,
+        "end": 417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.controller.create(self.req, body={'security_group': sg})",
+          "line": 417
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_network",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 419,
+        "end": 426
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "net",
+          "line": 426
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 428,
+        "end": 436
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "neutron.create_port(body)",
+          "line": 436
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_security_group",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 438,
+        "end": 445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "neutron.create_security_group(body)",
+          "line": 445
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_security_groups_in_use",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 447,
+        "end": 452
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "in_use"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_security_group",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 454,
+        "end": 461
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_security_group_with_no_name",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 463,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_security_group_with_no_body",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 472,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_security_group_with_no_security_group",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 477,
+        "end": 482
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_security_group_above_255_characters_name",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 484,
+        "end": 489
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_security_group_above_255_characters_description",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 491,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_list",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 498,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_list_offset_and_limit",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 504,
+        "end": 509
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_list_missing_group_id_rule",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 511,
+        "end": 553
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_by_instance",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 555,
+        "end": 568
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_empty_for_instance",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 572,
+        "end": 581
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "neutron_sg_bind_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_by_instance_non_existing",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 583,
+        "end": 588
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_by_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 590,
+        "end": 596
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_by_invalid_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 598,
+        "end": 600
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_security_group_by_non_existing_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 602,
+        "end": 604
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_default_security_group_fail",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 606,
+        "end": 610
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_security_group_by_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 612,
+        "end": 616
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_security_group_by_admin",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 618,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_security_group_by_invalid_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 624,
+        "end": 626
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_security_group_by_non_existing_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 628,
+        "end": 630
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_security_group_in_use",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 633,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "refresh_info_cache_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_list_with_invalid_filter",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 652,
+        "end": 657
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "default": "exception.ValidationError",
+          "name": "expected_exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_non_int_limit",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 659,
+        "end": 660
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 662,
+        "end": 663
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 665,
+        "end": 667
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_non_int_offset",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 669,
+        "end": 670
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_invalid_string_offset",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 672,
+        "end": 673
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_with_invalid_string_offset",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 675,
+        "end": 677
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 679,
+        "end": 690
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_with_additional_filter",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 692,
+        "end": 695
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_all_tenants_filter_as_string",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 697,
+        "end": 700
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_all_tenants_filter_as_positive_int",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 702,
+        "end": 705
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_all_tenants_filter_as_negative_int",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 707,
+        "end": 710
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_by_non_existing_security_group_name",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 712,
+        "end": 717
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_without_body",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 719,
+        "end": 724
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_no_security_group_name",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 726,
+        "end": 731
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_security_group_name_with_whitespaces",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 733,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_non_existing_instance",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 740,
+        "end": 747
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_duplicate_names",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 749,
+        "end": 765
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_port_security_enabled_true",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 767,
+        "end": 779
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_port_security_enabled_false",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 781,
+        "end": 794
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate_deferred_ip_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 796,
+        "end": 808
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_associate",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 810,
+        "end": 821
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disassociate_by_non_existing_security_group_name",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 823,
+        "end": 830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disassociate_without_body",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 832,
+        "end": 837
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disassociate_no_security_group_name",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 839,
+        "end": 844
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disassociate_security_group_name_with_whitespaces",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 846,
+        "end": 851
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disassociate_non_existing_instance",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 853,
+        "end": 860
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disassociate",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 862,
+        "end": 873
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instances_security_groups_bindings",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 875,
+        "end": 894
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_instance_security_groups",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 896,
+        "end": 912
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_port_with_sg_and_port_security_enabled_true",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 914,
+        "end": 924
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_port_with_sg_and_port_security_enabled_false",
+      "kind": "method",
+      "scope": "TestSecurityGroupsV21",
+      "lineRange": {
+        "start": 926,
+        "end": 934
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestSecurityGroupRulesV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 937,
+        "end": 1415
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "secgrp_ctl_cls",
+      "kind": "field",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 938,
+        "end": 938
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 940,
+        "end": 963
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tearDown",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 965,
+        "end": 968
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_by_cidr",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 970,
+        "end": 981
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_by_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 983,
+        "end": 993
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_by_same_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 995,
+        "end": 1013
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_none_value_from_to_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1015,
+        "end": 1025
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_none_value_from_to_port_icmp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1027,
+        "end": 1039
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_none_value_from_to_port_tcp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1041,
+        "end": 1053
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_by_invalid_cidr_json",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1055,
+        "end": 1064
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_by_invalid_tcp_port_json",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1066,
+        "end": 1076
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_by_invalid_icmp_port_json",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1078,
+        "end": 1087
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_add_existing_rules_by_cidr",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1089,
+        "end": 1099
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_add_existing_rules_by_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1101,
+        "end": 1111
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_body",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1113,
+        "end": 1116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_security_group_rule_in_body",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1118,
+        "end": 1122
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_invalid_parent_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1124,
+        "end": 1130
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_non_existing_parent_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1132,
+        "end": 1138
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_non_existing_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1140,
+        "end": 1146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_invalid_protocol",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1148,
+        "end": 1155
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_protocol",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1157,
+        "end": 1164
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_invalid_from_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1166,
+        "end": 1173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_invalid_to_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1175,
+        "end": 1182
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_non_numerical_from_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1184,
+        "end": 1191
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_non_numerical_to_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1193,
+        "end": 1200
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_from_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1202,
+        "end": 1209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_to_port",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1211,
+        "end": 1218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_invalid_cidr",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1220,
+        "end": 1226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_cidr_group",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1228,
+        "end": 1239
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_invalid_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1241,
+        "end": 1247
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_empty_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1249,
+        "end": 1255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_nonexist_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1257,
+        "end": 1263
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_same_group_parent_id_and_group_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1265,
+        "end": 1275
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_create_with_no_ports_and_no_group",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1277,
+        "end": 1282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "proto"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_create_with_no_ports",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1284,
+        "end": 1299
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "proto"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_ports_icmp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1301,
+        "end": 1303
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_ports_tcp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1305,
+        "end": 1307
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_no_ports_udp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1309,
+        "end": 1311
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_create_with_ports",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1313,
+        "end": 1331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "proto"
+        },
+        {
+          "name": "from_port"
+        },
+        {
+          "name": "to_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_ports_icmp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1333,
+        "end": 1336
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_ports_tcp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1338,
+        "end": 1341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_with_ports_udp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1343,
+        "end": 1346
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1348,
+        "end": 1357
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_invalid_rule_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1359,
+        "end": 1361
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_non_existing_rule_id",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1363,
+        "end": 1365
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_rule_cidr_allow_all",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1367,
+        "end": 1379
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_rule_cidr_ipv6_allow_all",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1381,
+        "end": 1393
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_rule_cidr_allow_some",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1395,
+        "end": 1407
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_rule_cidr_bad_netmask",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesV21",
+      "lineRange": {
+        "start": 1409,
+        "end": 1415
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UUID1",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 1418,
+        "end": 1418
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UUID2",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 1419,
+        "end": 1419
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UUID3",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 1420,
+        "end": 1420
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_compute_get_all",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1423,
+        "end": 1438
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=inst_list)",
+          "line": 1438
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_compute_get",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1441,
+        "end": 1449
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "inst",
+          "line": 1449
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_compute_create",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1452,
+        "end": 1453
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "([fake_compute_get(*args, **kwargs)], '')",
+          "line": 1453
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SecurityGroupsOutputTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1456,
+        "end": 1595
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "content_type",
+      "kind": "field",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1457,
+        "end": 1457
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1459,
+        "end": 1473
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "tearDown",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1475,
+        "end": 1478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_get_instances_security_groups_bindings",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1480,
+        "end": 1491
+      },
+      "parameters": [
+        {
+          "name": "inst"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "servers"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 1491
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_make_request",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1493,
+        "end": 1504
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "default": "None",
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 1504
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_encode_body",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1506,
+        "end": 1507
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.dumps(body)",
+          "line": 1507
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_server",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1509,
+        "end": 1510
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.loads(body).get('server')",
+          "line": 1510
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_servers",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1512,
+        "end": 1513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.loads(body).get('servers')",
+          "line": 1513
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_groups",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1515,
+        "end": 1516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "server.get('security_groups')",
+          "line": 1516
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1518,
+        "end": 1534
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_get_default_security_group",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1536,
+        "end": 1544
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1546,
+        "end": 1577
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detail",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1579,
+        "end": 1587
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_instance_passthrough_404",
+      "kind": "method",
+      "scope": "SecurityGroupsOutputTest",
+      "lineRange": {
+        "start": 1591,
+        "end": 1595
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestSecurityGroupsDeprecation",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1598,
+        "end": 1615
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestSecurityGroupsDeprecation",
+      "lineRange": {
+        "start": 1600,
+        "end": 1603
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_all_apis_return_not_found",
+      "kind": "method",
+      "scope": "TestSecurityGroupsDeprecation",
+      "lineRange": {
+        "start": 1605,
+        "end": 1615
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestSecurityGroupRulesDeprecation",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1618,
+        "end": 1629
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesDeprecation",
+      "lineRange": {
+        "start": 1620,
+        "end": 1623
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_all_apis_return_not_found",
+      "kind": "method",
+      "scope": "TestSecurityGroupRulesDeprecation",
+      "lineRange": {
+        "start": 1625,
+        "end": 1629
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "dict",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 7,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "n_exc.BadRequest",
+      "usage": "call",
+      "via": "neutronclient.common",
+      "count": 2,
+      "lineRange": {
+        "start": 127,
+        "end": 127
+      }
+    },
+    {
+      "name": "n_exc.NeutronClientException",
+      "usage": "call",
+      "via": "neutronclient.common",
+      "count": 9,
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      }
+    },
+    {
+      "name": "exception.SecurityGroupCannotBeApplied",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 189,
+        "end": 189
+      }
+    },
+    {
+      "name": "n_exc.NeutronClientNoUniqueMatch",
+      "usage": "call",
+      "via": "neutronclient.common",
+      "count": 1,
+      "lineRange": {
+        "start": 366,
+        "end": 366
+      }
+    },
+    {
+      "name": "n_exc.NotFound",
+      "usage": "call",
+      "via": "neutronclient.common",
+      "count": 1,
+      "lineRange": {
+        "start": 371,
+        "end": 371
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 379,
+        "end": 379
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 385,
+        "end": 385
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 34,
+      "lineRange": {
+        "start": 396,
+        "end": 396
+      }
+    },
+    {
+      "name": "fakes.fake_compute_get",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "context_maker.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 448,
+        "end": 448
+      }
+    },
+    {
+      "name": "objects.Quotas.count_as_dict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 449,
+        "end": 449
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 7,
+      "lineRange": {
+        "start": 544,
+        "end": 544
+      }
+    },
+    {
+      "name": "security_group_api.get_instance_security_groups",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 3,
+      "lineRange": {
+        "start": 577,
+        "end": 577
+      }
+    },
+    {
+      "name": "instance_obj.Instance",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 578,
+        "end": 578
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 585,
+        "end": 585
+      }
+    },
+    {
+      "name": "fakes.stub_instance",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 636,
+        "end": 636
+      }
+    },
+    {
+      "name": "instance_obj.Instance._from_db_object",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 638,
+        "end": 638
+      }
+    },
+    {
+      "name": "neutron_api.API",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 641,
+        "end": 641
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 642,
+        "end": 642
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 37,
+      "lineRange": {
+        "start": 713,
+        "end": 713
+      }
+    },
+    {
+      "name": "security_group_api.get_instances_security_groups_bindings",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 892,
+        "end": 892
+      }
+    },
+    {
+      "name": "secgroups_v21.SecurityGroupController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 943,
+        "end": 943
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1415,
+        "end": 1415
+      }
+    },
+    {
+      "name": "fakes.stub_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 3,
+      "lineRange": {
+        "start": 1428,
+        "end": 1428
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1438,
+        "end": 1438
+      }
+    },
+    {
+      "name": "objects.SecurityGroupList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1442,
+        "end": 1442
+      }
+    },
+    {
+      "name": "objects.SecurityGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1444,
+        "end": 1444
+      }
+    },
+    {
+      "name": "fakes.stub_out_nw_api",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 1466,
+        "end": 1466
+      }
+    },
+    {
+      "name": "encodeutils.safe_encode",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 1497,
+        "end": 1497
+      }
+    },
+    {
+      "name": "fakes.wsgi_app_v21",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 1503,
+        "end": 1503
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 1507,
+        "end": 1507
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 2,
+      "lineRange": {
+        "start": 1510,
+        "end": 1510
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 1532,
+        "end": 1532
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1598,
+        "end": 1598
+      }
+    },
+    {
+      "name": "secgroups_v21.SecurityGroupRulesController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 1622,
+        "end": 1622
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "neutronclient.common",
+      "names": [
+        {
+          "alias": "n_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "encodeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "secgroups_v21",
+          "name": "security_groups"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "context_maker",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main.api",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "neutron_api",
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "security_group_api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "instance_obj",
+          "name": "instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

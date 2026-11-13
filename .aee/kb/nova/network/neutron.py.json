@@ -1,0 +1,5853 @@
+{
+  "file": "nova/network/neutron.py",
+  "hash": "14f76cd14005227a55f5f568507aabf1a3ff86a5689b1041fa24a99287b17cac",
+  "language": "Python",
+  "component": "network",
+  "package": null,
+  "lines": {
+    "blank": 465,
+    "code": 2876,
+    "comment": 648,
+    "total": 3989
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import inspect",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import typing as ty",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from collections import defaultdict",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from neutronclient.common import exceptions as neutron_client_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from neutronclient.v2_0 import client as clientv20",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import lockutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.accelerator import cyborg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import constants",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model as network_model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import request as pci_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import utils as pci_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import whitelist as pci_whitelist",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import servers as servers_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import profiler",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import service_auth",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_auth_plugin",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 78
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "auth_plugin",
+          "line": 65
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_binding_profile",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 81,
+        "end": 91
+      },
+      "parameters": [
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port.get(constants.BINDING_PROFILE, {}) or {}",
+          "line": 91
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_instance_cache_with_nw_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 94,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "impl"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "nw_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 98
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "refresh_cache",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 134,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "f"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper",
+          "line": 160
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "refresh_cache",
+      "lineRange": {
+        "start": 142,
+        "end": 159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 159
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ClientWrapper",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 164,
+        "end": 208
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ClientWrapper",
+      "lineRange": {
+        "start": 171,
+        "end": 173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "base_client"
+        },
+        {
+          "name": "admin"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getattr__",
+      "kind": "method",
+      "scope": "ClientWrapper",
+      "lineRange": {
+        "start": 175,
+        "end": 183
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.proxy(base_attr)",
+          "line": 181
+        },
+        {
+          "expr": "base_attr",
+          "line": 183
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "proxy",
+      "kind": "method",
+      "scope": "ClientWrapper",
+      "lineRange": {
+        "start": 185,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper",
+          "line": 208
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "ClientWrapper.proxy",
+      "lineRange": {
+        "start": 186,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ret",
+          "line": 207
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_auth_plugin",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 211,
+        "end": 227
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "False",
+          "name": "admin"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service_auth.get_service_user_token_auth_plugin( context, user_auth=user_auth)",
+          "line": 222
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_client",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 230,
+        "end": 254
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "False",
+          "name": "admin"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ClientWrapper(clientv20.Client(**client_args), admin=admin or context.is_admin)",
+          "line": 253
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_not_duplicate",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 257,
+        "end": 271
+      },
+      "parameters": [
+        {
+          "name": "item"
+        },
+        {
+          "name": "items"
+        },
+        {
+          "name": "items_list_name"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not present",
+          "line": 271
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ensure_no_port_binding_failure",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 274,
+        "end": 277
+      },
+      "parameters": [
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "API",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 280,
+        "end": 3983
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 283,
+        "end": 287
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_port_with_migration_profile",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 289,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "port_profile"
+        },
+        {
+          "name": "admin_client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "updated_port",
+          "line": 294
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_clear_migration_port_profile",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 302,
+        "end": 316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "admin_client"
+        },
+        {
+          "name": "ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_migration_port_profile",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 318,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "admin_client"
+        },
+        {
+          "name": "ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setup_networks_on_host",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 343,
+        "end": 389
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "False",
+          "name": "teardown"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_port_bindings",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 391,
+        "end": 422
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "ports"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_available_networks",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 424,
+        "end": 461
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "net_ids"
+        },
+        {
+          "default": "None",
+          "name": "neutron"
+        },
+        {
+          "default": "False",
+          "name": "auto_allocate"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nets",
+          "line": 461
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cleanup_created_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 463,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port_client"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_port_minimal",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 472,
+        "end": 561
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port_client"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_id"
+        },
+        {
+          "default": "None",
+          "name": "fixed_ip"
+        },
+        {
+          "default": "None",
+          "name": "security_group_ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port",
+          "line": 533
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 563,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port_client"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "port_req_body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port",
+          "line": 571
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_external_network_attach",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 588,
+        "end": 598
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "nets"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unbind_ports",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 600,
+        "end": 609
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "ports"
+        },
+        {
+          "default": "True",
+          "name": "detach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_unbind_ports",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 611,
+        "end": 711
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "ports"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "default": "None",
+          "name": "port_client"
+        },
+        {
+          "default": "True",
+          "name": "detach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_validate_requested_port_ids",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 713,
+        "end": 789
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "requested_networks"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ports, ordered_networks",
+          "line": 789
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_clean_security_groups",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 791,
+        "end": 802
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "security_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "security_groups",
+          "line": 802
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_security_group_ids",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 804,
+        "end": 856
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "security_groups"
+        },
+        {
+          "name": "user_security_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "security_group_ids",
+          "line": 856
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_security_groups",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 858,
+        "end": 912
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "security_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "security_group_ids",
+          "line": 912
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_validate_requested_network_ids",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 914,
+        "end": 998
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "name": "ordered_networks"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 973
+        },
+        {
+          "expr": "{net['id']: net for net in nets}",
+          "line": 998
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_ports_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1000,
+        "end": 1064
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "ordered_networks"
+        },
+        {
+          "name": "nets"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "security_group_ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "requests_and_created_ports",
+          "line": 1064
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_has_resource_request",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1066,
+        "end": 1071
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bool(resource_request.get(constants.REQUEST_GROUPS, []))",
+          "line": 1069
+        },
+        {
+          "expr": "bool(resource_request)",
+          "line": 1071
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "instance_has_extended_resource_request",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1073,
+        "end": 1095
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 1082
+        },
+        {
+          "expr": "True",
+          "line": 1094
+        },
+        {
+          "expr": "False",
+          "line": 1095
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_binding_profile_allocation",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1097,
+        "end": 1125
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "port_id",
+          "type": "str"
+        },
+        {
+          "name": "resource_provider_mapping",
+          "type": "dict[str, list[str]]"
+        }
+      ],
+      "returnType": "None | str | dict[str, str]",
+      "returns": [
+        {
+          "expr": "self._get_binding_profile_allocation( context, port, neutron, resource_provider_mapping)",
+          "line": 1122
+        },
+        {
+          "expr": "None",
+          "line": 1125
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_binding_profile_allocation",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1127,
+        "end": 1163
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "resource_provider_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "allocation",
+          "line": 1163
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "allocate_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1165,
+        "end": 1282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "default": "None",
+          "name": "security_groups"
+        },
+        {
+          "default": "None",
+          "name": "bind_host_id"
+        },
+        {
+          "default": "None",
+          "name": "resource_provider_mapping"
+        },
+        {
+          "default": "None",
+          "name": "network_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_model.NetworkInfo([])",
+          "line": 1219
+        },
+        {
+          "expr": "network_model.NetworkInfo([vif for vif in nw_info if vif['id'] in created_port_ids + preexisting_port_ids])",
+          "line": 1280
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_ports_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1284,
+        "end": 1405
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "admin_client"
+        },
+        {
+          "name": "requests_and_created_ports"
+        },
+        {
+          "name": "nets"
+        },
+        {
+          "name": "bind_host_id"
+        },
+        {
+          "name": "requested_ports_dict"
+        },
+        {
+          "name": "network_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(nets_in_requested_order, ports_in_requested_order, preexisting_port_ids, created_port_ids)",
+          "line": 1404
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_refresh_neutron_extensions_cache",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1407,
+        "end": 1415
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_has_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1417,
+        "end": 1429
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "extension"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "extension in self.extensions",
+          "line": 1429
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_multi_provider_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1431,
+        "end": 1437
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension(constants.MULTI_PROVIDER, context, client)",
+          "line": 1437
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_dns_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1439,
+        "end": 1445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension(constants.DNS_INTEGRATION, context, client)",
+          "line": 1445
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_sg_shared_filter_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1447,
+        "end": 1453
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension(constants.SG_SHARED_FILTER, context, client)",
+          "line": 1453
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_extended_resource_request_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1459,
+        "end": 1464
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension( constants.RESOURCE_REQUEST_GROUPS, context, client, )",
+          "line": 1462
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_vnic_index_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1466,
+        "end": 1471
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension(constants.VNIC_INDEX, context, client)",
+          "line": 1471
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_fip_port_details_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1473,
+        "end": 1478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension(constants.FIP_PORT_DETAILS, context, client)",
+          "line": 1478
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_substr_port_filtering_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1480,
+        "end": 1488
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension( constants.SUBSTR_PORT_FILTERING, context, client )",
+          "line": 1486
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_segment_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1490,
+        "end": 1497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension( constants.SEGMENT, context, client, )",
+          "line": 1495
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_port_binding_extension",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1499,
+        "end": 1510
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._has_extension( constants.PORT_BINDING_EXTENDED, context, client )",
+          "line": 1508
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bind_ports_to_host",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1512,
+        "end": 1599
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "vnic_types"
+        },
+        {
+          "default": "None",
+          "name": "port_profiles"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 1557
+        },
+        {
+          "expr": "bindings_by_port_id",
+          "line": 1599
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_port_binding",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1601,
+        "end": 1624
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vf_pci_device_profile",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1626,
+        "end": 1652
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_dev"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vf_profile",
+          "line": 1652
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pci_device_profile",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1654,
+        "end": 1683
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_dev"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dev_profile",
+          "line": 1680
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_populate_neutron_binding_profile",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1685,
+        "end": 1717
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "pci_request_id"
+        },
+        {
+          "name": "port_req_body"
+        },
+        {
+          "name": "port_arq"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_populate_pci_mac_address",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1720,
+        "end": 1748
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "pci_request_id"
+        },
+        {
+          "name": "port_req_body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1737
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_populate_neutron_extension_values",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1750,
+        "end": 1778
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "pci_request_id"
+        },
+        {
+          "name": "port_req_body"
+        },
+        {
+          "default": "None",
+          "name": "network"
+        },
+        {
+          "default": "None",
+          "name": "neutron"
+        },
+        {
+          "default": "None",
+          "name": "bind_host_id"
+        },
+        {
+          "default": "None",
+          "name": "port_arq"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_port_dns_name",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1780,
+        "end": 1805
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reset_port_dns_name",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1807,
+        "end": 1823
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "network"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_ports",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1825,
+        "end": 1839
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "ports"
+        },
+        {
+          "default": "False",
+          "name": "raise_if_fail"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "deallocate_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1841,
+        "end": 1876
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "deallocate_port_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1878,
+        "end": 1968
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.get_instance_nw_info(context, instance), port_allocation",
+          "line": 1968
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_nic_metadata",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1970,
+        "end": 1980
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1973
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_ports",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1982,
+        "end": 1984
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "**search_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "get_client(context).list_ports(**search_opts)",
+          "line": 1984
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 1986,
+        "end": 1998
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict(port=self._show_port(context, port_id))",
+          "line": 1998
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_show_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2000,
+        "end": 2025
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "default": "None",
+          "name": "neutron_client"
+        },
+        {
+          "default": "None",
+          "name": "fields"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result.get('port')",
+          "line": 2017
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_nw_info",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2027,
+        "end": 2033
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 2033
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_nw_info",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2035,
+        "end": 2061
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "networks"
+        },
+        {
+          "default": "None",
+          "name": "port_ids"
+        },
+        {
+          "default": "None",
+          "name": "admin_client"
+        },
+        {
+          "default": "None",
+          "name": "preexisting_port_ids"
+        },
+        {
+          "default": "None",
+          "name": "refresh_vif_id"
+        },
+        {
+          "default": "False",
+          "name": "force_refresh"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_model.NetworkInfo.hydrate(nw_info)",
+          "line": 2061
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_gather_port_ids_and_networks",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2063,
+        "end": 2118
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "networks"
+        },
+        {
+          "default": "None",
+          "name": "port_ids"
+        },
+        {
+          "default": "None",
+          "name": "neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "networks, port_ids",
+          "line": 2118
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_fixed_ip_to_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2121,
+        "end": 2153
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_instance_nw_info(context, instance)",
+          "line": 2144
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_fixed_ip_from_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2156,
+        "end": 2182
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._get_instance_nw_info(context, instance)",
+          "line": 2179
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_physnet_tunneled_info",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2184,
+        "end": 2225
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "net_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "physnet_name, False",
+          "line": 2212
+        },
+        {
+          "expr": "(net.get('provider:physical_network'), net.get('provider:network_type') in constants.L3_NETWORK_TYPES)",
+          "line": 2224
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_trusted_mode_from_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2228,
+        "end": 2238
+      },
+      "parameters": [
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "strutils.bool_from_string(value)",
+          "line": 2238
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_remote_managed",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2241,
+        "end": 2248
+      },
+      "parameters": [
+        {
+          "name": "vnic_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vnic_type == network_model.VNIC_TYPE_REMOTE_MANAGED",
+          "line": 2248
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_remote_managed_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2250,
+        "end": 2259
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._is_remote_managed( port.get('binding:vnic_type', network_model.VNIC_TYPE_NORMAL) )",
+          "line": 2257
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_port_vnic_info",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2263,
+        "end": 2297
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(vnic_type, trusted, network_id, resource_request, numa_policy, device_profile)",
+          "line": 2296
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "support_create_with_resource_request",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2299,
+        "end": 2306
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not (self.has_extended_resource_request_extension(context))",
+          "line": 2306
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_resource_requests",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2308,
+        "end": 2468
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "default": "None",
+          "name": "pci_requests"
+        },
+        {
+          "default": "None",
+          "name": "affinity_policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None, [], None",
+          "line": 2330
+        },
+        {
+          "expr": "( objects.NetworkMetadata(physnets=physnets, tunneled=tunneled), resource_requests, request_level_params )",
+          "line": 2464
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_can_auto_allocate_network",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2470,
+        "end": 2488
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 2484
+        },
+        {
+          "expr": "False",
+          "line": 2488
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_auto_allocate_network",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2490,
+        "end": 2521
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network",
+          "line": 2521
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ports_needed_per_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2523,
+        "end": 2630
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "name": "requested_networks"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ports_needed_per_instance",
+          "line": 2630
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_requested_resource_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2632,
+        "end": 2679
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "instance_uuid",
+          "type": "str"
+        }
+      ],
+      "returnType": "tuple[ list['objects.RequestGroup'], 'objects.RequestLevelParams']",
+      "returns": [
+        {
+          "expr": "resource_requests, request_level_params",
+          "line": 2679
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_networks",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2681,
+        "end": 2718
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "name": "num_instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "num_instances",
+          "line": 2701
+        },
+        {
+          "expr": "num_instances",
+          "line": 2715
+        },
+        {
+          "expr": "free_ports // ports_needed_per_instance",
+          "line": 2717
+        },
+        {
+          "expr": "num_instances",
+          "line": 2718
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_uuids_by_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2720,
+        "end": 2730
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[{'instance_uuid': port['device_id']} for port in ports if port['device_id']]",
+          "line": 2729
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_port_id_by_fixed_address",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2732,
+        "end": 2748
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port_id",
+          "line": 2748
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "associate_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2751,
+        "end": 2784
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "floating_address"
+        },
+        {
+          "name": "fixed_address"
+        },
+        {
+          "default": "False",
+          "name": "affect_auto_assigned"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_inst_info_cache_for_disassociated_fip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2786,
+        "end": 2820
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "fip"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_by_uuid_using_api_db",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2823,
+        "end": 2858
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.Instance.get_by_uuid(context, instance_uuid)",
+          "line": 2838
+        },
+        {
+          "expr": "",
+          "line": 2848
+        },
+        {
+          "expr": "objects.Instance.get_by_uuid(cctxt, instance_uuid)",
+          "line": 2855
+        },
+        {
+          "expr": "",
+          "line": 2858
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2860,
+        "end": 2863
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "client.list_networks().get('networks')",
+          "line": 2863
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2865,
+        "end": 2871
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "network_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "client.show_network(network_uuid).get('network') or {}",
+          "line": 2869
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_fixed_ip_by_address",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2873,
+        "end": 2882
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "uuid_maps[0]",
+          "line": 2877
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2884,
+        "end": 2917
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fip",
+          "line": 2917
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_floating_ip_by_address",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2919,
+        "end": 2945
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fip",
+          "line": 2945
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_floating_ip_pools",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2947,
+        "end": 2951
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data['networks']",
+          "line": 2951
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_floating_ips_by_project",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2953,
+        "end": 2986
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fips",
+          "line": 2958
+        },
+        {
+          "expr": "fips",
+          "line": 2986
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_id_by_floating_address",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 2988,
+        "end": 3008
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 2993
+        },
+        {
+          "expr": "None",
+          "line": 3006
+        },
+        {
+          "expr": "port['device_id']",
+          "line": 3008
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vifs_by_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3010,
+        "end": 3012
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.VirtualInterfaceList.get_by_instance_uuid(context, instance.uuid)",
+          "line": 3011
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_floating_ip_pool_id_by_name_or_id",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3014,
+        "end": 3030
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "name_or_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nets[0]['id']",
+          "line": 3024
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "allocate_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3032,
+        "end": 3049
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fip['floatingip']['floating_ip_address']",
+          "line": 3049
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_safe_get_floating_ips",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3051,
+        "end": 3067
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "client.list_floatingips(**kwargs)['floatingips']",
+          "line": 3054
+        },
+        {
+          "expr": "[]",
+          "line": 3058
+        },
+        {
+          "expr": "[]",
+          "line": 3063
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_floating_ip_by_address",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3069,
+        "end": 3078
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fips[0]",
+          "line": 3078
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_floating_ips_by_fixed_and_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3080,
+        "end": 3083
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "fixed_ip"
+        },
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._safe_get_floating_ips(client, fixed_ip_address=fixed_ip, port_id=port)",
+          "line": 3082
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "release_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3085,
+        "end": 3098
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "default": "False",
+          "name": "affect_auto_assigned"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disassociate_and_release_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3100,
+        "end": 3121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "floating_ip"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_release_floating_ip_and_refresh_cache",
+      "kind": "function",
+      "scope": "API.disassociate_and_release_floating_ip",
+      "lineRange": {
+        "start": 3109,
+        "end": 3113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "floating_ip"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_release_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3123,
+        "end": 3135
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "default": "True",
+          "name": "raise_if_associated"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "disassociate_floating_ip",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3138,
+        "end": 3148
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "default": "False",
+          "name": "affect_auto_assigned"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "migrate_instance_start",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3150,
+        "end": 3246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "migration"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 3179
+        },
+        {
+          "expr": "",
+          "line": 3206
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "migrate_instance_finish",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3248,
+        "end": 3262
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "name": "provider_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nw_info_get_ips",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3264,
+        "end": 3275
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_IPs",
+          "line": 3275
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nw_info_get_subnets",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3277,
+        "end": 3282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "network_IPs"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "subnets",
+          "line": 3282
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nw_info_build_network",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3284,
+        "end": 3356
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "networks"
+        },
+        {
+          "name": "subnets"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network, ovs_interfaceid",
+          "line": 3356
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_preexisting_port_ids",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3358,
+        "end": 3368
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[vif['id'] for vif in net_info if vif.get('preserve_on_delete')]",
+          "line": 3367
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_vif_model",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3370,
+        "end": 3422
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "current_neutron_port"
+        },
+        {
+          "name": "networks"
+        },
+        {
+          "name": "preexisting_port_ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_model.VIF( id=current_neutron_port['id'], address=current_neutron_port['mac_address'], network=network, vnic_type=current_neutron_port.get('binding:vnic_type', network_model.VNIC_TYPE_NORMAL),",
+          "line": 3408
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_log_error_if_vnic_type_changed",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3424,
+        "end": 3441
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "old_vnic_type"
+        },
+        {
+          "name": "new_vnic_type"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_network_info_model",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3443,
+        "end": 3597
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "networks"
+        },
+        {
+          "default": "None",
+          "name": "port_ids"
+        },
+        {
+          "default": "None",
+          "name": "admin_client"
+        },
+        {
+          "default": "None",
+          "name": "preexisting_port_ids"
+        },
+        {
+          "default": "None",
+          "name": "refresh_vif_id"
+        },
+        {
+          "default": "False",
+          "name": "force_refresh"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nw_info",
+          "line": 3549
+        },
+        {
+          "expr": "nw_info",
+          "line": 3597
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_ordered_port_list",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3599,
+        "end": 3634
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "current_neutron_ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port_order_list",
+          "line": 3634
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_subnets_from_port",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3636,
+        "end": 3698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "default": "None",
+          "name": "client"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 3646
+        },
+        {
+          "expr": "subnets",
+          "line": 3698
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setup_instance_network_on_host",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3700,
+        "end": 3714
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "migration"
+        },
+        {
+          "default": "None",
+          "name": "provider_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup_instance_network_on_host",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3716,
+        "end": 3741
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 3733
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pci_mapping_for_migration",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3743,
+        "end": 3749
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "migration"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 3745
+        },
+        {
+          "expr": "instance.migration_context.get_pci_mapping_for_migration(revert)",
+          "line": 3749
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_port_pci_dev",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3751,
+        "end": 3778
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 3768
+        },
+        {
+          "expr": "None",
+          "line": 3777
+        },
+        {
+          "expr": "device",
+          "line": 3778
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_port_binding_for_instance",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3780,
+        "end": 3904
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "migration"
+        },
+        {
+          "default": "None",
+          "name": "provider_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_instance_vnic_index",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3906,
+        "end": 3927
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        },
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_segment_ids_for_network",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3929,
+        "end": 3958
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context",
+          "type": "nova.context.RequestContext"
+        },
+        {
+          "name": "network_id",
+          "type": "str"
+        }
+      ],
+      "returnType": "list[str]",
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 3945
+        },
+        {
+          "expr": "[subnet['segment_id'] for subnet in subnets if subnet.get('segment_id') is not None]",
+          "line": 3957
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_segment_id_for_subnet",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 3960,
+        "end": 3983
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context",
+          "type": "nova.context.RequestContext"
+        },
+        {
+          "name": "subnet_id",
+          "type": "str"
+        }
+      ],
+      "returnType": "str | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 3976
+        },
+        {
+          "expr": "subnet.get('segment_id')",
+          "line": 3983
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ensure_requested_network_ordering",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 3986,
+        "end": 3989
+      },
+      "parameters": [
+        {
+          "name": "accessor"
+        },
+        {
+          "name": "unordered"
+        },
+        {
+          "name": "preferred"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "service_auth.get_service_auth_plugin",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 17,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "neutron_client_exc.Unauthorized",
+      "usage": "call",
+      "via": "neutronclient.common",
+      "count": 1,
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "objects.InstanceInfoCache.new",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "utils.safe_truncate",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 10,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "inspect.getfullargspec",
+      "usage": "call",
+      "via": "inspect",
+      "count": 1,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "Exception",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "lockutils.lock",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 2,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "f",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 155,
+        "end": 155
+      }
+    },
+    {
+      "name": "profiler.trace_cls",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 163,
+        "end": 163
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 176,
+        "end": 176
+      }
+    },
+    {
+      "name": "callable",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 180,
+        "end": 180
+      }
+    },
+    {
+      "name": "obj",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 188,
+        "end": 188
+      }
+    },
+    {
+      "name": "exception.Unauthorized",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 196,
+        "end": 196
+      }
+    },
+    {
+      "name": "exception.NeutronAdminCredentialConfigurationInvalid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 204,
+        "end": 204
+      }
+    },
+    {
+      "name": "exception.Forbidden",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "service_auth.get_service_user_token_auth_plugin",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 222,
+        "end": 222
+      }
+    },
+    {
+      "name": "service_auth.get_service_auth_session",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 232,
+        "end": 232
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 234,
+        "end": 234
+      }
+    },
+    {
+      "name": "utils.get_ksa_adapter",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 244,
+        "end": 244
+      }
+    },
+    {
+      "name": "clientv20.Client",
+      "usage": "call",
+      "via": "neutronclient.v2_0",
+      "count": 1,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "exception.PortBindingFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 277,
+        "end": 277
+      }
+    },
+    {
+      "name": "pci_whitelist.Whitelist",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 286,
+        "end": 286
+      }
+    },
+    {
+      "name": "exception.PortBindingDeletionFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 421,
+        "end": 421
+      }
+    },
+    {
+      "name": "exception.NetworksWithQoSPolicyNotSupported",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 523,
+        "end": 523
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 542,
+        "end": 542
+      }
+    },
+    {
+      "name": "exception.FixedIpAlreadyInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 548,
+        "end": 548
+      }
+    },
+    {
+      "name": "exception.PortLimitExceeded",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 553,
+        "end": 553
+      }
+    },
+    {
+      "name": "exception.NoMoreFixedIps",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 557,
+        "end": 557
+      }
+    },
+    {
+      "name": "exception.PortInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 579,
+        "end": 579
+      }
+    },
+    {
+      "name": "exception.FixedIpInvalidOnHost",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 586,
+        "end": 586
+      }
+    },
+    {
+      "name": "exception.ExternalNetworkAttachForbidden",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 597,
+        "end": 597
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 629,
+        "end": 629
+      }
+    },
+    {
+      "name": "cyborg.get_client",
+      "usage": "call",
+      "via": "nova.accelerator",
+      "count": 2,
+      "lineRange": {
+        "start": 673,
+        "end": 673
+      }
+    },
+    {
+      "name": "exception.PortNotUsable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 758,
+        "end": 758
+      }
+    },
+    {
+      "name": "exception.PortNotUsableDNS",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 771,
+        "end": 771
+      }
+    },
+    {
+      "name": "defaultdict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 817,
+        "end": 817
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 16,
+      "lineRange": {
+        "start": 844,
+        "end": 844
+      }
+    },
+    {
+      "name": "exception.NoUniqueMatch",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 845,
+        "end": 845
+      }
+    },
+    {
+      "name": "exception.SecurityGroupNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 852,
+        "end": 852
+      }
+    },
+    {
+      "name": "exception.NetworkNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 969,
+        "end": 969
+      }
+    },
+    {
+      "name": "exception.InterfaceAttachFailedNoNetwork",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 982,
+        "end": 982
+      }
+    },
+    {
+      "name": "exception.NetworkAmbiguous",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 989,
+        "end": 989
+      }
+    },
+    {
+      "name": "objects.NetworkRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 991,
+        "end": 991
+      }
+    },
+    {
+      "name": "exception.SecurityGroupCannotBeApplied",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1035,
+        "end": 1035
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1069,
+        "end": 1069
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1077,
+        "end": 1077
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 1101,
+        "end": 1101
+      }
+    },
+    {
+      "name": "network_model.NetworkInfo",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 4,
+      "lineRange": {
+        "start": 1219,
+        "end": 1219
+      }
+    },
+    {
+      "name": "objects.VirtualInterface",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1328,
+        "end": 1328
+      }
+    },
+    {
+      "name": "time.time",
+      "usage": "call",
+      "via": "time",
+      "count": 2,
+      "lineRange": {
+        "start": 1410,
+        "end": 1410
+      }
+    },
+    {
+      "name": "exception.PciDeviceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1682,
+        "end": 1682
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1704,
+        "end": 1704
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 2,
+      "lineRange": {
+        "start": 1709,
+        "end": 1709
+      }
+    },
+    {
+      "name": "cyborg.get_arq_pci_device_profile",
+      "usage": "call",
+      "via": "nova.accelerator",
+      "count": 1,
+      "lineRange": {
+        "start": 1716,
+        "end": 1716
+      }
+    },
+    {
+      "name": "pci_utils.get_mac_by_pci_address",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 1741,
+        "end": 1741
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 1853,
+        "end": 1853
+      }
+    },
+    {
+      "name": "objects.VirtualInterface.delete_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1868,
+        "end": 1868
+      }
+    },
+    {
+      "name": "objects.VirtualInterface.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1920,
+        "end": 1920
+      }
+    },
+    {
+      "name": "exception.PortNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2019,
+        "end": 2019
+      }
+    },
+    {
+      "name": "exception.NovaException",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 2025,
+        "end": 2025
+      }
+    },
+    {
+      "name": "compute_utils.refresh_info_cache_for_instance",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 2055,
+        "end": 2055
+      }
+    },
+    {
+      "name": "network_model.NetworkInfo.hydrate",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 2061,
+        "end": 2061
+      }
+    },
+    {
+      "name": "exception.NetworkNotFoundForInstance",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2128,
+        "end": 2128
+      }
+    },
+    {
+      "name": "exception.FixedIpNotFoundForInstance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2181,
+        "end": 2181
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 2238,
+        "end": 2238
+      }
+    },
+    {
+      "name": "objects.RequestLevelParams",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2339,
+        "end": 2339
+      }
+    },
+    {
+      "name": "exception.DeviceProfileError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2365,
+        "end": 2365
+      }
+    },
+    {
+      "name": "cyborg.get_device_amount_of_dp_groups",
+      "usage": "call",
+      "via": "nova.accelerator",
+      "count": 1,
+      "lineRange": {
+        "start": 2370,
+        "end": 2370
+      }
+    },
+    {
+      "name": "objects.RequestGroup.from_extended_port_request",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2391,
+        "end": 2391
+      }
+    },
+    {
+      "name": "objects.RequestLevelParams.from_port_request",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2395,
+        "end": 2395
+      }
+    },
+    {
+      "name": "objects.RequestGroup.from_port_request",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2404,
+        "end": 2404
+      }
+    },
+    {
+      "name": "pci_request.DEVICE_TYPE_FOR_VNIC_TYPE.get",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 2439,
+        "end": 2439
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2448,
+        "end": 2448
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 2451,
+        "end": 2451
+      }
+    },
+    {
+      "name": "objects.NetworkMetadata",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2465,
+        "end": 2465
+      }
+    },
+    {
+      "name": "exception.UnableToAutoAllocateNetwork",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2507,
+        "end": 2507
+      }
+    },
+    {
+      "name": "objects.NetworkRequestList.from_tuples",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2527,
+        "end": 2527
+      }
+    },
+    {
+      "name": "exception.PortRequiresFixedIP",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2579,
+        "end": 2579
+      }
+    },
+    {
+      "name": "exception.NetworkRequiresSubnet",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2618,
+        "end": 2618
+      }
+    },
+    {
+      "name": "tuple",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2636,
+        "end": 2636
+      }
+    },
+    {
+      "name": "exception.FixedIpNotFoundForAddress",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2747,
+        "end": 2747
+      }
+    },
+    {
+      "name": "exception.FloatingIpAssociateFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2769,
+        "end": 2769
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2838,
+        "end": 2838
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2844,
+        "end": 2844
+      }
+    },
+    {
+      "name": "nova_context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2852,
+        "end": 2852
+      }
+    },
+    {
+      "name": "exception.FixedIpAssociatedWithMultipleInstances",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2881,
+        "end": 2881
+      }
+    },
+    {
+      "name": "exception.FloatingIpNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2891,
+        "end": 2891
+      }
+    },
+    {
+      "name": "objects.VirtualInterfaceList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3011,
+        "end": 3011
+      }
+    },
+    {
+      "name": "uuidutils.is_uuid_like",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 3016,
+        "end": 3016
+      }
+    },
+    {
+      "name": "exception.FloatingIpPoolNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3026,
+        "end": 3026
+      }
+    },
+    {
+      "name": "exception.NoMoreFloatingIps",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3043,
+        "end": 3043
+      }
+    },
+    {
+      "name": "exception.FloatingIpLimitExceeded",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3045,
+        "end": 3045
+      }
+    },
+    {
+      "name": "exception.FloatingIpBadRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3047,
+        "end": 3047
+      }
+    },
+    {
+      "name": "exception.FloatingIpNotFoundForAddress",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 3072,
+        "end": 3072
+      }
+    },
+    {
+      "name": "exception.FloatingIpMultipleFoundForAddress",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3077,
+        "end": 3077
+      }
+    },
+    {
+      "name": "exception.FloatingIpAssociated",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3129,
+        "end": 3129
+      }
+    },
+    {
+      "name": "exception.PortBindingActivationFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3239,
+        "end": 3239
+      }
+    },
+    {
+      "name": "network_model.FixedIP",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 3267,
+        "end": 3267
+      }
+    },
+    {
+      "name": "network_model.IP",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 4,
+      "lineRange": {
+        "start": 3271,
+        "end": 3271
+      }
+    },
+    {
+      "name": "network_model.Network",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 3342,
+        "end": 3342
+      }
+    },
+    {
+      "name": "network_model.VIF",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 3408,
+        "end": 3408
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 3514,
+        "end": 3514
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 3628,
+        "end": 3628
+      }
+    },
+    {
+      "name": "network_model.Subnet",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 3685,
+        "end": 3685
+      }
+    },
+    {
+      "name": "network_model.Route",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 3692,
+        "end": 3692
+      }
+    },
+    {
+      "name": "exception.PortUpdateFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 3839,
+        "end": 3839
+      }
+    },
+    {
+      "name": "exception.InvalidRoutedNetworkConfiguration",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 3954,
+        "end": 3954
+      }
+    },
+    {
+      "name": "accessor",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 3989,
+        "end": 3989
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "inspect",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": "ty",
+      "module": "typing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [
+        {
+          "alias": null,
+          "name": "defaultdict"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "neutronclient.common",
+      "names": [
+        {
+          "alias": "neutron_client_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "neutronclient.v2_0",
+      "names": [
+        {
+          "alias": "clientv20",
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "lockutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.accelerator",
+      "names": [
+        {
+          "alias": null,
+          "name": "cyborg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "constants"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "network_model",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_request",
+          "name": "request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_whitelist",
+          "name": "whitelist"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "servers_policies",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "profiler"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "service_auth"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

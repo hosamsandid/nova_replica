@@ -1,0 +1,2411 @@
+{
+  "file": "nova/api/openstack/compute/servers.py",
+  "hash": "50c6c6c22a8c958e8fc114f3379a418225bc60242fcf49c09598c7e45cd61aae",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 164,
+    "code": 1331,
+    "comment": 144,
+    "total": 1639
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import oslo_messaging as messaging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from webob import exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import api_version_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import common",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import helpers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.schemas import servers as schema",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.views import servers as views_servers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api import validation",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import availability_zones as avail_zone",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import flavors",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.image import glance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import servers as server_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TAG_SEARCH_FILTERS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PAGING_SORTING_PARAMS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "INVALID_FLAVOR_IMAGE_EXCEPTIONS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 93
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServersController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 97,
+        "end": 1597
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_view_builder_class",
+      "kind": "field",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 100,
+        "end": 100
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_location",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 103,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "robj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "robj",
+          "line": 106
+        },
+        {
+          "expr": "robj",
+          "line": 114
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 116,
+        "end": 118
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "index",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 128,
+        "end": 136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "servers",
+          "line": 136
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detail",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 158,
+        "end": 166
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "servers",
+          "line": 166
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_cell_down_supported",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 169,
+        "end": 191
+      },
+      "parameters": [
+        {
+          "name": "req"
+        },
+        {
+          "name": "search_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cell_down_support",
+          "line": 191
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_servers",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 193,
+        "end": 367
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "is_detail"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'servers': []}",
+          "line": 227
+        },
+        {
+          "expr": "response",
+          "line": 367
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_server",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 369,
+        "end": 399
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "default": "False",
+          "name": "is_detail"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "None",
+          "name": "columns_to_join"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance",
+          "line": 399
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_validate_network_id",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 402,
+        "end": 415
+      },
+      "parameters": [
+        {
+          "name": "net_id"
+        },
+        {
+          "name": "network_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_requested_networks",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 417,
+        "end": 478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "requested_networks"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.NetworkRequestList( objects=[objects.NetworkRequest( network_id=requested_networks)])",
+          "line": 424
+        },
+        {
+          "expr": "objects.NetworkRequestList(objects=networks)",
+          "line": 478
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 498,
+        "end": 513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._view_builder.show( req, instance, cell_down_support=cell_down_support, show_server_groups=show_server_groups)",
+          "line": 511
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_bdms_for_create",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 516,
+        "end": 564
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "server_dict"
+        },
+        {
+          "name": "create_kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_networks_for_create",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 566,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "server_dict"
+        },
+        {
+          "name": "create_kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_validate_host_availability_zone",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 594,
+        "end": 669
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "availability_zone"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "availability_zone",
+          "line": 633
+        },
+        {
+          "expr": "None",
+          "line": 641
+        },
+        {
+          "expr": "availability_zone",
+          "line": 652
+        },
+        {
+          "expr": "availability_zone",
+          "line": 660
+        },
+        {
+          "expr": "None",
+          "line": 669
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_hosts_for_create",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 672,
+        "end": 698
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "server_dict"
+        },
+        {
+          "name": "create_kwargs"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "node"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 717,
+        "end": 923
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wsgi.ResponseObject({'reservation_id': resv_id})",
+          "line": 914
+        },
+        {
+          "expr": "self._add_location(robj)",
+          "line": 923
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 928,
+        "end": 941
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 943,
+        "end": 957
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 978,
+        "end": 1076
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._view_builder.show( req, instance, extend_address=extend_address, show_AZ=show_AZ, show_config_drive=show_config_drive, show_extended_attr=show_extended_attr, show_host_status=show_host_status, s",
+          "line": 1064
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_confirm_resize",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1086,
+        "end": 1103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_revert_resize",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1110,
+        "end": 1127
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reboot",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1134,
+        "end": 1147
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_resize",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1154,
+        "end": 1216
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_image_from_req_data",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1218,
+        "end": 1233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server_dict"
+        },
+        {
+          "name": "create_kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "''",
+          "line": 1228
+        },
+        {
+          "expr": "image_href",
+          "line": 1230
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_flavor_id_from_req_data",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1235,
+        "end": 1237
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "common.get_id_from_href(flavor_ref)",
+          "line": 1237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_rebuild",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1264,
+        "end": 1423
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._add_location(robj)",
+          "line": 1423
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_image",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1432,
+        "end": 1488
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'image_id': image['id']}",
+          "line": 1480
+        },
+        {
+          "expr": "resp",
+          "line": 1488
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_server_admin_password",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1490,
+        "end": 1496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "password",
+          "line": 1496
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_server_search_options",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1498,
+        "end": 1522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "opt_list",
+          "line": 1522
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1524,
+        "end": 1534
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.Instance.get_by_uuid( context, instance_uuid, expected_attrs=attrs)",
+          "line": 1530
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_start",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1541,
+        "end": 1554
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_stop",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1561,
+        "end": 1575
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_trigger_crash_dump",
+      "kind": "method",
+      "scope": "ServersController",
+      "lineRange": {
+        "start": 1583,
+        "end": 1597
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_invalid_options",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1600,
+        "end": 1616
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "search_options"
+        },
+        {
+          "name": "allowed_search_options"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1608
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_invalid_sort_keys",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1619,
+        "end": 1639
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        },
+        {
+          "name": "blacklist"
+        },
+        {
+          "name": "admin_only_fields"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sort_keys, sort_dirs",
+          "line": 1639
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "wsgi.Controller",
+      "usage": "inherit",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "compute.API",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "wsgi.expected_errors",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 15,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "validation.query_schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 12,
+      "lineRange": {
+        "start": 121,
+        "end": 121
+      }
+    },
+    {
+      "name": "validation.response_body_schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 68,
+      "lineRange": {
+        "start": 126,
+        "end": 126
+      }
+    },
+    {
+      "name": "exc.HTTPBadRequest",
+      "usage": "call",
+      "via": "webob",
+      "count": 38,
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      }
+    },
+    {
+      "name": "api_version_request.is_supported",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 35,
+      "lineRange": {
+        "start": 170,
+        "end": 170
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 188,
+        "end": 188
+      }
+    },
+    {
+      "name": "schema.JOINED_TABLE_QUERY_PARAMS_SERVERS.keys",
+      "usage": "call",
+      "via": "nova.api.openstack.compute.schemas",
+      "count": 1,
+      "lineRange": {
+        "start": 207,
+        "end": 207
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 33,
+      "lineRange": {
+        "start": 209,
+        "end": 209
+      }
+    },
+    {
+      "name": "common.task_and_vm_state_from_status",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 220,
+        "end": 220
+      }
+    },
+    {
+      "name": "timeutils.parse_isotime",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 236,
+        "end": 236
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 277,
+        "end": 277
+      }
+    },
+    {
+      "name": "exc.HTTPForbidden",
+      "usage": "call",
+      "via": "webob",
+      "count": 7,
+      "lineRange": {
+        "start": 285,
+        "end": 285
+      }
+    },
+    {
+      "name": "common.is_all_tenants",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 293,
+        "end": 293
+      }
+    },
+    {
+      "name": "common.is_locked",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 303,
+        "end": 303
+      }
+    },
+    {
+      "name": "common.get_limit_and_marker",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 321,
+        "end": 321
+      }
+    },
+    {
+      "name": "common.get_sort_params",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 322,
+        "end": 322
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 357,
+        "end": 357
+      }
+    },
+    {
+      "name": "common.get_instance",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 395,
+        "end": 395
+      }
+    },
+    {
+      "name": "uuidutils.is_uuid_like",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 412,
+        "end": 412
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 423,
+        "end": 423
+      }
+    },
+    {
+      "name": "objects.NetworkRequestList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 424,
+        "end": 424
+      }
+    },
+    {
+      "name": "objects.NetworkRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 425,
+        "end": 425
+      }
+    },
+    {
+      "name": "block_device.BlockDeviceDict.from_api",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 552,
+        "end": 552
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 586,
+        "end": 586
+      }
+    },
+    {
+      "name": "objects.AggregateList.get_by_host",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 628,
+        "end": 628
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 645,
+        "end": 645
+      }
+    },
+    {
+      "name": "wsgi.response",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 11,
+      "lineRange": {
+        "start": 700,
+        "end": 700
+      }
+    },
+    {
+      "name": "validation.schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 37,
+      "lineRange": {
+        "start": 702,
+        "end": 702
+      }
+    },
+    {
+      "name": "common.normalize_name",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 4,
+      "lineRange": {
+        "start": 722,
+        "end": 722
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 745,
+        "end": 745
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 758,
+        "end": 758
+      }
+    },
+    {
+      "name": "helpers.translate_attributes",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 771,
+        "end": 771
+      }
+    },
+    {
+      "name": "parse_az",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 790,
+        "end": 790
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 793,
+        "end": 793
+      }
+    },
+    {
+      "name": "flavors.get_flavor_by_flavor_id",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 814,
+        "end": 814
+      }
+    },
+    {
+      "name": "common.supports_multiattach_volume",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 817,
+        "end": 817
+      }
+    },
+    {
+      "name": "common.supports_port_resource_request",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 819,
+        "end": 819
+      }
+    },
+    {
+      "name": "exc.HTTPConflict",
+      "usage": "call",
+      "via": "webob",
+      "count": 11,
+      "lineRange": {
+        "start": 910,
+        "end": 910
+      }
+    },
+    {
+      "name": "wsgi.ResponseObject",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 3,
+      "lineRange": {
+        "start": 914,
+        "end": 914
+      }
+    },
+    {
+      "name": "exc.HTTPNotFound",
+      "usage": "call",
+      "via": "webob",
+      "count": 3,
+      "lineRange": {
+        "start": 934,
+        "end": 934
+      }
+    },
+    {
+      "name": "common.raise_http_conflict_for_instance_invalid_state",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 10,
+      "lineRange": {
+        "start": 940,
+        "end": 940
+      }
+    },
+    {
+      "name": "objects.RequestSpec.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1004,
+        "end": 1004
+      }
+    },
+    {
+      "name": "avail_zone.get_instance_availability_zone",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1014,
+        "end": 1014
+      }
+    },
+    {
+      "name": "wsgi.action",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 9,
+      "lineRange": {
+        "start": 1083,
+        "end": 1083
+      }
+    },
+    {
+      "name": "helpers.disk_config_from_api",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 1162,
+        "end": 1162
+      }
+    },
+    {
+      "name": "exc.HTTPUnauthorized",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 1195,
+        "end": 1195
+      }
+    },
+    {
+      "name": "common.get_id_from_href",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 1237,
+        "end": 1237
+      }
+    },
+    {
+      "name": "common.check_img_metadata_properties_quota",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 1446,
+        "end": 1446
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1448,
+        "end": 1448
+      }
+    },
+    {
+      "name": "compute_utils.is_volume_backed_instance",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 1452,
+        "end": 1452
+      }
+    },
+    {
+      "name": "glance.API",
+      "usage": "call",
+      "via": "nova.image",
+      "count": 1,
+      "lineRange": {
+        "start": 1484,
+        "end": 1484
+      }
+    },
+    {
+      "name": "webob.Response",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 1486,
+        "end": 1486
+      }
+    },
+    {
+      "name": "utils.generate_password",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1495,
+        "end": 1495
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1527,
+        "end": 1527
+      }
+    },
+    {
+      "name": "nova_context.set_target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1529,
+        "end": 1529
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1530,
+        "end": 1530
+      }
+    },
+    {
+      "name": "webob.exc.HTTPNotFound",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 1534,
+        "end": 1534
+      }
+    },
+    {
+      "name": "webob.exc.HTTPConflict",
+      "usage": "call",
+      "via": "webob",
+      "count": 3,
+      "lineRange": {
+        "start": 1551,
+        "end": 1551
+      }
+    },
+    {
+      "name": "wsgi.api_version",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 1577,
+        "end": 1577
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 1621,
+        "end": 1621
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": "messaging",
+      "module": "oslo_messaging",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [
+        {
+          "alias": null,
+          "name": "exc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "api_version_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "common"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "helpers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.schemas",
+      "names": [
+        {
+          "alias": "schema",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.views",
+      "names": [
+        {
+          "alias": "views_servers",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "validation"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "avail_zone",
+          "name": "availability_zones"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "flavors"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.image",
+      "names": [
+        {
+          "alias": null,
+          "name": "glance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "server_policies",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

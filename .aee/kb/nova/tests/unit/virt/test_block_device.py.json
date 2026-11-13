@@ -1,0 +1,2745 @@
+{
+  "file": "nova/tests/unit/virt/test_block_device.py",
+  "hash": "aee00931403d73e8d645ffd0e10eed43333b120f5b64e53c5853002858221bcb",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 233,
+    "code": 1401,
+    "comment": 93,
+    "total": 1727
+  },
+  "symbols": [
+    {
+      "name": "from cinderclient import exceptions as cinder_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from os_brick import encryptors",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import matchers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import block_device as driver_block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import fake as fake_virt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.volume import cinder",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ATTACHMENT_ID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestDriverBlockDevice",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 1635
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "REQUIRES_LOCKING",
+      "kind": "constant",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_id",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "driver_classes",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 49,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "swap_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 59,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "swap_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 74,
+        "end": 81
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ephemeral_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 83,
+        "end": 97
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ephemeral_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 99,
+        "end": 108
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 110,
+        "end": 122
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 124,
+        "end": 132
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_bdm_dict_without_conn_info",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 134,
+        "end": 146
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_driver_bdm_without_conn_info",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 148,
+        "end": 157
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volsnapshot_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 159,
+        "end": 172
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volsnapshot_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 174,
+        "end": 182
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volimage_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 184,
+        "end": 197
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volimage_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 199,
+        "end": 207
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volblank_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 209,
+        "end": 221
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volblank_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 223,
+        "end": 231
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_bdm_dict",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 233,
+        "end": 247
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_driver_bdm",
+      "kind": "field",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 249,
+        "end": 260
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 262,
+        "end": 292
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_volume_create",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 294,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_detach_passes_failed",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 305,
+        "end": 321
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "enc"
+        },
+        {
+          "name": "log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_detach_volume_api_raises_exception",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 323,
+        "end": 345
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_no_device_raises",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 347,
+        "end": 352
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_driver_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 354,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assign_fake_changed_value",
+      "kind": "function",
+      "scope": "TestDriverBlockDevice._test_driver_device",
+      "lineRange": {
+        "start": 404,
+        "end": 422
+      },
+      "parameters": [
+        {
+          "name": "test_bdm"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "default": "None",
+          "name": "alias"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_save",
+      "kind": "function",
+      "scope": "TestDriverBlockDevice._test_driver_device",
+      "lineRange": {
+        "start": 449,
+        "end": 450
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_driver_default_size",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 458,
+        "end": 471
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_swap_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 473,
+        "end": 474
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_swap_default_size",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 476,
+        "end": 477
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_image_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 479,
+        "end": 480
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_image_default_size",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 482,
+        "end": 483
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_image_block_device_destination_not_local",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 485,
+        "end": 491
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_ephemeral_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 493,
+        "end": 494
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_ephemeral_default_size",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 496,
+        "end": 497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_volume_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 499,
+        "end": 509
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_snapshot_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 511,
+        "end": 520
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_volume_image_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 522,
+        "end": 530
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_volume_image_block_device_destination_local",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 532,
+        "end": 538
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_driver_blank_block_device",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 540,
+        "end": 548
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_call_wait_func",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 550,
+        "end": 569
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "delete_on_termination"
+        },
+        {
+          "default": "False",
+          "name": "delete_fail"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_call_wait_delete_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 571,
+        "end": 572
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_call_wait_delete_volume_fail",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 574,
+        "end": 575
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_call_wait_no_delete_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 577,
+        "end": 578
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_delete_attachment",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 580,
+        "end": 619
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "include_shared_targets"
+        },
+        {
+          "default": "None",
+          "name": "delete_attachment_raises"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_delete_attachment_with_shared_targets",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 621,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_delete_attachment_raises_attachment_not_found",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 624,
+        "end": 627
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_volume_attach",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 631,
+        "end": 832
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "driver_bdm"
+        },
+        {
+          "name": "bdm_dict"
+        },
+        {
+          "name": "fake_volume"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_get_encry"
+        },
+        {
+          "default": "False",
+          "name": "fail_check_av_zone"
+        },
+        {
+          "default": "False",
+          "name": "driver_attach"
+        },
+        {
+          "default": "False",
+          "name": "fail_driver_attach"
+        },
+        {
+          "default": "True",
+          "name": "volume_attach"
+        },
+        {
+          "default": "False",
+          "name": "fail_volume_attach"
+        },
+        {
+          "default": "'rw'",
+          "name": "access_mode"
+        },
+        {
+          "default": "None",
+          "name": "availability_zone"
+        },
+        {
+          "default": "False",
+          "name": "multiattach"
+        },
+        {
+          "default": "False",
+          "name": "driver_multi_attach"
+        },
+        {
+          "default": "False",
+          "name": "fail_with_virt_driver"
+        },
+        {
+          "default": "False",
+          "name": "include_shared_targets"
+        },
+        {
+          "default": "None",
+          "name": "wait_func"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance.uuid",
+          "line": 832
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 834,
+        "end": 841
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "include_shared_targets"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_with_shared_targets",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 843,
+        "end": 844
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_ro",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 846,
+        "end": 852
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_update_size",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 854,
+        "end": 862
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_check_av_zone_fails",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 864,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_no_volume_attach",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 872,
+        "end": 879
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_no_check_driver_attach",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 881,
+        "end": 888
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_driver_attach_fails",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 890,
+        "end": 896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_volume_attach_fails",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 902,
+        "end": 952
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_encryption"
+        },
+        {
+          "name": "mock_volume_api"
+        },
+        {
+          "name": "mock_bdm_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_no_driver_attach_volume_attach_fails",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 954,
+        "end": 961
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_refresh_connection",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 964,
+        "end": 994
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_snapshot_attach_no_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 996,
+        "end": 1027
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_snapshot_attach_no_volume_cinder_cross_az_attach_false",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1029,
+        "end": 1058
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_snapshot_attach_fail_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1060,
+        "end": 1095
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_snapshot_attach_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1097,
+        "end": 1113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_snapshot_attach_no_volume_and_no_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1115,
+        "end": 1140
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_image_attach_no_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1142,
+        "end": 1168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_image_attach_no_volume_cinder_cross_az_attach_false",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1170,
+        "end": 1195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_image_attach_fail_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1197,
+        "end": 1228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_image_attach_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1230,
+        "end": 1246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_blank_attach_fail_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1248,
+        "end": 1277
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_blank_attach_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1279,
+        "end": 1309
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_blank_attach_volume_cinder_cross_az_attach_false",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1311,
+        "end": 1339
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_convert_block_devices",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1341,
+        "end": 1346
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_convert_all_volumes",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1348,
+        "end": 1358
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_convert_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1360,
+        "end": 1366
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_convert_volume_without_connection_info",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1368,
+        "end": 1371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_swap",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1373,
+        "end": 1379
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_is_implemented",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1381,
+        "end": 1384
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_is_block_device_mapping",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1386,
+        "end": 1401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_volume_create_az_cinder_cross_az_attach_true",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1403,
+        "end": 1410
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_refresh_conn_infos",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1412,
+        "end": 1443
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_proxy_as_attr",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1445,
+        "end": 1473
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "A",
+      "kind": "class",
+      "scope": "TestDriverBlockDevice.test_proxy_as_attr",
+      "lineRange": {
+        "start": 1446,
+        "end": 1450
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_transform",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice.test_proxy_as_attr.A",
+      "lineRange": {
+        "start": 1449,
+        "end": 1450
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "B",
+      "kind": "class",
+      "scope": "TestDriverBlockDevice.test_proxy_as_attr",
+      "lineRange": {
+        "start": 1452,
+        "end": 1453
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "C",
+      "kind": "class",
+      "scope": "TestDriverBlockDevice.test_proxy_as_attr",
+      "lineRange": {
+        "start": 1455,
+        "end": 1456
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "D",
+      "kind": "class",
+      "scope": "TestDriverBlockDevice.test_proxy_as_attr",
+      "lineRange": {
+        "start": 1458,
+        "end": 1459
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "E",
+      "kind": "class",
+      "scope": "TestDriverBlockDevice.test_proxy_as_attr",
+      "lineRange": {
+        "start": 1461,
+        "end": 1462
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_boot_from_volume_source_blank_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1475,
+        "end": 1498
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bdm"
+        },
+        {
+          "name": "expected_volume_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_from_volume_source_blank_with_unset_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1500,
+        "end": 1509
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_from_volume_source_blank_with_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1511,
+        "end": 1517
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_boot_from_volume_source_image_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1519,
+        "end": 1544
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bdm"
+        },
+        {
+          "name": "expected_volume_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_from_volume_source_image_with_unset_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1546,
+        "end": 1555
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_from_volume_source_image_with_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1557,
+        "end": 1564
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_boot_from_volume_source_snapshot_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1566,
+        "end": 1594
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bdm"
+        },
+        {
+          "name": "expected_volume_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_from_volume_source_snapshot_with_unset_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1596,
+        "end": 1606
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_from_volume_source_snapshot_with_volume_type",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1608,
+        "end": 1617
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test__get_volume",
+      "kind": "method",
+      "scope": "TestDriverBlockDevice",
+      "lineRange": {
+        "start": 1620,
+        "end": 1635
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "microversions"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestDriverBlockDeviceNewFlow",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1638,
+        "end": 1702
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_id",
+      "kind": "field",
+      "scope": "TestDriverBlockDeviceNewFlow",
+      "lineRange": {
+        "start": 1642,
+        "end": 1642
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_multiattach",
+      "kind": "method",
+      "scope": "TestDriverBlockDeviceNewFlow",
+      "lineRange": {
+        "start": 1644,
+        "end": 1655
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_attach_multiattach_no_virt_driver_support",
+      "kind": "method",
+      "scope": "TestDriverBlockDeviceNewFlow",
+      "lineRange": {
+        "start": 1657,
+        "end": 1669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_refresh_connection_preserve_multiattach",
+      "kind": "method",
+      "scope": "TestDriverBlockDeviceNewFlow",
+      "lineRange": {
+        "start": 1672,
+        "end": 1702
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestGetVolumeId",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1705,
+        "end": 1727
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_volume_id_none_found",
+      "kind": "method",
+      "scope": "TestGetVolumeId",
+      "lineRange": {
+        "start": 1707,
+        "end": 1710
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_volume_id_found_volume_id_no_serial",
+      "kind": "method",
+      "scope": "TestGetVolumeId",
+      "lineRange": {
+        "start": 1712,
+        "end": 1715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_volume_id_found_no_volume_id_serial",
+      "kind": "method",
+      "scope": "TestGetVolumeId",
+      "lineRange": {
+        "start": 1717,
+        "end": 1720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_volume_id_found_both",
+      "kind": "method",
+      "scope": "TestGetVolumeId",
+      "lineRange": {
+        "start": 1722,
+        "end": 1727
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "block_device.BlockDeviceDict",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 263,
+        "end": 263
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 20,
+      "lineRange": {
+        "start": 264,
+        "end": 264
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 266,
+        "end": 266
+      }
+    },
+    {
+      "name": "fake_block_device.fake_bdm_object",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 28,
+      "lineRange": {
+        "start": 269,
+        "end": 269
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 291,
+        "end": 291
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 7,
+      "lineRange": {
+        "start": 303,
+        "end": 303
+      }
+    },
+    {
+      "name": "exception.DeviceDetachFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 307,
+        "end": 307
+      }
+    },
+    {
+      "name": "cinder_exception.ClientException",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 1,
+      "lineRange": {
+        "start": 331,
+        "end": 331
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 5,
+      "lineRange": {
+        "start": 336,
+        "end": 336
+      }
+    },
+    {
+      "name": "matchers.DictMatches",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 3,
+      "lineRange": {
+        "start": 358,
+        "end": 358
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 362,
+        "end": 362
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 363,
+        "end": 363
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 385,
+        "end": 385
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 16,
+      "lineRange": {
+        "start": 425,
+        "end": 425
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 450,
+        "end": 450
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 505,
+        "end": 505
+      }
+    },
+    {
+      "name": "Exception",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 554,
+        "end": 554
+      }
+    },
+    {
+      "name": "exception.VolumeNotCreated",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 557,
+        "end": 557
+      }
+    },
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 13,
+      "lineRange": {
+        "start": 592,
+        "end": 592
+      }
+    },
+    {
+      "name": "test.nested",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 608,
+        "end": 608
+      }
+    },
+    {
+      "name": "exception.VolumeAttachmentNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 626,
+        "end": 626
+      }
+    },
+    {
+      "name": "exception.CinderAPIVersionNotAvailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 671,
+        "end": 671
+      }
+    },
+    {
+      "name": "test.TestingException",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 678,
+        "end": 678
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 9,
+      "lineRange": {
+        "start": 680,
+        "end": 680
+      }
+    },
+    {
+      "name": "fake_virt.SmallFakeDriver",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 911,
+        "end": 911
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1342,
+        "end": 1342
+      }
+    },
+    {
+      "name": "driver_block_device._convert_block_devices",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 1344,
+        "end": 1344
+      }
+    },
+    {
+      "name": "driver_block_device.convert_all_volumes",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 2,
+      "lineRange": {
+        "start": 1349,
+        "end": 1349
+      }
+    },
+    {
+      "name": "driver_block_device.convert_volume",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 4,
+      "lineRange": {
+        "start": 1361,
+        "end": 1361
+      }
+    },
+    {
+      "name": "driver_block_device.get_swap",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 3,
+      "lineRange": {
+        "start": 1377,
+        "end": 1377
+      }
+    },
+    {
+      "name": "driver_block_device.is_implemented",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 1384,
+        "end": 1384
+      }
+    },
+    {
+      "name": "driver_block_device.is_block_device_mapping",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 2,
+      "lineRange": {
+        "start": 1396,
+        "end": 1396
+      }
+    },
+    {
+      "name": "driver_block_device._get_volume_create_az_value",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 1410,
+        "end": 1410
+      }
+    },
+    {
+      "name": "driver_block_device.refresh_conn_infos",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 1429,
+        "end": 1429
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1442,
+        "end": 1442
+      }
+    },
+    {
+      "name": "driver_block_device.DriverBlockDevice",
+      "usage": "inherit",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 1446,
+        "end": 1446
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1464,
+        "end": 1464
+      }
+    },
+    {
+      "name": "delattr",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 1507,
+        "end": 1507
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 1,
+      "lineRange": {
+        "start": 1619,
+        "end": 1619
+      }
+    },
+    {
+      "name": "exc",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1624,
+        "end": 1624
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1632,
+        "end": 1632
+      }
+    },
+    {
+      "name": "driver_block_device.get_volume_id",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 6,
+      "lineRange": {
+        "start": 1708,
+        "end": 1708
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "cinderclient",
+      "names": [
+        {
+          "alias": "cinder_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_brick",
+      "names": [
+        {
+          "alias": null,
+          "name": "encryptors"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "matchers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": "driver_block_device",
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": "fake_virt",
+          "name": "fake"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.volume",
+      "names": [
+        {
+          "alias": null,
+          "name": "cinder"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

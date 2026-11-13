@@ -1,0 +1,2826 @@
+{
+  "file": "nova/tests/unit/compute/test_shelve.py",
+  "hash": "bf2e61d1e90f9efbf79fa5fce38362d1b9dbe39866748d1f664d2c25abdd8691",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 233,
+    "code": 1381,
+    "comment": 120,
+    "total": 1734
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import fixture as utils_fixture",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import claims",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import instance_actions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron as neutron_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.compute import test_compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_resources",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 51
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.ComputeNode(**resources)",
+          "line": 51
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ShelveComputeManagerTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 839
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_shelve_instance",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 64,
+        "end": 174
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "shelved_offload_time"
+        },
+        {
+          "name": "mock_notify"
+        },
+        {
+          "name": "mock_notify_instance_usage"
+        },
+        {
+          "name": "mock_get_power_state"
+        },
+        {
+          "name": "mock_snapshot"
+        },
+        {
+          "name": "mock_power_off"
+        },
+        {
+          "name": "mock_terminate"
+        },
+        {
+          "name": "mock_get_bdms"
+        },
+        {
+          "default": "True",
+          "name": "clean_shutdown"
+        },
+        {
+          "default": "power_state.RUNNING",
+          "name": "guest_power_state"
+        },
+        {
+          "default": "None",
+          "name": "accel_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_save",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase._shelve_instance",
+      "lineRange": {
+        "start": 89,
+        "end": 122
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "expected_task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 176,
+        "end": 177
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_forced_shutdown",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 179,
+        "end": 180
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_and_offload",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 182,
+        "end": 183
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_paused_instance",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 185,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_and_offload_with_accel_uuids",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 190,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_del_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_and_with_accel_uuids",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 196,
+        "end": 198
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_del_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offload",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 201,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_power_off"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offload_forced_shutdown",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 207,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_power_off"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_shelve_offload",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 225,
+        "end": 284
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        },
+        {
+          "name": "mock_notify_instance_usage"
+        },
+        {
+          "name": "mock_get_power_state"
+        },
+        {
+          "name": "mock_update_resource_tracker"
+        },
+        {
+          "name": "mock_delete_alloc"
+        },
+        {
+          "name": "mock_terminate"
+        },
+        {
+          "name": "mock_get_bdms"
+        },
+        {
+          "name": "mock_event"
+        },
+        {
+          "name": "mock_unbind_ports"
+        },
+        {
+          "default": "True",
+          "name": "clean_shutdown"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance",
+          "line": 284
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_instance_save",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase._shelve_offload",
+      "lineRange": {
+        "start": 237,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "inst"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 299,
+        "end": 405
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_setup_network"
+        },
+        {
+          "name": "mock_get_power_state"
+        },
+        {
+          "name": "mock_spawn"
+        },
+        {
+          "name": "mock_prep_block_device"
+        },
+        {
+          "name": "mock_notify_instance_usage"
+        },
+        {
+          "name": "mock_notify_instance_action"
+        },
+        {
+          "name": "mock_get_bdms"
+        },
+        {
+          "default": "None",
+          "name": "accel_uuids"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_delete",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve",
+      "lineRange": {
+        "start": 327,
+        "end": 328
+      },
+      "parameters": [
+        {
+          "name": "self2"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_claim",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve",
+      "lineRange": {
+        "start": 330,
+        "end": 335
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "node"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "limits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "claims.Claim(context, instance, test_compute.NODENAME, self.rt, _fake_resources(), requests)",
+          "line": 333
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_save",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve",
+      "lineRange": {
+        "start": 342,
+        "end": 354
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "expected_task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_arqs",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 409,
+        "end": 411
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_arqs_failes_cleanup_resources",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 421,
+        "end": 435
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_arqs"
+        },
+        {
+          "name": "mock_cleanup_resources"
+        },
+        {
+          "name": "mock_bdms"
+        },
+        {
+          "name": "mock_nil"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_arqs_failes_cleanup_resources_timeout",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 445,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_arqs"
+        },
+        {
+          "name": "mock_cleanup_resources"
+        },
+        {
+          "name": "mock_bdms"
+        },
+        {
+          "name": "mock_nil"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_volume_backed",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 471,
+        "end": 546
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_image_meta"
+        },
+        {
+          "name": "mock_notify_instance_usage"
+        },
+        {
+          "name": "mock_prep_block_device"
+        },
+        {
+          "name": "mock_spawn"
+        },
+        {
+          "name": "mock_get_power_state"
+        },
+        {
+          "name": "mock_setup_network"
+        },
+        {
+          "name": "mock_instance_claim"
+        },
+        {
+          "name": "mock_notify_instance_action"
+        },
+        {
+          "name": "mock_get_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_claim",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve_volume_backed",
+      "lineRange": {
+        "start": 491,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "node"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "limits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "claims.Claim(context, instance, test_compute.NODENAME, self.rt, _fake_resources(), requests)",
+          "line": 494
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_save",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve_volume_backed",
+      "lineRange": {
+        "start": 499,
+        "end": 512
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "expected_task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_spawn_fails_cleanup_volume_connections",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 562,
+        "end": 629
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_terminate_volume_connections"
+        },
+        {
+          "name": "mock_image_meta"
+        },
+        {
+          "name": "mock_notify_instance_usage"
+        },
+        {
+          "name": "mock_prep_block_device"
+        },
+        {
+          "name": "mock_spawn"
+        },
+        {
+          "name": "mock_setup_network"
+        },
+        {
+          "name": "mock_instance_claim"
+        },
+        {
+          "name": "mock_notify_instance_action"
+        },
+        {
+          "name": "mock_get_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_claim",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve_spawn_fails_cleanup_volume_connections",
+      "lineRange": {
+        "start": 584,
+        "end": 590
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "node"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "limits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "claims.Claim(context, instance, node, self.rt, _fake_resources(), requests, limits=limits)",
+          "line": 588
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_save",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_unshelve_spawn_fails_cleanup_volume_connections",
+      "lineRange": {
+        "start": 593,
+        "end": 597
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "expected_task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_resource_request",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 634,
+        "end": 652
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_pci"
+        },
+        {
+          "name": "mock_setup_network"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_resource_request_update_raises",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 658,
+        "end": 679
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_update_pci"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_spawn_fails_cleanup_instance_image_ref",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 681,
+        "end": 699
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_none_offloaded",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 702,
+        "end": 706
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_filters"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_none_exist",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 709,
+        "end": 715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_older"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_not_timedout",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 718,
+        "end": 735
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_older"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_timedout",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 737,
+        "end": 759
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_soi",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_shelved_poll_timedout",
+      "lineRange": {
+        "start": 752,
+        "end": 753
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "accel_uuids"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_filters_task_state",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 763,
+        "end": 788
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_parse"
+        },
+        {
+          "name": "mock_older"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_soi",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_shelved_poll_filters_task_state",
+      "lineRange": {
+        "start": 781,
+        "end": 782
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "accel_uuids"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_with_accel_uuids",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 794,
+        "end": 816
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_parse"
+        },
+        {
+          "name": "mock_older"
+        },
+        {
+          "name": "mock_get_arq_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_soi",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_shelved_poll_with_accel_uuids",
+      "lineRange": {
+        "start": 809,
+        "end": 810
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelved_poll_checks_task_state_on_save",
+      "kind": "method",
+      "scope": "ShelveComputeManagerTestCase",
+      "lineRange": {
+        "start": 820,
+        "end": 839
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_parse"
+        },
+        {
+          "name": "mock_older"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_parse_hook",
+      "kind": "function",
+      "scope": "ShelveComputeManagerTestCase.test_shelved_poll_checks_task_state_on_save",
+      "lineRange": {
+        "start": 831,
+        "end": 833
+      },
+      "parameters": [
+        {
+          "name": "timestring"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ShelveComputeAPITestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 842,
+        "end": 1734
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_states",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 843,
+        "end": 851
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "exclude_states"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vm_state - exclude_states",
+          "line": 851
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_host_inside_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 856,
+        "end": 884
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "az"
+        },
+        {
+          "name": "mock_az"
+        },
+        {
+          "name": "mock_aggregate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_request_spec_for_initial_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 886,
+        "end": 889
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "az"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_spec",
+          "line": 889
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_unshelving_and_request_spec_az_and_host",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 891,
+        "end": 909
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "fake_spec"
+        },
+        {
+          "name": "fake_zone"
+        },
+        {
+          "name": "fake_host"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_shelve",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 911,
+        "end": 956
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "vm_states.ACTIVE",
+          "name": "vm_state"
+        },
+        {
+          "default": "False",
+          "name": "boot_from_volume"
+        },
+        {
+          "default": "True",
+          "name": "clean_shutdown"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 958,
+        "end": 959
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelves_stopped",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 961,
+        "end": 962
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelves_paused",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 964,
+        "end": 965
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelves_suspended",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 967,
+        "end": 968
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelves_boot_from_volume",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 970,
+        "end": 971
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_forced_shutdown",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 973,
+        "end": 974
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_boot_from_volume_forced_shutdown",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 976,
+        "end": 978
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_shelve_invalid_state",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 980,
+        "end": 985
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_fails_invalid_states",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 987,
+        "end": 993
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_shelve_offload",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 995,
+        "end": 1016
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "clean_shutdown"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offload",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1018,
+        "end": 1019
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offload_forced_shutdown",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1021,
+        "end": 1022
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_shelve_offload_invalid_state",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1024,
+        "end": 1029
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_offload_fails_invalid_states",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1031,
+        "end": 1034
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_specify_state_instance",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1036,
+        "end": 1048
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance",
+          "line": 1048
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1052,
+        "end": 1068
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_by_instance_uuid"
+        },
+        {
+          "name": "fake_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_specified_az_ushelve_invalid_request",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1074,
+        "end": 1091
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_by_instance_uuid"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_availability_zones"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_specified_az_unshelve_invalid_state",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1097,
+        "end": 1110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_by_instance_uuid"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_availability_zones"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offloaded_with_extended_resource_request_old_compute",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1120,
+        "end": 1129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_validate_unshelve_az_cross_az_attach_true",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1134,
+        "end": 1148
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_azs"
+        },
+        {
+          "name": "mock_get_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_validate_unshelve_az_cross_az_attach_false",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1153,
+        "end": 1178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_azs"
+        },
+        {
+          "name": "mock_get_bdms"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_without_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1231,
+        "end": 1260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_without_az_to_host",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1270,
+        "end": 1299
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_without_az_to_newaz",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1309,
+        "end": 1338
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_without_az_to_newaz_and_host",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1349,
+        "end": 1380
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_without_az_to_newaz_and_host_invalid",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1386,
+        "end": 1417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1427,
+        "end": 1456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_unpin_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1466,
+        "end": 1495
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_host_in_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1507,
+        "end": 1536
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_invalid_host",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1542,
+        "end": 1572
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_host_unpin_az",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1582,
+        "end": 1613
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_newaz",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1623,
+        "end": 1654
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_newaz_and_host",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1666,
+        "end": 1697
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_with_az_to_newaz_and_invalid_host",
+      "kind": "method",
+      "scope": "ShelveComputeAPITestCase",
+      "lineRange": {
+        "start": 1703,
+        "end": 1734
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_instance_uuid"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.ComputeNode",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "test_compute.BaseTestCase",
+      "usage": "inherit",
+      "via": "nova.tests.unit.compute",
+      "count": 2,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 122,
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 39,
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    },
+    {
+      "name": "utils_fixture.TimeFixture",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 4,
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "test.nested",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 24,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "mock.NonCallableMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 288,
+        "end": 288
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 5,
+      "lineRange": {
+        "start": 306,
+        "end": 306
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 316,
+        "end": 316
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 319,
+        "end": 319
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequests",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 332,
+        "end": 332
+      }
+    },
+    {
+      "name": "claims.Claim",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 333,
+        "end": 333
+      }
+    },
+    {
+      "name": "fixtures.GlanceFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 356,
+        "end": 356
+      }
+    },
+    {
+      "name": "objects.RequestSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 366,
+        "end": 366
+      }
+    },
+    {
+      "name": "test.MatchType",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 387,
+        "end": 387
+      }
+    },
+    {
+      "name": "exception.AcceleratorRequestOpFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 426,
+        "end": 426
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 434,
+        "end": 434
+      }
+    },
+    {
+      "name": "exception.InstanceEventTimeout",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 450,
+        "end": 450
+      }
+    },
+    {
+      "name": "test.TestingException",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 554,
+        "end": 554
+      }
+    },
+    {
+      "name": "objects.RequestGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 636,
+        "end": 636
+      }
+    },
+    {
+      "name": "exception.UnexpectedResourceProviderNameForPCIRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 666,
+        "end": 666
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 844,
+        "end": 844
+      }
+    },
+    {
+      "name": "compute_api.AggregateAPI",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 865,
+        "end": 865
+      }
+    },
+    {
+      "name": "objects.CellMappingList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 868,
+        "end": 868
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 870,
+        "end": 870
+      }
+    },
+    {
+      "name": "objects.Service",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 871,
+        "end": 871
+      }
+    },
+    {
+      "name": "objects.HostMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 878,
+        "end": 878
+      }
+    },
+    {
+      "name": "db.instance_destroy",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 2,
+      "lineRange": {
+        "start": 956,
+        "end": 956
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1165,
+        "end": 1165
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": "utils_fixture",
+          "name": "fixture"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "claims"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "instance_actions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "neutron_api",
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "test_compute"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

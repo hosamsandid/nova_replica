@@ -1,0 +1,1323 @@
+{
+  "file": "nova/pci/devspec.py",
+  "hash": "8def5d0fc3680365d3e728fa2a6ab57dcd67e98e2e75acd3f292e1e70fb520c7",
+  "language": "Python",
+  "component": "pci",
+  "package": null,
+  "lines": {
+    "blank": 62,
+    "code": 320,
+    "comment": 52,
+    "total": 434
+  },
+  "symbols": [
+    {
+      "name": "import abc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import string",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import typing as ty",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci.request import PCI_REMOTE_MANAGED_TAG",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_VENDOR_ID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_PRODUCT_ID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_FUNC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_DOMAIN",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_BUS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_SLOT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ANY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "REGEX_ANY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCISpecAddressType",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciAddressSpec",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PciAddressSpec",
+      "lineRange": {
+        "start": 50,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "str"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match",
+      "kind": "method",
+      "scope": "PciAddressSpec",
+      "lineRange": {
+        "start": 57,
+        "end": 58
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_single_address",
+      "kind": "method",
+      "scope": "PciAddressSpec",
+      "lineRange": {
+        "start": 60,
+        "end": 65
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "all([ all(c in string.hexdigits for c in self.domain), all(c in string.hexdigits for c in self.bus), all(c in string.hexdigits for c in self.slot), all(c in string.hexdigits for c in self.func)])",
+          "line": 61
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_pci_dev_info",
+      "kind": "method",
+      "scope": "PciAddressSpec",
+      "lineRange": {
+        "start": 67,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "prop",
+          "type": "str"
+        },
+        {
+          "name": "maxval",
+          "type": "int"
+        },
+        {
+          "name": "hex_value",
+          "type": "str"
+        }
+      ],
+      "returnType": "None",
+      "returns": [
+        {
+          "expr": "",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PhysicalPciAddress",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 87,
+        "end": 122
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PhysicalPciAddress",
+      "lineRange": {
+        "start": 94,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "PCISpecAddressType"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match",
+      "kind": "method",
+      "scope": "PhysicalPciAddress",
+      "lineRange": {
+        "start": 112,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "phys_pci_addr",
+          "type": "PciAddressSpec"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "all(conditions)",
+          "line": 119
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__str__",
+      "kind": "method",
+      "scope": "PhysicalPciAddress",
+      "lineRange": {
+        "start": 121,
+        "end": 122
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "f'{self.domain}:{self.bus}:{self.slot}.{self.func}'",
+          "line": 122
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciAddressGlobSpec",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 125,
+        "end": 164
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PciAddressGlobSpec",
+      "lineRange": {
+        "start": 132,
+        "end": 155
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "str"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match",
+      "kind": "method",
+      "scope": "PciAddressGlobSpec",
+      "lineRange": {
+        "start": 157,
+        "end": 164
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "phys_pci_addr",
+          "type": "PciAddressSpec"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "all(conditions)",
+          "line": 164
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciAddressRegexSpec",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 167,
+        "end": 195
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PciAddressRegexSpec",
+      "lineRange": {
+        "start": 175,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "dict"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match",
+      "kind": "method",
+      "scope": "PciAddressRegexSpec",
+      "lineRange": {
+        "start": 188,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "phys_pci_addr",
+          "type": "PciAddressSpec"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "all(conditions)",
+          "line": 195
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "WhitelistPciAddress",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 198,
+        "end": 268
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "WhitelistPciAddress",
+      "lineRange": {
+        "start": 217,
+        "end": 221
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "PCISpecAddressType"
+        },
+        {
+          "name": "is_physical_function",
+          "type": "bool"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_physical_function",
+      "kind": "method",
+      "scope": "WhitelistPciAddress",
+      "lineRange": {
+        "start": 223,
+        "end": 230
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_init_address_fields",
+      "kind": "method",
+      "scope": "WhitelistPciAddress",
+      "lineRange": {
+        "start": 232,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "PCISpecAddressType"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match",
+      "kind": "method",
+      "scope": "WhitelistPciAddress",
+      "lineRange": {
+        "start": 245,
+        "end": 268
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_addr",
+          "type": "str"
+        },
+        {
+          "name": "pci_phys_addr",
+          "type": "str | None"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "True",
+          "line": 264
+        },
+        {
+          "expr": "self.pci_address_spec.match(pci_addr_obj)",
+          "line": 268
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciDeviceSpec",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 271,
+        "end": 434
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 272,
+        "end": 278
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev_spec",
+          "type": "dict[str, str]"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_address_obj",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 280,
+        "end": 292
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "WhitelistPciAddress | None",
+      "returns": [
+        {
+          "expr": "None",
+          "line": 285
+        },
+        {
+          "expr": "address_obj",
+          "line": 292
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_init_dev_details",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 294,
+        "end": 371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ensure_remote_managed_dev_vpd_serial",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 373,
+        "end": 389
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev_dict",
+          "type": "dict[str, ty.Any]"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "True",
+          "line": 383
+        },
+        {
+          "expr": "bool(card_sn)",
+          "line": 389
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 391,
+        "end": 402
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev_dict",
+          "type": "dict[str, ty.Any]"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 394
+        },
+        {
+          "expr": "all([ self.vendor_id in (ANY, dev_dict['vendor_id']), self.product_id in (ANY, dev_dict['product_id']), address_obj.match(dev_dict['address'], dev_dict.get('parent_addr')), self._ensure_remote_managed",
+          "line": 396
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match_pci_obj",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 404,
+        "end": 413
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "pci_obj",
+          "type": "'objects.PciDevice'"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self.match(dev_dict)",
+          "line": 413
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_tags",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 415,
+        "end": 416
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "dict[str, str]",
+      "returns": [
+        {
+          "expr": "self.tags",
+          "line": 416
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_normalize_device_spec_tag",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 418,
+        "end": 427
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "tag"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "enhanced_pci_device_with_spec_tags",
+      "kind": "method",
+      "scope": "PciDeviceSpec",
+      "lineRange": {
+        "start": 429,
+        "end": 434
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dev",
+          "type": "dict[str, ty.Any]"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "name": "all",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "exception.PciConfigInvalidSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 4,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "utils.get_pci_address_fields",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "exception.PciDeviceWrongAddressFormat",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 144,
+        "end": 144
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 4,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 190,
+        "end": 190
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 198,
+        "end": 198
+      }
+    },
+    {
+      "name": "utils.is_physical_function",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 226,
+        "end": 226
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 272,
+        "end": 272
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 274,
+        "end": 274
+      }
+    },
+    {
+      "name": "utils.get_function_by_ifname",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 283,
+        "end": 283
+      }
+    },
+    {
+      "name": "exception.PciDeviceInvalidDeviceName",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 320,
+        "end": 320
+      }
+    },
+    {
+      "name": "exception.PciDeviceRemoteManagedNotPresent",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 341,
+        "end": 341
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 343,
+        "end": 343
+      }
+    },
+    {
+      "name": "utils.get_vf_product_id_by_pf_addr",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 344,
+        "end": 344
+      }
+    },
+    {
+      "name": "utils.get_pci_ids_by_pci_addr",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 347,
+        "end": 347
+      }
+    },
+    {
+      "name": "exception.PciDeviceInvalidPFRemoteManaged",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 357,
+        "end": 357
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "abc",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "string",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": "ty",
+      "module": "typing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci.request",
+      "names": [
+        {
+          "alias": null,
+          "name": "PCI_REMOTE_MANAGED_TAG"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

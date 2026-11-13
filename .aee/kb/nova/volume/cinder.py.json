@@ -1,0 +1,2482 @@
+{
+  "file": "nova/volume/cinder.py",
+  "hash": "5ebc8afb0141850b226c0eacbca6acaad771905ca9a0b4307b40af42733fbc88",
+  "language": "Python",
+  "component": "volume",
+  "package": null,
+  "lines": {
+    "blank": 153,
+    "code": 710,
+    "comment": 88,
+    "total": 951
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import sys",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import urllib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from cinderclient import api_versions as cinder_api_versions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from cinderclient import client as cinder_client",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from cinderclient import exceptions as cinder_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as keystone_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import retrying",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import availability_zones as az",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import service_auth",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_auth_plugin",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 61
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "auth_plugin",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_auth",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 76
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service_auth.get_service_user_token_auth_plugin( context, user_auth=user_auth)",
+          "line": 75
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_server_version",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 84,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(cinder_api_versions.APIVersion(min_version), cinder_api_versions.APIVersion(current_version))",
+          "line": 133
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_highest_client_server_version",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 141,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "min(max_server, max_client)",
+          "line": 146
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_microversion",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 149,
+        "end": 166
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "name": "microversion"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "microversion",
+          "line": 165
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_cinderclient_parameters",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 169,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "auth, service_parameters, url",
+          "line": 192
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_microversion_supported",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 195,
+        "end": 198
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "microversion"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cinderclient",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 201,
+        "end": 254
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "microversion"
+        },
+        {
+          "default": "False",
+          "name": "skip_version_check"
+        },
+        {
+          "default": "False",
+          "name": "check_only"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 244
+        },
+        {
+          "expr": "cinder_client.Client( version, session=session, auth=auth, connect_retries=CONF.cinder.http_retries, global_request_id=context.global_id, **service_parameters)",
+          "line": 248
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_untranslate_volume_summary_view",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 257,
+        "end": 309
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "vol"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "d",
+          "line": 309
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_untranslate_volume_type_view",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 312,
+        "end": 319
+      },
+      "parameters": [
+        {
+          "name": "volume_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "v",
+          "line": 319
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_untranslate_snapshot_summary_view",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 322,
+        "end": 338
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "snapshot"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "d",
+          "line": 338
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_attachment_ref",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 341,
+        "end": 365
+      },
+      "parameters": [
+        {
+          "name": "attachment_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "attachment_ref",
+          "line": 365
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "translate_cinder_exception",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 368,
+        "end": 387
+      },
+      "parameters": [
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper",
+          "line": 387
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "translate_cinder_exception",
+      "lineRange": {
+        "start": 371,
+        "end": 386
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 386
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "translate_create_exception",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 390,
+        "end": 402
+      },
+      "parameters": [
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translate_cinder_exception(wrapper)",
+          "line": 402
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "translate_create_exception",
+      "lineRange": {
+        "start": 394,
+        "end": 401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 401
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "translate_volume_exception",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 405,
+        "end": 417
+      },
+      "parameters": [
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translate_cinder_exception(wrapper)",
+          "line": 417
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "translate_volume_exception",
+      "lineRange": {
+        "start": 409,
+        "end": 416
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 416
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "translate_attachment_exception",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 420,
+        "end": 432
+      },
+      "parameters": [
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translate_cinder_exception(wrapper)",
+          "line": 432
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "translate_attachment_exception",
+      "lineRange": {
+        "start": 425,
+        "end": 431
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "attachment_id"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 431
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "translate_snapshot_exception",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 435,
+        "end": 446
+      },
+      "parameters": [
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translate_cinder_exception(wrapper)",
+          "line": 446
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "translate_snapshot_exception",
+      "lineRange": {
+        "start": 440,
+        "end": 445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "snapshot_id"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 445
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "translate_mixed_exceptions",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 449,
+        "end": 460
+      },
+      "parameters": [
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translate_cinder_exception(wrapper)",
+          "line": 460
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "translate_mixed_exceptions",
+      "lineRange": {
+        "start": 452,
+        "end": 459
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "res_id"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res",
+          "line": 459
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reraise",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 463,
+        "end": 464
+      },
+      "parameters": [
+        {
+          "name": "desired_exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "API",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 467,
+        "end": 951
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 471,
+        "end": 482
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "default": "None",
+          "name": "microversion"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_untranslate_volume_summary_view(context, item)",
+          "line": 482
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 485,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rval",
+          "line": 495
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_attached",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 497,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_availability_zone",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 504,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reserve_volume",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 529,
+        "end": 530
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unreserve_volume",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 533,
+        "end": 534
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "begin_detaching",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 537,
+        "end": 538
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "roll_detaching",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 541,
+        "end": 542
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attach",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 545,
+        "end": 547
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "mountpoint"
+        },
+        {
+          "default": "'rw'",
+          "name": "mode"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 554,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "default": "None",
+          "name": "instance_uuid"
+        },
+        {
+          "default": "None",
+          "name": "attachment_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "initialize_connection",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 585,
+        "end": 613
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "connector"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "connection_info",
+          "line": 590
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "terminate_connection",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 620,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "connector"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cinderclient(context).volumes.terminate_connection(volume_id, connector)",
+          "line": 621
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "migrate_volume_completion",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 625,
+        "end": 628
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "old_volume_id"
+        },
+        {
+          "name": "new_volume_id"
+        },
+        {
+          "default": "False",
+          "name": "error"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cinderclient(context).volumes.migrate_volume_completion( old_volume_id, new_volume_id, error)",
+          "line": 627
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 631,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "default": "None",
+          "name": "snapshot"
+        },
+        {
+          "default": "None",
+          "name": "image_id"
+        },
+        {
+          "default": "None",
+          "name": "volume_type"
+        },
+        {
+          "default": "None",
+          "name": "metadata"
+        },
+        {
+          "default": "None",
+          "name": "availability_zone"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_untranslate_volume_summary_view(context, item)",
+          "line": 650
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 653,
+        "end": 654
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 657,
+        "end": 658
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "fields"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_absolute_limits",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 661,
+        "end": 675
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{limit.name: limit.value for limit in limits}",
+          "line": 675
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_snapshot",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 678,
+        "end": 680
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "snapshot_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_untranslate_snapshot_summary_view(context, item)",
+          "line": 680
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all_snapshots",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 683,
+        "end": 690
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rvals",
+          "line": 690
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_snapshot",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 693,
+        "end": 698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_untranslate_snapshot_summary_view(context, item)",
+          "line": 698
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_snapshot_force",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 701,
+        "end": 707
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_untranslate_snapshot_summary_view(context, item)",
+          "line": 707
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_snapshot",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 710,
+        "end": 711
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "snapshot_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all_volume_types",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 714,
+        "end": 721
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rvals",
+          "line": 721
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_volume_encryption_metadata",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 724,
+        "end": 725
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cinderclient(context).volumes.get_encryption_metadata(volume_id)",
+          "line": 725
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_snapshot_status",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 728,
+        "end": 741
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "snapshot_id"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_create",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 744,
+        "end": 791
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "default": "None",
+          "name": "connector"
+        },
+        {
+          "default": "None",
+          "name": "mountpoint"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_translate_attachment_ref(attachment_ref)",
+          "line": 780
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_get",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 794,
+        "end": 816
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "attachment_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translated_attach_ref",
+          "line": 809
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_get_all",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 818,
+        "end": 849
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "instance_id"
+        },
+        {
+          "default": "None",
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[_translate_attachment_ref( each.to_dict()) for each in attachments]",
+          "line": 848
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_update",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 856,
+        "end": 900
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "attachment_id"
+        },
+        {
+          "name": "connector"
+        },
+        {
+          "default": "None",
+          "name": "mountpoint"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "translated_attach_ref",
+          "line": 893
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_delete",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 907,
+        "end": 922
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "attachment_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attachment_complete",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 925,
+        "end": 945
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "attachment_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reimage_volume",
+      "kind": "method",
+      "scope": "API",
+      "lineRange": {
+        "start": 948,
+        "end": 951
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "default": "False",
+          "name": "reimage_reserved"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "service_auth.get_service_auth_plugin",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 3,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "cinder_exception.Unauthorized",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 1,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "service_auth.get_service_user_token_auth_plugin",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "service_auth.get_service_auth_session",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      }
+    },
+    {
+      "name": "urllib.parse.urlparse",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 100,
+        "end": 100
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 123,
+        "end": 123
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 12,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "cinder_api_versions.APIVersion",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 3,
+      "lineRange": {
+        "start": 133,
+        "end": 133
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 146,
+        "end": 146
+      }
+    },
+    {
+      "name": "exception.CinderAPIVersionNotAvailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      }
+    },
+    {
+      "name": "cinder_client.get_volume_api_from_url",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 1,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "exception.UnsupportedCinderAPIVersion",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 232,
+        "end": 232
+      }
+    },
+    {
+      "name": "cinder_client.Client",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 1,
+      "lineRange": {
+        "start": 248,
+        "end": 248
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 272,
+        "end": 272
+      }
+    },
+    {
+      "name": "collections.OrderedDict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 275,
+        "end": 275
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 291,
+        "end": 291
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 296,
+        "end": 296
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 3,
+      "lineRange": {
+        "start": 297,
+        "end": 297
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 370,
+        "end": 370
+      }
+    },
+    {
+      "name": "method",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 373,
+        "end": 373
+      }
+    },
+    {
+      "name": "exception.CinderConnectionFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 377,
+        "end": 377
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 381,
+        "end": 381
+      }
+    },
+    {
+      "name": "exception.Forbidden",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 385,
+        "end": 385
+      }
+    },
+    {
+      "name": "exception.NotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 398,
+        "end": 398
+      }
+    },
+    {
+      "name": "exception.OverQuota",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "exception.VolumeNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 413,
+        "end": 413
+      }
+    },
+    {
+      "name": "exception.VolumeAttachmentNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 429,
+        "end": 429
+      }
+    },
+    {
+      "name": "exception.SnapshotNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 444,
+        "end": 444
+      }
+    },
+    {
+      "name": "sys.exc_info",
+      "usage": "call",
+      "via": "sys",
+      "count": 1,
+      "lineRange": {
+        "start": 464,
+        "end": 464
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 467,
+        "end": 467
+      }
+    },
+    {
+      "name": "exception.InvalidVolume",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 502,
+        "end": 502
+      }
+    },
+    {
+      "name": "az.get_instance_availability_zone",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 517,
+        "end": 517
+      }
+    },
+    {
+      "name": "retrying.retry",
+      "usage": "call",
+      "via": "retrying",
+      "count": 4,
+      "lineRange": {
+        "start": 550,
+        "end": 550
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 552,
+        "end": 552
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 7,
+      "lineRange": {
+        "start": 592,
+        "end": 592
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 641,
+        "end": 641
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 658,
+        "end": 658
+      }
+    },
+    {
+      "name": "exception.InvalidRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 828,
+        "end": 828
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "sys",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "cinderclient",
+      "names": [
+        {
+          "alias": "cinder_api_versions",
+          "name": "api_versions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "cinderclient",
+      "names": [
+        {
+          "alias": "cinder_client",
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "cinderclient",
+      "names": [
+        {
+          "alias": "cinder_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "keystone_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "retrying",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "az",
+          "name": "availability_zones"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "service_auth"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

@@ -1,0 +1,2098 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_simple_tenant_usage.py",
+  "hash": "08f0a0d9dbda85e256dcd7a82bbdc74edccd430f60702c927733923339e16479",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 95,
+    "code": 495,
+    "comment": 38,
+    "total": 628
+  },
+  "symbols": [
+    {
+      "name": "import datetime",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import simple_tenant_usage as \\",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SERVERS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TENANTS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "HOURS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ROOT_GB",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EPHEMERAL_GB",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MEMORY_MB",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VCPUS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NOW",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "START",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "STOP",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_FLAVOR",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 64
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 67,
+        "end": 86
+      },
+      "parameters": [
+        {
+          "name": "start"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "name": "tenant_id"
+        },
+        {
+          "default": "vm_states.ACTIVE",
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.Instance( deleted=False, id=instance_id, uuid=getattr(uuids, 'instance_%d' % instance_id), image_ref='1', project_id=tenant_id, user_id='fakeuser', display_name='name', instance_type_id=flavor",
+          "line": 70
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_instance_deleted_flavorless",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 89,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "end"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "name": "tenant_id"
+        },
+        {
+          "default": "vm_states.ACTIVE",
+          "name": "vm_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.Instance( context=context, deleted=instance_id, id=instance_id, uuid=getattr(uuids, 'instance_%d' % instance_id), image_ref='1', project_id=tenant_id, user_id='fakeuser', display_name='name', ",
+          "line": 91
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_active_deleted_flavorless",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 112,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "begin"
+        },
+        {
+          "default": "None",
+          "name": "end"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=instances)",
+          "line": 131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_active_by_window_joined",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 135,
+        "end": 143
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "begin"
+        },
+        {
+          "default": "None",
+          "name": "end"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstanceList(objects=[ _fake_instance( START, STOP, x, project_id or getattr(uuids, 'faketenant_%s' % (x // SERVERS)) ) for x in range(TENANTS * SERVERS)])",
+          "line": 139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 146,
+        "end": 402
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "version",
+      "kind": "field",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "policy_rule_prefix",
+      "kind": "field",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 148,
+        "end": 148
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "controller",
+      "kind": "field",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 151,
+        "end": 166
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_verify_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 168,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "stop"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_index_deleted_flavorless",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 214,
+        "end": 217
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_load"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 221,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_index_future_end_time",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 226,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_show",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 230,
+        "end": 231
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_show_future_end_time",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 233,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_tenant_usages",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 239,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "''",
+          "name": "detailed"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res_dict['tenant_usages']",
+          "line": 263
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_active_by_window_joined",
+      "kind": "function",
+      "scope": "SimpleTenantUsageTestV21._get_tenant_usages",
+      "lineRange": {
+        "start": 250,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "begin"
+        },
+        {
+          "default": "None",
+          "name": "end"
+        },
+        {
+          "default": "None",
+          "name": "project_id"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_get_active_by_window_joined(context, begin, end, project_id, host, expected_attrs, use_slave)",
+          "line": 255
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_detailed_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 265,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_simple_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 272,
+        "end": 275
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_verify_simple_index_empty_param",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 277,
+        "end": 281
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_verify_show",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 285,
+        "end": 321
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "stop"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_tenants_usage_with_bad_start_date",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 323,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_tenants_usage_with_invalid_start_date",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 333,
+        "end": 340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_get_tenants_usage_with_one_date",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 342,
+        "end": 347
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "date_url_param"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_tenants_usage_with_no_start_date",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 349,
+        "end": 351
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_tenants_usage_with_no_end_date",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 353,
+        "end": 355
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_additional_query_parameters",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 357,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_index_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 364,
+        "end": 371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "params"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 373,
+        "end": 379
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_additional_query_parameters",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 381,
+        "end": 386
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_show_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 388,
+        "end": 395
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "params"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV21",
+      "lineRange": {
+        "start": 397,
+        "end": 402
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageTestV40",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 405,
+        "end": 441
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "version",
+      "kind": "field",
+      "scope": "SimpleTenantUsageTestV40",
+      "lineRange": {
+        "start": 406,
+        "end": 406
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_next_links_show",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV40",
+      "lineRange": {
+        "start": 410,
+        "end": 412
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_next_links_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV40",
+      "lineRange": {
+        "start": 416,
+        "end": 418
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV40",
+      "lineRange": {
+        "start": 422,
+        "end": 430
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_duplicate_query_parameters_validation",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV40",
+      "lineRange": {
+        "start": 434,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageTestV2_75",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 444,
+        "end": 474
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "version",
+      "kind": "field",
+      "scope": "SimpleTenantUsageTestV2_75",
+      "lineRange": {
+        "start": 445,
+        "end": 445
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_additional_query_param_old_version",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV2_75",
+      "lineRange": {
+        "start": 447,
+        "end": 452
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_additional_query_parameters",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV2_75",
+      "lineRange": {
+        "start": 454,
+        "end": 459
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_additional_query_param_old_version",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV2_75",
+      "lineRange": {
+        "start": 461,
+        "end": 466
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_additional_query_parameters",
+      "kind": "method",
+      "scope": "SimpleTenantUsageTestV2_75",
+      "lineRange": {
+        "start": 468,
+        "end": 474
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageLimitsTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 477,
+        "end": 503
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "version",
+      "kind": "field",
+      "scope": "SimpleTenantUsageLimitsTestV21",
+      "lineRange": {
+        "start": 478,
+        "end": 478
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV21",
+      "lineRange": {
+        "start": 480,
+        "end": 482
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_request",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV21",
+      "lineRange": {
+        "start": 484,
+        "end": 486
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fakes.HTTPRequest.blank(url, version=self.version)",
+          "line": 486
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV21",
+      "lineRange": {
+        "start": 488,
+        "end": 491
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "limit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_defaults_to_conf_max_limit_show",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV21",
+      "lineRange": {
+        "start": 494,
+        "end": 497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_defaults_to_conf_max_limit_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV21",
+      "lineRange": {
+        "start": 500,
+        "end": 503
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageLimitsTestV240",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 506,
+        "end": 569
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "version",
+      "kind": "field",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 507,
+        "end": 507
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_limit_and_marker",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 509,
+        "end": 513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_and_marker_show",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 516,
+        "end": 519
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_limit_and_marker_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 522,
+        "end": 525
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_marker_not_found_show",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 528,
+        "end": 532
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_marker_not_found_index",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 535,
+        "end": 539
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_with_invalid_non_int_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 541,
+        "end": 544
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 546,
+        "end": 549
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_duplicate_query_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 551,
+        "end": 554
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_with_invalid_non_int_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 556,
+        "end": 559
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 561,
+        "end": 564
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_duplicate_query_with_invalid_string_limit",
+      "kind": "method",
+      "scope": "SimpleTenantUsageLimitsTestV240",
+      "lineRange": {
+        "start": 566,
+        "end": 569
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageControllerTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 572,
+        "end": 611
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "controller",
+      "kind": "field",
+      "scope": "SimpleTenantUsageControllerTestV21",
+      "lineRange": {
+        "start": 573,
+        "end": 573
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SimpleTenantUsageControllerTestV21",
+      "lineRange": {
+        "start": 575,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_from_non_deleted_with_id_fails",
+      "kind": "method",
+      "scope": "SimpleTenantUsageControllerTestV21",
+      "lineRange": {
+        "start": 586,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fake_get_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_from_deleted_with_notfound",
+      "kind": "method",
+      "scope": "SimpleTenantUsageControllerTestV21",
+      "lineRange": {
+        "start": 595,
+        "end": 601
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fake_get_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_flavor_from_deleted_with_id_of_deleted",
+      "kind": "method",
+      "scope": "SimpleTenantUsageControllerTestV21",
+      "lineRange": {
+        "start": 605,
+        "end": 611
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fake_get_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SimpleTenantUsageUtilsV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 614,
+        "end": 628
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "simple_tenant_usage",
+      "kind": "field",
+      "scope": "SimpleTenantUsageUtilsV21",
+      "lineRange": {
+        "start": 615,
+        "end": 615
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_valid_string",
+      "kind": "method",
+      "scope": "SimpleTenantUsageUtilsV21",
+      "lineRange": {
+        "start": 617,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_invalid_string",
+      "kind": "method",
+      "scope": "SimpleTenantUsageUtilsV21",
+      "lineRange": {
+        "start": 624,
+        "end": 628
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "datetime.timedelta",
+      "usage": "call",
+      "via": "datetime",
+      "count": 6,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 121,
+        "end": 121
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 131,
+        "end": 131
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 146,
+        "end": 146
+      }
+    },
+    {
+      "name": "simple_tenant_usage_v21.SimpleTenantUsageController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 153,
+        "end": 153
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 165,
+        "end": 165
+      }
+    },
+    {
+      "name": "objects.CellMappingList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 165,
+        "end": 165
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 15,
+      "lineRange": {
+        "start": 172,
+        "end": 172
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 190,
+        "end": 190
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 18,
+      "lineRange": {
+        "start": 209,
+        "end": 209
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 211,
+        "end": 211
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 213,
+        "end": 213
+      }
+    },
+    {
+      "name": "orig_get_active_by_window_joined",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 255,
+        "end": 255
+      }
+    },
+    {
+      "name": "exception.MarkerNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 529,
+        "end": 529
+      }
+    },
+    {
+      "name": "exception.NotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 585,
+        "end": 585
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 600,
+        "end": 600
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 614,
+        "end": 614
+      }
+    },
+    {
+      "name": "datetime.datetime",
+      "usage": "call",
+      "via": "datetime",
+      "count": 1,
+      "lineRange": {
+        "start": 620,
+        "end": 620
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "datetime",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "simple_tenant_usage_v21",
+          "name": "simple_tenant_usage"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

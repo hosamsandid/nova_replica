@@ -1,0 +1,795 @@
+{
+  "file": "nova/limit/local.py",
+  "hash": "fe0032dfd0d954738e35e664a5140fd0625954f1f7cd6d882407eabf9fee239b",
+  "language": "Python",
+  "component": "limit",
+  "package": null,
+  "lines": {
+    "blank": 41,
+    "code": 162,
+    "comment": 33,
+    "total": 236
+  },
+  "symbols": [
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import typing as ty",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import exception as limit_exceptions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import utils as nova_limit_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SERVER_METADATA_ITEMS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "INJECTED_FILES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "INJECTED_FILES_CONTENT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "INJECTED_FILES_PATH",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "API_LIMITS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KEY_PAIRS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SERVER_GROUPS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SERVER_GROUP_MEMBERS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DB_LIMITS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UNIFIED_LIMITS_DRIVER",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EXCEPTIONS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LEGACY_LIMITS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 79
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_in_use",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 82,
+        "end": 106
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova.context.RequestContext'"
+        },
+        {
+          "name": "project_id",
+          "type": "str"
+        }
+      ],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "_convert_keys_to_legacy_name(usages)",
+          "line": 106
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "always_zero_usage",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 109,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "project_id",
+          "type": "str"
+        },
+        {
+          "name": "resource_names",
+          "type": "list[str]"
+        }
+      ],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "{resource_name: 0 for resource_name in resource_names}",
+          "line": 115
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "enforce_api_limit",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 118,
+        "end": 145
+      },
+      "parameters": [
+        {
+          "name": "entity_type",
+          "type": "str"
+        },
+        {
+          "name": "count",
+          "type": "int"
+        }
+      ],
+      "returnType": "None",
+      "returns": [
+        {
+          "expr": "",
+          "line": 125
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "enforce_db_limit",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 148,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova.context.RequestContext'"
+        },
+        {
+          "name": "entity_type",
+          "type": "str"
+        },
+        {
+          "name": "entity_scope",
+          "type": "ty.Any"
+        },
+        {
+          "name": "delta",
+          "type": "int"
+        }
+      ],
+      "returnType": "None",
+      "returns": [
+        {
+          "expr": "",
+          "line": 170
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_convert_keys_to_legacy_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 198,
+        "end": 205
+      },
+      "parameters": [
+        {
+          "name": "new_dict",
+          "type": "dict[str, int]"
+        }
+      ],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "legacy",
+          "line": 205
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_legacy_default_limits",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 208,
+        "end": 212
+      },
+      "parameters": [],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "_convert_keys_to_legacy_name(dict(new_limits))",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_keypair_count",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 215,
+        "end": 217
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'server_key_pairs': count}",
+          "line": 217
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_server_group_count",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 220,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'server_groups': raw_counts['project']['server_groups']}",
+          "line": 222
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_server_group_members_count",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 225,
+        "end": 229
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "server_group_uuid"
+        },
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'server_group_members': len(server_group.members)}",
+          "line": 229
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DB_COUNT_FUNCTION",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 232,
+        "end": 236
+      },
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "nova_limit_utils.use_unified_limits",
+      "usage": "call",
+      "via": "nova.limit",
+      "count": 2,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "limit.Enforcer",
+      "usage": "call",
+      "via": "oslo_limit",
+      "count": 3,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "exception.KeystoneConnectionFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "nova_limit_utils.should_enforce",
+      "usage": "call",
+      "via": "nova.limit",
+      "count": 2,
+      "lineRange": {
+        "start": 142,
+        "end": 142
+      }
+    },
+    {
+      "name": "functools.partial",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 182,
+        "end": 182
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 212,
+        "end": 212
+      }
+    },
+    {
+      "name": "objects.KeyPairList.get_count_by_user",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "objects.InstanceGroupList.get_counts",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 221,
+        "end": 221
+      }
+    },
+    {
+      "name": "objects.InstanceGroup.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 227,
+        "end": 227
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": "ty",
+      "module": "typing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": "limit_exceptions",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": null,
+          "name": "limit"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "nova_limit_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

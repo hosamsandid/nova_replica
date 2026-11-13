@@ -1,0 +1,528 @@
+{
+  "file": "nova/availability_zones.py",
+  "hash": "fe83f135f75b078f0d8b9a41f5839bac633a93f3fbb5b70a29259963ce4143b3",
+  "language": "Python",
+  "component": "nova",
+  "package": null,
+  "lines": {
+    "blank": 44,
+    "code": 135,
+    "comment": 33,
+    "total": 212
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import cache_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AZ_CACHE_SECONDS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_cache",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 38
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "MC",
+          "line": 38
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reset_cache",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 48
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_make_cache_key",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 52
+      },
+      "parameters": [
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"azcache-%s\" % host",
+          "line": 52
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_metadata_by_host",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 64
+      },
+      "parameters": [
+        {
+          "name": "aggregates"
+        },
+        {
+          "default": "None",
+          "name": "hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "metadata",
+          "line": 64
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_availability_zones",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 67,
+        "end": 86
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "services"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "services",
+          "line": 86
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_availability_zone",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 89,
+        "end": 96
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "az",
+          "line": 96
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_host_availability_zone_cache",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 99,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "availability_zone"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_availability_zones",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "hostapi"
+        },
+        {
+          "default": "False",
+          "name": "get_only_available"
+        },
+        {
+          "default": "False",
+          "name": "with_hosts"
+        },
+        {
+          "default": "None",
+          "name": "services"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_availability_zones_with_hosts( enabled_services, disabled_services, get_only_available)",
+          "line": 136
+        },
+        {
+          "expr": "_get_availability_zones( enabled_services, disabled_services, get_only_available)",
+          "line": 139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_availability_zones",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 143,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "enabled_services"
+        },
+        {
+          "name": "disabled_services"
+        },
+        {
+          "default": "False",
+          "name": "get_only_available"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sorted(available_zones)",
+          "line": 151
+        },
+        {
+          "expr": "sorted(available_zones), sorted(not_available_zones)",
+          "line": 158
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_availability_zones_with_hosts",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 161,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "enabled_services"
+        },
+        {
+          "name": "disabled_services"
+        },
+        {
+          "default": "False",
+          "name": "get_only_available"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sorted(available_zones.items())",
+          "line": 169
+        },
+        {
+          "expr": "sorted(available_zones.items()), sorted(not_available_zones.items())",
+          "line": 178
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_availability_zone",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 181,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "az",
+          "line": 189
+        },
+        {
+          "expr": "az",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "cache_utils.get_client",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "collections.defaultdict",
+      "usage": "call",
+      "via": "collections",
+      "count": 3,
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "objects.AggregateList.get_by_metadata_key",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      }
+    },
+    {
+      "name": "objects.AggregateList.get_by_host",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "cache_utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

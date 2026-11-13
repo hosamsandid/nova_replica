@@ -1,0 +1,812 @@
+{
+  "file": "nova/limit/placement.py",
+  "hash": "9f197403ceed298bd852b7c17c96856eb1bdf8cb95e5850e3673c9ee80e6d6d6",
+  "language": "Python",
+  "component": "limit",
+  "package": null,
+  "lines": {
+    "blank": 42,
+    "code": 164,
+    "comment": 33,
+    "total": 239
+  },
+  "symbols": [
+    {
+      "name": "import os_resource_classes as orc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import exception as limit_exceptions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import utils as limit_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import quota",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import report",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LEGACY_LIMITS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_placement_usages",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 42
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova.context.RequestContext'"
+        },
+        {
+          "name": "project_id",
+          "type": "str"
+        }
+      ],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "report.report_client_singleton().get_usages_counts_for_limits( context, project_id)",
+          "line": 41
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_usage",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova.context.RequestContext'"
+        },
+        {
+          "name": "project_id",
+          "type": "str"
+        },
+        {
+          "name": "resource_names",
+          "type": "list[str]"
+        }
+      ],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "resource_counts",
+          "line": 113
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_deltas",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 116,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        },
+        {
+          "name": "count",
+          "type": "int"
+        }
+      ],
+      "returnType": "dict[str, int]",
+      "returns": [
+        {
+          "expr": "deltas",
+          "line": 139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_enforcer",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 142,
+        "end": 149
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova.context.RequestContext'"
+        },
+        {
+          "name": "project_id",
+          "type": "str"
+        }
+      ],
+      "returnType": "limit.Enforcer",
+      "returns": [
+        {
+          "expr": "limit.Enforcer(callback)",
+          "line": 149
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "callback",
+      "kind": "function",
+      "scope": "_get_enforcer",
+      "lineRange": {
+        "start": 146,
+        "end": 147
+      },
+      "parameters": [
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "resource_names"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_usage(context, project_id, resource_names)",
+          "line": 147
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "enforce_num_instances_and_resources",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 152,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova.context.RequestContext'"
+        },
+        {
+          "name": "project_id",
+          "type": "str"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        },
+        {
+          "name": "min_count",
+          "type": "int"
+        },
+        {
+          "name": "max_count",
+          "type": "int"
+        },
+        {
+          "default": "None",
+          "name": "enforcer",
+          "type": "limit.Enforcer | None"
+        },
+        {
+          "default": "None",
+          "name": "delta_updates",
+          "type": "dict[str, int] | None"
+        }
+      ],
+      "returnType": "int",
+      "returns": [
+        {
+          "expr": "max_count",
+          "line": 181
+        },
+        {
+          "expr": "enforce_num_instances_and_resources( context, project_id, request_spec, min_count, max_count - 1, enforcer=enforcer)",
+          "line": 203
+        },
+        {
+          "expr": "max_count",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_convert_keys_to_legacy_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 215,
+        "end": 220
+      },
+      "parameters": [
+        {
+          "name": "new_dict"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "legacy",
+          "line": 220
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_legacy_default_limits",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 223,
+        "end": 226
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_keys_to_legacy_name(dict(new_limits))",
+          "line": 226
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_legacy_project_limits",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 229,
+        "end": 232
+      },
+      "parameters": [
+        {
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_keys_to_legacy_name(dict(new_limits))",
+          "line": 232
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_legacy_counts",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 235,
+        "end": 239
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_keys_to_legacy_name(new_usage)",
+          "line": 239
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "report.report_client_singleton",
+      "usage": "call",
+      "via": "nova.scheduler.client",
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "limit_utils.use_unified_limits",
+      "usage": "call",
+      "via": "nova.limit",
+      "count": 2,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    },
+    {
+      "name": "orc.is_custom",
+      "usage": "call",
+      "via": "os_resource_classes",
+      "count": 1,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "quota.is_qfd_populated",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "objects.InstanceMappingList.get_counts",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "exception.UsagesRetrievalFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 127,
+        "end": 127
+      }
+    },
+    {
+      "name": "utils.ResourceRequest.from_request_spec",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "limit.Enforcer",
+      "usage": "call",
+      "via": "oslo_limit",
+      "count": 3,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "limit_utils.should_enforce",
+      "usage": "call",
+      "via": "nova.limit",
+      "count": 1,
+      "lineRange": {
+        "start": 197,
+        "end": 197
+      }
+    },
+    {
+      "name": "exception.TooManyInstances",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 209,
+        "end": 209
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 226,
+        "end": 226
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 236,
+        "end": 236
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": "orc",
+      "module": "os_resource_classes",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": "limit_exceptions",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": null,
+          "name": "limit"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "limit_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "quota"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "report"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

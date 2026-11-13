@@ -1,0 +1,2736 @@
+{
+  "file": "nova/tests/unit/virt/libvirt/test_migration.py",
+  "hash": "1b205856c1bb3793bc28f75115b8a7530d9ec9932875f3996991a388cfeace96",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 175,
+    "code": 1717,
+    "comment": 35,
+    "total": 1927
+  },
+  "symbols": [
+    {
+      "name": "from collections import deque",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import textwrap",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from lxml import etree",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model as network_model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.storage import rbd_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import libvirt as fakelibvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.virt.libvirt import test_driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import config as vconfig",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import guest as libvirt_guest",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import host",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import migration",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_normalize",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 44
+      },
+      "parameters": [
+        {
+          "name": "xml_str"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "etree.tostring( etree.fromstring(xml_str), pretty_print=True, encoding=\"unicode\", ).strip()",
+          "line": 40
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UtilityMigrationTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 1525
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graphics_listen_addrs",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 49,
+        "end": 56
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graphics_listen_addrs_empty",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 58,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graphics_listen_addrs_spice",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 63,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graphics_listen_addrs_vnc",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 71,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_get_updated_guest_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 87,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "data"
+        },
+        {
+          "name": "check_cpu_shared_set"
+        },
+        {
+          "name": "mock_volume"
+        },
+        {
+          "name": "mock_serial"
+        },
+        {
+          "name": "mock_graphics"
+        },
+        {
+          "name": "mock_perf_events_xml"
+        },
+        {
+          "name": "mock_memory_backing"
+        },
+        {
+          "name": "mock_update_cpu_shared_set"
+        },
+        {
+          "name": "mock_remove_cpu_shared_set"
+        },
+        {
+          "name": "mock_tostring"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_updated_guest_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 110,
+        "end": 112
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_updated_guest_xml_dst_cpu_shared_set_info_unset",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 114,
+        "end": 123
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_cpu_shared_set",
+      "kind": "function",
+      "scope": "UtilityMigrationTestCase.test_get_updated_guest_xml_dst_cpu_shared_set_info_unset",
+      "lineRange": {
+        "start": 117,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "mock_update_cpu_shared_set"
+        },
+        {
+          "name": "mock_remove_cpu_shared_set"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_updated_guest_xml_dst_cpu_shared_set_info_set_to_none",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 125,
+        "end": 132
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_dst_cpu_shared_set_info",
+      "kind": "function",
+      "scope": "UtilityMigrationTestCase.test_get_updated_guest_xml_dst_cpu_shared_set_info_set_to_none",
+      "lineRange": {
+        "start": 128,
+        "end": 129
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_updated_guest_xml_dst_cpu_shared_set_info_set_to_empty",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 134,
+        "end": 144
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_cpu_shared_set",
+      "kind": "function",
+      "scope": "UtilityMigrationTestCase.test_get_updated_guest_xml_dst_cpu_shared_set_info_set_to_empty",
+      "lineRange": {
+        "start": 138,
+        "end": 142
+      },
+      "parameters": [
+        {
+          "name": "mock_update_cpu_shared_set"
+        },
+        {
+          "name": "mock_remove_cpu_shared_set"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_updated_guest_xml_dst_cpu_shared_set_info_set",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 146,
+        "end": 156
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_cpu_shared_set",
+      "kind": "function",
+      "scope": "UtilityMigrationTestCase.test_get_updated_guest_xml_dst_cpu_shared_set_info_set",
+      "lineRange": {
+        "start": 150,
+        "end": 154
+      },
+      "parameters": [
+        {
+          "name": "mock_update_cpu_shared_set"
+        },
+        {
+          "name": "mock_remove_cpu_shared_set"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_quota_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 158,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_quota_xml_empty_cputune",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 178,
+        "end": 190
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_device_resources_xml_vpmem",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 192,
+        "end": 254
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_mdev_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 256,
+        "end": 271
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_mdev_xml_fails_on_notfound_mdev",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 273,
+        "end": 288
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_dev_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 290,
+        "end": 325
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_dev_xml_with_2_hostdevs",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 327,
+        "end": 384
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_dev_xml_with_2_hostdevs_second_one_not_in_map",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 386,
+        "end": 442
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_dev_xml_fails_not_found_src_address",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 444,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_cpu_shared_set_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 477,
+        "end": 494
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_remove_cpu_shared_set_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 496,
+        "end": 513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_numa_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 515,
+        "end": 560
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_numa_xml_pre_existing_instance_without_iothreads",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 562,
+        "end": 605
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_numa_xml_no_updates",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 607,
+        "end": 631
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_serial_xml_serial",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 633,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_serial_xml_console",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 652,
+        "end": 674
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_serial_xml_without_ports",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 676,
+        "end": 698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_graphics",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 700,
+        "end": 719
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_rbd_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 722,
+        "end": 753
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rbd_driver"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_rbd_xml_non_rbd_image_type",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 755,
+        "end": 771
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_rbd_xml_skips_serial_disk",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 774,
+        "end": 797
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rbd_driver"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_rbd_xml_skips_ua_alias_disk",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 800,
+        "end": 822
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rbd_driver"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_rbd_xml_skips_non_rbd_protocol",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 825,
+        "end": 846
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rbd_driver"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 848,
+        "end": 902
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_xml_keeps_address",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 904,
+        "end": 975
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_xml_add_encryption",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 977,
+        "end": 1069
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_volume_xml_update_encryption",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1071,
+        "end": 1146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_perf_events_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1148,
+        "end": 1164
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_perf_events_xml_add_new_events",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1166,
+        "end": 1176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_perf_events_xml_add_new_events1",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1178,
+        "end": 1193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_perf_events_xml_remove_all_events",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1195,
+        "end": 1210
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_memory_backing_xml_remove",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1212,
+        "end": 1229
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_memory_backing_xml_add",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1231,
+        "end": 1246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_memory_backing_xml_keep",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1248,
+        "end": 1271
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_update_vif_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1273,
+        "end": 1302
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "conf"
+        },
+        {
+          "name": "original_xml"
+        },
+        {
+          "name": "expected_xml"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_vif_xml_to_vhostuser",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1304,
+        "end": 1345
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_vif_xml_to_bridge_without_mtu",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1347,
+        "end": 1389
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_vif_xml_to_bridge_with_mtu",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1391,
+        "end": 1435
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_vif_xml_no_mac_address_in_xml",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1437,
+        "end": 1460
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_vif_xml_no_matching_vif",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1462,
+        "end": 1484
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_vif_xml_lower_case_mac",
+      "kind": "method",
+      "scope": "UtilityMigrationTestCase",
+      "lineRange": {
+        "start": 1486,
+        "end": 1525
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MigrationMonitorTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1528,
+        "end": 1927
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1529,
+        "end": 1584
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_find_type_active",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1587,
+        "end": 1589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_active"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_find_type_inactive",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1592,
+        "end": 1594
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_active"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_find_type_no_domain",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1597,
+        "end": 1604
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_active"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_find_type_bad_err",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1607,
+        "end": 1614
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_active"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_find_type_no_logging",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1619,
+        "end": 1622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_active"
+        },
+        {
+          "name": "_mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_abort_too_long",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1624,
+        "end": 1627
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_abort_no_comp_timeout",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1629,
+        "end": 1632
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_abort_still_working",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1634,
+        "end": 1637
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_update_downtime_no_steps",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1641,
+        "end": 1647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_dt"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_update_downtime_too_early",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1651,
+        "end": 1661
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_dt"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_update_downtime_step1",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1665,
+        "end": 1675
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_dt"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_update_downtime_nostep1",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1679,
+        "end": 1689
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_dt"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_update_downtime_step2",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1693,
+        "end": 1702
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_dt"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_update_downtime_err",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1706,
+        "end": 1720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_dt"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_save_stats",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1724,
+        "end": 1747
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_isave"
+        },
+        {
+          "name": "mock_msave"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_run_tasks_empty_tasks",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1751,
+        "end": 1765
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pause"
+        },
+        {
+          "name": "mock_postcopy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_run_tasks_no_tasks",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1769,
+        "end": 1782
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pause"
+        },
+        {
+          "name": "mock_postcopy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_run_tasks_no_force_complete",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1786,
+        "end": 1802
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pause"
+        },
+        {
+          "name": "mock_postcopy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_run_tasks_force_complete",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1806,
+        "end": 1822
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pause"
+        },
+        {
+          "name": "mock_postcopy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_run_tasks_force_complete_postcopy_running",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1826,
+        "end": 1841
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pause"
+        },
+        {
+          "name": "mock_postcopy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_run_tasks_force_complete_postcopy",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1846,
+        "end": 1861
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_pause"
+        },
+        {
+          "name": "mock_postcopy"
+        },
+        {
+          "name": "mock_msave"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_recover_tasks_resume",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1866,
+        "end": 1873
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_ps"
+        },
+        {
+          "name": "mock_resume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_recover_tasks_no_resume",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1878,
+        "end": 1886
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_ps"
+        },
+        {
+          "name": "mock_resume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_recover_tasks_empty_tasks",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1889,
+        "end": 1895
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_recover_tasks_no_pause",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1898,
+        "end": 1906
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migration_downtime_steps",
+      "kind": "method",
+      "scope": "MigrationMonitorTestCase",
+      "lineRange": {
+        "start": 1908,
+        "end": 1927
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "etree.tostring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 35,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "etree.fromstring",
+      "usage": "call",
+      "via": "lxml",
+      "count": 38,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "name": "objects.LibvirtLiveMigrateData",
+      "usage": "call",
+      "via": "nova",
+      "count": 43,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "migration.graphics_listen_addrs",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 79,
+        "end": 79
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 42,
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 8,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 96,
+        "end": 96
+      }
+    },
+    {
+      "name": "test_driver._create_test_instance",
+      "usage": "call",
+      "via": "nova.tests.unit.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 96,
+        "end": 96
+      }
+    },
+    {
+      "name": "migration.get_updated_guest_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 16,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "migration._update_quota_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 2,
+      "lineRange": {
+        "start": 167,
+        "end": 167
+      }
+    },
+    {
+      "name": "textwrap.dedent",
+      "usage": "call",
+      "via": "textwrap",
+      "count": 6,
+      "lineRange": {
+        "start": 195,
+        "end": 195
+      }
+    },
+    {
+      "name": "objects.Resource",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "objects.LibvirtVPMEMDevice",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 233,
+        "end": 233
+      }
+    },
+    {
+      "name": "objects.ResourceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 245,
+        "end": 245
+      }
+    },
+    {
+      "name": "migration._update_device_resources_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 247,
+        "end": 247
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 6,
+      "lineRange": {
+        "start": 248,
+        "end": 248
+      }
+    },
+    {
+      "name": "migration._update_mdev_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 269,
+        "end": 269
+      }
+    },
+    {
+      "name": "migration._update_pci_dev_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 321,
+        "end": 321
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 474,
+        "end": 474
+      }
+    },
+    {
+      "name": "migration._update_cpu_shared_set_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 486,
+        "end": 486
+      }
+    },
+    {
+      "name": "migration._remove_cpu_shared_set_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 505,
+        "end": 505
+      }
+    },
+    {
+      "name": "objects.LibvirtLiveMigrateNUMAInfo",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 533,
+        "end": 533
+      }
+    },
+    {
+      "name": "migration._update_numa_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 541,
+        "end": 541
+      }
+    },
+    {
+      "name": "migration._update_serial_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 646,
+        "end": 646
+      }
+    },
+    {
+      "name": "migration._update_graphics_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 715,
+        "end": 715
+      }
+    },
+    {
+      "name": "migration._update_rbd_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 5,
+      "lineRange": {
+        "start": 748,
+        "end": 748
+      }
+    },
+    {
+      "name": "objects.LibvirtLiveMigrateBDMInfo",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 859,
+        "end": 859
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestDisk",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 878,
+        "end": 878
+      }
+    },
+    {
+      "name": "migration._update_volume_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 892,
+        "end": 892
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestDeviceAddressDrive",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 960,
+        "end": 960
+      }
+    },
+    {
+      "name": "migration._update_perf_events_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 1158,
+        "end": 1158
+      }
+    },
+    {
+      "name": "migration._update_memory_backing_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 1224,
+        "end": 1224
+      }
+    },
+    {
+      "name": "network_model.VIF",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 3,
+      "lineRange": {
+        "start": 1277,
+        "end": 1277
+      }
+    },
+    {
+      "name": "objects.VIFMigrateData",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 1284,
+        "end": 1284
+      }
+    },
+    {
+      "name": "migration._update_vif_xml",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1300,
+        "end": 1300
+      }
+    },
+    {
+      "name": "vconfig.LibvirtConfigGuestInterface",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 1305,
+        "end": 1305
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1530,
+        "end": 1530
+      }
+    },
+    {
+      "name": "nova_fixtures.LibvirtFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 1532,
+        "end": 1532
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1534,
+        "end": 1534
+      }
+    },
+    {
+      "name": "objects.PciDeviceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1567,
+        "end": 1567
+      }
+    },
+    {
+      "name": "fakelibvirt.Connection",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 1581,
+        "end": 1581
+      }
+    },
+    {
+      "name": "fakelibvirt.Domain",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 1582,
+        "end": 1582
+      }
+    },
+    {
+      "name": "host.Host",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1583,
+        "end": 1583
+      }
+    },
+    {
+      "name": "libvirt_guest.Guest",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1584,
+        "end": 1584
+      }
+    },
+    {
+      "name": "migration.find_job_type",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 5,
+      "lineRange": {
+        "start": 1588,
+        "end": 1588
+      }
+    },
+    {
+      "name": "fakelibvirt.make_libvirtError",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 3,
+      "lineRange": {
+        "start": 1598,
+        "end": 1598
+      }
+    },
+    {
+      "name": "migration.should_trigger_timeout_action",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 3,
+      "lineRange": {
+        "start": 1626,
+        "end": 1626
+      }
+    },
+    {
+      "name": "migration.update_downtime",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 6,
+      "lineRange": {
+        "start": 1643,
+        "end": 1643
+      }
+    },
+    {
+      "name": "objects.Migration",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 1725,
+        "end": 1725
+      }
+    },
+    {
+      "name": "libvirt_guest.JobInfo",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1727,
+        "end": 1727
+      }
+    },
+    {
+      "name": "migration.save_stats",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1735,
+        "end": 1735
+      }
+    },
+    {
+      "name": "deque",
+      "usage": "call",
+      "via": "collections",
+      "count": 15,
+      "lineRange": {
+        "start": 1753,
+        "end": 1753
+      }
+    },
+    {
+      "name": "migration.run_tasks",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 6,
+      "lineRange": {
+        "start": 1759,
+        "end": 1759
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 1765,
+        "end": 1765
+      }
+    },
+    {
+      "name": "migration.run_recover_tasks",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 4,
+      "lineRange": {
+        "start": 1870,
+        "end": 1870
+      }
+    },
+    {
+      "name": "migration.downtime_steps",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1913,
+        "end": 1913
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1927,
+        "end": 1927
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [
+        {
+          "alias": null,
+          "name": "deque"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "textwrap",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "lxml",
+      "names": [
+        {
+          "alias": null,
+          "name": "etree"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "network_model",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.storage",
+      "names": [
+        {
+          "alias": null,
+          "name": "rbd_utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": "fakelibvirt",
+          "name": "libvirt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.virt.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "test_driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "vconfig",
+          "name": "config"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_guest",
+          "name": "guest"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "host"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "migration"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

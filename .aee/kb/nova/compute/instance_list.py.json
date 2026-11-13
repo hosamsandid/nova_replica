@@ -1,0 +1,737 @@
+{
+  "file": "nova/compute/instance_list.py",
+  "hash": "c7e705da29385d42a1991a26c749e422913689435c9b5c7db73b63926ac99cc1",
+  "language": "Python",
+  "component": "compute",
+  "package": null,
+  "lines": {
+    "blank": 31,
+    "code": 108,
+    "comment": 39,
+    "total": 178
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import multi_cell_list",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import instance as instance_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InstanceSortContext",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "InstanceSortContext",
+      "lineRange": {
+        "start": 28,
+        "end": 44
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "InstanceLister",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 87
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "InstanceLister",
+      "lineRange": {
+        "start": 48,
+        "end": 51
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        },
+        {
+          "default": "None",
+          "name": "cells"
+        },
+        {
+          "default": "None",
+          "name": "batch_size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "marker_identifier",
+      "kind": "method",
+      "scope": "InstanceLister",
+      "lineRange": {
+        "start": 54,
+        "end": 55
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'uuid'",
+          "line": 55
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_marker_record",
+      "kind": "method",
+      "scope": "InstanceLister",
+      "lineRange": {
+        "start": 57,
+        "end": 74
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "im.cell_mapping.uuid, db_inst",
+          "line": 74
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_marker_by_values",
+      "kind": "method",
+      "scope": "InstanceLister",
+      "lineRange": {
+        "start": 76,
+        "end": 80
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_by_sort_filters(ctx, self.sort_ctx.sort_keys, self.sort_ctx.sort_dirs, values)",
+          "line": 77
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_filters",
+      "kind": "method",
+      "scope": "InstanceLister",
+      "lineRange": {
+        "start": 82,
+        "end": 87
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_get_all_by_filters_sort( ctx, filters, limit=limit, marker=marker, sort_keys=self.sort_ctx.sort_keys, sort_dirs=self.sort_ctx.sort_dirs, **kwargs)",
+          "line": 83
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instances_sorted",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 92,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "columns_to_join"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        },
+        {
+          "default": "None",
+          "name": "cell_mappings"
+        },
+        {
+          "default": "None",
+          "name": "batch_size"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance_lister, instance_generator",
+          "line": 101
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_list_cells_batch_size",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 104,
+        "end": 132
+      },
+      "parameters": [
+        {
+          "name": "limit"
+        },
+        {
+          "name": "cells"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "limit",
+          "line": 121
+        },
+        {
+          "expr": "max(min(batch_size, limit), 100)",
+          "line": 132
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_objects_sorted",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 135,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "expected_attrs"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance_list, down_cell_uuids",
+          "line": 178
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "multi_cell_list.RecordSortContext",
+      "usage": "inherit",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 3,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "multi_cell_list.CrossCellLister",
+      "usage": "inherit",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      }
+    },
+    {
+      "name": "exception.MarkerNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "name": "db.instance_get_by_uuid",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "db.instance_get_by_sort_filters",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "db.instance_get_all_by_filters_sort",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "max",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "objects.CellMappingList.get_by_project_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "context.load_cells",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 157,
+        "end": 157
+      }
+    },
+    {
+      "name": "instance_obj._expected_cols",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 162,
+        "end": 162
+      }
+    },
+    {
+      "name": "instance_obj._make_instance_list",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 174,
+        "end": 174
+      }
+    },
+    {
+      "name": "objects.InstanceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "multi_cell_list"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "instance_obj",
+          "name": "instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

@@ -1,0 +1,4617 @@
+{
+  "file": "nova/virt/fake.py",
+  "hash": "8872b5838de4939bf5141595f451655d2890ecfabb6004c000eeebe6c01fb945",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 189,
+    "code": 885,
+    "comment": 105,
+    "total": 1179
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import contextlib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import uuid",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_resource_classes as orc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_traits",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.console import type as ctype",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import diagnostics as diagnostics_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import migrate_data",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.ironic import driver as ironic",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.virt.node",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import virtapi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeInstance",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 69
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeInstance",
+      "lineRange": {
+        "start": 63,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getitem__",
+      "kind": "method",
+      "scope": "FakeInstance",
+      "lineRange": {
+        "start": 68,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "getattr(self, key)",
+          "line": 69
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Resources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 103
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vcpus",
+      "kind": "field",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memory_mb",
+      "kind": "field",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "local_gb",
+      "kind": "field",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vcpus_used",
+      "kind": "field",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memory_mb_used",
+      "kind": "field",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "local_gb_used",
+      "kind": "field",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 80,
+        "end": 83
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "8",
+          "name": "vcpus"
+        },
+        {
+          "default": "8000",
+          "name": "memory_mb"
+        },
+        {
+          "default": "500",
+          "name": "local_gb"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "claim",
+      "kind": "method",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 85,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "0",
+          "name": "vcpus"
+        },
+        {
+          "default": "0",
+          "name": "mem"
+        },
+        {
+          "default": "0",
+          "name": "disk"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "release",
+      "kind": "method",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 90,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "0",
+          "name": "vcpus"
+        },
+        {
+          "default": "0",
+          "name": "mem"
+        },
+        {
+          "default": "0",
+          "name": "disk"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "dump",
+      "kind": "method",
+      "scope": "Resources",
+      "lineRange": {
+        "start": 95,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'vcpus': self.vcpus, 'memory_mb': self.memory_mb, 'local_gb': self.local_gb, 'vcpus_used': self.vcpus_used, 'memory_mb_used': self.memory_mb_used, 'local_gb_used': self.local_gb_used }",
+          "line": 96
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 106,
+        "end": 693
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "capabilities",
+      "kind": "field",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 109,
+        "end": 132
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vcpus",
+      "kind": "field",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memory_mb",
+      "kind": "field",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "local_gb",
+      "kind": "field",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 138,
+        "end": 138
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 142,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "virtapi"
+        },
+        {
+          "default": "False",
+          "name": "read_only"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "init_host",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 167,
+        "end": 172
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_nodes",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 174,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "nodes"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_instances",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 180,
+        "end": 181
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[self.instances[uuid].name for uuid in self.instances.keys()]",
+          "line": 181
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_instance_uuids",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 183,
+        "end": 184
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(self.instances.keys())",
+          "line": 184
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "plug_vifs",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 186,
+        "end": 188
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unplug_vifs",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 190,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 194,
+        "end": 215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "default": "None",
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "accel_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 217,
+        "end": 220
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "update_task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reboot",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 222,
+        "end": 236
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "reboot_type"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "None",
+          "name": "bad_volumes_callback"
+        },
+        {
+          "default": "None",
+          "name": "accel_info"
+        },
+        {
+          "default": "None",
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_ip_addr",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 238,
+        "end": 239
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'192.168.0.1'",
+          "line": 239
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_admin_password",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 241,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "new_pass"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resume_state_on_host_boot",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 244,
+        "end": 246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "share_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rescue",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 248,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "rescue_password"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unrescue",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 252,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "instance",
+          "type": "'objects.Instance'"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "poll_rebooting_instances",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 259,
+        "end": 260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "migrate_disk_and_power_off",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 262,
+        "end": 266
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "0",
+          "name": "timeout"
+        },
+        {
+          "default": "0",
+          "name": "retry_interval"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "finish_revert_migration",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 268,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "post_live_migration_at_destination",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 275,
+        "end": 283
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "False",
+          "name": "block_migration"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_off",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 285,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "0",
+          "name": "timeout"
+        },
+        {
+          "default": "0",
+          "name": "retry_interval"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_on",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 291,
+        "end": 299
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "None",
+          "name": "accel_info"
+        },
+        {
+          "default": "None",
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_share",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 301,
+        "end": 302
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "umount_share",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 304,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_share_mounted",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 307,
+        "end": 308
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 308
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "trigger_crash_dump",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 310,
+        "end": 311
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "soft_delete",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 313,
+        "end": 314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "restore",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 316,
+        "end": 317
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pause",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 319,
+        "end": 320
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unpause",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 322,
+        "end": 323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "suspend",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 325,
+        "end": 326
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resume",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 328,
+        "end": 336
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "None",
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 338,
+        "end": 351
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "destroy_disks"
+        },
+        {
+          "default": "True",
+          "name": "destroy_secrets"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 353,
+        "end": 359
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "destroy_disks"
+        },
+        {
+          "default": "None",
+          "name": "migrate_data"
+        },
+        {
+          "default": "True",
+          "name": "destroy_vifs"
+        },
+        {
+          "default": "True",
+          "name": "destroy_secrets"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attach_volume",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 361,
+        "end": 367
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "mountpoint"
+        },
+        {
+          "default": "None",
+          "name": "disk_bus"
+        },
+        {
+          "default": "None",
+          "name": "device_type"
+        },
+        {
+          "default": "None",
+          "name": "encryption"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach_volume",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 369,
+        "end": 375
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "mountpoint"
+        },
+        {
+          "default": "None",
+          "name": "encryption"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "swap_volume",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 377,
+        "end": 383
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "old_connection_info"
+        },
+        {
+          "name": "new_connection_info"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "mountpoint"
+        },
+        {
+          "name": "resize_to"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "extend_volume",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 385,
+        "end": 388
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "connection_info"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "requested_size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attach_interface",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 390,
+        "end": 394
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach_interface",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 396,
+        "end": 401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_info",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 403,
+        "end": 407
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "True",
+          "name": "use_cache"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hardware.InstanceInfo(state=i.state)",
+          "line": 407
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_diagnostics",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 409,
+        "end": 425
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'cpu0_time': 17300000000, 'memory': 524288, 'vda_errors': -1, 'vda_read': 262144, 'vda_read_req': 112, 'vda_write': 5778432, 'vda_write_req': 488, 'vnet1_rx': 2070139, 'vnet1_rx_drop': 0, 'vnet1_rx_e",
+          "line": 410
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_diagnostics",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 427,
+        "end": 450
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "diags",
+          "line": 450
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all_volume_usage",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 452,
+        "end": 466
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "compute_host_bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "volusage",
+          "line": 466
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_cpu_stats",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 468,
+        "end": 474
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "stats",
+          "line": 474
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "block_stats",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 476,
+        "end": 477
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[0, 0, 0, 0, None]",
+          "line": 477
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_console_output",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 479,
+        "end": 480
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'FAKE CONSOLE OUTPUT\\nANOTHER\\nLAST LINE'",
+          "line": 480
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vnc_console",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 482,
+        "end": 486
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ctype.ConsoleVNC( internal_access_path=uuids.vnc_access_path, host='fakevncconsole.com', port=6969)",
+          "line": 483
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_spice_console",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 488,
+        "end": 493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ctype.ConsoleSpice( internal_access_path=uuids.spice_access_path, host='fakespiceconsole.com', port=6969, tlsPort=6970)",
+          "line": 489
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_serial_console",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 495,
+        "end": 499
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ctype.ConsoleSerial( internal_access_path=uuids.serial_access_path, host='fakerdpconsole.com', port=6969)",
+          "line": 496
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_mks_console",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 501,
+        "end": 505
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ctype.ConsoleMKS( internal_access_path=uuids.mks_access_path, host='fakemksconsole.com', port=6969)",
+          "line": 502
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_resource",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 507,
+        "end": 539
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "nodename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 525
+        },
+        {
+          "expr": "host_status",
+          "line": 539
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_provider_tree",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 541,
+        "end": 574
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "provider_tree"
+        },
+        {
+          "name": "nodename"
+        },
+        {
+          "default": "None",
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_disk_info",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 576,
+        "end": 577
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 577
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 579,
+        "end": 584
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "post_method"
+        },
+        {
+          "name": "recover_method"
+        },
+        {
+          "default": "False",
+          "name": "block_migration"
+        },
+        {
+          "default": "None",
+          "name": "migrate_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 584
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration_force_complete",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 586,
+        "end": 587
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 587
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration_abort",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 589,
+        "end": 590
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 590
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup_live_migration_destination_check",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 592,
+        "end": 594
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "dest_check_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 594
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_can_live_migrate_destination",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 596,
+        "end": 616
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "src_compute_info"
+        },
+        {
+          "name": "dst_compute_info"
+        },
+        {
+          "default": "False",
+          "name": "block_migration"
+        },
+        {
+          "default": "False",
+          "name": "disk_over_commit"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data",
+          "line": 616
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_can_live_migrate_source",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 618,
+        "end": 620
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "dest_check_data"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dest_check_data",
+          "line": 620
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "finish_migration",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 622,
+        "end": 632
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "disk_info"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "resize_instance"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "confirm_migration",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 634,
+        "end": 639
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pre_live_migration",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 641,
+        "end": 643
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "disk_info"
+        },
+        {
+          "name": "migrate_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "migrate_data",
+          "line": 643
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rollback_live_migration_at_destination",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 645,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "network_info"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "destroy_disks"
+        },
+        {
+          "default": "None",
+          "name": "migrate_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 650
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_remove_vm",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 652,
+        "end": 654
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_power_action",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 656,
+        "end": 658
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "action"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "action",
+          "line": 658
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_maintenance_mode",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 660,
+        "end": 666
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "mode"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'off_maintenance'",
+          "line": 665
+        },
+        {
+          "expr": "'on_maintenance'",
+          "line": 666
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_host_enabled",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 668,
+        "end": 672
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "enabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'enabled'",
+          "line": 671
+        },
+        {
+          "expr": "'disabled'",
+          "line": 672
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_volume_connector",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 674,
+        "end": 677
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'ip': CONF.my_block_storage_ip, 'initiator': 'fake', 'host': self._host}",
+          "line": 675
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_nodes",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 679,
+        "end": 680
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "refresh"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._nodes",
+          "line": 680
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_nodenames_by_uuid",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 682,
+        "end": 684
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "refresh"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{str(getattr(uuids, 'node_%s' % n)): n for n in self.get_available_nodes()}",
+          "line": 683
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "instance_on_disk",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 686,
+        "end": 687
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 687
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "quiesce",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 689,
+        "end": 690
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unquiesce",
+      "kind": "method",
+      "scope": "FakeDriver",
+      "lineRange": {
+        "start": 692,
+        "end": 693
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeVirtAPI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 696,
+        "end": 709
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wait_for_instance_event",
+      "kind": "method",
+      "scope": "FakeVirtAPI",
+      "lineRange": {
+        "start": 698,
+        "end": 702
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "event_names"
+        },
+        {
+          "default": "300",
+          "name": "timeout"
+        },
+        {
+          "default": "None",
+          "name": "error_callback"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exit_wait_early",
+      "kind": "method",
+      "scope": "FakeVirtAPI",
+      "lineRange": {
+        "start": 704,
+        "end": 706
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "events"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_compute_provider_status",
+      "kind": "method",
+      "scope": "FakeVirtAPI",
+      "lineRange": {
+        "start": 708,
+        "end": 709
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "rp_uuid"
+        },
+        {
+          "name": "enabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SmallFakeDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 712,
+        "end": 721
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vcpus",
+      "kind": "field",
+      "scope": "SmallFakeDriver",
+      "lineRange": {
+        "start": 719,
+        "end": 719
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memory_mb",
+      "kind": "field",
+      "scope": "SmallFakeDriver",
+      "lineRange": {
+        "start": 720,
+        "end": 720
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "local_gb",
+      "kind": "field",
+      "scope": "SmallFakeDriver",
+      "lineRange": {
+        "start": 721,
+        "end": 721
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MediumFakeDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 724,
+        "end": 730
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vcpus",
+      "kind": "field",
+      "scope": "MediumFakeDriver",
+      "lineRange": {
+        "start": 728,
+        "end": 728
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memory_mb",
+      "kind": "field",
+      "scope": "MediumFakeDriver",
+      "lineRange": {
+        "start": 729,
+        "end": 729
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "local_gb",
+      "kind": "field",
+      "scope": "MediumFakeDriver",
+      "lineRange": {
+        "start": 730,
+        "end": 730
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SameHostColdMigrateDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 733,
+        "end": 736
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "capabilities",
+      "kind": "field",
+      "scope": "SameHostColdMigrateDriver",
+      "lineRange": {
+        "start": 735,
+        "end": 736
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RescueBFVDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 739,
+        "end": 740
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "capabilities",
+      "kind": "field",
+      "scope": "RescueBFVDriver",
+      "lineRange": {
+        "start": 740,
+        "end": 740
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PowerUpdateFakeDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 743,
+        "end": 752
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "PowerUpdateFakeDriver",
+      "lineRange": {
+        "start": 746,
+        "end": 748
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "virtapi"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_update_event",
+      "kind": "method",
+      "scope": "PowerUpdateFakeDriver",
+      "lineRange": {
+        "start": 750,
+        "end": 752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "target_power_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MediumFakeDriverWithNestedCustomResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 755,
+        "end": 786
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vcpus",
+      "kind": "field",
+      "scope": "MediumFakeDriverWithNestedCustomResources",
+      "lineRange": {
+        "start": 758,
+        "end": 758
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memory_mb",
+      "kind": "field",
+      "scope": "MediumFakeDriverWithNestedCustomResources",
+      "lineRange": {
+        "start": 759,
+        "end": 759
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "local_gb",
+      "kind": "field",
+      "scope": "MediumFakeDriverWithNestedCustomResources",
+      "lineRange": {
+        "start": 760,
+        "end": 760
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "child_resources",
+      "kind": "field",
+      "scope": "MediumFakeDriverWithNestedCustomResources",
+      "lineRange": {
+        "start": 761,
+        "end": 770
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_provider_tree",
+      "kind": "method",
+      "scope": "MediumFakeDriverWithNestedCustomResources",
+      "lineRange": {
+        "start": 772,
+        "end": 786
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "provider_tree"
+        },
+        {
+          "name": "nodename"
+        },
+        {
+          "default": "None",
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeFinishMigrationFailDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 789,
+        "end": 793
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "finish_migration",
+      "kind": "method",
+      "scope": "FakeFinishMigrationFailDriver",
+      "lineRange": {
+        "start": 792,
+        "end": 793
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PredictableNodeUUIDDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 796,
+        "end": 807
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_resource",
+      "kind": "method",
+      "scope": "PredictableNodeUUIDDriver",
+      "lineRange": {
+        "start": 801,
+        "end": 807
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "nodename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 807
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeRescheduleDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 810,
+        "end": 830
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rescheduled",
+      "kind": "field",
+      "scope": "FakeRescheduleDriver",
+      "lineRange": {
+        "start": 817,
+        "end": 817
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn",
+      "kind": "method",
+      "scope": "FakeRescheduleDriver",
+      "lineRange": {
+        "start": 819,
+        "end": 830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "default": "None",
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "accel_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeRescheduleDriverWithNestedCustomResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 833,
+        "end": 835
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeBuildAbortDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 838,
+        "end": 847
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn",
+      "kind": "method",
+      "scope": "FakeBuildAbortDriver",
+      "lineRange": {
+        "start": 843,
+        "end": 847
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "default": "None",
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "accel_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeBuildAbortDriverWithNestedCustomResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 850,
+        "end": 852
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeUnshelveSpawnFailDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 855,
+        "end": 870
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn",
+      "kind": "method",
+      "scope": "FakeUnshelveSpawnFailDriver",
+      "lineRange": {
+        "start": 860,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_meta"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "default": "None",
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "block_device_info"
+        },
+        {
+          "default": "True",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "accel_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeUnshelveSpawnFailDriverWithNestedCustomResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 873,
+        "end": 875
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeLiveMigrateDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 878,
+        "end": 924
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeLiveMigrateDriver",
+      "lineRange": {
+        "start": 887,
+        "end": 890
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "virtapi"
+        },
+        {
+          "default": "False",
+          "name": "read_only"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration",
+      "kind": "method",
+      "scope": "FakeLiveMigrateDriver",
+      "lineRange": {
+        "start": 892,
+        "end": 907
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "dest"
+        },
+        {
+          "name": "post_method"
+        },
+        {
+          "name": "recover_method"
+        },
+        {
+          "default": "False",
+          "name": "block_migration"
+        },
+        {
+          "default": "None",
+          "name": "migrate_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration_force_complete",
+      "kind": "method",
+      "scope": "FakeLiveMigrateDriver",
+      "lineRange": {
+        "start": 909,
+        "end": 912
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migration_abort",
+      "kind": "method",
+      "scope": "FakeLiveMigrateDriver",
+      "lineRange": {
+        "start": 914,
+        "end": 916
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "post_live_migration",
+      "kind": "method",
+      "scope": "FakeLiveMigrateDriver",
+      "lineRange": {
+        "start": 918,
+        "end": 924
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "block_device_info"
+        },
+        {
+          "default": "None",
+          "name": "migrate_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeLiveMigrateDriverWithNestedCustomResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 927,
+        "end": 929
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeDriverWithPciResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 932,
+        "end": 1116
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ADDR_PF1",
+      "kind": "constant",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 964,
+        "end": 964
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ADDR_PF1_VF1",
+      "kind": "constant",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 965,
+        "end": 965
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ADDR_PF2",
+      "kind": "constant",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 966,
+        "end": 966
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ADDR_PF2_VF1",
+      "kind": "constant",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 967,
+        "end": 967
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ADDR_PF3",
+      "kind": "constant",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 968,
+        "end": 968
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PCI_ADDR_PF3_VF1",
+      "kind": "constant",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 969,
+        "end": 969
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeDriverWithPciResourcesConfigFixture",
+      "kind": "class",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 974,
+        "end": 1038
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "FakeDriverWithPciResources.FakeDriverWithPciResourcesConfigFixture",
+      "lineRange": {
+        "start": 975,
+        "end": 1038
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_resource",
+      "kind": "method",
+      "scope": "FakeDriverWithPciResources",
+      "lineRange": {
+        "start": 1040,
+        "end": 1116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "nodename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "host_status",
+          "line": 1116
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeLiveMigrateDriverWithPciResources",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1119,
+        "end": 1127
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeDriverWithCaching",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1130,
+        "end": 1140
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeDriverWithCaching",
+      "lineRange": {
+        "start": 1131,
+        "end": 1133
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*a"
+        },
+        {
+          "name": "**k"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cache_image",
+      "kind": "method",
+      "scope": "FakeDriverWithCaching",
+      "lineRange": {
+        "start": 1135,
+        "end": 1140
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 1137
+        },
+        {
+          "expr": "True",
+          "line": 1140
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EphEncryptionDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1143,
+        "end": 1146
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "capabilities",
+      "kind": "field",
+      "scope": "EphEncryptionDriver",
+      "lineRange": {
+        "start": 1144,
+        "end": 1146
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EphEncryptionDriverLUKS",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1149,
+        "end": 1153
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "capabilities",
+      "kind": "field",
+      "scope": "EphEncryptionDriverLUKS",
+      "lineRange": {
+        "start": 1150,
+        "end": 1153
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EphEncryptionDriverPLAIN",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1156,
+        "end": 1160
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "capabilities",
+      "kind": "field",
+      "scope": "EphEncryptionDriverPLAIN",
+      "lineRange": {
+        "start": 1157,
+        "end": 1160
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeDriverWithoutFakeNodes",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1163,
+        "end": 1179
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_resource",
+      "kind": "method",
+      "scope": "FakeDriverWithoutFakeNodes",
+      "lineRange": {
+        "start": 1171,
+        "end": 1174
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "nodename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources",
+          "line": 1174
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_nodenames_by_uuid",
+      "kind": "method",
+      "scope": "FakeDriverWithoutFakeNodes",
+      "lineRange": {
+        "start": 1176,
+        "end": 1179
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "refresh"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ nova.virt.node.get_local_node_uuid(): self.get_available_nodes()[0] }",
+          "line": 1177
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "driver.ComputeDriver",
+      "usage": "inherit",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 143,
+        "end": 143
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_int",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      }
+    },
+    {
+      "name": "exception.InstanceNotRunning",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 219,
+        "end": 219
+      }
+    },
+    {
+      "name": "update_task_state",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 220,
+        "end": 220
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 289,
+        "end": 289
+      }
+    },
+    {
+      "name": "exception.InstanceExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 358,
+        "end": 358
+      }
+    },
+    {
+      "name": "exception.InterfaceAttachFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 392,
+        "end": 392
+      }
+    },
+    {
+      "name": "exception.InterfaceDetachFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "hardware.InstanceInfo",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 407,
+        "end": 407
+      }
+    },
+    {
+      "name": "diagnostics_obj.Diagnostics",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 428,
+        "end": 428
+      }
+    },
+    {
+      "name": "diagnostics_obj.MemoryDiagnostics",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 448,
+        "end": 448
+      }
+    },
+    {
+      "name": "ctype.ConsoleVNC",
+      "usage": "call",
+      "via": "nova.console",
+      "count": 1,
+      "lineRange": {
+        "start": 483,
+        "end": 483
+      }
+    },
+    {
+      "name": "ctype.ConsoleSpice",
+      "usage": "call",
+      "via": "nova.console",
+      "count": 1,
+      "lineRange": {
+        "start": 489,
+        "end": 489
+      }
+    },
+    {
+      "name": "ctype.ConsoleSerial",
+      "usage": "call",
+      "via": "nova.console",
+      "count": 1,
+      "lineRange": {
+        "start": 496,
+        "end": 496
+      }
+    },
+    {
+      "name": "ctype.ConsoleMKS",
+      "usage": "call",
+      "via": "nova.console",
+      "count": 1,
+      "lineRange": {
+        "start": 502,
+        "end": 502
+      }
+    },
+    {
+      "name": "collections.OrderedDict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 513,
+        "end": 513
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 5,
+      "lineRange": {
+        "start": 532,
+        "end": 532
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 538,
+        "end": 538
+      }
+    },
+    {
+      "name": "post_method",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 582,
+        "end": 582
+      }
+    },
+    {
+      "name": "migrate_data.LibvirtLiveMigrateData",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 600,
+        "end": 600
+      }
+    },
+    {
+      "name": "virtapi.VirtAPI",
+      "usage": "inherit",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 696,
+        "end": 696
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 735,
+        "end": 735
+      }
+    },
+    {
+      "name": "ironic.IronicDriver",
+      "usage": "call",
+      "via": "nova.virt.ironic",
+      "count": 1,
+      "lineRange": {
+        "start": 748,
+        "end": 748
+      }
+    },
+    {
+      "name": "exception.VirtualInterfaceCreateException",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 793,
+        "end": 793
+      }
+    },
+    {
+      "name": "uuid.uuid5",
+      "usage": "call",
+      "via": "uuid",
+      "count": 1,
+      "lineRange": {
+        "start": 806,
+        "end": 806
+      }
+    },
+    {
+      "name": "exception.ComputeResourcesUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 825,
+        "end": 825
+      }
+    },
+    {
+      "name": "exception.BuildAbortException",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 846,
+        "end": 846
+      }
+    },
+    {
+      "name": "time.sleep",
+      "usage": "call",
+      "via": "time",
+      "count": 1,
+      "lineRange": {
+        "start": 899,
+        "end": 899
+      }
+    },
+    {
+      "name": "recover_method",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 903,
+        "end": 903
+      }
+    },
+    {
+      "name": "fixtures.Fixture",
+      "usage": "inherit",
+      "via": "fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 974,
+        "end": 974
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 1032,
+        "end": 1032
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1133,
+        "end": 1133
+      }
+    },
+    {
+      "name": "nova.virt.node.get_local_node_uuid",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 2,
+      "lineRange": {
+        "start": 1173,
+        "end": 1173
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "contextlib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "uuid",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": "orc",
+      "module": "os_resource_classes",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_traits",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.console",
+      "names": [
+        {
+          "alias": "ctype",
+          "name": "type"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "diagnostics_obj",
+          "name": "diagnostics"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "migrate_data"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.ironic",
+      "names": [
+        {
+          "alias": "ironic",
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.node",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "virtapi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

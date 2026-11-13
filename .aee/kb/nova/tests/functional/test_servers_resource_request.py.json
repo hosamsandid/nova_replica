@@ -1,0 +1,3572 @@
+{
+  "file": "nova/tests/functional/test_servers_resource_request.py",
+  "hash": "5ad06a837abc10fc987047cb2ff2c331bf2f6e05fd26aeb2bd5abcc27cc5d729",
+  "language": "Python",
+  "component": "tests-functional",
+  "package": null,
+  "lines": {
+    "blank": 479,
+    "code": 2183,
+    "comment": 461,
+    "total": 3123
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import adapter",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from neutronclient.common import exceptions as neutron_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_resource_classes as orc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import instance_actions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import manager as compute_manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import constants",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron as neutronapi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import base as base_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import servers as servers_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import NeutronFixture",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.api import client",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional import integrated_helpers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_requests",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import fake",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ResourceRequestNeutronFixture",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 127
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "port_with_sriov_resource_request",
+      "kind": "field",
+      "scope": "ResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 50,
+        "end": 79
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "port_macvtap_with_resource_request",
+      "kind": "field",
+      "scope": "ResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 80,
+        "end": 109
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 111,
+        "end": 127
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "test"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ExtendedResourceRequestNeutronFixture",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 130,
+        "end": 252
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_with_existing_neutron_state",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 132,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "existing_fixture"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fixture",
+          "line": 140
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_extensions",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 142,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "extensions",
+          "line": 158
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_port_to_new_resource_request",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 160,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 214
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show_port",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 239,
+        "end": 244
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port_dict",
+          "line": 244
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_ports",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 246,
+        "end": 252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "is_admin"
+        },
+        {
+          "default": "True",
+          "name": "retrieve_all"
+        },
+        {
+          "name": "**_params"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ports_dict",
+          "line": 252
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MultiGroupResourceRequestNeutronFixture",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 255,
+        "end": 306
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "port_with_resource_request",
+      "kind": "field",
+      "scope": "MultiGroupResourceRequestNeutronFixture",
+      "lineRange": {
+        "start": 259,
+        "end": 306
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PortResourceRequestBasedSchedulingTestBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 309,
+        "end": 685
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compute_driver",
+      "kind": "field",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 312,
+        "end": 312
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CUSTOM_VNIC_TYPE_NORMAL",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 314,
+        "end": 314
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CUSTOM_VNIC_TYPE_DIRECT",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 315,
+        "end": 315
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CUSTOM_VNIC_TYPE_MACVTAP",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 316,
+        "end": 316
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CUSTOM_PHYSNET1",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CUSTOM_PHYSNET2",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 318,
+        "end": 318
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CUSTOM_PHYSNET3",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 319,
+        "end": 319
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PF1",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 320,
+        "end": 320
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PF2",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 321,
+        "end": 321
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PF3",
+      "kind": "constant",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 322,
+        "end": 322
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 324,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertComputeAllocationMatchesFlavor",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 364,
+        "end": 369
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "compute_rp_uuid"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 371,
+        "end": 377
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "networks"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.api.post_server({'server': server_req})",
+          "line": 377
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_provider_inventories",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 379,
+        "end": 383
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "rp_uuid"
+        },
+        {
+          "name": "inventories"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._update_inventory(rp_uuid, inventories)",
+          "line": 383
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_ovs_networking_rp_tree",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 385,
+        "end": 428
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_pf_device_rp",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 430,
+        "end": 458
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "device_rp_uuid"
+        },
+        {
+          "name": "parent_rp_uuid"
+        },
+        {
+          "name": "inventories"
+        },
+        {
+          "name": "traits"
+        },
+        {
+          "default": "None",
+          "name": "device_rp_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_sriov_networking_rp_tree",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 460,
+        "end": 517
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_networking_rp_tree",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 519,
+        "end": 522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertPortMatchesAllocation",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 524,
+        "end": 548
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_with_ports",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 550,
+        "end": 555
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._wait_for_state_change(server, 'ACTIVE')",
+          "line": 555
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_allocation",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 557,
+        "end": 625
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "compute_rp_uuid"
+        },
+        {
+          "name": "non_qos_port"
+        },
+        {
+          "name": "qos_port"
+        },
+        {
+          "name": "qos_sriov_port"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "default": "None",
+          "name": "migration_uuid"
+        },
+        {
+          "default": "None",
+          "name": "source_compute_rp_uuid"
+        },
+        {
+          "default": "None",
+          "name": "new_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_delete_server_and_check_allocations",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 627,
+        "end": 639
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "qos_port"
+        },
+        {
+          "name": "qos_sriov_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_with_ports_and_check_allocation",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 641,
+        "end": 649
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "non_qos_normal_port"
+        },
+        {
+          "name": "qos_normal_port"
+        },
+        {
+          "name": "qos_sriov_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "server",
+          "line": 649
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_pci_request_pf_device_name",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 651,
+        "end": 659
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_port_binding_profile_allocation",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 661,
+        "end": 679
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_number_of_expected_allocations_for_ports",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 681,
+        "end": 685
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "len( [port for port in ports if port.get('resource_request')] )",
+          "line": 683
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UnsupportedPortResourceRequestBasedSchedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 688,
+        "end": 796
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_resource_request_to_a_bound_port",
+      "kind": "method",
+      "scope": "UnsupportedPortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 692,
+        "end": 700
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_with_resource_request_old_compute",
+      "kind": "method",
+      "scope": "UnsupportedPortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 702,
+        "end": 733
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_service",
+      "kind": "function",
+      "scope": "UnsupportedPortResourceRequestBasedSchedulingTest.test_interface_attach_with_resource_request_old_compute",
+      "lineRange": {
+        "start": 713,
+        "end": 716
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service",
+          "line": 716
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_with_network_create_port_has_resource_request",
+      "kind": "method",
+      "scope": "UnsupportedPortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 736,
+        "end": 761
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_neutron_create_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_network_create_port_has_resource_request",
+      "kind": "method",
+      "scope": "UnsupportedPortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 764,
+        "end": 779
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_neutron_create_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_port_resource_request_old_microversion",
+      "kind": "method",
+      "scope": "UnsupportedPortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 781,
+        "end": 796
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NonAdminUnsupportedPortResourceRequestBasedSchedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 799,
+        "end": 822
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NonAdminUnsupportedPortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 802,
+        "end": 822
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PortResourceRequestBasedSchedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 825,
+        "end": 1499
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_server_with_two_ports_one_having_resource_request",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 831,
+        "end": 872
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_one_ovs_one_sriov_port",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 874,
+        "end": 909
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_with_resource_request",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 911,
+        "end": 985
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_with_resource_request_no_candidates",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 987,
+        "end": 1016
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_with_resource_request_pci_claim_fails",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1018,
+        "end": 1066
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_sriov_with_qos_pci_update_fails",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1068,
+        "end": 1111
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach_sriov_with_qos_pci_update_fails_cleanup_fails",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1113,
+        "end": 1214
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_put",
+      "kind": "function",
+      "scope": "PortResourceRequestBasedSchedulingTest.test_interface_attach_sriov_with_qos_pci_update_fails_cleanup_fails",
+      "lineRange": {
+        "start": 1148,
+        "end": 1155
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_put(_self, url, **kwargs)",
+          "line": 1152
+        },
+        {
+          "expr": "conflict_rsp",
+          "line": 1155
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_detach_with_port_with_bandwidth_request",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1216,
+        "end": 1265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_bound_port_in_neutron_with_resource_request",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1267,
+        "end": 1345
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_two_sriov_ports_one_with_request_two_available_pfs",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1347,
+        "end": 1417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_one_sriov_port_no_vf_and_bandwidth_available_on_the_same_pf",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1419,
+        "end": 1460
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_sriov_macvtap_port_with_resource_request",
+      "kind": "method",
+      "scope": "PortResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1462,
+        "end": 1499
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NonAdminPortResourceRequestTests",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1502,
+        "end": 1526
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NonAdminPortResourceRequestTests",
+      "lineRange": {
+        "start": 1505,
+        "end": 1526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ExtendedPortResourceRequestBasedSchedulingTestBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1529,
+        "end": 1631
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_port_binding_profile_allocation",
+      "kind": "method",
+      "scope": "ExtendedPortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 1536,
+        "end": 1574
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_number_of_expected_allocations_for_ports",
+      "kind": "method",
+      "scope": "ExtendedPortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 1578,
+        "end": 1583
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*ports"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sum( len((port.get(\"resource_request\") or {}).get(\"request_groups\", [])) for port in ports )",
+          "line": 1580
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_port_res_req_grp_matches_allocation",
+      "kind": "method",
+      "scope": "ExtendedPortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 1585,
+        "end": 1592
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "allocations"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertPortMatchesAllocation",
+      "kind": "method",
+      "scope": "ExtendedPortResourceRequestBasedSchedulingTestBase",
+      "lineRange": {
+        "start": 1597,
+        "end": 1631
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "allocations"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MultiGroupResourceRequestBasedSchedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1634,
+        "end": 1647
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "MultiGroupResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 1644,
+        "end": 1647
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NonAdminMultiGroupResReqTests",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1650,
+        "end": 1674
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NonAdminMultiGroupResReqTests",
+      "lineRange": {
+        "start": 1653,
+        "end": 1674
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerMoveWithPortResourceRequestTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1677,
+        "end": 2613
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1680,
+        "end": 1702
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_resize_or_migrate_server_with_qos_ports",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1704,
+        "end": 1743
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "new_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_with_qos_ports",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1745,
+        "end": 1746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_with_qos_ports",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1748,
+        "end": 1750
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_resize_or_migrate_revert_with_qos_ports",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1752,
+        "end": 1795
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "new_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_revert_with_qos_ports",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1797,
+        "end": 1798
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_revert_with_qos_ports",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1800,
+        "end": 1802
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_resize_or_migrate_server_with_qos_port_reschedule_success",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1804,
+        "end": 1875
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "new_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_prep_resize",
+      "kind": "function",
+      "scope": "ServerMoveWithPortResourceRequestTest._test_resize_or_migrate_server_with_qos_port_reschedule_success",
+      "lineRange": {
+        "start": 1822,
+        "end": 1829
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_with_qos_port_reschedule_success",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1877,
+        "end": 1878
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_with_qos_port_reschedule_success",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1880,
+        "end": 1882
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_resize_or_migrate_server_with_qos_port_reschedule_failure",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1884,
+        "end": 1921
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "new_flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_with_qos_port_reschedule_failure",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1923,
+        "end": 1924
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_with_qos_port_reschedule_failure",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1926,
+        "end": 1928
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_with_qos_port_pci_update_fail_not_reschedule",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1930,
+        "end": 1988
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_allocation_during_evacuate",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 1990,
+        "end": 2057
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "source_compute_rp_uuid"
+        },
+        {
+          "name": "dest_compute_rp_uuid"
+        },
+        {
+          "name": "non_qos_port"
+        },
+        {
+          "name": "qos_port"
+        },
+        {
+          "name": "qos_sriov_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_allocation_after_evacuation_source_recovered",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2059,
+        "end": 2109
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "dest_compute_rp_uuid"
+        },
+        {
+          "name": "non_qos_port"
+        },
+        {
+          "name": "qos_port"
+        },
+        {
+          "name": "qos_sriov_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_qos_port",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2111,
+        "end": 2146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_target_host_with_qos_port",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2148,
+        "end": 2149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_qos_port_fails_recover_source_compute",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2151,
+        "end": 2192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_qos_port_pci_update_fail",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2194,
+        "end": 2238
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_with_qos_port",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2240,
+        "end": 2271
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_with_qos_port_with_target_host",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2273,
+        "end": 2274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_with_qos_port_reschedule_success",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2276,
+        "end": 2328
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_check_can_live_migrate_destination",
+      "kind": "function",
+      "scope": "ServerMoveWithPortResourceRequestTest.test_live_migrate_with_qos_port_reschedule_success",
+      "lineRange": {
+        "start": 2290,
+        "end": 2299
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "src_compute_info"
+        },
+        {
+          "name": "dst_compute_info"
+        },
+        {
+          "default": "False",
+          "name": "block_migration"
+        },
+        {
+          "default": "False",
+          "name": "disk_over_commit"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_check( context, instance, src_compute_info, dst_compute_info, block_migration, disk_over_commit)",
+          "line": 2297
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_with_qos_port_reschedule_fails",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2330,
+        "end": 2371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_with_qos_port_pci_update_fails",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2373,
+        "end": 2419
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_not_offloaded_server_with_port_resource_request",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2421,
+        "end": 2452
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offloaded_server_with_qos_port",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2454,
+        "end": 2512
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offloaded_server_with_qos_port_pci_update_fails",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2514,
+        "end": 2569
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offloaded_server_with_qos_port_fails_due_to_neutron",
+      "kind": "method",
+      "scope": "ServerMoveWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2571,
+        "end": 2613
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NonAdminServerMoveWithPortResourceRequestTests",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2616,
+        "end": 2649
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NonAdminServerMoveWithPortResourceRequestTests",
+      "lineRange": {
+        "start": 2619,
+        "end": 2649
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerMoveWithMultiGroupResourceRequestBasedSchedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2652,
+        "end": 2665
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerMoveWithMultiGroupResourceRequestBasedSchedulingTest",
+      "lineRange": {
+        "start": 2662,
+        "end": 2665
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NonAdminServerMoveWithMultiGroupResReqTests",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2668,
+        "end": 2701
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NonAdminServerMoveWithMultiGroupResReqTests",
+      "lineRange": {
+        "start": 2671,
+        "end": 2701
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LiveMigrateAbortWithPortResourceRequestTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2704,
+        "end": 2760
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compute_driver",
+      "kind": "field",
+      "scope": "LiveMigrateAbortWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2707,
+        "end": 2707
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "LiveMigrateAbortWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2709,
+        "end": 2718
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_with_qos_port_abort_migration",
+      "kind": "method",
+      "scope": "LiveMigrateAbortWithPortResourceRequestTest",
+      "lineRange": {
+        "start": 2720,
+        "end": 2760
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PortResourceRequestReSchedulingTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2763,
+        "end": 2871
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compute_driver",
+      "kind": "field",
+      "scope": "PortResourceRequestReSchedulingTest",
+      "lineRange": {
+        "start": 2772,
+        "end": 2772
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PortResourceRequestReSchedulingTest",
+      "lineRange": {
+        "start": 2774,
+        "end": 2778
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_networking_rp_tree",
+      "kind": "method",
+      "scope": "PortResourceRequestReSchedulingTest",
+      "lineRange": {
+        "start": 2780,
+        "end": 2782
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "compute_rp_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_reschedule_success",
+      "kind": "method",
+      "scope": "PortResourceRequestReSchedulingTest",
+      "lineRange": {
+        "start": 2784,
+        "end": 2834
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot_reschedule_fill_provider_mapping_raises",
+      "kind": "method",
+      "scope": "PortResourceRequestReSchedulingTest",
+      "lineRange": {
+        "start": 2836,
+        "end": 2871
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_fill_provider_mapping",
+      "kind": "function",
+      "scope": "PortResourceRequestReSchedulingTest.test_boot_reschedule_fill_provider_mapping_raises",
+      "lineRange": {
+        "start": 2848,
+        "end": 2852
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "original_fill(*args, **kwargs)",
+          "line": 2850
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CrossCellResizeWithQoSPort",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2874,
+        "end": 2982
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMBER_OF_CELLS",
+      "kind": "constant",
+      "scope": "CrossCellResizeWithQoSPort",
+      "lineRange": {
+        "start": 2875,
+        "end": 2875
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "CrossCellResizeWithQoSPort",
+      "lineRange": {
+        "start": 2877,
+        "end": 2896
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cross_cell_migrate_server_with_qos_ports",
+      "kind": "method",
+      "scope": "CrossCellResizeWithQoSPort",
+      "lineRange": {
+        "start": 2898,
+        "end": 2982
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spy_on_create_binding",
+      "kind": "function",
+      "scope": "CrossCellResizeWithQoSPort.test_cross_cell_migrate_server_with_qos_ports",
+      "lineRange": {
+        "start": 2927,
+        "end": 2940
+      },
+      "parameters": [
+        {
+          "name": "port_id"
+        },
+        {
+          "name": "data"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_create_binding(port_id, data)",
+          "line": 2940
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ExtendedResourceRequestOldCompute",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2985,
+        "end": 3096
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 2992,
+        "end": 2996
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_boot",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3002,
+        "end": 3015
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_operation",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3021,
+        "end": 3042
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "op_callable"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3044,
+        "end": 3049
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3051,
+        "end": 3054
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3056,
+        "end": 3059
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3061,
+        "end": 3064
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_after_shelve_offload",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3066,
+        "end": 3072
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "shelve_offload_then_unshelve",
+      "kind": "function",
+      "scope": "ExtendedResourceRequestOldCompute.test_unshelve_after_shelve_offload",
+      "lineRange": {
+        "start": 3067,
+        "end": 3069
+      },
+      "parameters": [
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_interface_attach",
+      "kind": "method",
+      "scope": "ExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3075,
+        "end": 3096
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_service"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NonAdminExtendedResourceRequestOldCompute",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 3099,
+        "end": 3123
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NonAdminExtendedResourceRequestOldCompute",
+      "lineRange": {
+        "start": 3103,
+        "end": 3123
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "logging",
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "NeutronFixture",
+      "usage": "inherit",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 18,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 5,
+      "lineRange": {
+        "start": 119,
+        "end": 119
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "integrated_helpers.ProviderUsageBaseTestCase",
+      "usage": "inherit",
+      "via": "nova.tests.functional",
+      "count": 1,
+      "lineRange": {
+        "start": 310,
+        "end": 310
+      }
+    },
+    {
+      "name": "fake.FakeDriverWithPciResources.FakeDriverWithPciResourcesConfigFixture",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 334,
+        "end": 334
+      }
+    },
+    {
+      "name": "nova_fixtures.SpawnIsSynchronousFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 343,
+        "end": 343
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 388,
+        "end": 388
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 26,
+      "lineRange": {
+        "start": 585,
+        "end": 585
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 652,
+        "end": 652
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequests.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 653,
+        "end": 653
+      }
+    },
+    {
+      "name": "orig_get_service",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 714,
+        "end": 714
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 12,
+      "lineRange": {
+        "start": 718,
+        "end": 718
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 733,
+        "end": 733
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1059,
+        "end": 1059
+      }
+    },
+    {
+      "name": "fake_requests.FakeResponse",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 1139,
+        "end": 1139
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 1141,
+        "end": 1141
+      }
+    },
+    {
+      "name": "orig_put",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1152,
+        "end": 1152
+      }
+    },
+    {
+      "name": "sum",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1580,
+        "end": 1580
+      }
+    },
+    {
+      "name": "nova_fixtures.HostNameWeigherFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 3,
+      "lineRange": {
+        "start": 1684,
+        "end": 1684
+      }
+    },
+    {
+      "name": "test.TestingException",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1827,
+        "end": 1827
+      }
+    },
+    {
+      "name": "original_prep_resize",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1829,
+        "end": 1829
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 4,
+      "lineRange": {
+        "start": 1834,
+        "end": 1834
+      }
+    },
+    {
+      "name": "exception.ComputeResourcesUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2166,
+        "end": 2166
+      }
+    },
+    {
+      "name": "exception.MigrationPreCheckError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2294,
+        "end": 2294
+      }
+    },
+    {
+      "name": "orig_check",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2297,
+        "end": 2297
+      }
+    },
+    {
+      "name": "neutron_exception.ConnectionFailed",
+      "usage": "call",
+      "via": "neutronclient.common",
+      "count": 1,
+      "lineRange": {
+        "start": 2596,
+        "end": 2596
+      }
+    },
+    {
+      "name": "original_fill",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2850,
+        "end": 2850
+      }
+    },
+    {
+      "name": "exception.ResourceProviderTraitRetrievalFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2851,
+        "end": 2851
+      }
+    },
+    {
+      "name": "neutronapi.get_binding_profile",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 2870,
+        "end": 2870
+      }
+    },
+    {
+      "name": "exception.PortBindingFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2932,
+        "end": 2932
+      }
+    },
+    {
+      "name": "orig_create_binding",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2940,
+        "end": 2940
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 3000,
+        "end": 3000
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "logging",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": null,
+          "name": "adapter"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "neutronclient.common",
+      "names": [
+        {
+          "alias": "neutron_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": "orc",
+      "module": "os_resource_classes",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "instance_actions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_manager",
+          "name": "manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "constants"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "neutronapi",
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "base_policies",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "servers_policies",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": null,
+          "name": "NeutronFixture"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional",
+      "names": [
+        {
+          "alias": null,
+          "name": "integrated_helpers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_requests"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

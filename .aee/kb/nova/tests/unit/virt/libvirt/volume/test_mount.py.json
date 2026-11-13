@@ -1,0 +1,1469 @@
+{
+  "file": "nova/tests/unit/virt/libvirt/volume/test_mount.py",
+  "hash": "fd3c20273719a124aa2f3d7163cd7535541093cdb3de381ddfa4cb350b8ebef8",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 128,
+    "code": 439,
+    "comment": 105,
+    "total": 672
+  },
+  "symbols": [
+    {
+      "name": "import os.path",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import threading",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import processutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import thread_pool_factory",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import config as libvirt_config",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import guest as libvirt_guest",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import host as libvirt_host",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt.volume import mount",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_WAIT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ThreadController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 169
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "all_threads",
+      "kind": "field",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 67,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "deferred_start",
+      "kind": "function",
+      "scope": "ThreadController.__init__",
+      "lineRange": {
+        "start": 91,
+        "end": 97
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "current",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 104,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls.all_threads.get(threading.current_thread())",
+          "line": 105
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ensure_running",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 107,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "waitpoint",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 112,
+        "end": 124
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "runto",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 126,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "start",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 148,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "finish",
+      "kind": "method",
+      "scope": "ThreadController",
+      "lineRange": {
+        "start": 154,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MountFixture",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 172,
+        "end": 202
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "MountFixture",
+      "lineRange": {
+        "start": 173,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "test"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "MountFixture",
+      "lineRange": {
+        "start": 180,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_mount",
+      "kind": "method",
+      "scope": "MountFixture",
+      "lineRange": {
+        "start": 195,
+        "end": 196
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fstype"
+        },
+        {
+          "name": "export"
+        },
+        {
+          "name": "mountpoint"
+        },
+        {
+          "name": "options"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_umount",
+      "kind": "method",
+      "scope": "MountFixture",
+      "lineRange": {
+        "start": 198,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mountpoint"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_ismount",
+      "kind": "method",
+      "scope": "MountFixture",
+      "lineRange": {
+        "start": 201,
+        "end": 202
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mountpoint"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mountpoint in self.mounts",
+          "line": 202
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "HostMountStateTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 205,
+        "end": 607
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 206,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 211,
+        "end": 261
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_disk",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_init",
+      "lineRange": {
+        "start": 214,
+        "end": 218
+      },
+      "parameters": [
+        {
+          "name": "disk"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "libvirt_disk",
+          "line": 218
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mock_guest",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_init",
+      "lineRange": {
+        "start": 220,
+        "end": 224
+      },
+      "parameters": [
+        {
+          "name": "uuid"
+        },
+        {
+          "name": "disks"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "guest",
+          "line": 224
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_clean_hostmountstate",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 264,
+        "end": 269
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mount._HostMountState(host, 0)",
+          "line": 269
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_sentinel_mount",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 271,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "m"
+        },
+        {
+          "name": "vol"
+        },
+        {
+          "default": "mock.sentinel.mountpoint",
+          "name": "mountpoint"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_sentinel_umount",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 281,
+        "end": 283
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "m"
+        },
+        {
+          "name": "vol"
+        },
+        {
+          "default": "mock.sentinel.mountpoint",
+          "name": "mountpoint"
+        },
+        {
+          "default": "mock.sentinel.instance",
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mount_umount",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 285,
+        "end": 328
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mount_umount_multi_attach",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 330,
+        "end": 359
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mount_concurrent",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 361,
+        "end": 489
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_a",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent",
+      "lineRange": {
+        "start": 376,
+        "end": 380
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_b",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent",
+      "lineRange": {
+        "start": 382,
+        "end": 385
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_c",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent",
+      "lineRange": {
+        "start": 387,
+        "end": 388
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_d",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent",
+      "lineRange": {
+        "start": 390,
+        "end": 391
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "trap_mount",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent",
+      "lineRange": {
+        "start": 398,
+        "end": 402
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "trap_umount",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent",
+      "lineRange": {
+        "start": 404,
+        "end": 408
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mount_concurrent_no_interfere",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 491,
+        "end": 532
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_a",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent_no_interfere",
+      "lineRange": {
+        "start": 496,
+        "end": 502
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_b",
+      "kind": "function",
+      "scope": "HostMountStateTestCase.test_mount_concurrent_no_interfere",
+      "lineRange": {
+        "start": 504,
+        "end": 509
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mount_after_failed_umount",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 534,
+        "end": 569
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_umount_log_failure",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 572,
+        "end": 581
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mount_failure",
+      "kind": "method",
+      "scope": "HostMountStateTestCase",
+      "lineRange": {
+        "start": 584,
+        "end": 607
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_log_exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MountManagerTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 610,
+        "end": 672
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeHostMountState",
+      "kind": "class",
+      "scope": "MountManagerTestCase",
+      "lineRange": {
+        "start": 611,
+        "end": 618
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "MountManagerTestCase.FakeHostMountState",
+      "lineRange": {
+        "start": 612,
+        "end": 618
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "MountManagerTestCase",
+      "lineRange": {
+        "start": 620,
+        "end": 628
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_state",
+      "kind": "method",
+      "scope": "MountManagerTestCase",
+      "lineRange": {
+        "start": 630,
+        "end": 632
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "state",
+          "line": 632
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_up_down",
+      "kind": "method",
+      "scope": "MountManagerTestCase",
+      "lineRange": {
+        "start": 634,
+        "end": 641
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_up_waits_for_completion",
+      "kind": "method",
+      "scope": "MountManagerTestCase",
+      "lineRange": {
+        "start": 643,
+        "end": 672
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "txn",
+      "kind": "function",
+      "scope": "MountManagerTestCase.test_host_up_waits_for_completion",
+      "lineRange": {
+        "start": 646,
+        "end": 648
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "threading.Condition",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "threading.Event",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "fn",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "threading.Thread",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      }
+    },
+    {
+      "name": "threading.current_thread",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 105,
+        "end": 105
+      }
+    },
+    {
+      "name": "time.time",
+      "usage": "call",
+      "via": "time",
+      "count": 6,
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      }
+    },
+    {
+      "name": "fixtures.Fixture",
+      "usage": "inherit",
+      "via": "fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 172,
+        "end": 172
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 174,
+        "end": 174
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 177,
+        "end": 177
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 5,
+      "lineRange": {
+        "start": 183,
+        "end": 183
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 205,
+        "end": 205
+      }
+    },
+    {
+      "name": "libvirt_config.LibvirtConfigGuestDisk",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os.path",
+      "count": 1,
+      "lineRange": {
+        "start": 217,
+        "end": 217
+      }
+    },
+    {
+      "name": "mock.create_autospec",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 221,
+        "end": 221
+      }
+    },
+    {
+      "name": "map",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 223,
+        "end": 223
+      }
+    },
+    {
+      "name": "mount._HostMountState",
+      "usage": "call",
+      "via": "nova.virt.libvirt.volume",
+      "count": 2,
+      "lineRange": {
+        "start": 251,
+        "end": 251
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 254,
+        "end": 254
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 34,
+      "lineRange": {
+        "start": 293,
+        "end": 293
+      }
+    },
+    {
+      "name": "time.sleep",
+      "usage": "call",
+      "via": "time",
+      "count": 3,
+      "lineRange": {
+        "start": 425,
+        "end": 425
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 571,
+        "end": 571
+      }
+    },
+    {
+      "name": "processutils.ProcessExecutionError",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 1,
+      "lineRange": {
+        "start": 573,
+        "end": 573
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 603,
+        "end": 603
+      }
+    },
+    {
+      "name": "fixtures.MonkeyPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 623,
+        "end": 623
+      }
+    },
+    {
+      "name": "mount.get_manager",
+      "usage": "call",
+      "via": "nova.virt.libvirt.volume",
+      "count": 1,
+      "lineRange": {
+        "start": 627,
+        "end": 627
+      }
+    },
+    {
+      "name": "thread_pool_factory.spawn",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 659,
+        "end": 659
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os.path",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "threading",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "processutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "thread_pool_factory"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_config",
+          "name": "config"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_guest",
+          "name": "guest"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_host",
+          "name": "host"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt.volume",
+      "names": [
+        {
+          "alias": null,
+          "name": "mount"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

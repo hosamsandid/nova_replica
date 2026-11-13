@@ -1,0 +1,1712 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_keypairs.py",
+  "hash": "2805fadff8a0b2e3d84dfe1abb86abcd61d0dc5db25261a7026c86a0399030fa",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 99,
+    "code": 485,
+    "comment": 15,
+    "total": 599
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import keypairs as keypairs_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi as os_wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import quota",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.objects import test_keypair",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QUOTAS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "keypair_data",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "keypair_name_2_92_compatible",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_keypair",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 47
+      },
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict(test_keypair.fake_keypair, name=name, **keypair_data)",
+          "line": 46
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_get_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 55
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "default": "None",
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "marker"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_keypair('FAKE')",
+          "line": 54
+        },
+        {
+          "expr": "[fake_keypair('FAKE')]",
+          "line": 55
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_get_count_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 59
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "1",
+          "line": 59
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_create_in_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 63
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_keypair(name=values['name'])",
+          "line": 63
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_destroy_in_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 66,
+        "end": 71
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "db_key_pair_create_duplicate",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 75
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeypairsTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 78,
+        "end": 287
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "base_url",
+      "kind": "field",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 79,
+        "end": 79
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_app_and_controller",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 82,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 86,
+        "end": 104
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 106,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 111,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_empty_name",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 118,
+        "end": 123
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_name_too_long",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 125,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_name_leading_trailing_spaces",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 135,
+        "end": 144
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_name_leading_trailing_spaces_compat_mode",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 146,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_non_alphanumeric_name",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 153,
+        "end": 162
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_special_characters",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 164,
+        "end": 173
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_import_bad_key",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 175,
+        "end": 184
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_invalid_keypair_body",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 186,
+        "end": 191
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_import",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 193,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_import_quota_limit",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 215,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_check"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_quota_limit",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 238,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_check"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_duplicate",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 251,
+        "end": 258
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_delete",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 261,
+        "end": 264
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_get_keypair_not_found",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 266,
+        "end": 268
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_delete_not_found",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 270,
+        "end": 272
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_show",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 274,
+        "end": 280
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_show_not_found",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 282,
+        "end": 284
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_keypair_type",
+      "kind": "method",
+      "scope": "KeypairsTestV21",
+      "lineRange": {
+        "start": 286,
+        "end": 287
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "res_dict"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeypairsTestV22",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 290,
+        "end": 304
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "KeypairsTestV22",
+      "lineRange": {
+        "start": 291,
+        "end": 291
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list",
+      "kind": "method",
+      "scope": "KeypairsTestV22",
+      "lineRange": {
+        "start": 293,
+        "end": 297
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_keypair_type",
+      "kind": "method",
+      "scope": "KeypairsTestV22",
+      "lineRange": {
+        "start": 299,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "res_dict"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_name_leading_trailing_spaces_compat_mode",
+      "kind": "method",
+      "scope": "KeypairsTestV22",
+      "lineRange": {
+        "start": 302,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeypairsTestV210",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 307,
+        "end": 405
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 308,
+        "end": 308
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_with_name_leading_trailing_spaces_compat_mode",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 310,
+        "end": 312
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_other_user",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 314,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_show_other_user",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 333,
+        "end": 346
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_delete_other_user",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 348,
+        "end": 358
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_other_user",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 360,
+        "end": 376
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_import_other_user",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 378,
+        "end": 395
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_other_user_invalid_in_old_microversion",
+      "kind": "method",
+      "scope": "KeypairsTestV210",
+      "lineRange": {
+        "start": 397,
+        "end": 405
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeypairsTestV235",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 408,
+        "end": 469
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "base_url",
+      "kind": "field",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 409,
+        "end": 409
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 410,
+        "end": 410
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_app_and_controller",
+      "kind": "method",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 412,
+        "end": 414
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 416,
+        "end": 418
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_limit_and_marker",
+      "kind": "method",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 421,
+        "end": 435
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_kp_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_limit_and_marker_invalid_marker",
+      "kind": "method",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 438,
+        "end": 445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_kp_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_limit_and_marker_invalid_limit",
+      "kind": "method",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 447,
+        "end": 453
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_limit_and_marker_invalid_in_old_microversion",
+      "kind": "method",
+      "scope": "KeypairsTestV235",
+      "lineRange": {
+        "start": 456,
+        "end": 469
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_kp_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeypairsTestV275",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 472,
+        "end": 517
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "KeypairsTestV275",
+      "lineRange": {
+        "start": 473,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_additional_param_old_version",
+      "kind": "method",
+      "scope": "KeypairsTestV275",
+      "lineRange": {
+        "start": 477,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_list_additional_param",
+      "kind": "method",
+      "scope": "KeypairsTestV275",
+      "lineRange": {
+        "start": 498,
+        "end": 503
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_show_additional_param",
+      "kind": "method",
+      "scope": "KeypairsTestV275",
+      "lineRange": {
+        "start": 505,
+        "end": 510
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_delete_additional_param",
+      "kind": "method",
+      "scope": "KeypairsTestV275",
+      "lineRange": {
+        "start": 512,
+        "end": 517
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "KeypairsTestV292",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 520,
+        "end": 599
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 521,
+        "end": 521
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_old_api_version",
+      "kind": "field",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 522,
+        "end": 522
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 524,
+        "end": 532
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_no_longer_supported",
+      "kind": "method",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 534,
+        "end": 541
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_works_with_old_version",
+      "kind": "method",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 543,
+        "end": 551
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_import_works_with_new_version",
+      "kind": "method",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 553,
+        "end": 570
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_create_refuses_special_chars_with_old_version",
+      "kind": "method",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 572,
+        "end": 579
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_keypair_import_with_special_characters",
+      "kind": "method",
+      "scope": "KeypairsTestV292",
+      "lineRange": {
+        "start": 581,
+        "end": 599
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "exception.KeypairNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "Exception",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "name": "exception.KeyPairExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      }
+    },
+    {
+      "name": "fakes.wsgi_app_v21",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "keypairs_v21.KeypairController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 4,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "name": "fakes.stub_out_networking",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      }
+    },
+    {
+      "name": "fakes.stub_out_secgroup_api",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 89,
+        "end": 89
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 17,
+      "lineRange": {
+        "start": 102,
+        "end": 102
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 6,
+      "lineRange": {
+        "start": 214,
+        "end": 214
+      }
+    },
+    {
+      "name": "exception.OverQuota",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "objects.KeyPair",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 262,
+        "end": 262
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 263,
+        "end": 263
+      }
+    },
+    {
+      "name": "objects.KeyPairList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 319,
+        "end": 319
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 9,
+      "lineRange": {
+        "start": 326,
+        "end": 326
+      }
+    },
+    {
+      "name": "exception.MarkerNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 439,
+        "end": 439
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "keypairs_v21",
+          "name": "keypairs"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": "os_wsgi",
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "quota"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "test_keypair"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

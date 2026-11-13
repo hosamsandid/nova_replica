@@ -1,0 +1,3021 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_server_actions.py",
+  "hash": "e8cf6e2e1b0de51eecdd8863e8e50ececb983ba36824e78efcae735716369bdb",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 240,
+    "code": 1062,
+    "comment": 35,
+    "total": 1337
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import servers as servers_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.image import glance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServerActionsControllerTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 1337
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_uuid",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_base_url",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_href",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "servers",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validation_error",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "request_too_large_error",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "image_url",
+      "kind": "field",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 53,
+        "end": 114
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_controller",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 116,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.servers.ServersController()",
+          "line": 117
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_locked_instance",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 119,
+        "end": 163
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "default": "None",
+          "name": "method"
+        },
+        {
+          "default": "None",
+          "name": "body_map"
+        },
+        {
+          "default": "None",
+          "name": "compute_api_args_map"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_actions_with_locked_instance",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 165,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_hard",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 195,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_soft",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 199,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_incorrect_type",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 203,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_missing_type",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 209,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_none",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 215,
+        "end": 219
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 221,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_raises_conflict_on_invalid_state",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 230,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_reboot",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_reboot_raises_conflict_on_invalid_state",
+      "lineRange": {
+        "start": 233,
+        "end": 236
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_soft_with_soft_in_progress_raises_conflict",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 244,
+        "end": 252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_hard_with_soft_in_progress_does_not_raise",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 254,
+        "end": 260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_hard_with_hard_in_progress",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 262,
+        "end": 269
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reboot_soft_with_hard_in_progress_raises_conflict",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 271,
+        "end": 280
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_rebuild_preserve_ephemeral",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 282,
+        "end": 306
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_preserve_ephemeral_true",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 308,
+        "end": 309
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_preserve_ephemeral_false",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 311,
+        "end": 312
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_preserve_ephemeral_default",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 314,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_accepted_minimum",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 317,
+        "end": 340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_with_image_uuid",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 342,
+        "end": 358
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rebuild",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_instance_with_image_uuid",
+      "lineRange": {
+        "start": 345,
+        "end": 346
+      },
+      "parameters": [
+        {
+          "name": "self2"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "image_href"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_with_image_href_uses_uuid",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 360,
+        "end": 370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_accepted_minimum_pass_disabled",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 372,
+        "end": 398
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild__http_conflict_error",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 404,
+        "end": 410
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_raises_badrequest_for_not_supported_features",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 420,
+        "end": 426
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_raises_conflict_on_invalid_state",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 428,
+        "end": 440
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_rebuild",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_raises_conflict_on_invalid_state",
+      "lineRange": {
+        "start": 431,
+        "end": 434
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_accepted_with_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 442,
+        "end": 460
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_accepted_with_bad_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 462,
+        "end": 472
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_with_too_large_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 474,
+        "end": 486
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_bad_entity",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 488,
+        "end": 497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_admin_pass",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 499,
+        "end": 516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_admin_pass_pass_disabled",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 518,
+        "end": 539
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 541,
+        "end": 552
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_with_bad_image",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 554,
+        "end": 562
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_accessIP",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 564,
+        "end": 599
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrap_get",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_accessIP",
+      "lineRange": {
+        "start": 581,
+        "end": 583
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "data['instance']",
+          "line": 583
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_save",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_accessIP",
+      "lineRange": {
+        "start": 585,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_when_kernel_not_exists",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 601,
+        "end": 637
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_image_meta",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_when_kernel_not_exists",
+      "lineRange": {
+        "start": 603,
+        "end": 626
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image_meta",
+          "line": 626
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_proper_kernel_ram",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 639,
+        "end": 691
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrap_get",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_proper_kernel_ram",
+      "lineRange": {
+        "start": 644,
+        "end": 647
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "inst",
+          "line": 647
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_save",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_proper_kernel_ram",
+      "lineRange": {
+        "start": 649,
+        "end": 653
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "return_image_meta",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_rebuild_proper_kernel_ram",
+      "lineRange": {
+        "start": 655,
+        "end": 678
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image_meta",
+          "line": 678
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_raise_auto_disk_config_exc",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 694,
+        "end": 706
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_raise_invalid_architecture_exc",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 709,
+        "end": 720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_raise_invalid_volume_exc",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 723,
+        "end": 735
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rebuild"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 737,
+        "end": 750
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize_mock",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_resize_server",
+      "lineRange": {
+        "start": 743,
+        "end": 744
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_no_flavor",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 752,
+        "end": 757
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_no_flavor_ref",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 759,
+        "end": 764
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_with_extra_arg",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 766,
+        "end": 771
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server_invalid_flavor_ref",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 773,
+        "end": 778
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_with_server_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 780,
+        "end": 787
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_with_image_exceptions",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 789,
+        "end": 827
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_resize",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_resize_with_image_exceptions",
+      "lineRange": {
+        "start": 806,
+        "end": 809
+      },
+      "parameters": [
+        {
+          "name": "obj"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "flavor_id"
+        },
+        {
+          "default": "None",
+          "name": "auto_disk_config"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_raises_cannot_resize_disk",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 831,
+        "end": 835
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_raises_flavor_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 840,
+        "end": 844
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_with_too_many_instances",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 846,
+        "end": 856
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_resize",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_resize_with_too_many_instances",
+      "lineRange": {
+        "start": 849,
+        "end": 850
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_raises_conflict_on_invalid_state",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 858,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_resize",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_resize_raises_conflict_on_invalid_state",
+      "lineRange": {
+        "start": 861,
+        "end": 864
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_instance_raise_auto_disk_config_exc",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 873,
+        "end": 881
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_pci_alias_not_defined",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 886,
+        "end": 891
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_raises_badrequest_for_accelerator",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 895,
+        "end": 899
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_raises_badrequest_for_vdpaInterface",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 904,
+        "end": 908
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_resize"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_resize_server",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 910,
+        "end": 922
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cr_mock",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_confirm_resize_server",
+      "lineRange": {
+        "start": 915,
+        "end": 916
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_resize_migration_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 924,
+        "end": 936
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "confirm_resize_mock",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_confirm_resize_migration_not_found",
+      "lineRange": {
+        "start": 927,
+        "end": 929
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_resize_raises_conflict_on_invalid_state",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 938,
+        "end": 951
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_confirm_resize",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_confirm_resize_raises_conflict_on_invalid_state",
+      "lineRange": {
+        "start": 941,
+        "end": 944
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_resize_migration_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 953,
+        "end": 965
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "revert_resize_mock",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_revert_resize_migration_not_found",
+      "lineRange": {
+        "start": 956,
+        "end": 958
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_resize_server_not_found",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 967,
+        "end": 974
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_resize_server",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 976,
+        "end": 988
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "revert_mock",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_revert_resize_server",
+      "lineRange": {
+        "start": 981,
+        "end": 982
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_resize_raises_conflict_on_invalid_state",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 990,
+        "end": 1003
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_revert_resize",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_revert_resize_raises_conflict_on_invalid_state",
+      "lineRange": {
+        "start": 993,
+        "end": 996
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1005,
+        "end": 1021
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_v245",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1023,
+        "end": 1035
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_name_too_long",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1037,
+        "end": 1047
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_test_create_volume_backed_image",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1049,
+        "end": 1154
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "extra_properties"
+        },
+        {
+          "default": "None",
+          "name": "mock_vol_create_side_effect"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_id",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21._do_test_create_volume_backed_image",
+      "lineRange": {
+        "start": 1052,
+        "end": 1053
+      },
+      "parameters": [
+        {
+          "name": "x"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'%s-%s-%s-%s' % (x * 8, x * 4, x * 4, x * 12)",
+          "line": 1053
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_block_device_mapping_get_all_by_instance",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21._do_test_create_volume_backed_image",
+      "lineRange": {
+        "start": 1067,
+        "end": 1078
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "inst_id"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[fake_block_device.FakeDbBlockDeviceDict( {'volume_id': _fake_id('a'), 'source_type': 'snapshot', 'destination_type': 'volume', 'volume_size': 1, 'device_name': 'vda', 'snapshot_id': 1, 'boot_index': ",
+          "line": 1069
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_backed_image_no_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1156,
+        "end": 1157
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_backed_image_with_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1159,
+        "end": 1161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_backed_image_cinder_over_quota",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1163,
+        "end": 1168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_create_volume_backed_image_with_metadata_from_volume",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1170,
+        "end": 1248
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "extra_metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_id",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21._test_create_volume_backed_image_with_metadata_from_volume",
+      "lineRange": {
+        "start": 1173,
+        "end": 1174
+      },
+      "parameters": [
+        {
+          "name": "x"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'%s-%s-%s-%s' % (x * 8, x * 4, x * 4, x * 12)",
+          "line": 1174
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_block_device_mapping_get_all_by_instance",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21._test_create_volume_backed_image_with_metadata_from_volume",
+      "lineRange": {
+        "start": 1182,
+        "end": 1193
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "inst_id"
+        },
+        {
+          "default": "False",
+          "name": "use_slave"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[fake_block_device.FakeDbBlockDeviceDict( {'volume_id': _fake_id('a'), 'source_type': 'snapshot', 'destination_type': 'volume', 'volume_size': 1, 'device_name': 'vda', 'snapshot_id': 1, 'boot_index': ",
+          "line": 1184
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_vol_backed_img_with_meta_from_vol_without_extra_meta",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1250,
+        "end": 1251
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_vol_backed_img_with_meta_from_vol_with_extra_meta",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1253,
+        "end": 1255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_with_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1257,
+        "end": 1274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_with_too_much_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1276,
+        "end": 1288
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_no_name",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1290,
+        "end": 1297
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_blank_name",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1299,
+        "end": 1308
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_bad_metadata",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1310,
+        "end": 1320
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_image_raises_conflict_on_invalid_state",
+      "kind": "method",
+      "scope": "ServerActionsControllerTestV21",
+      "lineRange": {
+        "start": 1322,
+        "end": 1337
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot",
+      "kind": "function",
+      "scope": "ServerActionsControllerTestV21.test_create_image_raises_conflict_on_invalid_state",
+      "lineRange": {
+        "start": 1323,
+        "end": 1326
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "fakes.fake_compute_get",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 13,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "fakes.stub_out_compute_api_snapshot",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "name": "nova_fixtures.GlanceFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 15,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "glance.API",
+      "usage": "call",
+      "via": "nova.image",
+      "count": 1,
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 12,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 95,
+        "end": 95
+      }
+    },
+    {
+      "name": "fixtures.MonkeyPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "fake_instance.fake_db_instance",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "objects.Instance._from_db_object",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      }
+    },
+    {
+      "name": "test.nested",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "exception.InstanceIsLocked",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "eval",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 71,
+      "lineRange": {
+        "start": 196,
+        "end": 196
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 224,
+        "end": 224
+      }
+    },
+    {
+      "name": "exception.InstanceInvalidState",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 234,
+        "end": 234
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 335,
+        "end": 335
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 340,
+        "end": 340
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 2,
+      "lineRange": {
+        "start": 400,
+        "end": 400
+      }
+    },
+    {
+      "name": "exception.ForbiddenWithAccelerators",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 413,
+        "end": 413
+      }
+    },
+    {
+      "name": "exception.OperationNotSupportedForVTPM",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "exception.OperationNotSupportedForVDPAInterface",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 416,
+        "end": 416
+      }
+    },
+    {
+      "name": "orig_get",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 582,
+        "end": 582
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 599,
+        "end": 599
+      }
+    },
+    {
+      "name": "exception.ImageNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 624,
+        "end": 624
+      }
+    },
+    {
+      "name": "exception.AutoDiskConfigDisabledByImage",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 701,
+        "end": 701
+      }
+    },
+    {
+      "name": "exception.InvalidArchitectureName",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 716,
+        "end": 716
+      }
+    },
+    {
+      "name": "exception.InvalidVolume",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 731,
+        "end": 731
+      }
+    },
+    {
+      "name": "exception.ImageNotAuthorized",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 795,
+        "end": 795
+      }
+    },
+    {
+      "name": "map",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 804,
+        "end": 804
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 804,
+        "end": 804
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 809,
+        "end": 809
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 813,
+        "end": 813
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 818,
+        "end": 818
+      }
+    },
+    {
+      "name": "exception.CannotResizeDisk",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 830,
+        "end": 830
+      }
+    },
+    {
+      "name": "exception.FlavorNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 838,
+        "end": 838
+      }
+    },
+    {
+      "name": "exception.TooManyInstances",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 850,
+        "end": 850
+      }
+    },
+    {
+      "name": "exception.PciRequestAliasNotDefined",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 884,
+        "end": 884
+      }
+    },
+    {
+      "name": "exception.MigrationNotFoundByStatus",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 928,
+        "end": 928
+      }
+    },
+    {
+      "name": "glance.get_default_image_service",
+      "usage": "call",
+      "via": "nova.image",
+      "count": 2,
+      "lineRange": {
+        "start": 1060,
+        "end": 1060
+      }
+    },
+    {
+      "name": "fake_block_device.FakeDbBlockDeviceDict",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 2,
+      "lineRange": {
+        "start": 1069,
+        "end": 1069
+      }
+    },
+    {
+      "name": "exception.InstanceQuiesceNotSupported",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1104,
+        "end": 1104
+      }
+    },
+    {
+      "name": "exception.OverQuota",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1167,
+        "end": 1167
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "servers_v21",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.image",
+      "names": [
+        {
+          "alias": null,
+          "name": "glance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

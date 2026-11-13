@@ -1,0 +1,916 @@
+{
+  "file": "nova/accelerator/cyborg.py",
+  "hash": "d95c9fa1561490a07ef3e9c4b42a2e6a5a423fd632d76fb5f11b6bf8556c1afe",
+  "language": "Python",
+  "component": "accelerator",
+  "package": null,
+  "lines": {
+    "blank": 69,
+    "code": 324,
+    "comment": 26,
+    "total": 419
+  },
+  "symbols": [
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils as schedutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import service_auth",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_client",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_CyborgClient(context)",
+          "line": 57
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_profile_group_requester_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "dp_group_id"
+        },
+        {
+          "name": "owner"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "req_id",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_arq_pci_device_profile",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 75,
+        "end": 85
+      },
+      "parameters": [
+        {
+          "name": "arq"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'physical_network': pci_info[\"physical_network\"], 'pci_slot': \"%s:%s:%s.%s\" % ( pci_info[\"domain\"], pci_info[\"bus\"], pci_info[\"device\"], pci_info[\"function\"]), 'arq_uuid': arq['uuid'] }",
+          "line": 79
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_profile_request_groups",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 88,
+        "end": 91
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "dp_name"
+        },
+        {
+          "default": "None",
+          "name": "owner"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cyclient.get_device_request_groups(dp_groups, owner)",
+          "line": 91
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_amount_of_dp_groups",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 94,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "name": "dp_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "devices_amount",
+          "line": 109
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_CyborgClient",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 112,
+        "end": 419
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEVICE_PROFILE_URL",
+      "kind": "constant",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 113,
+        "end": 113
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ARQ_URL",
+      "kind": "constant",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 116,
+        "end": 118
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_client",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 121,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._adapter",
+          "line": 134
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_call_cyborg",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 136,
+        "end": 147
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resp, err_msg",
+          "line": 147
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_profile_list",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 149,
+        "end": 159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dp_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resp.json().get('device_profiles')",
+          "line": 159
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_profile_groups",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 161,
+        "end": 177
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dp_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dp_list[0]['groups']",
+          "line": 177
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_request_groups",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 179,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dp_groups"
+        },
+        {
+          "name": "owner"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "request_groups",
+          "line": 201
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_arqs",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 203,
+        "end": 211
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dp_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resp.json().get('arqs')",
+          "line": 211
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_arqs",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 213,
+        "end": 220
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dp_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "arqs",
+          "line": 220
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_arqs_and_match_resource_providers",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 222,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dp_name"
+        },
+        {
+          "name": "rg_rp_map"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "arqs",
+          "line": 241
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_arq_device_rp_uuid",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 243,
+        "end": 253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "arq"
+        },
+        {
+          "name": "rg_rp_map"
+        },
+        {
+          "name": "owner"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rg_rp_map[requester_id][0]",
+          "line": 253
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bind_arqs",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 255,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bindings"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_arqs_for_instance",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 291,
+        "end": 335
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "default": "False",
+          "name": "only_resolved"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "arqs",
+          "line": 335
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_arq_by_uuid",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 337,
+        "end": 368
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "arq_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "arq",
+          "line": 368
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_arqs_for_instance",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 370,
+        "end": 383
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_arqs_by_uuid",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 385,
+        "end": 410
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "arq_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_arq_uuids_for_instance",
+      "kind": "method",
+      "scope": "_CyborgClient",
+      "lineRange": {
+        "start": 412,
+        "end": 419
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[arq['uuid'] for arq in self.get_arqs_for_instance(instance.uuid)]",
+          "line": 418
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "schedutils.ResourceRequest.XS_KEYPAT.match",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 2,
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "service_auth.get_service_user_token_auth_plugin",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "utils.get_sdk_adapter",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 16,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "exception.DeviceProfileError",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 157,
+        "end": 157
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 174,
+        "end": 174
+      }
+    },
+    {
+      "name": "objects.RequestGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 190,
+        "end": 190
+      }
+    },
+    {
+      "name": "exception.AcceleratorRequestOpFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 208,
+        "end": 208
+      }
+    },
+    {
+      "name": "exception.AcceleratorRequestBindingFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 288,
+        "end": 288
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": "schedutils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "service_auth"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

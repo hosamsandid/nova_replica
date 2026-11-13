@@ -1,0 +1,1624 @@
+{
+  "file": "nova/tests/unit/pci/test_manager.py",
+  "hash": "24556ee081a0d8b440e85c871c52727d173cd4436ff7415ebf69fd442d01ca4f",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 106,
+    "code": 828,
+    "comment": 86,
+    "total": 1020
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.pci import fakes as pci_fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_devs",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_3",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_4",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_5",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_6",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 63
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_7",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 67
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_8",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 68,
+        "end": 71
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_devs_tree",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_dev",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 94
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_dev_1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 95,
+        "end": 99
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_dev_2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 100,
+        "end": 102
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_devs",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 103,
+        "end": 103
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_dev_3",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 105,
+        "end": 108
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_dev_4",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 109,
+        "end": 113
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_dev_5",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 114,
+        "end": 118
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_devs_tree",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 119,
+        "end": 119
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_pci_requests",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 121,
+        "end": 125
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PciDevTrackerTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 129,
+        "end": 1020
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_fake_instance",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 130,
+        "end": 136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_get_pci_devices",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 138,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "node_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.fake_devs",
+          "line": 139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_pci_device_update",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 141,
+        "end": 145
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "node_id"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_return",
+          "line": 145
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_pci_device_destroy",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 147,
+        "end": 148
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "node_id"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_pci_requests_object",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 150,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "requests"
+        },
+        {
+          "default": "None",
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.InstancePCIRequests( instance_uuid=instance_uuid, requests=pci_reqs)",
+          "line": 158
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_tracker",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 162,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fake_devs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 167,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pcidev_tracker_create",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 180,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pcidev_tracker_create_device_tree",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 191,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pcidev_tracker_create_device_tree_pf_only",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 211,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pcidev_tracker_create_device_tree_vf_only",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 224,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_devices_from_hypervisor_resources",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 241,
+        "end": 258
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_vf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_devices_from_hypervisor_resources_with_tag",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 263,
+        "end": 292
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "data"
+        },
+        {
+          "name": "_mock_vf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_devices_from_hypervisor_resources_with_multiple_tags",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 295,
+        "end": 333
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock_vf"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_devices_from_hypervisor_resources_with_invalid_tag",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 339,
+        "end": 369
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "data"
+        },
+        {
+          "name": "_mock_vf"
+        },
+        {
+          "name": "mock_debug"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_devices_from_hypervisor_resources_32bit_domain",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 372,
+        "end": 407
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_debug"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_new_dev",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 409,
+        "end": 420
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_new_dev_tree_maintained",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 422,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_changed",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 443,
+        "end": 449
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_remove",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 451,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_remove_tree_maintained",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 458,
+        "end": 478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_remove_tree_maintained_with_allocations",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 480,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdev_changed_stal",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 528,
+        "end": 537
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_by_address",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 539,
+        "end": 546
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "devs[0]",
+          "line": 542
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdevs_unavailable_vf_removed",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 548,
+        "end": 584
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_hvdevs_unavailable_pf_removed",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 586,
+        "end": 618
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_available_pf_while_child_vf_is_unavailable",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 620,
+        "end": 676
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_available_pf_while_children_vfs_are_in_mixed_state",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 678,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_claim_available_pf_while_a_child_is_used",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 740,
+        "end": 779
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_for_instance_active",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 781,
+        "end": 790
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_for_instance_fail",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 792,
+        "end": 808
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pci_claim_instance_with_numa",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 810,
+        "end": 830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_pci_claim_instance_with_numa_fail",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 832,
+        "end": 843
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_pci_for_instance_deleted",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 845,
+        "end": 857
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_save",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 861,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "migrate_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_save_removed",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 872,
+        "end": 889
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_clean_usage",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 891,
+        "end": 919
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_clean_usage_no_request_match_no_claims",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 921,
+        "end": 933
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_free_devices",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 935,
+        "end": 947
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_free_device",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 949,
+        "end": 968
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_free_instance_claims",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 970,
+        "end": 994
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_free_instance_allocations",
+      "kind": "method",
+      "scope": "PciDevTrackerTestCase",
+      "lineRange": {
+        "start": 996,
+        "end": 1020
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 19,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 131,
+        "end": 131
+      }
+    },
+    {
+      "name": "objects.PciDeviceList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 133,
+        "end": 133
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 32,
+      "lineRange": {
+        "start": 144,
+        "end": 144
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 155,
+        "end": 155
+      }
+    },
+    {
+      "name": "objects.InstancePCIRequests",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      }
+    },
+    {
+      "name": "manager.PciDevTracker",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 6,
+      "lineRange": {
+        "start": 164,
+        "end": 164
+      }
+    },
+    {
+      "name": "objects.ComputeNode",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 165,
+        "end": 165
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 168,
+        "end": 168
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 169,
+        "end": 169
+      }
+    },
+    {
+      "name": "pci_fakes.fake_pci_whitelist",
+      "usage": "call",
+      "via": "nova.tests.unit.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 54,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 7,
+      "lineRange": {
+        "start": 240,
+        "end": 240
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 4,
+      "lineRange": {
+        "start": 254,
+        "end": 254
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 2,
+      "lineRange": {
+        "start": 261,
+        "end": 261
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 368,
+        "end": 368
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 14,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 544,
+        "end": 544
+      }
+    },
+    {
+      "name": "objects.PciDevice",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 671,
+        "end": 671
+      }
+    },
+    {
+      "name": "objects.InstanceNUMATopology",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 821,
+        "end": 821
+      }
+    },
+    {
+      "name": "objects.InstanceNUMACell",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 822,
+        "end": 822
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 859,
+        "end": 859
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 892,
+        "end": 892
+      }
+    },
+    {
+      "name": "objects.Migration",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 894,
+        "end": 894
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": null,
+          "name": "manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.pci",
+      "names": [
+        {
+          "alias": "pci_fakes",
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

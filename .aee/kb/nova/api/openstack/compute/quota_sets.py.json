@@ -1,0 +1,968 @@
+{
+  "file": "nova/api/openstack/compute/quota_sets.py",
+  "hash": "f3397d78ea344cefc6c38ba1989589fdd03a06a18ce434c957d14673db12d717",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 32,
+    "code": 180,
+    "comment": 45,
+    "total": 257
+  },
+  "symbols": [
+    {
+      "name": "from urllib import parse as urlparse",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import api_version_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.schemas import quota_sets as schema",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import identity",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api import validation",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import utils as limit_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import quota_sets as qs_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import quota",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QUOTAS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FILTERED_QUOTAS_v236",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FILTERED_QUOTAS_v257",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QuotaSetsController",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 257
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_format_quota_set",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 52,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "name": "quota_set"
+        },
+        {
+          "name": "filtered_quotas"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'quota_set': result}",
+          "line": 62
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_validate_quota_limit",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 64,
+        "end": 79
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "resource"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "minimum"
+        },
+        {
+          "name": "maximum"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "conv_inf",
+      "kind": "function",
+      "scope": "QuotaSetsController._validate_quota_limit",
+      "lineRange": {
+        "start": 65,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "float(\"inf\") if value == -1 else value",
+          "line": 66
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_quotas",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 81,
+        "end": 107
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "default": "None",
+          "name": "user_id"
+        },
+        {
+          "default": "False",
+          "name": "usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "values",
+          "line": 105
+        },
+        {
+          "expr": "{k: v['limit'] for k, v in values.items()}",
+          "line": 107
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_filtered_quotas",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 109,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "FILTERED_QUOTAS_v257",
+          "line": 111
+        },
+        {
+          "expr": "FILTERED_QUOTAS_v236",
+          "line": 113
+        },
+        {
+          "expr": "[]",
+          "line": 115
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 123,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._format_quota_set( id, self._get_quotas(context, id, user_id=user_id), filtered_quotas=filtered_quotas)",
+          "line": 131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detail",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 142,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._format_quota_set( id, self._get_quotas(context, id, user_id=user_id, usages=True), filtered_quotas=filtered_quotas)",
+          "line": 149
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 163,
+        "end": 218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "body"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._format_quota_set( None, self._get_quotas(context, id, user_id=user_id), filtered_quotas=filtered_quotas)",
+          "line": 215
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "defaults",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 226,
+        "end": 234
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._format_quota_set( id, values, filtered_quotas=filtered_quotas)",
+          "line": 233
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete",
+      "kind": "method",
+      "scope": "QuotaSetsController",
+      "lineRange": {
+        "start": 244,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "wsgi.Controller",
+      "usage": "inherit",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "float",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 2,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "webob.exc.HTTPBadRequest",
+      "usage": "call",
+      "via": "webob",
+      "count": 2,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "api_version_request.is_supported",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "wsgi.expected_errors",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 5,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "validation.query_schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 9,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "validation.response_body_schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 13,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "identity.verify_project_id",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 4,
+      "lineRange": {
+        "start": 126,
+        "end": 126
+      }
+    },
+    {
+      "name": "urlparse.parse_qs",
+      "usage": "call",
+      "via": "urllib",
+      "count": 3,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "validation.schema",
+      "usage": "call",
+      "via": "nova.api",
+      "count": 3,
+      "lineRange": {
+        "start": 155,
+        "end": 155
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      }
+    },
+    {
+      "name": "limit_utils.use_unified_limits",
+      "usage": "call",
+      "via": "nova.limit",
+      "count": 2,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 195,
+        "end": 195
+      }
+    },
+    {
+      "name": "objects.Quotas.create_limit",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 208,
+        "end": 208
+      }
+    },
+    {
+      "name": "objects.Quotas.update_limit",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 211,
+        "end": 211
+      }
+    },
+    {
+      "name": "wsgi.api_version",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 220,
+        "end": 220
+      }
+    },
+    {
+      "name": "wsgi.response",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 240,
+        "end": 240
+      }
+    },
+    {
+      "name": "objects.Quotas.destroy_all_by_project_and_user",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 254,
+        "end": 254
+      }
+    },
+    {
+      "name": "objects.Quotas.destroy_all_by_project",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 257,
+        "end": 257
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [
+        {
+          "alias": "urlparse",
+          "name": "parse"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "api_version_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.schemas",
+      "names": [
+        {
+          "alias": "schema",
+          "name": "quota_sets"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "identity"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "validation"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "limit_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "qs_policies",
+          "name": "quota_sets"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "quota"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

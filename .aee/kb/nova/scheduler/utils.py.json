@@ -1,0 +1,2755 @@
+{
+  "file": "nova/scheduler/utils.py",
+  "hash": "838de7093b5584cc23d1de96dbf5cdc99d84497a6149e8b4e9c727910857292b",
+  "language": "Python",
+  "component": "scheduler",
+  "package": null,
+  "lines": {
+    "blank": 242,
+    "code": 1069,
+    "comment": 255,
+    "total": 1566
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import sys",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from urllib import parse",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_resource_classes as orc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_traits",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import flavors",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base as obj_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields as obj_fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import instance as obj_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.pci import request as pci_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import rpc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.filters import utils as filters_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "GroupDetails",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ResourceRequest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 589
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "XS_RES_PREFIX",
+      "kind": "constant",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "XS_TRAIT_PREFIX",
+      "kind": "constant",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "XS_KEYPAT",
+      "kind": "constant",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 57,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 60,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_request_spec",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 80,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "request_spec",
+          "type": "'objects.RequestSpec'"
+        },
+        {
+          "default": "True",
+          "name": "enable_pinning_translate",
+          "type": "bool"
+        }
+      ],
+      "returnType": "'ResourceRequest'",
+      "returns": [
+        {
+          "expr": "res_req",
+          "line": 203
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_request_groups",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 206,
+        "end": 223
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "request_groups",
+          "type": "list['objects.RequestGroup']"
+        },
+        {
+          "name": "request_level_params",
+          "type": "'objects.RequestLevelParams'"
+        },
+        {
+          "name": "group_policy",
+          "type": "str"
+        }
+      ],
+      "returnType": "'ResourceRequest'",
+      "returns": [
+        {
+          "expr": "res_req",
+          "line": 223
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_requested_resources",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 225,
+        "end": 231
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_extra_specs",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 233,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 235
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_image_meta",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 259,
+        "end": 267
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 261
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_secure_boot_request",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 269,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 272
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_maxphysaddr_request",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 278,
+        "end": 293
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 282
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_stateless_firmware_request",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 295,
+        "end": 298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_vtpm_request",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 300,
+        "end": 318
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 303
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_mem_encryption_request",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 320,
+        "end": 342
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 333
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_vpmems_request",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 344,
+        "end": 361
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 351
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_pinning_policies",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 363,
+        "end": 427
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_translate_pci_numa_affinity_policy",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 429,
+        "end": 437
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "image"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "group_policy",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 440,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._group_policy",
+          "line": 441
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "group_policy",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 444,
+        "end": 445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_request_group",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 447,
+        "end": 453
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ident"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._rg_by_id[ident]",
+          "line": 453
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_request_group",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 455,
+        "end": 500
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_resource",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 502,
+        "end": 507
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "rclass"
+        },
+        {
+          "name": "amount"
+        },
+        {
+          "default": "None",
+          "name": "group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_trait",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 509,
+        "end": 514
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "trait_name"
+        },
+        {
+          "name": "trait_type"
+        },
+        {
+          "default": "None",
+          "name": "group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_group_policy",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 516,
+        "end": 523
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 522
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_num_of_suffixed_groups",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 525,
+        "end": 527
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "len([ident for ident in self._rg_by_id.keys() if ident is not None])",
+          "line": 526
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "merged_resources",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 529,
+        "end": 542
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict(ret)",
+          "line": 542
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "strip_zeros",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 544,
+        "end": 551
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "to_querystring",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 553,
+        "end": 578
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "parse.urlencode(sorted(qparams))",
+          "line": 578
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "all_required_traits",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 581,
+        "end": 585
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "traits",
+          "line": 585
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__str__",
+      "kind": "method",
+      "scope": "ResourceRequest",
+      "lineRange": {
+        "start": 587,
+        "end": 589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "', '.join(sorted( list(str(rg) for rg in list(self._rg_by_id.values()))))",
+          "line": 588
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "build_request_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 592,
+        "end": 646
+      },
+      "parameters": [
+        {
+          "name": "image"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "default": "None",
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "jsonutils.to_primitive(request_spec)",
+          "line": 646
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resources_from_flavor",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 649,
+        "end": 659
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resources_from_flavor_and_bfv(flavor, is_bfv)",
+          "line": 659
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resources_from_flavor_and_bfv",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 662,
+        "end": 681
+      },
+      "parameters": [
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "is_bfv"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res_req.merged_resources()",
+          "line": 681
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "request_spec_for_limits",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 684,
+        "end": 724
+      },
+      "parameters": [
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "is_bfv"
+        },
+        {
+          "default": "None",
+          "name": "image"
+        },
+        {
+          "default": "None",
+          "name": "port_resource_requests"
+        },
+        {
+          "default": "None",
+          "name": "dp_request_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "req_spec",
+          "line": 724
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resources_from_request_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 727,
+        "end": 837
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "spec_obj"
+        },
+        {
+          "name": "host_manager"
+        },
+        {
+          "default": "True",
+          "name": "enable_pinning_translate"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res_req",
+          "line": 837
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "claim_resources_on_destination",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 840,
+        "end": 954
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "reportclient"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "source_node"
+        },
+        {
+          "name": "dest_node"
+        },
+        {
+          "default": "None",
+          "name": "source_allocations"
+        },
+        {
+          "default": "None",
+          "name": "consumer_generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import report",
+      "kind": "import",
+      "scope": "claim_resources_on_destination",
+      "lineRange": {
+        "start": 927,
+        "end": 927
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_vm_state_and_notify",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 957,
+        "end": 1009
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "updates"
+        },
+        {
+          "name": "ex"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "build_filter_properties",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1012,
+        "end": 1024
+      },
+      "parameters": [
+        {
+          "name": "scheduler_hints"
+        },
+        {
+          "name": "forced_host"
+        },
+        {
+          "name": "forced_node"
+        },
+        {
+          "name": "flavor"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "filter_properties",
+          "line": 1024
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_filter_properties",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1027,
+        "end": 1047
+      },
+      "parameters": [
+        {
+          "name": "filter_properties"
+        },
+        {
+          "name": "selection"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_retry",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1050,
+        "end": 1085
+      },
+      "parameters": [
+        {
+          "name": "filter_properties"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1065
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_log_compute_error",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1088,
+        "end": 1104
+      },
+      "parameters": [
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "retry"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1094
+        },
+        {
+          "expr": "",
+          "line": 1098
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_retry_host",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1107,
+        "end": 1116
+      },
+      "parameters": [
+        {
+          "name": "filter_properties"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "node"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1114
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_options",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1119,
+        "end": 1148
+      },
+      "parameters": [
+        {
+          "name": "opts"
+        },
+        {
+          "default": "'='",
+          "name": "sep"
+        },
+        {
+          "default": "str",
+          "name": "converter"
+        },
+        {
+          "default": "\"\"",
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "good",
+          "line": 1148
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_filter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1151,
+        "end": 1153
+      },
+      "parameters": [
+        {
+          "name": "filter"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "filter in CONF.filter_scheduler.enabled_filters",
+          "line": 1153
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_weigher",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1156,
+        "end": 1161
+      },
+      "parameters": [
+        {
+          "name": "weigher"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1160
+        },
+        {
+          "expr": "weigher in weight_classes",
+          "line": 1161
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_SUPPORTS_AFFINITY",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 1164,
+        "end": 1164
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_SUPPORTS_ANTI_AFFINITY",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 1165,
+        "end": 1165
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_SUPPORTS_SOFT_AFFINITY",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 1166,
+        "end": 1166
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_SUPPORTS_SOFT_ANTI_AFFINITY",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 1167,
+        "end": 1167
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reset_globals",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1170,
+        "end": 1178
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_group_details",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1181,
+        "end": 1241
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "default": "None",
+          "name": "user_group_hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1210
+        },
+        {
+          "expr": "",
+          "line": 1216
+        },
+        {
+          "expr": "GroupDetails(hosts=user_hosts | group_hosts, policy=group.policy, members=group.members)",
+          "line": 1240
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_group_hosts_all_cells",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1244,
+        "end": 1264
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hosts",
+          "line": 1264
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_hosts_in_cell",
+      "kind": "function",
+      "scope": "_get_instance_group_hosts_all_cells",
+      "lineRange": {
+        "start": 1245,
+        "end": 1252
+      },
+      "parameters": [
+        {
+          "name": "cell_context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cell_instance_group.get_hosts()",
+          "line": 1252
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setup_instance_group",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1267,
+        "end": 1306
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "request_is_rebuild",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1309,
+        "end": 1319
+      },
+      "parameters": [
+        {
+          "name": "spec_obj"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 1315
+        },
+        {
+          "expr": "False",
+          "line": 1317
+        },
+        {
+          "expr": "check_type == ['rebuild']",
+          "line": 1319
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "claim_resources",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1322,
+        "end": 1378
+      },
+      "parameters": [
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "spec_obj"
+        },
+        {
+          "name": "instance_uuid"
+        },
+        {
+          "name": "alloc_req"
+        },
+        {
+          "default": "None",
+          "name": "allocation_request_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1349
+        },
+        {
+          "expr": "client.claim_resources(ctx, instance_uuid, alloc_req, project_id, user_id, allocation_request_version=allocation_request_version, consumer_generation=None)",
+          "line": 1376
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_weight_multiplier",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1381,
+        "end": 1405
+      },
+      "parameters": [
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "multiplier_name"
+        },
+        {
+          "name": "multiplier_config"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "value",
+          "line": 1405
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fill_provider_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1408,
+        "end": 1437
+      },
+      "parameters": [
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "host_selection"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1419
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fill_provider_mapping_based_on_allocation",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1440,
+        "end": 1487
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "report_client"
+        },
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "allocation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 1468
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_aggregates_for_routed_network",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1491,
+        "end": 1530
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "network_api"
+        },
+        {
+          "name": "report_client"
+        },
+        {
+          "name": "network_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "aggregates",
+          "line": 1530
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_aggregates_for_routed_subnet",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1534,
+        "end": 1566
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "network_api"
+        },
+        {
+          "name": "report_client"
+        },
+        {
+          "name": "subnet_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "agg_info.aggregates",
+          "line": 1565
+        },
+        {
+          "expr": "[]",
+          "line": 1566
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "collections.namedtuple",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      }
+    },
+    {
+      "name": "set",
+      "usage": "type",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 131,
+        "end": 131
+      }
+    },
+    {
+      "name": "objects.ImageMeta",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 145,
+        "end": 145
+      }
+    },
+    {
+      "name": "objects.ImageMetaProps",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 145,
+        "end": 145
+      }
+    },
+    {
+      "name": "compute_utils.convert_mb_to_ceil_gb",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 180,
+        "end": 180
+      }
+    },
+    {
+      "name": "hardware.get_secure_boot_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 270,
+        "end": 270
+      }
+    },
+    {
+      "name": "hardware.get_maxphysaddr_mode",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 279,
+        "end": 279
+      }
+    },
+    {
+      "name": "hardware.get_stateless_firmware_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 296,
+        "end": 296
+      }
+    },
+    {
+      "name": "hardware.get_vtpm_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 301,
+        "end": 301
+      }
+    },
+    {
+      "name": "hardware.get_mem_encryption_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 330,
+        "end": 330
+      }
+    },
+    {
+      "name": "hardware.get_vpmems",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 348,
+        "end": 348
+      }
+    },
+    {
+      "name": "collections.defaultdict",
+      "usage": "call",
+      "via": "collections",
+      "count": 2,
+      "lineRange": {
+        "start": 353,
+        "end": 353
+      }
+    },
+    {
+      "name": "orc.normalize_name",
+      "usage": "call",
+      "via": "os_resource_classes",
+      "count": 1,
+      "lineRange": {
+        "start": 355,
+        "end": 355
+      }
+    },
+    {
+      "name": "hardware.get_cpu_policy_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 372,
+        "end": 372
+      }
+    },
+    {
+      "name": "hardware.get_cpu_thread_policy_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 374,
+        "end": 374
+      }
+    },
+    {
+      "name": "hardware.get_emulator_thread_policy_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 376,
+        "end": 376
+      }
+    },
+    {
+      "name": "hardware.get_dedicated_cpu_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 398,
+        "end": 398
+      }
+    },
+    {
+      "name": "hardware.get_realtime_cpu_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 399,
+        "end": 399
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 401,
+        "end": 401
+      }
+    },
+    {
+      "name": "hardware.get_pci_numa_policy_constraint",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 430,
+        "end": 430
+      }
+    },
+    {
+      "name": "objects.RequestGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 449,
+        "end": 449
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 450,
+        "end": 450
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 484,
+        "end": 484
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 11,
+      "lineRange": {
+        "start": 485,
+        "end": 485
+      }
+    },
+    {
+      "name": "exception.RequestGroupSuffixConflict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 497,
+        "end": 497
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 542,
+        "end": 542
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 549,
+        "end": 549
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 564,
+        "end": 564
+      }
+    },
+    {
+      "name": "parse.urlencode",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 578,
+        "end": 578
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 589,
+        "end": 589
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 612,
+        "end": 612
+      }
+    },
+    {
+      "name": "flavors.extract_flavor",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 615,
+        "end": 615
+      }
+    },
+    {
+      "name": "obj_base.obj_to_primitive",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 618,
+        "end": 618
+      }
+    },
+    {
+      "name": "flavors.save_flavor_info",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 630,
+        "end": 630
+      }
+    },
+    {
+      "name": "jsonutils.to_primitive",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 646,
+        "end": 646
+      }
+    },
+    {
+      "name": "compute_utils.is_volume_backed_instance",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 657,
+        "end": 657
+      }
+    },
+    {
+      "name": "objects.RequestSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 669,
+        "end": 669
+      }
+    },
+    {
+      "name": "pci_request.get_pci_requests_from_flavor",
+      "usage": "call",
+      "via": "nova.pci",
+      "count": 1,
+      "lineRange": {
+        "start": 712,
+        "end": 712
+      }
+    },
+    {
+      "name": "exception.NoValidHost",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 789,
+        "end": 789
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 810,
+        "end": 810
+      }
+    },
+    {
+      "name": "exception.ConsumerAllocationRetrievalFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 896,
+        "end": 896
+      }
+    },
+    {
+      "name": "rpc.get_notifier",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 987,
+        "end": 987
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 992,
+        "end": 992
+      }
+    },
+    {
+      "name": "compute_utils.add_instance_fault_from_exc",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 996,
+        "end": 996
+      }
+    },
+    {
+      "name": "sys.exc_info",
+      "usage": "call",
+      "via": "sys",
+      "count": 1,
+      "lineRange": {
+        "start": 997,
+        "end": 997
+      }
+    },
+    {
+      "name": "compute_utils.notify_about_compute_task_error",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 1008,
+        "end": 1008
+      }
+    },
+    {
+      "name": "exception.MaxRetriesExceeded",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1085,
+        "end": 1085
+      }
+    },
+    {
+      "name": "converter",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1136,
+        "end": 1136
+      }
+    },
+    {
+      "name": "objects.InstanceGroup.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1213,
+        "end": 1213
+      }
+    },
+    {
+      "name": "exception.UnsupportedPolicyException",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 1224,
+        "end": 1224
+      }
+    },
+    {
+      "name": "nova_context.scatter_gather_skip_cell0",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1254,
+        "end": 1254
+      }
+    },
+    {
+      "name": "nova_context.is_cell_failure_sentinel",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1262,
+        "end": 1262
+      }
+    },
+    {
+      "name": "filters_utils.aggregate_values_from_key",
+      "usage": "call",
+      "via": "nova.scheduler.filters",
+      "count": 1,
+      "lineRange": {
+        "start": 1395,
+        "end": 1395
+      }
+    },
+    {
+      "name": "filters_utils.validate_num_values",
+      "usage": "call",
+      "via": "nova.scheduler.filters",
+      "count": 1,
+      "lineRange": {
+        "start": 1398,
+        "end": 1398
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 1425,
+        "end": 1425
+      }
+    },
+    {
+      "name": "exception.InvalidRoutedNetworkConfiguration",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1527,
+        "end": 1527
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "sys",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [
+        {
+          "alias": null,
+          "name": "parse"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": "orc",
+      "module": "os_resource_classes",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_traits",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "flavors"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_fields",
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_instance",
+          "name": "instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.pci",
+      "names": [
+        {
+          "alias": "pci_request",
+          "name": "request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "rpc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.filters",
+      "names": [
+        {
+          "alias": "filters_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "report"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 927,
+        "end": 927
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

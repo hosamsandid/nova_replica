@@ -1,0 +1,1636 @@
+{
+  "file": "nova/api/openstack/common.py",
+  "hash": "4675d66a3816a32e25a4f5cbee4858fae6ee4d13865eaab16f259c7d7c53c0b3",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 88,
+    "code": 437,
+    "comment": 29,
+    "total": 554
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from urllib import parse as urlparse",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from webob import exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import api_version_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import quota",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "QUOTAS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "POWER_ON",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "POWER_OFF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_STATE_MAP",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 111
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "status_from_state",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 114,
+        "end": 123
+      },
+      "parameters": [
+        {
+          "name": "vm_state"
+        },
+        {
+          "default": "'default'",
+          "name": "task_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "status",
+          "line": 123
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "task_and_vm_state_from_status",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 126,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "statuses"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sorted(vm_states), sorted(task_states)",
+          "line": 140
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_sort_params",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 143,
+        "end": 173
+      },
+      "parameters": [
+        {
+          "name": "input_params"
+        },
+        {
+          "default": "'created_at'",
+          "name": "default_key"
+        },
+        {
+          "default": "'desc'",
+          "name": "default_dir"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sort_keys, sort_dirs",
+          "line": 173
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_pagination_params",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 176,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "request"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "params",
+          "line": 197
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_int_param",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 200,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "request"
+        },
+        {
+          "name": "param"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "int_param",
+          "line": 207
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_marker_param",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 210,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "request"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "request.GET['marker']",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "limited",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 215,
+        "end": 231
+      },
+      "parameters": [
+        {
+          "name": "items"
+        },
+        {
+          "name": "request"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "items[offset:(offset + limit)]",
+          "line": 231
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_limit_and_marker",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 234,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "request"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "limit, marker",
+          "line": 241
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_id_from_href",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 244,
+        "end": 254
+      },
+      "parameters": [
+        {
+          "name": "href"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "urlparse.urlsplit(\"%s\" % href).path.split('/')[-1]",
+          "line": 254
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_trailing_version_from_href",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 257,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "href"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "urlparse.urlunsplit(parsed_url)",
+          "line": 279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_img_metadata_properties_quota",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 282,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 284
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_networks_for_instance_from_nw_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 292,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "nw_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "networks",
+          "line": 304
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_networks_for_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 307,
+        "end": 327
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "get_networks_for_instance_from_nw_info(nw_info)",
+          "line": 327
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "raise_http_conflict_for_instance_invalid_state",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 330,
+        "end": 346
+      },
+      "parameters": [
+        {
+          "name": "exc"
+        },
+        {
+          "name": "action"
+        },
+        {
+          "name": "server_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "url_join",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 349,
+        "end": 361
+      },
+      "parameters": [
+        {
+          "name": "*parts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"/\".join(clean_parts)",
+          "line": 361
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ViewBuilder",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 364,
+        "end": 460
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_project_id",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 367,
+        "end": 374
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "project_id",
+          "line": 373
+        },
+        {
+          "expr": "''",
+          "line": 374
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_links",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 376,
+        "end": 386
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "identifier"
+        },
+        {
+          "name": "collection_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[{ \"rel\": \"self\", \"href\": self._get_href_link(request, identifier, collection_name), }, { \"rel\": \"bookmark\", \"href\": self._get_bookmark_link(request, identifier, collection_name), }]",
+          "line": 377
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_next_link",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 388,
+        "end": 396
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "identifier"
+        },
+        {
+          "name": "collection_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"%s?%s\" % (url, urlparse.urlencode(params))",
+          "line": 396
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_href_link",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 398,
+        "end": 404
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "identifier"
+        },
+        {
+          "name": "collection_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "url_join(prefix, self._get_project_id(request), collection_name, str(identifier))",
+          "line": 401
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_bookmark_link",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 406,
+        "end": 413
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "identifier"
+        },
+        {
+          "name": "collection_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "url_join(base_url, self._get_project_id(request), collection_name, str(identifier))",
+          "line": 410
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_collection_links",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 415,
+        "end": 445
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "items"
+        },
+        {
+          "name": "collection_name"
+        },
+        {
+          "default": "\"uuid\"",
+          "name": "id_key"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "links",
+          "line": 445
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_link_prefix",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 447,
+        "end": 454
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "orig_url"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_url",
+          "line": 449
+        },
+        {
+          "expr": "urlparse.urlunsplit(url_parts).rstrip('/')",
+          "line": 454
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_glance_link_prefix",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 456,
+        "end": 457
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "orig_url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._update_link_prefix(orig_url, CONF.api.glance_link_prefix)",
+          "line": 457
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_compute_link_prefix",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 459,
+        "end": 460
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "orig_url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._update_link_prefix(orig_url, CONF.api.compute_link_prefix)",
+          "line": 460
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 463,
+        "end": 471
+      },
+      "parameters": [
+        {
+          "name": "compute_api"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "compute_api.get(context, instance_id, expected_attrs=expected_attrs, cell_down_support=cell_down_support)",
+          "line": 467
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "normalize_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 474,
+        "end": 482
+      },
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "name.strip()",
+          "line": 482
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "raise_feature_not_supported",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 485,
+        "end": 488
+      },
+      "parameters": [
+        {
+          "default": "None",
+          "name": "msg"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_flavor",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 491,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "flavor_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "objects.Flavor.get_by_flavor_id(context, flavor_id)",
+          "line": 493
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_all_tenants",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 498,
+        "end": 513
+      },
+      "parameters": [
+        {
+          "name": "search_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "all_tenants",
+          "line": 513
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_locked",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 516,
+        "end": 528
+      },
+      "parameters": [
+        {
+          "name": "search_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "locked",
+          "line": 528
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_multiattach_volume",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 531,
+        "end": 543
+      },
+      "parameters": [
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "api_version_request.is_supported(req, '2.60')",
+          "line": 543
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "supports_port_resource_request",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 546,
+        "end": 554
+      },
+      "parameters": [
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "api_version_request.is_supported(req, '2.72')",
+          "line": 554
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 116,
+        "end": 116
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "vm_states.add",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "task_states.add",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 138,
+        "end": 138
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 140,
+        "end": 140
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 169,
+        "end": 169
+      }
+    },
+    {
+      "name": "utils.validate_integer",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 203,
+        "end": 203
+      }
+    },
+    {
+      "name": "webob.exc.HTTPBadRequest",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "urlparse.urlsplit",
+      "usage": "call",
+      "via": "urllib",
+      "count": 4,
+      "lineRange": {
+        "start": 254,
+        "end": 254
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 271,
+        "end": 271
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 274,
+        "end": 274
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 5,
+      "lineRange": {
+        "start": 274,
+        "end": 274
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 277,
+        "end": 277
+      }
+    },
+    {
+      "name": "urlparse.urlunsplit",
+      "usage": "call",
+      "via": "urllib",
+      "count": 2,
+      "lineRange": {
+        "start": 279,
+        "end": 279
+      }
+    },
+    {
+      "name": "webob.exc.HTTPForbidden",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 289,
+        "end": 289
+      }
+    },
+    {
+      "name": "collections.OrderedDict",
+      "usage": "call",
+      "via": "collections",
+      "count": 2,
+      "lineRange": {
+        "start": 293,
+        "end": 293
+      }
+    },
+    {
+      "name": "itertools.chain",
+      "usage": "call",
+      "via": "itertools",
+      "count": 1,
+      "lineRange": {
+        "start": 300,
+        "end": 300
+      }
+    },
+    {
+      "name": "exc.kwargs.get",
+      "usage": "call",
+      "via": "webob",
+      "count": 2,
+      "lineRange": {
+        "start": 335,
+        "end": 335
+      }
+    },
+    {
+      "name": "webob.exc.HTTPConflict",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 346,
+        "end": 346
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 364,
+        "end": 364
+      }
+    },
+    {
+      "name": "urlparse.urlencode",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 396,
+        "end": 396
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 404,
+        "end": 404
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 429,
+        "end": 429
+      }
+    },
+    {
+      "name": "exc.HTTPNotFound",
+      "usage": "call",
+      "via": "webob",
+      "count": 2,
+      "lineRange": {
+        "start": 471,
+        "end": 471
+      }
+    },
+    {
+      "name": "webob.exc.HTTPNotImplemented",
+      "usage": "call",
+      "via": "webob",
+      "count": 1,
+      "lineRange": {
+        "start": 488,
+        "end": 488
+      }
+    },
+    {
+      "name": "objects.Flavor.get_by_flavor_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 493,
+        "end": 493
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 507,
+        "end": 507
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 509,
+        "end": 509
+      }
+    },
+    {
+      "name": "api_version_request.is_supported",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 543,
+        "end": 543
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [
+        {
+          "alias": "urlparse",
+          "name": "parse"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [
+        {
+          "alias": null,
+          "name": "exc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "api_version_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "quota"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

@@ -1,0 +1,8297 @@
+{
+  "file": "nova/tests/unit/conductor/test_conductor.py",
+  "hash": "5cb3bc69b14b8bd8868989bb7acd13554e950fe0407b8164f061fce6c1aed277",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 571,
+    "code": 4702,
+    "comment": 252,
+    "total": 5525
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as ks_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_db import exception as db_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import exception as limit_exceptions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import oslo_messaging as messaging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_versionedobjects import exception as ovo_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.accelerator import cyborg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import flavors",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import rpcapi as compute_rpcapi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import task_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conductor import api as conductor_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conductor import manager as conductor_manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conductor import rpcapi as conductor_rpcapi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conductor.tasks import live_migrate",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conductor.tasks import migrate",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.api import api as api_db_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.api import models as api_models",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as main_db_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception as exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.image import glance as image_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import placement as placement_limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base as obj_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import block_device as block_device_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import request_spec",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import query",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.client import report",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils as scheduler_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import cyborg as cyborg_fixture",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.compute import test_compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_block_device",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_build_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_request_spec",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_server_actions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_volume",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import utils as test_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.volume import cinder",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 78,
+        "end": 89
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 90,
+        "end": 101
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc3",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 102,
+        "end": 113
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc_json1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc_json2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc_json3",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 116,
+        "end": 116
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc_version",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_selection1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 118,
+        "end": 120
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_selection2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 121,
+        "end": 123
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_selection3",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 124,
+        "end": 126
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_host_lists1",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 127,
+        "end": 127
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_host_lists2",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_host_lists_alt",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeContext",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 132,
+        "end": 137
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "elevated",
+      "kind": "method",
+      "scope": "FakeContext",
+      "lineRange": {
+        "start": 133,
+        "end": 137
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._elevated",
+          "line": 137
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_BaseTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 140,
+        "end": 152
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_BaseTestCase",
+      "lineRange": {
+        "start": 141,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 155,
+        "end": 346
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 158,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_object_action",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 163,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "is_classmethod"
+        },
+        {
+          "name": "raise_exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestObject",
+      "kind": "class",
+      "scope": "ConductorTestCase._test_object_action",
+      "lineRange": {
+        "start": 164,
+        "end": 176
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "foo",
+      "kind": "method",
+      "scope": "ConductorTestCase._test_object_action.TestObject",
+      "lineRange": {
+        "start": 165,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "False",
+          "name": "raise_exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'test'",
+          "line": 169
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bar",
+      "kind": "method",
+      "scope": "ConductorTestCase._test_object_action.TestObject",
+      "lineRange": {
+        "start": 172,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "default": "False",
+          "name": "raise_exception"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'test'",
+          "line": 176
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_action",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 195,
+        "end": 196
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_action_on_raise",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 198,
+        "end": 200
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_class_action",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 202,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_class_action_on_raise",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 205,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_action_copies_object",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 209,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestObject",
+      "kind": "class",
+      "scope": "ConductorTestCase.test_object_action_copies_object",
+      "lineRange": {
+        "start": 210,
+        "end": 215
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "touch_dict",
+      "kind": "method",
+      "scope": "ConductorTestCase.test_object_action_copies_object.TestObject",
+      "lineRange": {
+        "start": 213,
+        "end": 215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_class_action_versions",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 230,
+        "end": 251
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestObject",
+      "kind": "class",
+      "scope": "ConductorTestCase.test_object_class_action_versions",
+      "lineRange": {
+        "start": 232,
+        "end": 237
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "foo",
+      "kind": "method",
+      "scope": "ConductorTestCase.test_object_class_action_versions.TestObject",
+      "lineRange": {
+        "start": 236,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls()",
+          "line": 237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_class_action_versions_old_object",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 253,
+        "end": 277
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestObject",
+      "kind": "class",
+      "scope": "ConductorTestCase.test_object_class_action_versions_old_object",
+      "lineRange": {
+        "start": 257,
+        "end": 262
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "foo",
+      "kind": "method",
+      "scope": "ConductorTestCase.test_object_class_action_versions_old_object.TestObject",
+      "lineRange": {
+        "start": 261,
+        "end": 262
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls()",
+          "line": 262
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_object_class_action_versions_major_version_diff",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 279,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestObject",
+      "kind": "class",
+      "scope": "ConductorTestCase.test_object_class_action_versions_major_version_diff",
+      "lineRange": {
+        "start": 281,
+        "end": 286
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "foo",
+      "kind": "method",
+      "scope": "ConductorTestCase.test_object_class_action_versions_major_version_diff.TestObject",
+      "lineRange": {
+        "start": 285,
+        "end": 286
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls()",
+          "line": 286
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reset",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 302,
+        "end": 306
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graceful_shutdown",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 311,
+        "end": 319
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_wait"
+        },
+        {
+          "name": "mock_shutdown_executors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graceful_shutdown_no_negative_wait_time",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 324,
+        "end": 328
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_wait"
+        },
+        {
+          "name": "mock_shutdown_executors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graceful_shutdown_handles_shutdown_all_executors_exception",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 333,
+        "end": 338
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_wait"
+        },
+        {
+          "name": "mock_shutdown_executors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_provider_fw_rule_get_all",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 340,
+        "end": 342
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_conductor_host",
+      "kind": "method",
+      "scope": "ConductorTestCase",
+      "lineRange": {
+        "start": 344,
+        "end": 346
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorRPCAPITestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 349,
+        "end": 357
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ConductorRPCAPITestCase",
+      "lineRange": {
+        "start": 352,
+        "end": 357
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorAPITestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 360,
+        "end": 385
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ConductorAPITestCase",
+      "lineRange": {
+        "start": 363,
+        "end": 368
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_wait_until_ready",
+      "kind": "method",
+      "scope": "ConductorAPITestCase",
+      "lineRange": {
+        "start": 370,
+        "end": 385
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_ping",
+      "kind": "function",
+      "scope": "ConductorAPITestCase.test_wait_until_ready",
+      "lineRange": {
+        "start": 374,
+        "end": 378
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "timeout"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_BaseTaskTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 388,
+        "end": 2276
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 389,
+        "end": 407
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_prepare_rebuild_args",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 409,
+        "end": 436
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "update_args"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rebuild_args, compute_rebuild_args",
+          "line": 436
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_cold_migrate",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 443,
+        "end": 477
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "spec_from_components"
+        },
+        {
+          "name": "get_image_from_metadata"
+        },
+        {
+          "name": "migration_task_execute"
+        },
+        {
+          "name": "spec_save"
+        },
+        {
+          "name": "get_im"
+        },
+        {
+          "default": "True",
+          "name": "clean_shutdown"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 479,
+        "end": 480
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_forced_shutdown",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 482,
+        "end": 483
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 497,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fp"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_getaz"
+        },
+        {
+          "name": "mock_buildreq"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_bdm"
+        },
+        {
+          "name": "mock_build"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_get_cyborg"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_arq_failure",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 607,
+        "end": 669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fp"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_getaz"
+        },
+        {
+          "name": "mock_buildreq"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_bdm"
+        },
+        {
+          "name": "mock_build"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_cleanup"
+        },
+        {
+          "name": "mock_get_cyborg"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_scheduler_failure",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 679,
+        "end": 724
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dest_build_req_mock"
+        },
+        {
+          "name": "cleanup_mock"
+        },
+        {
+          "name": "sd_mock"
+        },
+        {
+          "name": "state_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "bs_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_retry_exceeded",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 726,
+        "end": 765
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_build_instances_retry_exceeded",
+      "lineRange": {
+        "start": 737,
+        "end": 763
+      },
+      "parameters": [
+        {
+          "name": "populate_retry"
+        },
+        {
+          "name": "build_spec"
+        },
+        {
+          "name": "set_vm_state_and_notify"
+        },
+        {
+          "name": "cleanup_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_scheduler_group_failure",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 773,
+        "end": 810
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cleanup_mock"
+        },
+        {
+          "name": "state_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "bs_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_no_instance_mapping",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 820,
+        "end": 849
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock_set_state"
+        },
+        {
+          "name": "mock_select_dests"
+        },
+        {
+          "name": "mock_get_by_host"
+        },
+        {
+          "name": "mock_get_inst_map_by_uuid"
+        },
+        {
+          "name": "_mock_save"
+        },
+        {
+          "name": "_mock_buildreq"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_exhaust_host_list",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 853,
+        "end": 881
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock_save"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_logs_selected_and_alts",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 888,
+        "end": 914
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock_save"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_debug"
+        },
+        {
+          "name": "mock_destroy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_no_host_mapping",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 924,
+        "end": 960
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock_set_state"
+        },
+        {
+          "name": "mock_select_dests"
+        },
+        {
+          "name": "mock_get_by_host"
+        },
+        {
+          "name": "mock_get_inst_map_by_uuid"
+        },
+        {
+          "name": "_mock_save"
+        },
+        {
+          "name": "mock_buildreq"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_update_instance_mapping",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 969,
+        "end": 1011
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mock_set_state"
+        },
+        {
+          "name": "mock_select_dests"
+        },
+        {
+          "name": "mock_get_by_host"
+        },
+        {
+          "name": "mock_get_inst_map_by_uuid"
+        },
+        {
+          "name": "_mock_save"
+        },
+        {
+          "name": "_mock_buildreq"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_destroy_build_request",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1018,
+        "end": 1053
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select_dests"
+        },
+        {
+          "name": "mock_build_req_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_test",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_build_instances_destroy_build_request",
+      "lineRange": {
+        "start": 1036,
+        "end": 1048
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_reschedule_ignores_build_request",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1059,
+        "end": 1118
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select_dests"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_test",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_build_instances_reschedule_ignores_build_request",
+      "lineRange": {
+        "start": 1080,
+        "end": 1116
+      },
+      "parameters": [
+        {
+          "name": "mock_destroy_build_req"
+        },
+        {
+          "name": "mock_pop_inst_map"
+        },
+        {
+          "name": "mock_build_and_run"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_reschedule_recalculates_provider_mapping",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1124,
+        "end": 1195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select_dests"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_test",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_build_instances_reschedule_recalculates_provider_mapping",
+      "lineRange": {
+        "start": 1147,
+        "end": 1193
+      },
+      "parameters": [
+        {
+          "name": "mock_destroy_build_req"
+        },
+        {
+          "name": "mock_pop_inst_map"
+        },
+        {
+          "name": "mock_build_and_run"
+        },
+        {
+          "name": "mock_request_spec_from_primitives"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_rp_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_reschedule_not_recalc_mapping_if_claim_fails",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1201,
+        "end": 1279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select_dests"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_test",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_build_instances_reschedule_not_recalc_mapping_if_claim_fails",
+      "lineRange": {
+        "start": 1226,
+        "end": 1277
+      },
+      "parameters": [
+        {
+          "name": "mock_destroy_build_req"
+        },
+        {
+          "name": "mock_pop_inst_map"
+        },
+        {
+          "name": "mock_build_and_run"
+        },
+        {
+          "name": "mock_request_spec_from_primitives"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_rp_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_validate_existing_attachment_ids_with_missing_attachments",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1284,
+        "end": 1317
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        },
+        {
+          "name": "mock_attachment_create"
+        },
+        {
+          "name": "mock_attachment_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_validate_existing_attachment_ids_with_attachments_present",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1322,
+        "end": 1361
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bdm_save"
+        },
+        {
+          "name": "mock_attachment_create"
+        },
+        {
+          "name": "mock_attachment_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_on_host",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1365,
+        "end": 1379
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_start"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offload_instance_on_host_with_request_spec",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1381,
+        "end": 1468
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_test",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_unshelve_offload_instance_on_host_with_request_spec",
+      "lineRange": {
+        "start": 1420,
+        "end": 1466
+      },
+      "parameters": [
+        {
+          "name": "reset_forced_destinations"
+        },
+        {
+          "name": "to_filtprops"
+        },
+        {
+          "name": "sched_instances"
+        },
+        {
+          "name": "populate_filter_properties"
+        },
+        {
+          "name": "unshelve_instance"
+        },
+        {
+          "name": "get_by_instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offloaded_instance_glance_image_not_found",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1473,
+        "end": 1497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "add_instance_fault_from_exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_offloaded_instance_image_id_is_none",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1499,
+        "end": 1523
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_schedule_and_rebuild",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1533,
+        "end": 1567
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_im"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_schedule_and_rebuild_novalid_host",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1569,
+        "end": 1599
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_schedule_instances",
+      "kind": "function",
+      "scope": "_BaseTaskTestCase.test_unshelve_instance_schedule_and_rebuild_novalid_host",
+      "lineRange": {
+        "start": 1576,
+        "end": 1578
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "*instances"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_schedule_and_rebuild_messaging_exception",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1607,
+        "end": 1629
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_get_image"
+        },
+        {
+          "name": "mock_schedule_instances"
+        },
+        {
+          "name": "mock_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_schedule_and_rebuild_volume_backed",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1638,
+        "end": 1659
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_im"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_resource_request",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1665,
+        "end": 1698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_get_res_req"
+        },
+        {
+          "name": "mock_fill_provider_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_resource_request_with_device_profile",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1707,
+        "end": 1746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_get_res_req"
+        },
+        {
+          "name": "mock_fill_provider_mapping"
+        },
+        {
+          "name": "mock_get_arq"
+        },
+        {
+          "name": "mock_get_dp"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_instance_resource_request_with_arq_bind_fail",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1756,
+        "end": 1785
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_get_res_req"
+        },
+        {
+          "name": "mock_fill_provider_mapping"
+        },
+        {
+          "name": "mock_get_arqs"
+        },
+        {
+          "name": "mock_get_dp"
+        },
+        {
+          "name": "mock_del_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1787,
+        "end": 1810
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_with_scheduler",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1813,
+        "end": 1854
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_with_device_profile",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1859,
+        "end": 1905
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        },
+        {
+          "name": "mock_get_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_with_scheduler_no_host",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1907,
+        "end": 1935
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_with_scheduler_group_failure",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1944,
+        "end": 1982
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "state_mock"
+        },
+        {
+          "name": "select_dest_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "rebuild_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_fill_provider_mapping_raises",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 1984,
+        "end": 2018
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_evacuate_migration_record",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 2020,
+        "end": 2045
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_request_spec",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 2048,
+        "end": 2103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_request_spec_device_profile",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 2111,
+        "end": 2175
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        },
+        {
+          "name": "mock_get_dp"
+        },
+        {
+          "name": "mock_get_arqs"
+        },
+        {
+          "name": "mock_del_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_request_spec_arq_bind_fail",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 2184,
+        "end": 2248
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        },
+        {
+          "name": "mock_get_dp"
+        },
+        {
+          "name": "mock_get_arqs"
+        },
+        {
+          "name": "mock_del_arqs_instance"
+        },
+        {
+          "name": "mock_del_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_snapshot_based_resize",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 2252,
+        "end": 2260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_execute"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_snapshot_based_resize",
+      "kind": "method",
+      "scope": "_BaseTaskTestCase",
+      "lineRange": {
+        "start": 2265,
+        "end": 2276
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_execute"
+        },
+        {
+          "name": "mock_er"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorTaskTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 2279,
+        "end": 4964
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMBER_OF_CELLS",
+      "kind": "constant",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2282,
+        "end": 2282
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2284,
+        "end": 2326
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bind_arqs_no_device_profile",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2329,
+        "end": 2338
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_bind_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bind_arqs",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2342,
+        "end": 2365
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bind_arqs_device_profile_arq_get_fail",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2368,
+        "end": 2391
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_arq_for_port",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2396,
+        "end": 2427
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_arq"
+        },
+        {
+          "name": "mock_port_get"
+        },
+        {
+          "name": "mock_neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_bind_arqs_for_port_multi_devices",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2431,
+        "end": 2455
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_port_get"
+        },
+        {
+          "name": "mock_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_schedule_and_build_instances_test",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2460,
+        "end": 2493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "params"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run_instance"
+        },
+        {
+          "name": "get_az"
+        },
+        {
+          "default": "None",
+          "name": "host_list"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance_uuid",
+          "line": 2493
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_and_run_instance",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase._do_schedule_and_build_instances_test",
+      "lineRange": {
+        "start": 2469,
+        "end": 2474
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2496,
+        "end": 2528
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_notify",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_instances",
+      "lineRange": {
+        "start": 2503,
+        "end": 2507
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_no_tags_provided",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2530,
+        "end": 2549
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_multiple_instances",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2556,
+        "end": 2613
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_az"
+        },
+        {
+          "name": "get_hostmapping"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_and_run_instance",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_multiple_instances",
+      "lineRange": {
+        "start": 2596,
+        "end": 2604
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_multiple_cells",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2618,
+        "end": 2660
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_hostmapping"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run_instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_and_run_instance",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_multiple_cells",
+      "lineRange": {
+        "start": 2650,
+        "end": 2655
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_scheduler_failure",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2664,
+        "end": 2684
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_delete_during_scheduling",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2694,
+        "end": 2723
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bury"
+        },
+        {
+          "name": "br_destroy"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run"
+        },
+        {
+          "name": "legacy_notify"
+        },
+        {
+          "name": "notify"
+        },
+        {
+          "name": "taglist_create"
+        },
+        {
+          "name": "taglist_destroy"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_delete_during_scheduling_host_changed",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2732,
+        "end": 2756
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bury"
+        },
+        {
+          "name": "br_destroy"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run"
+        },
+        {
+          "name": "legacy_notify"
+        },
+        {
+          "name": "instance_destroy"
+        },
+        {
+          "name": "notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_delete_during_scheduling_instance_not_found",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2765,
+        "end": 2787
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bury"
+        },
+        {
+          "name": "br_destroy"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run"
+        },
+        {
+          "name": "legacy_notify"
+        },
+        {
+          "name": "instance_destroy"
+        },
+        {
+          "name": "notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_delete_before_scheduling",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2795,
+        "end": 2819
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "inst_create"
+        },
+        {
+          "name": "bury"
+        },
+        {
+          "name": "br_destroy"
+        },
+        {
+          "name": "br_get_by_inst"
+        },
+        {
+          "name": "select_destinations"
+        },
+        {
+          "name": "build_and_run"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_unmapped_host_ends_up_in_cell0",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2825,
+        "end": 2848
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bury"
+        },
+        {
+          "name": "br_destroy"
+        },
+        {
+          "name": "select_dest"
+        },
+        {
+          "name": "build_and_run"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_bury",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_unmapped_host_ends_up_in_cell0",
+      "lineRange": {
+        "start": 2830,
+        "end": 2842
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "request_spec"
+        },
+        {
+          "name": "exc"
+        },
+        {
+          "default": "None",
+          "name": "build_requests"
+        },
+        {
+          "default": "None",
+          "name": "instances"
+        },
+        {
+          "default": "None",
+          "name": "block_device_mapping"
+        },
+        {
+          "default": "None",
+          "name": "tags"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_over_quota_during_recheck",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2853,
+        "end": 2919
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select"
+        },
+        {
+          "name": "mock_check"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_save",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_over_quota_during_recheck",
+      "lineRange": {
+        "start": 2868,
+        "end": 2873
+      },
+      "parameters": [
+        {
+          "name": "inst"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "request_spec_get_all",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_over_quota_during_recheck",
+      "lineRange": {
+        "start": 2906,
+        "end": 2907
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "context.session.query(api_models.RequestSpec).all()",
+          "line": 2907
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_over_quota_during_recheck_ul",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2924,
+        "end": 2987
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select"
+        },
+        {
+          "name": "mock_notify"
+        },
+        {
+          "name": "mock_enforce"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_save",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_over_quota_during_recheck_ul",
+      "lineRange": {
+        "start": 2939,
+        "end": 2944
+      },
+      "parameters": [
+        {
+          "name": "inst"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "request_spec_get_all",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_schedule_and_build_over_quota_during_recheck_ul",
+      "lineRange": {
+        "start": 2974,
+        "end": 2975
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "context.session.query(api_models.RequestSpec).all()",
+          "line": 2975
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_no_quota_recheck",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 2992,
+        "end": 3005
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select"
+        },
+        {
+          "name": "mock_check"
+        },
+        {
+          "name": "mock_build"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_unshelve_over_quota_during_recheck",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3010,
+        "end": 3039
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance, req_spec",
+          "line": 3039
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_over_quota_during_recheck_placement",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3042,
+        "end": 3060
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_check"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_over_quota_during_recheck_ul",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3064,
+        "end": 3076
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_enforce"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_no_quota_recheck",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3083,
+        "end": 3116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_select"
+        },
+        {
+          "name": "mock_check"
+        },
+        {
+          "name": "mock_enforce"
+        },
+        {
+          "name": "mock_unshelve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_quota_recheck_disabled",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3118,
+        "end": 3121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_no_quota_recheck_disabled_placement",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3123,
+        "end": 3125
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unshelve_no_quota_recheck_disabled_ul",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3127,
+        "end": 3129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_fill_request_spec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3131,
+        "end": 3136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_fill_request_spec_error",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3142,
+        "end": 3149
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fill"
+        },
+        {
+          "name": "mock_cleanup"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_fill_request_spec_noop",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3159,
+        "end": 3165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_map"
+        },
+        {
+          "name": "mock_get_allocs"
+        },
+        {
+          "name": "mock_traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_with_arqs_bind_ok",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3170,
+        "end": 3184
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_get_client"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_with_device_profile",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3192,
+        "end": 3212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get"
+        },
+        {
+          "name": "mock_create_arq"
+        },
+        {
+          "name": "mock_bind_arq"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_with_arqs_bind_exception",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3218,
+        "end": 3233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_cleanup"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_and_bind_arq_for_instance",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3239,
+        "end": 3253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_client"
+        },
+        {
+          "name": "mock_request_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_and_bind_arq_for_instance_from_extra_spec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3259,
+        "end": 3290
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_request_mappings"
+        },
+        {
+          "name": "mock_bind_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_and_bind_arq_for_instance_request_net",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3298,
+        "end": 3332
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_request_mappings"
+        },
+        {
+          "name": "mock_create_arqs_for_port"
+        },
+        {
+          "name": "mock_bind_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_and_bind_arq_for_instance_both",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3340,
+        "end": 3384
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bind_arqs"
+        },
+        {
+          "name": "mock_request_mappings"
+        },
+        {
+          "name": "mock_create_arqs_for_port"
+        },
+        {
+          "name": "mock_bind_arqs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_map_instance_to_cell_already_mapped",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3386,
+        "end": 3405
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cleanup_build_artifacts",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3408,
+        "end": 3459
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "inst_map_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create_block_device_mapping",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_cleanup_build_artifacts",
+      "lineRange": {
+        "start": 3424,
+        "end": 3425
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create_tags",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_cleanup_build_artifacts",
+      "lineRange": {
+        "start": 3427,
+        "end": 3428
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bury_in_cell0_no_cell0",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3462,
+        "end": 3468
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cm_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bury_in_cell0",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3471,
+        "end": 3556
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bury_in_cell0_with_block_device_mapping",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3562,
+        "end": 3589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_bdm"
+        },
+        {
+          "name": "mock_get_cell"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bury_in_cell0_with_tags",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3595,
+        "end": 3611
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_create_tags"
+        },
+        {
+          "name": "mock_get_cell"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bury_in_cell0_already_mapped",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3614,
+        "end": 3637
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_inst_create"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reset",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3639,
+        "end": 3645
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_fails_with_rebuild",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3648,
+        "end": 3655
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_fails_with_flavor",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3658,
+        "end": 3665
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_build_request_spec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3667,
+        "end": 3671
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'instance_properties': { 'uuid': instance['uuid'], }, }",
+          "line": 3668
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_migrate_server_deals_with_expected_exceptions",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3676,
+        "end": 3698
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ex"
+        },
+        {
+          "name": "mock_execute"
+        },
+        {
+          "name": "mock_set"
+        },
+        {
+          "name": "get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_deals_with_invalidcpuinfo_exception",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3703,
+        "end": 3726
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_im"
+        },
+        {
+          "name": "mock_execute"
+        },
+        {
+          "name": "mock_set"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_deals_with_expected_exception",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3728,
+        "end": 3744
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_deals_with_unexpected_exceptions",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3749,
+        "end": 3772
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_live_migrate"
+        },
+        {
+          "name": "mock_set_state"
+        },
+        {
+          "name": "get_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_set_vm_state_and_notify",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3775,
+        "end": 3780
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_set"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_no_valid_host_back_in_active_state",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3791,
+        "end": 3830
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_preallocate_migration"
+        },
+        {
+          "name": "rollback_mock"
+        },
+        {
+          "name": "notify_mock"
+        },
+        {
+          "name": "select_dest_mock"
+        },
+        {
+          "name": "metadata_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "spec_fc_mock"
+        },
+        {
+          "name": "im_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_no_valid_host_back_in_stopped_state",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3841,
+        "end": 3881
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_preallocate_migration"
+        },
+        {
+          "name": "rollback_mock"
+        },
+        {
+          "name": "notify_mock"
+        },
+        {
+          "name": "select_dest_mock"
+        },
+        {
+          "name": "metadata_mock"
+        },
+        {
+          "name": "spec_fc_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "im_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_no_valid_host_error_msg",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3883,
+        "end": 3908
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_no_valid_host_in_group",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3916,
+        "end": 3954
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "spec_fc_mock"
+        },
+        {
+          "name": "set_vm_mock"
+        },
+        {
+          "name": "task_rollback_mock"
+        },
+        {
+          "name": "task_exec_mock"
+        },
+        {
+          "name": "image_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_exception_host_in_error_state_and_raise",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 3969,
+        "end": 4027
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_preallocate_migration"
+        },
+        {
+          "name": "prep_resize_mock"
+        },
+        {
+          "name": "rollback_mock"
+        },
+        {
+          "name": "notify_mock"
+        },
+        {
+          "name": "select_dest_mock"
+        },
+        {
+          "name": "metadata_mock"
+        },
+        {
+          "name": "spec_fc_mock"
+        },
+        {
+          "name": "sig_mock"
+        },
+        {
+          "name": "im_mock"
+        },
+        {
+          "name": "check_cell_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_exception_instance_refresh_not_found",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4033,
+        "end": 4054
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_refresh"
+        },
+        {
+          "name": "mock_execute"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_updates_flavor_if_existing_reqspec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4059,
+        "end": 4087
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_mock"
+        },
+        {
+          "name": "task_exec_mock"
+        },
+        {
+          "name": "spec_save_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_reschedule_legacy_request_spec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4091,
+        "end": 4117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "spec_save_mock"
+        },
+        {
+          "name": "from_primitives_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_no_valid_host_error_msg",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4119,
+        "end": 4148
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_instance_not_found",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4157,
+        "end": 4214
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fp"
+        },
+        {
+          "name": "_mock_buildreq"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_build_rspec"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_build_run"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_info_cache_not_found",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4218,
+        "end": 4274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "build_request_spec"
+        },
+        {
+          "name": "setup_instance_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_max_retries_exceeded",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4278,
+        "end": 4307
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_reschedule_no_valid_host",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4311,
+        "end": 4343
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_reschedule_get_az_error",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4352,
+        "end": 4387
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_cleanup"
+        },
+        {
+          "name": "mock_get_az"
+        },
+        {
+          "name": "mock_fill"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cleanup_arqs_on_reschedule",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4394,
+        "end": 4401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_del_arqs"
+        },
+        {
+          "name": "mock_set_vm"
+        },
+        {
+          "name": "mock_clean_net"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cleanup_arqs_on_reschedule_by_uuid",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4408,
+        "end": 4418
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_del_arqs"
+        },
+        {
+          "name": "mock_set_vm"
+        },
+        {
+          "name": "mock_clean_net"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cleanup_allocated_networks_none_requested",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4420,
+        "end": 4436
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cleanup_allocated_networks_auto_or_none_provided",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4438,
+        "end": 4456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_allocate_for_evacuate_dest_host_source_node_not_found_no_reqspec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4460,
+        "end": 4477
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_compute_node"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_allocate_for_evacuate_dest_host_dest_node_not_found_reqspec",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4484,
+        "end": 4504
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_dest_node"
+        },
+        {
+          "name": "get_source_node"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_allocate_for_evacuate_dest_host_claim_fails",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4511,
+        "end": 4539
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_dest_node"
+        },
+        {
+          "name": "get_source_node"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_instance",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4542,
+        "end": 4573
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_execute"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_event_start",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_live_migrate_instance",
+      "lineRange": {
+        "start": 4561,
+        "end": 4565
+      },
+      "parameters": [
+        {
+          "name": "_cls"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_volume_bdm_call_reserve_dev_name",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4577,
+        "end": 4600
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_reserve"
+        },
+        {
+          "name": "mock_bdm_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_no_device_new_flow",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4602,
+        "end": 4648
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_new_flow",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4650,
+        "end": 4695
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_attachment_create_fails",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4700,
+        "end": 4727
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        },
+        {
+          "name": "mock_get_by_volume"
+        },
+        {
+          "name": "mock_reserve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_reserve_bdm_timeout",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4733,
+        "end": 4758
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_volume"
+        },
+        {
+          "name": "mock_get_by_volume_and_instance"
+        },
+        {
+          "name": "mock_reserve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_reserve_bdm_timeout_concurrent_request",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4764,
+        "end": 4799
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_by_volume"
+        },
+        {
+          "name": "mock_get_by_volume_and_instance"
+        },
+        {
+          "name": "mock_reserve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_sets_task_state",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4801,
+        "end": 4859
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_save",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_attach_volume_sets_task_state",
+      "lineRange": {
+        "start": 4825,
+        "end": 4826
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_attach",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_attach_volume_sets_task_state",
+      "lineRange": {
+        "start": 4828,
+        "end": 4829
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "inst"
+        },
+        {
+          "name": "volume_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_rejects_concurrent_request",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4861,
+        "end": 4885
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_volume_resets_task_state_on_timeout",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4887,
+        "end": 4927
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_save",
+      "kind": "function",
+      "scope": "ConductorTaskTestCase.test_attach_volume_resets_task_state_on_timeout",
+      "lineRange": {
+        "start": 4901,
+        "end": 4902
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tagged_volume_attach_new_flow",
+      "kind": "method",
+      "scope": "ConductorTaskTestCase",
+      "lineRange": {
+        "start": 4932,
+        "end": 4964
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_attach"
+        },
+        {
+          "name": "mock_get_by_volume"
+        },
+        {
+          "name": "mock_reserve"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorTaskRPCAPITestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 4967,
+        "end": 5370
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 4971,
+        "end": 4977
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_instance",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 4979,
+        "end": 5002
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_live_migrate_instance",
+      "lineRange": {
+        "start": 4990,
+        "end": 5001
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_targets_cell_no_instance_mapping",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5005,
+        "end": 5016
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_targets_cell_no_instance_mapping",
+      "lineRange": {
+        "start": 5008,
+        "end": 5009
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mock.sentinel.iransofaraway",
+          "line": 5009
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_targets_cell_no_api_db_conn_noop",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5020,
+        "end": 5034
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_targets_cell_no_api_db_conn_noop",
+      "lineRange": {
+        "start": 5027,
+        "end": 5028
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mock.sentinel.iransofaraway",
+          "line": 5028
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_targets_cell_no_api_db_conn_reraise",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5038,
+        "end": 5051
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_im"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_targets_cell_no_api_db_conn_reraise",
+      "lineRange": {
+        "start": 5045,
+        "end": 5046
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mock.sentinel.iransofaraway",
+          "line": 5046
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_with_tags",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5053,
+        "end": 5087
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_schedule_and_build_instances_with_tags",
+      "lineRange": {
+        "start": 5071,
+        "end": 5086
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_and_build_instances_with_tags_cannot_send",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5089,
+        "end": 5121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_schedule_and_build_instances_with_tags_cannot_send",
+      "lineRange": {
+        "start": 5106,
+        "end": 5120
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_with_request_spec_ok",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5123,
+        "end": 5151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_build_instances_with_request_spec_ok",
+      "lineRange": {
+        "start": 5134,
+        "end": 5150
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_instances_with_request_spec_cannot_send",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5153,
+        "end": 5181
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_build_instances_with_request_spec_cannot_send",
+      "lineRange": {
+        "start": 5165,
+        "end": 5180
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cache_images",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5183,
+        "end": 5198
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5200,
+        "end": 5228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_migrate_server",
+      "lineRange": {
+        "start": 5211,
+        "end": 5226
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_cast",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5230,
+        "end": 5260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_migrate_server_cast",
+      "lineRange": {
+        "start": 5243,
+        "end": 5258
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_confirm_snapshot_based_resize",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5262,
+        "end": 5282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "do_cast"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase._test_confirm_snapshot_based_resize",
+      "lineRange": {
+        "start": 5272,
+        "end": 5281
+      },
+      "parameters": [
+        {
+          "name": "prepare_mock"
+        },
+        {
+          "name": "can_send_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_snapshot_based_resize_cast",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5284,
+        "end": 5285
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_snapshot_based_resize_call",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5287,
+        "end": 5288
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_confirm_snapshot_based_resize_old_service",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5290,
+        "end": 5297
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_revert_snapshot_based_resize_old_service",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5299,
+        "end": 5308
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_old_rpc_with_target_state",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5310,
+        "end": 5319
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_old_rpc_without_target_state",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5321,
+        "end": 5333
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_volume_backed",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5335,
+        "end": 5354
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskRPCAPITestCase.test_rebuild_instance_volume_backed",
+      "lineRange": {
+        "start": 5347,
+        "end": 5353
+      },
+      "parameters": [
+        {
+          "name": "mock_can_send_ver"
+        },
+        {
+          "name": "prepare_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_instance_volume_backed_old_service",
+      "kind": "method",
+      "scope": "ConductorTaskRPCAPITestCase",
+      "lineRange": {
+        "start": 5356,
+        "end": 5370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorTaskAPITestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 5373,
+        "end": 5493
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ConductorTaskAPITestCase",
+      "lineRange": {
+        "start": 5376,
+        "end": 5382
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate",
+      "kind": "method",
+      "scope": "ConductorTaskAPITestCase",
+      "lineRange": {
+        "start": 5384,
+        "end": 5396
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cache_images",
+      "kind": "method",
+      "scope": "ConductorTaskAPITestCase",
+      "lineRange": {
+        "start": 5398,
+        "end": 5415
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskAPITestCase.test_cache_images",
+      "lineRange": {
+        "start": 5402,
+        "end": 5413
+      },
+      "parameters": [
+        {
+          "name": "mock_image"
+        },
+        {
+          "name": "mock_cache"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cache_images_fail",
+      "kind": "method",
+      "scope": "ConductorTaskAPITestCase",
+      "lineRange": {
+        "start": 5417,
+        "end": 5433
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskAPITestCase.test_cache_images_fail",
+      "lineRange": {
+        "start": 5421,
+        "end": 5431
+      },
+      "parameters": [
+        {
+          "name": "mock_image"
+        },
+        {
+          "name": "mock_cache"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cache_images_missing",
+      "kind": "method",
+      "scope": "ConductorTaskAPITestCase",
+      "lineRange": {
+        "start": 5435,
+        "end": 5449
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskAPITestCase.test_cache_images_missing",
+      "lineRange": {
+        "start": 5439,
+        "end": 5447
+      },
+      "parameters": [
+        {
+          "name": "mock_image"
+        },
+        {
+          "name": "mock_cache"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cache_images_failed_compute",
+      "kind": "method",
+      "scope": "ConductorTaskAPITestCase",
+      "lineRange": {
+        "start": 5454,
+        "end": 5493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_service"
+        },
+        {
+          "name": "mock_target"
+        },
+        {
+          "name": "mock_gbh"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ConductorTaskAPITestCase.test_cache_images_failed_compute",
+      "lineRange": {
+        "start": 5477,
+        "end": 5484
+      },
+      "parameters": [
+        {
+          "name": "mock_cache"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestConductorTaskManager",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 5497,
+        "end": 5525
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_placement_client_startup",
+      "kind": "method",
+      "scope": "TestConductorTaskManager",
+      "lineRange": {
+        "start": 5498,
+        "end": 5501
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_placement_client_startup_fatals",
+      "kind": "method",
+      "scope": "TestConductorTaskManager",
+      "lineRange": {
+        "start": 5506,
+        "end": 5508
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_placement_client_startup_non_fatal",
+      "kind": "method",
+      "scope": "TestConductorTaskManager",
+      "lineRange": {
+        "start": 5515,
+        "end": 5516
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_placement_client_startup_exception",
+      "kind": "method",
+      "scope": "TestConductorTaskManager",
+      "lineRange": {
+        "start": 5519,
+        "end": 5525
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exc"
+        },
+        {
+          "name": "mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 3,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "objects.Selection",
+      "usage": "call",
+      "via": "nova",
+      "count": 13,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 9,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 140,
+        "end": 140
+      }
+    },
+    {
+      "name": "fixtures.NotificationFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "fixtures.SpawnIsSynchronousFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 2,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 155,
+        "end": 155
+      }
+    },
+    {
+      "name": "conductor_manager.ConductorManager",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 1,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "obj_base.NovaObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 5,
+      "lineRange": {
+        "start": 164,
+        "end": 164
+      }
+    },
+    {
+      "name": "Exception",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 167,
+        "end": 167
+      }
+    },
+    {
+      "name": "obj_base.NovaObjectRegistry.register",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 178,
+        "end": 178
+      }
+    },
+    {
+      "name": "fields.DictOfStringsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 211,
+        "end": 211
+      }
+    },
+    {
+      "name": "tuple",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 223,
+        "end": 223
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 364,
+      "lineRange": {
+        "start": 243,
+        "end": 243
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 31,
+      "lineRange": {
+        "start": 246,
+        "end": 246
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 160,
+      "lineRange": {
+        "start": 308,
+        "end": 308
+      }
+    },
+    {
+      "name": "conductor_rpcapi.ConductorAPI",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 1,
+      "lineRange": {
+        "start": 357,
+        "end": 357
+      }
+    },
+    {
+      "name": "conductor_api.API",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 1,
+      "lineRange": {
+        "start": 367,
+        "end": 367
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 372,
+        "end": 372
+      }
+    },
+    {
+      "name": "messaging.MessagingTimeout",
+      "usage": "call",
+      "via": "oslo_messaging",
+      "count": 2,
+      "lineRange": {
+        "start": 378,
+        "end": 378
+      }
+    },
+    {
+      "name": "fake_server_actions.stub_out_action_events",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 394,
+        "end": 394
+      }
+    },
+    {
+      "name": "objects.RequestSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 28,
+      "lineRange": {
+        "start": 395,
+        "end": 395
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 12,
+      "lineRange": {
+        "start": 430,
+        "end": 430
+      }
+    },
+    {
+      "name": "objects.CellMappingList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 447,
+        "end": 447
+      }
+    },
+    {
+      "name": "fake_instance.fake_db_instance",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 9,
+      "lineRange": {
+        "start": 449,
+        "end": 449
+      }
+    },
+    {
+      "name": "objects.Instance._from_db_object",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 450,
+        "end": 450
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 22,
+      "lineRange": {
+        "start": 451,
+        "end": 451
+      }
+    },
+    {
+      "name": "objects.Flavor.get_by_name",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 453,
+        "end": 453
+      }
+    },
+    {
+      "name": "fake_request_spec.fake_spec_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 11,
+      "lineRange": {
+        "start": 457,
+        "end": 457
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 462,
+        "end": 462
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 15,
+      "lineRange": {
+        "start": 512,
+        "end": 512
+      }
+    },
+    {
+      "name": "obj_base.obj_to_primitive",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 513,
+        "end": 513
+      }
+    },
+    {
+      "name": "flavors.save_flavor_info",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 2,
+      "lineRange": {
+        "start": 515,
+        "end": 515
+      }
+    },
+    {
+      "name": "fixtures.CastAsCallFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 18,
+      "lineRange": {
+        "start": 533,
+        "end": 533
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 48,
+      "lineRange": {
+        "start": 549,
+        "end": 549
+      }
+    },
+    {
+      "name": "exc.AcceleratorRequestBindingFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 635,
+        "end": 635
+      }
+    },
+    {
+      "name": "test.MatchType",
+      "usage": "call",
+      "via": "nova",
+      "count": 63,
+      "lineRange": {
+        "start": 658,
+        "end": 658
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 666,
+        "end": 666
+      }
+    },
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 37,
+      "lineRange": {
+        "start": 682,
+        "end": 682
+      }
+    },
+    {
+      "name": "exc.NoValidHost",
+      "usage": "call",
+      "via": "nova",
+      "count": 11,
+      "lineRange": {
+        "start": 687,
+        "end": 687
+      }
+    },
+    {
+      "name": "exc.BuildRequestNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 690,
+        "end": 690
+      }
+    },
+    {
+      "name": "type",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 721,
+        "end": 721
+      }
+    },
+    {
+      "name": "exc.MaxRetriesExceeded",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 743,
+        "end": 743
+      }
+    },
+    {
+      "name": "exc.UnsupportedPolicyException",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 782,
+        "end": 782
+      }
+    },
+    {
+      "name": "exc.InstanceMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 815,
+        "end": 815
+      }
+    },
+    {
+      "name": "exc.HostMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 920,
+        "end": 920
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 10,
+      "lineRange": {
+        "start": 932,
+        "end": 932
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 975,
+        "end": 975
+      }
+    },
+    {
+      "name": "objects.HostMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 975,
+        "end": 975
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 3,
+      "lineRange": {
+        "start": 1094,
+        "end": 1094
+      }
+    },
+    {
+      "name": "objects.RequestGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 12,
+      "lineRange": {
+        "start": 1127,
+        "end": 1127
+      }
+    },
+    {
+      "name": "block_device.BlockDeviceDict",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1288,
+        "end": 1288
+      }
+    },
+    {
+      "name": "block_device_obj.block_device_make_list_from_dicts",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 1301,
+        "end": 1301
+      }
+    },
+    {
+      "name": "exc.VolumeAttachmentNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1303,
+        "end": 1303
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 8,
+      "lineRange": {
+        "start": 1372,
+        "end": 1372
+      }
+    },
+    {
+      "name": "objects.CellMapping.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 1423,
+        "end": 1423
+      }
+    },
+    {
+      "name": "objects.InstanceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 14,
+      "lineRange": {
+        "start": 1425,
+        "end": 1425
+      }
+    },
+    {
+      "name": "exc.ImageNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1472,
+        "end": 1472
+      }
+    },
+    {
+      "name": "test.nested",
+      "usage": "call",
+      "via": "nova",
+      "count": 20,
+      "lineRange": {
+        "start": 1509,
+        "end": 1509
+      }
+    },
+    {
+      "name": "objects.Destination",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1539,
+        "end": 1539
+      }
+    },
+    {
+      "name": "objects.RequestLevelParams",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 1682,
+        "end": 1682
+      }
+    },
+    {
+      "name": "objects.Migration",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 1960,
+        "end": 1960
+      }
+    },
+    {
+      "name": "objects.Migration.get_by_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1981,
+        "end": 1981
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2001,
+        "end": 2001
+      }
+    },
+    {
+      "name": "test_compute.BaseTestCase",
+      "usage": "inherit",
+      "via": "nova.tests.unit.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 2279,
+        "end": 2279
+      }
+    },
+    {
+      "name": "conductor_manager.ComputeTaskManager",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 3,
+      "lineRange": {
+        "start": 2286,
+        "end": 2286
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2290,
+        "end": 2290
+      }
+    },
+    {
+      "name": "fake_build_request.fake_req_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 11,
+      "lineRange": {
+        "start": 2292,
+        "end": 2292
+      }
+    },
+    {
+      "name": "objects.BuildRequestList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2295,
+        "end": 2295
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2314,
+        "end": 2314
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2321,
+        "end": 2321
+      }
+    },
+    {
+      "name": "objects.Tag",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2323,
+        "end": 2323
+      }
+    },
+    {
+      "name": "objects.TagList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2324,
+        "end": 2324
+      }
+    },
+    {
+      "name": "cyborg.get_client",
+      "usage": "call",
+      "via": "nova.accelerator",
+      "count": 4,
+      "lineRange": {
+        "start": 2348,
+        "end": 2348
+      }
+    },
+    {
+      "name": "cyborg_fixture.get_arqs",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 1,
+      "lineRange": {
+        "start": 2350,
+        "end": 2350
+      }
+    },
+    {
+      "name": "fixtures.cyborg.get_arqs",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 4,
+      "lineRange": {
+        "start": 2375,
+        "end": 2375
+      }
+    },
+    {
+      "name": "exc.AcceleratorRequestOpFailed",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2376,
+        "end": 2376
+      }
+    },
+    {
+      "name": "objects.NetworkRequestList.from_tuples",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 2382,
+        "end": 2382
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 2416,
+        "end": 2416
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 22,
+      "lineRange": {
+        "start": 2473,
+        "end": 2473
+      }
+    },
+    {
+      "name": "context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2483,
+        "end": 2483
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2485,
+        "end": 2485
+      }
+    },
+    {
+      "name": "filter",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 2487,
+        "end": 2487
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 2487,
+        "end": 2487
+      }
+    },
+    {
+      "name": "objects.InstanceActionList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2520,
+        "end": 2520
+      }
+    },
+    {
+      "name": "objects.TagList.get_by_resource_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2524,
+        "end": 2524
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 2648,
+        "end": 2648
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 2653,
+        "end": 2653
+      }
+    },
+    {
+      "name": "conductor_manager.try_target_cell",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 2,
+      "lineRange": {
+        "start": 2669,
+        "end": 2669
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2672,
+        "end": 2672
+      }
+    },
+    {
+      "name": "test_utils.assert_instance_delete_notification_by_uuid",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 3,
+      "lineRange": {
+        "start": 2718,
+        "end": 2718
+      }
+    },
+    {
+      "name": "exc.ObjectActionError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2738,
+        "end": 2738
+      }
+    },
+    {
+      "name": "exc.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2771,
+        "end": 2771
+      }
+    },
+    {
+      "name": "exc.OverQuota",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2862,
+        "end": 2862
+      }
+    },
+    {
+      "name": "original_save",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 2873,
+        "end": 2873
+      }
+    },
+    {
+      "name": "objects.InstanceList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2890,
+        "end": 2890
+      }
+    },
+    {
+      "name": "objects.BuildRequestList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 2897,
+        "end": 2897
+      }
+    },
+    {
+      "name": "context.session.query",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 2907,
+        "end": 2907
+      }
+    },
+    {
+      "name": "limit_exceptions.ProjectOverLimit",
+      "usage": "call",
+      "via": "oslo_limit",
+      "count": 1,
+      "lineRange": {
+        "start": 2934,
+        "end": 2934
+      }
+    },
+    {
+      "name": "limit_exceptions.OverLimitInfo",
+      "usage": "call",
+      "via": "oslo_limit",
+      "count": 1,
+      "lineRange": {
+        "start": 2935,
+        "end": 2935
+      }
+    },
+    {
+      "name": "exc.TooManyInstances",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 3069,
+        "end": 3069
+      }
+    },
+    {
+      "name": "request_spec.RequestSpec",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 3250,
+        "end": 3250
+      }
+    },
+    {
+      "name": "exc.CellMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3463,
+        "end": 3463
+      }
+    },
+    {
+      "name": "objects.InstanceMappingList.get_by_cell_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3506,
+        "end": 3506
+      }
+    },
+    {
+      "name": "test_utils.ExceptionHelper",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 2,
+      "lineRange": {
+        "start": 3685,
+        "end": 3685
+      }
+    },
+    {
+      "name": "exc.InvalidCPUInfo",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 3711,
+        "end": 3711
+      }
+    },
+    {
+      "name": "exc.InstanceInvalidState",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3729,
+        "end": 3729
+      }
+    },
+    {
+      "name": "exc.DestinationHypervisorTooOld",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3731,
+        "end": 3731
+      }
+    },
+    {
+      "name": "exc.HypervisorUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3732,
+        "end": 3732
+      }
+    },
+    {
+      "name": "exc.MigrationPreCheckError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3733,
+        "end": 3733
+      }
+    },
+    {
+      "name": "exc.InvalidSharedStorage",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3734,
+        "end": 3734
+      }
+    },
+    {
+      "name": "exc.ComputeServiceUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3736,
+        "end": 3736
+      }
+    },
+    {
+      "name": "exc.InvalidHypervisorType",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3737,
+        "end": 3737
+      }
+    },
+    {
+      "name": "exc.UnableToMigrateToSelf",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3739,
+        "end": 3739
+      }
+    },
+    {
+      "name": "exc.InvalidLocalStorage",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3740,
+        "end": 3740
+      }
+    },
+    {
+      "name": "exc.MigrationSchedulerRPCError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 3741,
+        "end": 3741
+      }
+    },
+    {
+      "name": "exc.ComputeHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 3742,
+        "end": 3742
+      }
+    },
+    {
+      "name": "IOError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 3753,
+        "end": 3753
+      }
+    },
+    {
+      "name": "objects.ImageMeta",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 3807,
+        "end": 3807
+      }
+    },
+    {
+      "name": "test.TestingException",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 3995,
+        "end": 3995
+      }
+    },
+    {
+      "name": "exc.InstanceInfoCacheNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 4230,
+        "end": 4230
+      }
+    },
+    {
+      "name": "objects.NetworkRequestList",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 4291,
+        "end": 4291
+      }
+    },
+    {
+      "name": "scheduler_utils.populate_filter_properties",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 4367,
+        "end": 4367
+      }
+    },
+    {
+      "name": "objects.NetworkRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 4426,
+        "end": 4426
+      }
+    },
+    {
+      "name": "objects.ComputeNode",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 4480,
+        "end": 4480
+      }
+    },
+    {
+      "name": "original_event_start",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 4565,
+        "end": 4565
+      }
+    },
+    {
+      "name": "fake_block_device.FakeDbBlockDeviceDict",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 4,
+      "lineRange": {
+        "start": 4580,
+        "end": 4580
+      }
+    },
+    {
+      "name": "block_device_obj.BlockDeviceMapping",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 6,
+      "lineRange": {
+        "start": 4606,
+        "end": 4606
+      }
+    },
+    {
+      "name": "fake_volume.fake_volume",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 9,
+      "lineRange": {
+        "start": 4612,
+        "end": 4612
+      }
+    },
+    {
+      "name": "exc.VolumeBDMNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 4630,
+        "end": 4630
+      }
+    },
+    {
+      "name": "messaging.exceptions.MessagingTimeout",
+      "usage": "call",
+      "via": "oslo_messaging",
+      "count": 3,
+      "lineRange": {
+        "start": 4749,
+        "end": 4749
+      }
+    },
+    {
+      "name": "exc.UnexpectedTaskStateError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 4875,
+        "end": 4875
+      }
+    },
+    {
+      "name": "conductor_rpcapi.ComputeTaskAPI",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 1,
+      "lineRange": {
+        "start": 4975,
+        "end": 4975
+      }
+    },
+    {
+      "name": "jsonutils.to_primitive",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 2,
+      "lineRange": {
+        "start": 5079,
+        "end": 5079
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 5205,
+        "end": 5205
+      }
+    },
+    {
+      "name": "conductor_api.ComputeTaskAPI",
+      "usage": "call",
+      "via": "nova.conductor",
+      "count": 1,
+      "lineRange": {
+        "start": 5380,
+        "end": 5380
+      }
+    },
+    {
+      "name": "objects.Service",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 5460,
+        "end": 5460
+      }
+    },
+    {
+      "name": "objects.Aggregate",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 5472,
+        "end": 5472
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 5497,
+        "end": 5497
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 2,
+      "lineRange": {
+        "start": 5503,
+        "end": 5503
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "ks_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_db",
+      "names": [
+        {
+          "alias": "db_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": "limit_exceptions",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": "messaging",
+      "module": "oslo_messaging",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_versionedobjects",
+      "names": [
+        {
+          "alias": "ovo_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.accelerator",
+      "names": [
+        {
+          "alias": null,
+          "name": "cyborg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "flavors"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_rpcapi",
+          "name": "rpcapi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "task_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conductor",
+      "names": [
+        {
+          "alias": "conductor_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conductor",
+      "names": [
+        {
+          "alias": "conductor_manager",
+          "name": "manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conductor",
+      "names": [
+        {
+          "alias": "conductor_rpcapi",
+          "name": "rpcapi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conductor.tasks",
+      "names": [
+        {
+          "alias": null,
+          "name": "live_migrate"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conductor.tasks",
+      "names": [
+        {
+          "alias": null,
+          "name": "migrate"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "conf"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.api",
+      "names": [
+        {
+          "alias": "api_db_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.api",
+      "names": [
+        {
+          "alias": "api_models",
+          "name": "models"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "main_db_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.image",
+      "names": [
+        {
+          "alias": "image_api",
+          "name": "glance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "placement_limit",
+          "name": "placement"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "obj_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "block_device_obj",
+          "name": "block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "request_spec"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "query"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.client",
+      "names": [
+        {
+          "alias": null,
+          "name": "report"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": "scheduler_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": "cyborg_fixture",
+          "name": "cyborg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "test_compute"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_block_device"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_build_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_request_spec"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_server_actions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_volume"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": "test_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 71,
+        "end": 71
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.volume",
+      "names": [
+        {
+          "alias": null,
+          "name": "cinder"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

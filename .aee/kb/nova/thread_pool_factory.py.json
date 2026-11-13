@@ -1,0 +1,1558 @@
+{
+  "file": "nova/thread_pool_factory.py",
+  "hash": "12220d2ecbfa9f79f74f7a89524f305a8910e1967aa21fe0c0b26977a1557170",
+  "language": "Python",
+  "component": "nova",
+  "package": null,
+  "lines": {
+    "blank": 114,
+    "code": 460,
+    "comment": 76,
+    "total": 650
+  },
+  "symbols": [
+    {
+      "name": "import enum",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import multiprocessing",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import queue",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import threading",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import typing as ty",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import futurist",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_context import context as common_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import importutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "profiler",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Executor",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_max_concurrent_builds",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 60
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.max_concurrent_builds",
+          "line": 43
+        },
+        {
+          "expr": "10",
+          "line": 56
+        },
+        {
+          "expr": "1000",
+          "line": 60
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_max_concurrent_snapshots",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 63,
+        "end": 82
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.max_concurrent_snapshots",
+          "line": 65
+        },
+        {
+          "expr": "5",
+          "line": 78
+        },
+        {
+          "expr": "1000",
+          "line": 82
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_max_concurrent_live_migrations",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 85,
+        "end": 103
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.max_concurrent_live_migrations",
+          "line": 87
+        },
+        {
+          "expr": "5",
+          "line": 99
+        },
+        {
+          "expr": "1000",
+          "line": 103
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ExecutorType",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 106,
+        "end": 118
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEFAULT",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SCATTER_GATHER",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 113,
+        "end": 113
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CACHE_IMAGES",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LONG_TASK",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SYNC_POWER",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 116,
+        "end": 116
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LIVE_MIGRATION",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UPDATE_RESOURCES",
+      "kind": "constant",
+      "scope": "ExecutorType",
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ExecutorsPoolSize",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 121,
+        "end": 185
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_default_pool_size",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 125,
+        "end": 128
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "( CONF.default_thread_pool_size if utils.concurrency_mode_threading() else CONF.default_green_pool_size)",
+          "line": 126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_scatter_gather_pool_size",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 131,
+        "end": 134
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "( CONF.cell_worker_thread_pool_size if utils.concurrency_mode_threading() else 1000)",
+          "line": 132
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cache_images_pool_size",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 137,
+        "end": 138
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.image_cache.precache_concurrency",
+          "line": 138
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_sync_power_pool_size",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 141,
+        "end": 142
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.sync_power_state_pool_size",
+          "line": 142
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_long_task_pool_size",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 145,
+        "end": 167
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "max_builds + max_snapshots",
+          "line": 166
+        },
+        {
+          "expr": "max_tasks",
+          "line": 167
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_resources_pool_size",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 170,
+        "end": 171
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "CONF.compute.update_resources_max_workers",
+          "line": 171
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_EXECUTOR_POOL_SIZE",
+      "kind": "field",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 173,
+        "end": 181
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "method",
+      "scope": "ExecutorsPoolSize",
+      "lineRange": {
+        "start": 184,
+        "end": 185
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "executor_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._EXECUTOR_POOL_SIZE[executor_type]()",
+          "line": 185
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ThreadPoolFactory",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 188,
+        "end": 296
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ThreadPoolFactory",
+      "lineRange": {
+        "start": 200,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_new_executor",
+      "kind": "method",
+      "scope": "ThreadPoolFactory",
+      "lineRange": {
+        "start": 208,
+        "end": 218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "max_workers"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "executor",
+          "line": 218
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_executor",
+      "kind": "method",
+      "scope": "ThreadPoolFactory",
+      "lineRange": {
+        "start": 220,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "executor_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "executor",
+          "line": 243
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_teardown_all",
+      "kind": "method",
+      "scope": "ThreadPoolFactory",
+      "lineRange": {
+        "start": 245,
+        "end": 256
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "mark_shutdown"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "shutdown_all",
+      "kind": "method",
+      "scope": "ThreadPoolFactory",
+      "lineRange": {
+        "start": 258,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reset_all",
+      "kind": "method",
+      "scope": "ThreadPoolFactory",
+      "lineRange": {
+        "start": 281,
+        "end": 296
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FACTORY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 299,
+        "end": 299
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_executor",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 302,
+        "end": 303
+      },
+      "parameters": [
+        {
+          "name": "executor_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "FACTORY.get_executor(executor_type)",
+          "line": 303
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "shutdown_all_executors",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 306,
+        "end": 308
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reset_all_executors",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 311,
+        "end": 314
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_serialize_profile_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 317,
+        "end": 330
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 319
+        },
+        {
+          "expr": "trace_info",
+          "line": 330
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_executor_is_full",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 333,
+        "end": 343
+      },
+      "parameters": [
+        {
+          "name": "executor",
+          "type": "Executor"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "queued_tasks and not idle_workers",
+          "line": 341
+        },
+        {
+          "expr": "False",
+          "line": 343
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_log_executor_stats",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 346,
+        "end": 378
+      },
+      "parameters": [
+        {
+          "name": "executor",
+          "type": "Executor"
+        },
+        {
+          "name": "executor_type"
+        }
+      ],
+      "returnType": "None",
+      "returns": [
+        {
+          "expr": "",
+          "line": 348
+        },
+        {
+          "expr": "",
+          "line": 356
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn_on",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 381,
+        "end": 419
+      },
+      "parameters": [
+        {
+          "name": "executor_type",
+          "type": "ExecutorType"
+        },
+        {
+          "name": "func",
+          "type": "ty.Callable[..., ty.Any]"
+        },
+        {
+          "name": "*args",
+          "type": "ty.Any"
+        },
+        {
+          "name": "**kwargs",
+          "type": "ty.Any"
+        }
+      ],
+      "returnType": "futurist.Future",
+      "returns": [
+        {
+          "expr": "executor.submit(context_wrapper, *args, **kwargs)",
+          "line": 419
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "context_wrapper",
+      "kind": "function",
+      "scope": "spawn_on",
+      "lineRange": {
+        "start": 410,
+        "end": 417
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "func(*args, **kwargs)",
+          "line": 417
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "spawn",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 422,
+        "end": 434
+      },
+      "parameters": [
+        {
+          "name": "func",
+          "type": "ty.Callable[..., ty.Any]"
+        },
+        {
+          "name": "*args",
+          "type": "ty.Any"
+        },
+        {
+          "name": "**kwargs",
+          "type": "ty.Any"
+        }
+      ],
+      "returnType": "futurist.Future",
+      "returns": [
+        {
+          "expr": "spawn_on(ExecutorType.DEFAULT, func, *args, **kwargs)",
+          "line": 434
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 437,
+        "end": 650
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Task",
+      "kind": "class",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 454,
+        "end": 476
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper.Task",
+      "lineRange": {
+        "start": 455,
+        "end": 466
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "delay",
+          "type": "float"
+        },
+        {
+          "name": "fn",
+          "type": "ty.Callable[..., ty.Any]"
+        },
+        {
+          "name": "args",
+          "type": "tuple"
+        },
+        {
+          "name": "kwargs",
+          "type": "dict"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remaining_delay",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper.Task",
+      "lineRange": {
+        "start": 469,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.deadline - time.monotonic()",
+          "line": 470
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__str__",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper.Task",
+      "lineRange": {
+        "start": 472,
+        "end": 476
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "( f\"Task(fn={self.fn}, \" f\"remaining_delay={self.remaining_delay} \" f\"future={self.future})\")",
+          "line": 473
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 478,
+        "end": 498
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "delay",
+          "type": "float"
+        },
+        {
+          "name": "executor",
+          "type": "Executor"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_log",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 501,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "msg"
+        },
+        {
+          "name": "*args"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_task_wrapper",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 505,
+        "end": 514
+      },
+      "parameters": [
+        {
+          "name": "task"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_wait_for_deadline_then_set_running",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 516,
+        "end": 555
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "task"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "task.future.set_running_or_notify_cancel()",
+          "line": 529
+        },
+        {
+          "expr": "False",
+          "line": 542
+        },
+        {
+          "expr": "task.future.set_running_or_notify_cancel()",
+          "line": 555
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_run",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 557,
+        "end": 606
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 568
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "submit_with_delay",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 608,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "fn",
+          "type": "ty.Callable[..., ty.Any]"
+        },
+        {
+          "name": "*args",
+          "type": "ty.Any"
+        },
+        {
+          "name": "**kwargs",
+          "type": "ty.Any"
+        }
+      ],
+      "returnType": "futurist.Future",
+      "returns": [
+        {
+          "expr": "task.future",
+          "line": 622
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "shutdown",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 624,
+        "end": 646
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "wait",
+          "type": "bool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_alive",
+      "kind": "method",
+      "scope": "StaticallyDelayingCancellableTaskExecutorWrapper",
+      "lineRange": {
+        "start": 649,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "self._thread.is_alive()",
+          "line": 650
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "importutils.try_import",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "name": "utils.concurrency_mode_threading",
+      "usage": "call",
+      "via": "nova",
+      "count": 8,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "enum.Enum",
+      "usage": "inherit",
+      "via": "enum",
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "max",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "threading.Lock",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 204,
+        "end": 204
+      }
+    },
+    {
+      "name": "futurist.ThreadPoolExecutor",
+      "usage": "call",
+      "via": "futurist",
+      "count": 1,
+      "lineRange": {
+        "start": 211,
+        "end": 211
+      }
+    },
+    {
+      "name": "futurist.GreenThreadPoolExecutor",
+      "usage": "call",
+      "via": "futurist",
+      "count": 1,
+      "lineRange": {
+        "start": 213,
+        "end": 213
+      }
+    },
+    {
+      "name": "multiprocessing.current_process",
+      "usage": "call",
+      "via": "multiprocessing",
+      "count": 1,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "RuntimeError",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 249,
+        "end": 249
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 338,
+        "end": 338
+      }
+    },
+    {
+      "name": "time.monotonic",
+      "usage": "call",
+      "via": "time",
+      "count": 4,
+      "lineRange": {
+        "start": 354,
+        "end": 354
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 362,
+        "end": 362
+      }
+    },
+    {
+      "name": "common_context.get_current",
+      "usage": "call",
+      "via": "oslo_context",
+      "count": 1,
+      "lineRange": {
+        "start": 406,
+        "end": 406
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 409,
+        "end": 409
+      }
+    },
+    {
+      "name": "func",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 417,
+        "end": 417
+      }
+    },
+    {
+      "name": "futurist.Future",
+      "usage": "call",
+      "via": "futurist",
+      "count": 1,
+      "lineRange": {
+        "start": 463,
+        "end": 463
+      }
+    },
+    {
+      "name": "queue.Queue",
+      "usage": "call",
+      "via": "queue",
+      "count": 1,
+      "lineRange": {
+        "start": 486,
+        "end": 486
+      }
+    },
+    {
+      "name": "threading.Condition",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 489,
+        "end": 489
+      }
+    },
+    {
+      "name": "threading.Thread",
+      "usage": "call",
+      "via": "threading",
+      "count": 1,
+      "lineRange": {
+        "start": 496,
+        "end": 496
+      }
+    },
+    {
+      "name": "time.sleep",
+      "usage": "call",
+      "via": "time",
+      "count": 1,
+      "lineRange": {
+        "start": 553,
+        "end": 553
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "enum",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "multiprocessing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "queue",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "threading",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": "ty",
+      "module": "typing",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "futurist",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_context",
+      "names": [
+        {
+          "alias": "common_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "importutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

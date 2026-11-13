@@ -1,0 +1,757 @@
+{
+  "file": "nova/tests/unit/scheduler/weights/test_weights_image_props.py",
+  "hash": "cafacb48a122be648288b8b35523a1fec47d0ce7f64bac113013a5dfa22128aa",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 35,
+    "code": 185,
+    "comment": 49,
+    "total": 269
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import weights",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler.weights import image_props",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.scheduler import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PROP_PC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PROP_WIN_PC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PROP_LIN",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "PROP_LIN_PC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ImagePropertiesWeigherBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 93
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_ImagePropertiesWeigherBase",
+      "lineRange": {
+        "start": 43,
+        "end": 49
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_image_meta_from_instance",
+      "kind": "method",
+      "scope": "_ImagePropertiesWeigherBase",
+      "lineRange": {
+        "start": 52,
+        "end": 65
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "inst"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "PROP_WIN_PC",
+          "line": 55
+        },
+        {
+          "expr": "PROP_LIN",
+          "line": 58
+        },
+        {
+          "expr": "PROP_LIN_PC",
+          "line": 60
+        },
+        {
+          "expr": "PROP_LIN",
+          "line": 63
+        },
+        {
+          "expr": "objects.ImageMeta(properties=objects.ImageMetaProps())",
+          "line": 65
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_weighed_host",
+      "kind": "method",
+      "scope": "_ImagePropertiesWeigherBase",
+      "lineRange": {
+        "start": 67,
+        "end": 71
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hosts"
+        },
+        {
+          "default": "None",
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.weight_handler.get_weighed_objects(self.weighers, hosts, request_spec)[0]",
+          "line": 70
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_all_hosts",
+      "kind": "method",
+      "scope": "_ImagePropertiesWeigherBase",
+      "lineRange": {
+        "start": 73,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[fakes.FakeHostState(host, node, values) for host, node, values in host_values]",
+          "line": 92
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ImagePropertiesWeigherTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 96,
+        "end": 201
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiplier_default",
+      "kind": "method",
+      "scope": "ImagePropertiesWeigherTestCase",
+      "lineRange": {
+        "start": 99,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiplier_windows_and_pc",
+      "kind": "method",
+      "scope": "ImagePropertiesWeigherTestCase",
+      "lineRange": {
+        "start": 108,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiplier_pc",
+      "kind": "method",
+      "scope": "ImagePropertiesWeigherTestCase",
+      "lineRange": {
+        "start": 124,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiplier_linux",
+      "kind": "method",
+      "scope": "ImagePropertiesWeigherTestCase",
+      "lineRange": {
+        "start": 143,
+        "end": 159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_multiplier_per_property",
+      "kind": "method",
+      "scope": "ImagePropertiesWeigherTestCase",
+      "lineRange": {
+        "start": 162,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_fm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TestTargetCellCalled",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 204,
+        "end": 269
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "USES_DB_SELF",
+      "kind": "constant",
+      "scope": "TestTargetCellCalled",
+      "lineRange": {
+        "start": 207,
+        "end": 207
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_target_cell_called",
+      "kind": "method",
+      "scope": "TestTargetCellCalled",
+      "lineRange": {
+        "start": 214,
+        "end": 269
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_admin_context"
+        },
+        {
+          "name": "mock_from_dict"
+        },
+        {
+          "name": "mock_get_by_uuid"
+        },
+        {
+          "name": "mock_target_cell"
+        },
+        {
+          "name": "mock_fm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_fill_metadata",
+      "kind": "function",
+      "scope": "TestTargetCellCalled.test_target_cell_called",
+      "lineRange": {
+        "start": 260,
+        "end": 261
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.ImageMeta",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "name": "objects.ImageMetaProps",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "weights.HostWeightHandler",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "image_props.ImagePropertiesWeigher",
+      "usage": "call",
+      "via": "nova.scheduler.weights",
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "objects.RequestSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "objects.Instance",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 79,
+        "end": 79
+      }
+    },
+    {
+      "name": "fakes.FakeHostState",
+      "usage": "call",
+      "via": "nova.tests.unit.scheduler",
+      "count": 4,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 7,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 21,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 210,
+        "end": 210
+      }
+    },
+    {
+      "name": "nova_context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 224,
+        "end": 224
+      }
+    },
+    {
+      "name": "exception.CellMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 227,
+        "end": 227
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 268,
+        "end": 268
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "weights"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler.weights",
+      "names": [
+        {
+          "alias": null,
+          "name": "image_props"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

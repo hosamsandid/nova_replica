@@ -1,0 +1,1576 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_hosts.py",
+  "hash": "144184d160145f96797ce3acbefcedbc22bc65314979fa93c4a2d3de09e18f5d",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 70,
+    "code": 341,
+    "comment": 40,
+    "total": 451
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import testtools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob.exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import hosts as os_hosts_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import power_state",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as context_maker",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_hosts",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_service_get_all",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 35
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "disabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_hosts.SERVICES_LIST",
+          "line": 35
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_service_get_by_host_and_binary",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 41
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host_name"
+        },
+        {
+          "name": "binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service",
+          "line": 41
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_set_host_enabled",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host_name"
+        },
+        {
+          "name": "enabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "results[not enabled]",
+          "line": 63
+        },
+        {
+          "expr": "results[enabled]",
+          "line": 66
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_set_host_maintenance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host_name"
+        },
+        {
+          "name": "mode"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "results[not mode]",
+          "line": 85
+        },
+        {
+          "expr": "results[mode]",
+          "line": 88
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_host_power_action",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 91,
+        "end": 100
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host_name"
+        },
+        {
+          "name": "action"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "action",
+          "line": 100
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 103,
+        "end": 106
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.instance_create(ctxt, _create_instance_dict(**kwargs))",
+          "line": 106
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_instance_dict",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 109,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "inst",
+          "line": 129
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "HostTestCaseV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 132,
+        "end": 428
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validation_ex",
+      "kind": "field",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Controller",
+      "kind": "field",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_setup_stubs",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 137,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 153,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_host_update",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 162,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "val"
+        },
+        {
+          "name": "expected_value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_hosts",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 167,
+        "end": 172
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_host_with_multi_filter",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 174,
+        "end": 181
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_host_query_allow_negative_int_as_string",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 183,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_host_query_allow_int_as_string",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 191,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_host_with_unknown_filter",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 199,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_host_with_hypervisor_and_additional_filter",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 208,
+        "end": 215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disable_host",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 217,
+        "end": 219
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_enable_host",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 221,
+        "end": 223
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_enable_maintenance",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 225,
+        "end": 227
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disable_maintenance",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 229,
+        "end": 231
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_host_update_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 233,
+        "end": 242
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "val"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "stub_service_get_all_notimpl",
+      "kind": "function",
+      "scope": "HostTestCaseV21._test_host_update_notimpl",
+      "lineRange": {
+        "start": 234,
+        "end": 236
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[{'host': 'notimplemented', 'topic': None, 'availability_zone': None}]",
+          "line": 235
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_disable_host_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 244,
+        "end": 245
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_enable_maintenance_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 247,
+        "end": 248
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_startup",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 250,
+        "end": 252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_shutdown",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 254,
+        "end": 256
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_reboot",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 258,
+        "end": 260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_host_power_action_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 262,
+        "end": 264
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "method"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_startup_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 266,
+        "end": 267
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_shutdown_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 269,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_reboot_notimpl",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 272,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_status_bad_host",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 275,
+        "end": 281
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_maintenance_bad_host",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 283,
+        "end": 290
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_power_action_bad_host",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 292,
+        "end": 298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_status_bad_status",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 300,
+        "end": 306
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_maintenance_bad_status",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 308,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_host_power_action_bad_status",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 317,
+        "end": 323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bad_status_value",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 325,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bad_update_key",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 333,
+        "end": 336
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_bad_update_key_and_correct_update_key",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 338,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_good_update_keys",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 343,
+        "end": 348
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_host_not_exist",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 350,
+        "end": 356
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_compute_service",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 358,
+        "end": 374
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "db.service_get(ctxt, s_ref['id'])",
+          "line": 374
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_no_project",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 376,
+        "end": 390
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_works_correctly",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 392,
+        "end": 411
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_show_late_host_mapping_gone",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 413,
+        "end": 419
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_hosts_with_zone",
+      "kind": "method",
+      "scope": "HostTestCaseV21",
+      "lineRange": {
+        "start": 421,
+        "end": 428
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "HostControllerDeprecationTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 431,
+        "end": 451
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "HostControllerDeprecationTest",
+      "lineRange": {
+        "start": 433,
+        "end": 436
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_not_found_for_all_host_api",
+      "kind": "method",
+      "scope": "HostControllerDeprecationTest",
+      "lineRange": {
+        "start": 438,
+        "end": 451
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "exception.ComputeHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "exception.ComputeServiceUnavailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "context_maker.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 105,
+        "end": 105
+      }
+    },
+    {
+      "name": "db.instance_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 106,
+        "end": 106
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 154,
+        "end": 154
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 8,
+      "lineRange": {
+        "start": 157,
+        "end": 157
+      }
+    },
+    {
+      "name": "fixtures.SingleCellSimple",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      }
+    },
+    {
+      "name": "testtools.ExpectedException",
+      "usage": "call",
+      "via": "testtools",
+      "count": 7,
+      "lineRange": {
+        "start": 279,
+        "end": 279
+      }
+    },
+    {
+      "name": "db.service_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 363,
+        "end": 363
+      }
+    },
+    {
+      "name": "db.compute_node_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 372,
+        "end": 372
+      }
+    },
+    {
+      "name": "db.service_get",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 374,
+        "end": 374
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 385,
+        "end": 385
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 389,
+        "end": 389
+      }
+    },
+    {
+      "name": "db.service_destroy",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 2,
+      "lineRange": {
+        "start": 390,
+        "end": 390
+      }
+    },
+    {
+      "name": "db.instance_destroy",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 2,
+      "lineRange": {
+        "start": 410,
+        "end": 410
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 415,
+        "end": 415
+      }
+    },
+    {
+      "name": "exception.HostMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 417,
+        "end": 417
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 431,
+        "end": 431
+      }
+    },
+    {
+      "name": "os_hosts_v21.HostController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 435,
+        "end": 435
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "testtools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob.exc",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "os_hosts_v21",
+          "name": "hosts"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "power_state"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "context_maker",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_hosts"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

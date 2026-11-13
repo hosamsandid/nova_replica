@@ -1,0 +1,1323 @@
+{
+  "file": "nova/compute/share_management.py",
+  "hash": "c4035c5312cb7af14276585423ffe9d52a31af587695a266f73b696ccb855bf5",
+  "language": "Python",
+  "component": "compute",
+  "package": null,
+  "lines": {
+    "blank": 76,
+    "code": 598,
+    "comment": 89,
+    "total": 763
+  },
+  "symbols": [
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as keystone_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from openstack import exceptions as sdk_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "share_synchronized",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 48
+      },
+      "parameters": [
+        {
+          "name": "fn"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrapper",
+          "line": 48
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrapper",
+      "kind": "function",
+      "scope": "share_synchronized",
+      "lineRange": {
+        "start": 42,
+        "end": 47
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_inner()",
+          "line": 47
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_inner",
+      "kind": "function",
+      "scope": "share_synchronized.wrapper",
+      "lineRange": {
+        "start": 44,
+        "end": 46
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fn(self, context, instance, share_mapping, *args, **kwargs)",
+          "line": 45
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ShareManager",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 763
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 54,
+        "end": 56
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "manila_api"
+        },
+        {
+          "name": "compute_driver"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_instance_error_state",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 58,
+        "end": 65
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_share_info",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 67,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "True",
+          "name": "check_status"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "share_info",
+          "line": 103
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_apply_access_policy",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 105,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_wait_for_access_policy",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 119,
+        "end": 145
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 133
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "allow_share",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 148,
+        "end": 230
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "deny_share",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 233,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_mappings_to_host",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 318,
+        "end": 342
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_mappings"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "keep_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[ sm for sm in share_mappings if sm.instance_uuid in same_host_uuids ]",
+          "line": 339
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "check_share_usage",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 344,
+        "end": 402
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not all( ( ( sm.instance_uuid == instance_uuid and sm.status in ( fields.ShareMappingStatus.INACTIVE, fields.ShareMappingStatus.ERROR, ) ) or sm.status == fields.ShareMappingStatus.DETACHING ) for sm ",
+          "line": 390
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount_all",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 404,
+        "end": 413
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "umount_all",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 415,
+        "end": 417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup_shares_after_migration",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 419,
+        "end": 432
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "name": "reason"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 427
+        },
+        {
+          "expr": "",
+          "line": 429
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "umount_and_revoke_all",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 434,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_info"
+        },
+        {
+          "name": "reason"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mount",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 459,
+        "end": 480
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "umount",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 483,
+        "end": 499
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.driver.umount_share(context, instance, share_mapping)",
+          "line": 491
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "grant_access",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 501,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 523
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "revoke_access",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 528,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 570
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reconcile_stale_share_access",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 588,
+        "end": 632
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 591
+        },
+        {
+          "expr": "",
+          "line": 605
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reconcile_share",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 634,
+        "end": 676
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_locked",
+      "kind": "function",
+      "scope": "ShareManager._reconcile_share",
+      "lineRange": {
+        "start": 636,
+        "end": 674
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 646
+        },
+        {
+          "expr": "",
+          "line": 665
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reconcile_cephfs_rules",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 678,
+        "end": 700
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_id"
+        },
+        {
+          "name": "mappings"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_reconcile_nfs_rules",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 702,
+        "end": 730
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_id"
+        },
+        {
+          "name": "mappings"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 708
+        },
+        {
+          "expr": "",
+          "line": 715
+        },
+        {
+          "expr": "",
+          "line": 725
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_revoke",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 732,
+        "end": 747
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "share_id"
+        },
+        {
+          "name": "access_type"
+        },
+        {
+          "name": "access_to"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_instance_in_transit",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 750,
+        "end": 758
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "( instance.task_state is not None or instance.vm_state == vm_states.RESIZED )",
+          "line": 755
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_mapping_status",
+      "kind": "method",
+      "scope": "ShareManager",
+      "lineRange": {
+        "start": 761,
+        "end": 763
+      },
+      "parameters": [
+        {
+          "name": "share_mapping"
+        },
+        {
+          "name": "status"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "utils.synchronized",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "fn",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "objects.ShareMappingList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "name": "objects.ShareMappingList.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "exception.ShareErrorUnexpectedStatus",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 90,
+        "end": 90
+      }
+    },
+    {
+      "name": "time.sleep",
+      "usage": "call",
+      "via": "time",
+      "count": 1,
+      "lineRange": {
+        "start": 138,
+        "end": 138
+      }
+    },
+    {
+      "name": "exception.ShareAccessGrantError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 141,
+        "end": 141
+      }
+    },
+    {
+      "name": "compute_utils.notify_about_share_attach_detach",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 10,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 330,
+        "end": 330
+      }
+    },
+    {
+      "name": "objects.InstanceList.get_by_filters",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 335,
+        "end": 335
+      }
+    },
+    {
+      "name": "objects.share_mapping.ShareMappingList.get_by_share_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 352,
+        "end": 352
+      }
+    },
+    {
+      "name": "exception.ShareProtocolNotSupported",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 378,
+        "end": 378
+      }
+    },
+    {
+      "name": "all",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 390,
+        "end": 390
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 556,
+        "end": 556
+      }
+    },
+    {
+      "name": "objects.ShareMappingList.get_by_host_for_reconcile",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 600,
+        "end": 600
+      }
+    },
+    {
+      "name": "objects.ShareMappingList.get_by_share_id",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 643,
+        "end": 643
+      }
+    },
+    {
+      "name": "objects.ShareMapping._cephx_identity",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 682,
+        "end": 682
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 684,
+        "end": 684
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "keystone_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "openstack",
+      "names": [
+        {
+          "alias": "sdk_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

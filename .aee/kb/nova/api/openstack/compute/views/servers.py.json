@@ -1,0 +1,1859 @@
+{
+  "file": "nova/api/openstack/compute/views/servers.py",
+  "hash": "6e89fb1cb7fa1ad1989e4e03ca5d8104633d00ab7b98c5f4233e33014443c3f8",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 92,
+    "code": 593,
+    "comment": 138,
+    "total": 823
+  },
+  "symbols": [
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import api_version_request",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import common",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.views import flavors as views_flavors",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.views import images as views_images",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute.views import ips as views_ips",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import availability_zones as avail_zone",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import security_group_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import virtual_interface",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import extended_server_attributes as esa_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import servers as servers_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AZ_NOT_IN_REQUEST_SPEC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SCHED_HINTS_NOT_IN_REQUEST_SPEC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ViewBuilder",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 823
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_collection_name",
+      "kind": "field",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_progress_statuses",
+      "kind": "field",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 52,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fault_statuses",
+      "kind": "field",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 61,
+        "end": 63
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_show_expected_attrs",
+      "kind": "field",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 70,
+        "end": 76
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 78,
+        "end": 100
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "server",
+          "line": 100
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "basic",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 102,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "False",
+          "name": "show_extra_specs"
+        },
+        {
+          "default": "None",
+          "name": "show_extended_attr"
+        },
+        {
+          "default": "None",
+          "name": "show_host_status"
+        },
+        {
+          "default": "None",
+          "name": "show_sec_grp"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "show_user_data"
+        },
+        {
+          "default": "None",
+          "name": "provided_az"
+        },
+        {
+          "default": "None",
+          "name": "provided_sched_hints"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ \"server\": { \"id\": instance.uuid, \"status\": \"UNKNOWN\", \"links\": self._get_links(request, instance.uuid, self._collection_name), }, }",
+          "line": 114
+        },
+        {
+          "expr": "{ \"server\": { \"id\": instance[\"uuid\"], \"name\": instance[\"display_name\"], \"links\": self._get_links(request, instance[\"uuid\"], self._collection_name), }, }",
+          "line": 123
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_show_expected_attrs",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 133,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "expected_attrs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sorted(list(set(self._show_expected_attrs + expected_attrs)))",
+          "line": 151
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_show_from_down_cell",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 153,
+        "end": 192
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "show_extra_specs"
+        },
+        {
+          "name": "show_server_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ret",
+          "line": 192
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_host_status_unknown_only",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 195,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "unknown_only",
+          "line": 228
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_pinned_az",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 230,
+        "end": 245
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "provided_az"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "pinned_az",
+          "line": 245
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_scheduler_hints",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 247,
+        "end": 261
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "provided_sched_hints"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sched_hints",
+          "line": 261
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "show",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 263,
+        "end": 472
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "True",
+          "name": "extend_address"
+        },
+        {
+          "default": "None",
+          "name": "show_extra_specs"
+        },
+        {
+          "default": "True",
+          "name": "show_AZ"
+        },
+        {
+          "default": "True",
+          "name": "show_config_drive"
+        },
+        {
+          "default": "None",
+          "name": "show_extended_attr"
+        },
+        {
+          "default": "None",
+          "name": "show_host_status"
+        },
+        {
+          "default": "True",
+          "name": "show_keypair"
+        },
+        {
+          "default": "True",
+          "name": "show_srv_usg"
+        },
+        {
+          "default": "True",
+          "name": "show_sec_grp"
+        },
+        {
+          "default": "True",
+          "name": "show_extended_status"
+        },
+        {
+          "default": "True",
+          "name": "show_extended_volumes"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        },
+        {
+          "default": "False",
+          "name": "show_server_groups"
+        },
+        {
+          "default": "True",
+          "name": "show_user_data"
+        },
+        {
+          "default": "None",
+          "name": "provided_az"
+        },
+        {
+          "default": "None",
+          "name": "provided_sched_hints"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._show_from_down_cell( request, instance, show_extra_specs, show_server_groups)",
+          "line": 288
+        },
+        {
+          "expr": "server",
+          "line": 472
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "index",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 474,
+        "end": 478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._list_view(self.basic, request, instances, coll_name, False, cell_down_support=cell_down_support)",
+          "line": 477
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detail",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 480,
+        "end": 523
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "servers_dict",
+          "line": 523
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_list_view",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 525,
+        "end": 589
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "func"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "servers"
+        },
+        {
+          "name": "coll_name"
+        },
+        {
+          "name": "show_extra_specs"
+        },
+        {
+          "default": "None",
+          "name": "show_extended_attr"
+        },
+        {
+          "default": "None",
+          "name": "show_host_status"
+        },
+        {
+          "default": "False",
+          "name": "show_sec_grp"
+        },
+        {
+          "default": "None",
+          "name": "bdms"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "servers_dict",
+          "line": 589
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_metadata",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 592,
+        "end": 593
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance.metadata or {}",
+          "line": 593
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_status",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 596,
+        "end": 601
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "\"DELETED\"",
+          "line": 599
+        },
+        {
+          "expr": "common.status_from_state(instance.get(\"vm_state\"), instance.get(\"task_state\"))",
+          "line": 600
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_host_id",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 604,
+        "end": 607
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "utils.generate_hostid(host, project)",
+          "line": 607
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_addresses",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 609,
+        "end": 619
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "False",
+          "name": "extend_address"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 612
+        },
+        {
+          "expr": "self._ips_builder.index( request, networks, extend_address, )[\"addresses\"]",
+          "line": 617
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_image",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 621,
+        "end": 650
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image",
+          "line": 648
+        },
+        {
+          "expr": "\"\"",
+          "line": 650
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_flavor_dict",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 652,
+        "end": 663
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "show_extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "flavordict",
+          "line": 663
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_flavor",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 665,
+        "end": 684
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "show_extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 670
+        },
+        {
+          "expr": "self._get_flavor_dict(request, flavor, show_extra_specs)",
+          "line": 673
+        },
+        {
+          "expr": "{ \"id\": str(flavor_id), \"links\": [{ \"rel\": \"bookmark\", \"href\": flavor_bookmark, }], }",
+          "line": 678
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_load_fault",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 686,
+        "end": 699
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance.fault",
+          "line": 693
+        },
+        {
+          "expr": "instance.fault",
+          "line": 699
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_fault",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 701,
+        "end": 725
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 708
+        },
+        {
+          "expr": "fault_dict",
+          "line": 725
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_host_status",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 727,
+        "end": 752
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "servers"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "default": "False",
+          "name": "unknown_only"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_security_grps",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 754,
+        "end": 765
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "servers"
+        },
+        {
+          "name": "instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 756
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_add_volumes_attachments",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 767,
+        "end": 785
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "request"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instance_bdms_in_multiple_cells",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 788,
+        "end": 814
+      },
+      "parameters": [
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "instance_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bdms",
+          "line": 814
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_server_groups",
+      "kind": "method",
+      "scope": "ViewBuilder",
+      "lineRange": {
+        "start": 817,
+        "end": 823
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[sg.uuid]",
+          "line": 821
+        },
+        {
+          "expr": "[]",
+          "line": 823
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "object",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "common.ViewBuilder",
+      "usage": "inherit",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "views_images.ViewBuilder",
+      "usage": "call",
+      "via": "nova.api.openstack.compute.views",
+      "count": 1,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "views_ips.ViewBuilder",
+      "usage": "call",
+      "via": "nova.api.openstack.compute.views",
+      "count": 1,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "views_flavors.ViewBuilder",
+      "usage": "call",
+      "via": "nova.api.openstack.compute.views",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "compute.API",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "utils.isotime",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 161,
+        "end": 161
+      }
+    },
+    {
+      "name": "objects.RequestSpec.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 240,
+        "end": 240
+      }
+    },
+    {
+      "name": "api_version_request.is_supported",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 18,
+      "lineRange": {
+        "start": 275,
+        "end": 275
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 295,
+        "end": 295
+      }
+    },
+    {
+      "name": "avail_zone.get_instance_availability_zone",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 331,
+        "end": 331
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 388,
+        "end": 388
+      }
+    },
+    {
+      "name": "objects.BlockDeviceMappingList.bdms_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 406,
+        "end": 406
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 411,
+        "end": 411
+      }
+    },
+    {
+      "name": "objects.RequestSpec.get_by_instance_uuids",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 554,
+        "end": 554
+      }
+    },
+    {
+      "name": "func",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 566,
+        "end": 566
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 584,
+        "end": 584
+      }
+    },
+    {
+      "name": "common.status_from_state",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 600,
+        "end": 600
+      }
+    },
+    {
+      "name": "utils.generate_hostid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 607,
+        "end": 607
+      }
+    },
+    {
+      "name": "common.get_networks_for_instance",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 615,
+        "end": 615
+      }
+    },
+    {
+      "name": "common.get_id_from_href",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 624,
+        "end": 624
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 637,
+        "end": 637
+      }
+    },
+    {
+      "name": "itertools.chain",
+      "usage": "call",
+      "via": "itertools",
+      "count": 1,
+      "lineRange": {
+        "start": 639,
+        "end": 639
+      }
+    },
+    {
+      "name": "objects.ImageMetaProps.fields.keys",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 640,
+        "end": 640
+      }
+    },
+    {
+      "name": "objects.ImageMetaProps._legacy_property_map.keys",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 641,
+        "end": 641
+      }
+    },
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 688,
+        "end": 688
+      }
+    },
+    {
+      "name": "nova_context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 691,
+        "end": 691
+      }
+    },
+    {
+      "name": "security_group_api.get_instances_security_groups_bindings",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 760,
+        "end": 760
+      }
+    },
+    {
+      "name": "objects.InstanceMappingList.get_by_instance_uuids",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 789,
+        "end": 789
+      }
+    },
+    {
+      "name": "nova_context.scatter_gather_cells",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 800,
+        "end": 800
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 806,
+        "end": 806
+      }
+    },
+    {
+      "name": "objects.InstanceGroup.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 819,
+        "end": 819
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "api_version_request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "common"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.views",
+      "names": [
+        {
+          "alias": "views_flavors",
+          "name": "flavors"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.views",
+      "names": [
+        {
+          "alias": "views_images",
+          "name": "images"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute.views",
+      "names": [
+        {
+          "alias": "views_ips",
+          "name": "ips"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "avail_zone",
+          "name": "availability_zones"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "security_group_api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "virtual_interface"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "esa_policies",
+          "name": "extended_server_attributes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "servers_policies",
+          "name": "servers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

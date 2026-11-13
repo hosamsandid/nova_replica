@@ -1,0 +1,3030 @@
+{
+  "file": "nova/tests/unit/volume/test_cinder.py",
+  "hash": "91376a7d485575637486f2ee03d7da4564559e16103b690844449a222eca0ec8",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 236,
+    "code": 1064,
+    "comment": 30,
+    "total": 1330
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from cinderclient import api_versions as cinder_api_versions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from cinderclient import exceptions as cinder_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from cinderclient.v3 import limits as cinder_limits",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as keystone_exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import loading as ks_loading",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import session",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import service_auth",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.fake_instance import fake_instance_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.volume import cinder",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeVolume",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeVolume",
+      "lineRange": {
+        "start": 41,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "default": "1",
+          "name": "size"
+        },
+        {
+          "default": "None",
+          "name": "attachments"
+        },
+        {
+          "default": "False",
+          "name": "multiattach"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "method",
+      "scope": "FakeVolume",
+      "lineRange": {
+        "start": 56,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.volume_id",
+          "line": 57
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeSnapshot",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 71
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeSnapshot",
+      "lineRange": {
+        "start": 62,
+        "end": 71
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "snapshot_id"
+        },
+        {
+          "name": "volume_id"
+        },
+        {
+          "default": "1",
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeVolumeType",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 77
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeVolumeType",
+      "lineRange": {
+        "start": 75,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume_type_name"
+        },
+        {
+          "name": "volume_type_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeAttachment",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 80,
+        "end": 113
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeAttachment",
+      "lineRange": {
+        "start": 82,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "method",
+      "scope": "FakeAttachment",
+      "lineRange": {
+        "start": 103,
+        "end": 104
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "default": "None",
+          "name": "default"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.att.get(key, default)",
+          "line": 104
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__setitem__",
+      "kind": "method",
+      "scope": "FakeAttachment",
+      "lineRange": {
+        "start": 106,
+        "end": 107
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getitem__",
+      "kind": "method",
+      "scope": "FakeAttachment",
+      "lineRange": {
+        "start": 109,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "key"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.att[key]",
+          "line": 110
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "to_dict",
+      "kind": "method",
+      "scope": "FakeAttachment",
+      "lineRange": {
+        "start": 112,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.att",
+          "line": 113
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CinderApiTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 116,
+        "end": 1215
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 117,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 124,
+        "end": 132
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_failed_notfound",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 135,
+        "end": 140
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_failed_badrequest",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 143,
+        "end": 148
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_failed_connection_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 151,
+        "end": 156
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_with_shared_targets",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 159,
+        "end": 174
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_microversion_not_supported",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 179,
+        "end": 185
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 188,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 207,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_failed_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 215,
+        "end": 221
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_over_quota_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 224,
+        "end": 232
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_all",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 235,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_all_with_search",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 253,
+        "end": 266
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_check_availability_zone_differs",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 270,
+        "end": 284
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_instance_az"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reserve_volume",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 287,
+        "end": 294
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unreserve_volume",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 297,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_begin_detaching",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 307,
+        "end": 314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_roll_detaching",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 317,
+        "end": 324
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 327,
+        "end": 335
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_with_mode",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 338,
+        "end": 346
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_create",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 349,
+        "end": 363
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_create_with_mountpoint",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 366,
+        "end": 387
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_create_volume_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 390,
+        "end": 396
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_create_unsupported_api_version",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 401,
+        "end": 409
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_update",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 412,
+        "end": 438
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_update_with_mountpoint",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 441,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_update_attachment_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 473,
+        "end": 481
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_update_attachment_no_connector",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 484,
+        "end": 492
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_update_unsupported_api_version",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 497,
+        "end": 506
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 509,
+        "end": 519
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 523,
+        "end": 533
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        },
+        {
+          "name": "mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_unsupported_api_version",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 538,
+        "end": 547
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 550,
+        "end": 557
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_internal_server_error",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 560,
+        "end": 568
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_internal_server_error_do_not_raise",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 571,
+        "end": 580
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_gateway_timeout",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 583,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_gateway_timeout_do_not_raise",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 594,
+        "end": 603
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_delete_bad_request_exception",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 606,
+        "end": 614
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_complete",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 617,
+        "end": 627
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_complete_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 630,
+        "end": 641
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_complete_unsupported_api_version",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 646,
+        "end": 657
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 660,
+        "end": 669
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_no_attachment_id",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 672,
+        "end": 686
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_no_attachment_id_multiattach",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 689,
+        "end": 703
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_internal_server_error",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 706,
+        "end": 715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_internal_server_error_do_not_raise",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 718,
+        "end": 728
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detach_bad_request_exception",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 732,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_get",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 741,
+        "end": 751
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_get_all_by_instance",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 754,
+        "end": 764
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_get_all_by_volume",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 767,
+        "end": 777
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_get_all_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 780,
+        "end": 789
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_get_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 792,
+        "end": 803
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attachment_get_unsupported_api_version",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 808,
+        "end": 818
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_initialize_connection",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 821,
+        "end": 835
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_initialize_connection_exception_no_code",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 839,
+        "end": 854
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        },
+        {
+          "name": "mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_initialize_connection_rollback",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 857,
+        "end": 870
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_initialize_connection_no_rollback",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 873,
+        "end": 884
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_terminate_connection",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 887,
+        "end": 895
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_terminate_connection_internal_server_error",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 898,
+        "end": 907
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_terminate_connection_internal_server_error_do_not_raise",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 910,
+        "end": 919
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_terminate_connection_bad_request_exception",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 923,
+        "end": 929
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 932,
+        "end": 939
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 941,
+        "end": 943
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_absolute_limits_forbidden",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 946,
+        "end": 953
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_absolute_limits",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 956,
+        "end": 973
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_snapshot",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 976,
+        "end": 985
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_snapshot_failed_notfound",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 988,
+        "end": 993
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_snapshot_connection_failed",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 996,
+        "end": 1001
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_all_snapshots",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1004,
+        "end": 1022
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_snapshot",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1025,
+        "end": 1042
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_force",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1045,
+        "end": 1062
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_snapshot",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1065,
+        "end": 1073
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_snapshot_status",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1076,
+        "end": 1085
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_all_volume_types",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1088,
+        "end": 1106
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_volume_encryption_metadata",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1109,
+        "end": 1119
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_volume_reimage",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1122,
+        "end": 1130
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_cinderclient"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_no_error",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1132,
+        "end": 1141
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_cinder_connection_error",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1143,
+        "end": 1146
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_keystone_connection_error",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1148,
+        "end": 1151
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_cinder_bad_request",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1153,
+        "end": 1156
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_keystone_bad_request",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1158,
+        "end": 1161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_cinder_forbidden",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1163,
+        "end": 1166
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_cinder_exception_keystone_forbidden",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1168,
+        "end": 1171
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_mixed_exception_over_limit",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1173,
+        "end": 1176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_mixed_exception_volume_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1178,
+        "end": 1181
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_mixed_exception_keystone_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1183,
+        "end": 1186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_create_exception_keystone_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1188,
+        "end": 1191
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_translate_create_exception_volume_not_found",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1193,
+        "end": 1196
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_translate_cinder_exception_test",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1198,
+        "end": 1200
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "raised_exc"
+        },
+        {
+          "name": "expected_exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_translate_mixed_exception_test",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1202,
+        "end": 1204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "raised_exc"
+        },
+        {
+          "name": "expected_exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_translate_create_exception_test",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1206,
+        "end": 1208
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "raised_exc"
+        },
+        {
+          "name": "expected_exc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_do_translate_exception_test",
+      "kind": "method",
+      "scope": "CinderApiTestCase",
+      "lineRange": {
+        "start": 1210,
+        "end": 1215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "raised_exc"
+        },
+        {
+          "name": "expected_exc"
+        },
+        {
+          "name": "wrapper"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CinderClientTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1218,
+        "end": 1330
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1221,
+        "end": 1231
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_v3_client_no_microversion",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1235,
+        "end": 1243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_volume_api"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_v3_client_with_microversion_too_new",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1250,
+        "end": 1262
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_volume_api"
+        },
+        {
+          "name": "get_highest_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_v3_client_with_microversion_available",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1269,
+        "end": 1282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_volume_api"
+        },
+        {
+          "name": "get_highest_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_v3_client_with_microversion_skip_version_check",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1288,
+        "end": 1298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_volume_api"
+        },
+        {
+          "name": "get_highest_version"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_load_auth_plugin_failed",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1302,
+        "end": 1308
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_load_from_conf"
+        },
+        {
+          "name": "mock_log_err"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_context_without_token",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1311,
+        "end": 1316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_admin_auth"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_context_without_user_token_but_with_service_token",
+      "kind": "method",
+      "scope": "CinderClientTestCase",
+      "lineRange": {
+        "start": 1320,
+        "end": 1330
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_admin_auth"
+        },
+        {
+          "name": "mock_service_auth"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 3,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 116,
+        "end": 116
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "cinder.API",
+      "usage": "call",
+      "via": "nova.volume",
+      "count": 1,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 121,
+        "end": 121
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 87,
+      "lineRange": {
+        "start": 123,
+        "end": 123
+      }
+    },
+    {
+      "name": "mock.MagicMock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 62,
+      "lineRange": {
+        "start": 126,
+        "end": 126
+      }
+    },
+    {
+      "name": "cinder_exception.NotFound",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 9,
+      "lineRange": {
+        "start": 137,
+        "end": 137
+      }
+    },
+    {
+      "name": "cinder_exception.BadRequest",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 8,
+      "lineRange": {
+        "start": 145,
+        "end": 145
+      }
+    },
+    {
+      "name": "cinder_exception.ConnectionError",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 2,
+      "lineRange": {
+        "start": 153,
+        "end": 153
+      }
+    },
+    {
+      "name": "exception.CinderAPIVersionNotAvailable",
+      "usage": "call",
+      "via": "nova",
+      "count": 6,
+      "lineRange": {
+        "start": 177,
+        "end": 177
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 221,
+        "end": 221
+      }
+    },
+    {
+      "name": "cinder_exception.OverLimit",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 2,
+      "lineRange": {
+        "start": 226,
+        "end": 226
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 245,
+        "end": 245
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 268,
+        "end": 268
+      }
+    },
+    {
+      "name": "fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit.fake_instance",
+      "count": 1,
+      "lineRange": {
+        "start": 276,
+        "end": 276
+      }
+    },
+    {
+      "name": "delattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 279,
+        "end": 279
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 377,
+        "end": 377
+      }
+    },
+    {
+      "name": "cinder_exception.ClientException",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 11,
+      "lineRange": {
+        "start": 552,
+        "end": 552
+      }
+    },
+    {
+      "name": "exception.InvalidRequest",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 783,
+        "end": 783
+      }
+    },
+    {
+      "name": "cinder_exception.Forbidden",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 2,
+      "lineRange": {
+        "start": 951,
+        "end": 951
+      }
+    },
+    {
+      "name": "cinder_limits.Limits",
+      "usage": "call",
+      "via": "cinderclient.v3",
+      "count": 1,
+      "lineRange": {
+        "start": 970,
+        "end": 970
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 1133,
+        "end": 1133
+      }
+    },
+    {
+      "name": "cinder.translate_cinder_exception",
+      "usage": "call",
+      "via": "nova.volume",
+      "count": 1,
+      "lineRange": {
+        "start": 1137,
+        "end": 1137
+      }
+    },
+    {
+      "name": "wrapper",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1215,
+        "end": 1215
+      }
+    },
+    {
+      "name": "service_auth.reset_globals",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1223,
+        "end": 1223
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1224,
+        "end": 1224
+      }
+    },
+    {
+      "name": "cinder.cinderclient",
+      "usage": "call",
+      "via": "nova.volume",
+      "count": 3,
+      "lineRange": {
+        "start": 1239,
+        "end": 1239
+      }
+    },
+    {
+      "name": "cinder_api_versions.APIVersion",
+      "usage": "call",
+      "via": "cinderclient",
+      "count": 5,
+      "lineRange": {
+        "start": 1240,
+        "end": 1240
+      }
+    },
+    {
+      "name": "cinder._get_cinderclient_parameters",
+      "usage": "call",
+      "via": "nova.volume",
+      "count": 2,
+      "lineRange": {
+        "start": 1315,
+        "end": 1315
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "cinderclient",
+      "names": [
+        {
+          "alias": "cinder_api_versions",
+          "name": "api_versions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "cinderclient",
+      "names": [
+        {
+          "alias": "cinder_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "cinderclient.v3",
+      "names": [
+        {
+          "alias": "cinder_limits",
+          "name": "limits"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "keystone_exception",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "ks_loading",
+          "name": "loading"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": null,
+          "name": "session"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "service_auth"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.fake_instance",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance_obj"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.volume",
+      "names": [
+        {
+          "alias": null,
+          "name": "cinder"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

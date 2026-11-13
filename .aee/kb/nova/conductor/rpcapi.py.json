@@ -1,0 +1,1074 @@
+{
+  "file": "nova/conductor/rpcapi.py",
+  "hash": "409d770c18fb52530242cff669f6cbde39d565049ad1d79bc57ddf6aa5a71a40",
+  "language": "Python",
+  "component": "conductor",
+  "package": null,
+  "lines": {
+    "blank": 47,
+    "code": 447,
+    "comment": 23,
+    "total": 517
+  },
+  "symbols": [
+    {
+      "name": "import oslo_messaging as messaging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_versionedobjects import base as ovo_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base as objects_base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import profiler",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import rpc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RPC_TOPIC",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ConductorAPI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 253
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION_ALIASES",
+      "kind": "constant",
+      "scope": "ConductorAPI",
+      "lineRange": {
+        "start": 203,
+        "end": 213
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ConductorAPI",
+      "lineRange": {
+        "start": 215,
+        "end": 223
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "object_class_action",
+      "kind": "method",
+      "scope": "ConductorAPI",
+      "lineRange": {
+        "start": 228,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "objname"
+        },
+        {
+          "name": "objmethod"
+        },
+        {
+          "name": "objver"
+        },
+        {
+          "name": "args"
+        },
+        {
+          "name": "kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.object_class_action_versions(context, objname, objmethod, versions, args, kwargs)",
+          "line": 231
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "object_class_action_versions",
+      "kind": "method",
+      "scope": "ConductorAPI",
+      "lineRange": {
+        "start": 237,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "objname"
+        },
+        {
+          "name": "objmethod"
+        },
+        {
+          "name": "object_versions"
+        },
+        {
+          "name": "args"
+        },
+        {
+          "name": "kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cctxt.call(context, 'object_class_action_versions', objname=objname, objmethod=objmethod, object_versions=object_versions, args=args, kwargs=kwargs)",
+          "line": 240
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "object_action",
+      "kind": "method",
+      "scope": "ConductorAPI",
+      "lineRange": {
+        "start": 245,
+        "end": 248
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "objinst"
+        },
+        {
+          "name": "objmethod"
+        },
+        {
+          "name": "args"
+        },
+        {
+          "name": "kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cctxt.call(context, 'object_action', objinst=objinst, objmethod=objmethod, args=args, kwargs=kwargs)",
+          "line": 247
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "object_backport_versions",
+      "kind": "method",
+      "scope": "ConductorAPI",
+      "lineRange": {
+        "start": 250,
+        "end": 253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "objinst"
+        },
+        {
+          "name": "object_versions"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cctxt.call(context, 'object_backport_versions', objinst=objinst, object_versions=object_versions)",
+          "line": 252
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ComputeTaskAPI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 257,
+        "end": 517
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 294,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "live_migrate_instance",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 302,
+        "end": 311
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "scheduler_hint"
+        },
+        {
+          "name": "block_migration"
+        },
+        {
+          "name": "disk_over_commit"
+        },
+        {
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "migrate_server",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 317,
+        "end": 353
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "scheduler_hint"
+        },
+        {
+          "name": "live"
+        },
+        {
+          "name": "rebuild"
+        },
+        {
+          "name": "flavor"
+        },
+        {
+          "name": "block_migration"
+        },
+        {
+          "name": "disk_over_commit"
+        },
+        {
+          "default": "None",
+          "name": "reservations"
+        },
+        {
+          "default": "True",
+          "name": "clean_shutdown"
+        },
+        {
+          "default": "None",
+          "name": "request_spec"
+        },
+        {
+          "default": "None",
+          "name": "host_list"
+        },
+        {
+          "default": "False",
+          "name": "do_cast"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cctxt.cast(context, 'migrate_server', **kw)",
+          "line": 352
+        },
+        {
+          "expr": "cctxt.call(context, 'migrate_server', **kw)",
+          "line": 353
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "build_instances",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 355,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "name": "image"
+        },
+        {
+          "name": "filter_properties"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "name": "security_groups"
+        },
+        {
+          "name": "block_device_mapping"
+        },
+        {
+          "default": "True",
+          "name": "legacy_bdm"
+        },
+        {
+          "default": "None",
+          "name": "request_spec"
+        },
+        {
+          "default": "None",
+          "name": "host_lists"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "schedule_and_build_instances",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 395,
+        "end": 416
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "build_requests"
+        },
+        {
+          "name": "request_specs"
+        },
+        {
+          "name": "image"
+        },
+        {
+          "name": "admin_password"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "requested_networks"
+        },
+        {
+          "name": "block_device_mapping"
+        },
+        {
+          "default": "None",
+          "name": "tags"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unshelve_instance",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 418,
+        "end": 427
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "request_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rebuild_instance",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 429,
+        "end": 469
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "new_pass"
+        },
+        {
+          "name": "injected_files"
+        },
+        {
+          "name": "image_ref"
+        },
+        {
+          "name": "orig_image_ref"
+        },
+        {
+          "name": "orig_sys_metadata"
+        },
+        {
+          "name": "bdms"
+        },
+        {
+          "default": "False",
+          "name": "recreate"
+        },
+        {
+          "default": "False",
+          "name": "on_shared_storage"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "False",
+          "name": "preserve_ephemeral"
+        },
+        {
+          "default": "None",
+          "name": "request_spec"
+        },
+        {
+          "default": "False",
+          "name": "reimage_boot_volume"
+        },
+        {
+          "default": "None",
+          "name": "target_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cache_images",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 471,
+        "end": 478
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "aggregate"
+        },
+        {
+          "name": "image_ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "confirm_snapshot_based_resize",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 480,
+        "end": 489
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "migration"
+        },
+        {
+          "default": "True",
+          "name": "do_cast"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cctxt.cast(ctxt, 'confirm_snapshot_based_resize', **kw)",
+          "line": 488
+        },
+        {
+          "expr": "cctxt.call(ctxt, 'confirm_snapshot_based_resize', **kw)",
+          "line": 489
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "revert_snapshot_based_resize",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 491,
+        "end": 497
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "migration"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attach_volume",
+      "kind": "method",
+      "scope": "ComputeTaskAPI",
+      "lineRange": {
+        "start": 499,
+        "end": 517
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctxt"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "disk_bus"
+        },
+        {
+          "name": "device_type"
+        },
+        {
+          "default": "None",
+          "name": "tag"
+        },
+        {
+          "default": "False",
+          "name": "supports_multiattach"
+        },
+        {
+          "default": "False",
+          "name": "delete_on_termination"
+        },
+        {
+          "default": "False",
+          "name": "do_cast"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cctxt.cast(ctxt, 'attach_volume', **kw)",
+          "line": 511
+        },
+        {
+          "expr": "cctxt.call(ctxt, 'attach_volume', **kw)",
+          "line": 517
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "profiler.trace_cls",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "messaging.Target",
+      "usage": "call",
+      "via": "oslo_messaging",
+      "count": 2,
+      "lineRange": {
+        "start": 217,
+        "end": 217
+      }
+    },
+    {
+      "name": "objects_base.NovaObjectSerializer",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 220,
+        "end": 220
+      }
+    },
+    {
+      "name": "rpc.get_client",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 221,
+        "end": 221
+      }
+    },
+    {
+      "name": "ovo_base.obj_tree_get_versions",
+      "usage": "call",
+      "via": "oslo_versionedobjects",
+      "count": 1,
+      "lineRange": {
+        "start": 230,
+        "end": 230
+      }
+    },
+    {
+      "name": "objects_base.obj_to_primitive",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 341,
+        "end": 341
+      }
+    },
+    {
+      "name": "jsonutils.to_primitive",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 3,
+      "lineRange": {
+        "start": 344,
+        "end": 344
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 380,
+        "end": 380
+      }
+    },
+    {
+      "name": "exception.UnsupportedRPCVersion",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 452,
+        "end": 452
+      }
+    },
+    {
+      "name": "exception.NovaException",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 459,
+        "end": 459
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 3,
+      "lineRange": {
+        "start": 484,
+        "end": 484
+      }
+    },
+    {
+      "name": "exception.ServiceTooOld",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 484,
+        "end": 484
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": "messaging",
+      "module": "oslo_messaging",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_versionedobjects",
+      "names": [
+        {
+          "alias": "ovo_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "objects_base",
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "profiler"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "rpc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

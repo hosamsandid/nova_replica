@@ -1,0 +1,1051 @@
+{
+  "file": "nova/objects/ec2.py",
+  "hash": "6f023c6676d79c26b998c14302ceb78d2bbe9542e3e3cbfcc639d5ea68ffea23",
+  "language": "Python",
+  "component": "objects",
+  "package": null,
+  "lines": {
+    "blank": 46,
+    "code": 186,
+    "comment": 17,
+    "total": 249
+  },
+  "symbols": [
+    {
+      "name": "import functools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import cache_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_CACHE_TIME",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_CACHE",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__all__",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memoize",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 56
+      },
+      "parameters": [
+        {
+          "name": "func"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "memoizer",
+          "line": 56
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "memoizer",
+      "kind": "function",
+      "scope": "memoize",
+      "lineRange": {
+        "start": 45,
+        "end": 55
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "reqid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "value",
+          "line": 55
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "id_to_ec2_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 59,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "instance_id"
+        },
+        {
+          "default": "'i-%08x'",
+          "name": "template"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "template % int(instance_id)",
+          "line": 61
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "id_to_ec2_inst_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 67
+        },
+        {
+          "expr": "id_to_ec2_id(int_id)",
+          "line": 70
+        },
+        {
+          "expr": "id_to_ec2_id(instance_id)",
+          "line": 72
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_int_id_from_instance_uuid",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 76,
+        "end": 86
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 78
+        },
+        {
+          "expr": "imap.id",
+          "line": 81
+        },
+        {
+          "expr": "imap.id",
+          "line": 86
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "glance_id_to_ec2_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 89,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "glance_id"
+        },
+        {
+          "default": "'ami'",
+          "name": "image_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 92
+        },
+        {
+          "expr": "id_to_ec2_id(image_id, template=template)",
+          "line": 95
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "glance_id_to_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 99,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "glance_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 102
+        },
+        {
+          "expr": "S3ImageMapping.get_by_uuid(context, glance_id).id",
+          "line": 105
+        },
+        {
+          "expr": "s3imap.id",
+          "line": 109
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "glance_type_to_ec2_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 112,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "image_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'aki'",
+          "line": 121
+        },
+        {
+          "expr": "'ari'",
+          "line": 123
+        },
+        {
+          "expr": "'ami'",
+          "line": 125
+        },
+        {
+          "expr": "image_type",
+          "line": 126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EC2InstanceMapping",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 130,
+        "end": 167
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "EC2InstanceMapping",
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "EC2InstanceMapping",
+      "lineRange": {
+        "start": 134,
+        "end": 137
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_from_db_object",
+      "kind": "method",
+      "scope": "EC2InstanceMapping",
+      "lineRange": {
+        "start": 140,
+        "end": 145
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "imap"
+        },
+        {
+          "name": "db_imap"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "imap",
+          "line": 145
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "EC2InstanceMapping",
+      "lineRange": {
+        "start": 148,
+        "end": 153
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_uuid",
+      "kind": "method",
+      "scope": "EC2InstanceMapping",
+      "lineRange": {
+        "start": 157,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_imap)",
+          "line": 160
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_id",
+      "kind": "method",
+      "scope": "EC2InstanceMapping",
+      "lineRange": {
+        "start": 164,
+        "end": 167
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "ec2_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_imap)",
+          "line": 167
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "S3ImageMapping",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 171,
+        "end": 208
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "S3ImageMapping",
+      "lineRange": {
+        "start": 173,
+        "end": 173
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "S3ImageMapping",
+      "lineRange": {
+        "start": 175,
+        "end": 178
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_from_db_object",
+      "kind": "method",
+      "scope": "S3ImageMapping",
+      "lineRange": {
+        "start": 181,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "s3imap"
+        },
+        {
+          "name": "db_s3imap"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "s3imap",
+          "line": 186
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "S3ImageMapping",
+      "lineRange": {
+        "start": 189,
+        "end": 194
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_uuid",
+      "kind": "method",
+      "scope": "S3ImageMapping",
+      "lineRange": {
+        "start": 198,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "s3_image_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(context), db_s3imap)",
+          "line": 201
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_id",
+      "kind": "method",
+      "scope": "S3ImageMapping",
+      "lineRange": {
+        "start": 205,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "s3_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(context), db_s3imap)",
+          "line": 208
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EC2Ids",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 212,
+        "end": 249
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "EC2Ids",
+      "lineRange": {
+        "start": 214,
+        "end": 214
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "EC2Ids",
+      "lineRange": {
+        "start": 216,
+        "end": 221
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_from_dict",
+      "kind": "method",
+      "scope": "EC2Ids",
+      "lineRange": {
+        "start": 224,
+        "end": 227
+      },
+      "parameters": [
+        {
+          "name": "ec2ids"
+        },
+        {
+          "name": "dict_ec2ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ec2ids",
+          "line": 227
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_ec2_ids",
+      "kind": "method",
+      "scope": "EC2Ids",
+      "lineRange": {
+        "start": 230,
+        "end": 243
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ec2_ids",
+          "line": 243
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_instance",
+      "kind": "method",
+      "scope": "EC2Ids",
+      "lineRange": {
+        "start": 247,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_dict(cls(context), ec2_ids)",
+          "line": 249
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "functools.wraps",
+      "usage": "call",
+      "via": "functools",
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "cache_utils.get_client",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "func",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 61,
+        "end": 61
+      }
+    },
+    {
+      "name": "uuidutils.is_uuid_like",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 68,
+        "end": 68
+      }
+    },
+    {
+      "name": "base.NovaObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "base.NovaPersistentObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "fields.IntegerField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 135,
+        "end": 135
+      }
+    },
+    {
+      "name": "fields.UUIDField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 142,
+        "end": 142
+      }
+    },
+    {
+      "name": "exception.ObjectActionError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    },
+    {
+      "name": "db.ec2_instance_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 152,
+        "end": 152
+      }
+    },
+    {
+      "name": "db.ec2_instance_get_by_uuid",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "db.ec2_instance_get_by_id",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 165,
+        "end": 165
+      }
+    },
+    {
+      "name": "db.s3_image_create",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 193,
+        "end": 193
+      }
+    },
+    {
+      "name": "db.s3_image_get_by_uuid",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 199,
+        "end": 199
+      }
+    },
+    {
+      "name": "db.s3_image_get",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 1,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "fields.StringField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 217,
+        "end": 217
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 236,
+        "end": 236
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "functools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "cache_utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

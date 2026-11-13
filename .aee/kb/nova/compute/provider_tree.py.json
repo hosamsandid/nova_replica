@@ -1,0 +1,1772 @@
+{
+  "file": "nova/compute/provider_tree.py",
+  "hash": "5df2b316938ea0c1b4bcbde77fdf49d1df37921db90c5cc338b3ba92313990da",
+  "language": "Python",
+  "component": "compute",
+  "package": null,
+  "lines": {
+    "blank": 113,
+    "code": 617,
+    "comment": 64,
+    "total": 794
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from typing import Final",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os_traits",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import lockutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_LOCK_NAME",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ProviderData",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_Provider",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 246
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 53,
+        "end": 71
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        },
+        {
+          "default": "None",
+          "name": "parent_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_dict",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 74,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "pdict"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls(pdict['name'], uuid=pdict.get('uuid'), generation=pdict.get('generation'), parent_uuid=pdict.get('parent_provider_uuid'))",
+          "line": 82
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "data",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 86,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ProviderData( self.uuid, self.name, self.generation, self.parent_uuid, inventory, traits, aggregates, resources)",
+          "line": 91
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_provider_uuids",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 95,
+        "end": 102
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ret",
+          "line": 102
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "find",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 104,
+        "end": 118
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "search"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self",
+          "line": 106
+        },
+        {
+          "expr": "self.children[search]",
+          "line": 108
+        },
+        {
+          "expr": "child",
+          "line": 114
+        },
+        {
+          "expr": "subchild",
+          "line": 117
+        },
+        {
+          "expr": "None",
+          "line": 118
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_child",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 120,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "provider"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_child",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 123,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "provider"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_inventory",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 127,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.inventory != {}",
+          "line": 129
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_inventory_changed",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 131,
+        "end": 155
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "new"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 135
+        },
+        {
+          "expr": "True",
+          "line": 142
+        },
+        {
+          "expr": "True",
+          "line": 154
+        },
+        {
+          "expr": "False",
+          "line": 155
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_update_generation",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 157,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "generation"
+        },
+        {
+          "name": "operation"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_inventory",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 170,
+        "end": 183
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "inventory"
+        },
+        {
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 180
+        },
+        {
+          "expr": "False",
+          "line": 183
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "have_traits_changed",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 185,
+        "end": 187
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "new"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "set(new) != self.traits",
+          "line": 187
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_traits",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 189,
+        "end": 198
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "new"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 197
+        },
+        {
+          "expr": "False",
+          "line": 198
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_traits",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 200,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not bool(set(traits) - self.traits)",
+          "line": 208
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "have_aggregates_changed",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 210,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "new"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "set(new) != self.aggregates",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_aggregates",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 214,
+        "end": 223
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "new"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 222
+        },
+        {
+          "expr": "False",
+          "line": 223
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "in_aggregates",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 225,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "aggregates"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "not bool(set(aggregates) - self.aggregates)",
+          "line": 233
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "have_resources_changed",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 235,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "new"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.resources != new",
+          "line": 237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_resources",
+      "kind": "method",
+      "scope": "_Provider",
+      "lineRange": {
+        "start": 239,
+        "end": 246
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 245
+        },
+        {
+          "expr": "False",
+          "line": 246
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ProviderTree",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 249,
+        "end": 776
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 251,
+        "end": 255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "roots",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 258,
+        "end": 259
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.roots_by_uuid.values()",
+          "line": 259
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_provider_uuids",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 261,
+        "end": 279
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._find_with_lock(name_or_uuid).get_provider_uuids()",
+          "line": 272
+        },
+        {
+          "expr": "ret",
+          "line": 279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_provider_uuids_in_tree",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 281,
+        "end": 291
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._find_with_lock( name_or_uuid, return_root=True).get_provider_uuids()",
+          "line": 290
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_from_iterable",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 293,
+        "end": 377
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "provider_dicts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 312
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_remove_with_lock",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 379,
+        "end": 386
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 388,
+        "end": 397
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "new_root",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 399,
+        "end": 424
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "p.uuid",
+          "line": 424
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_with_lock",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 426,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "default": "False",
+          "name": "return_root"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "found",
+          "line": 431
+        },
+        {
+          "expr": "found",
+          "line": 434
+        },
+        {
+          "expr": "root if return_root else found",
+          "line": 440
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "data",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 443,
+        "end": 453
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._find_with_lock(name_or_uuid).data()",
+          "line": 453
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exists",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 455,
+        "end": 464
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 462
+        },
+        {
+          "expr": "False",
+          "line": 464
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "new_child",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 466,
+        "end": 492
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "parent"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "p.uuid",
+          "line": 492
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_inventory",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 494,
+        "end": 503
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "p.has_inventory()",
+          "line": 503
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_inventory_changed",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 505,
+        "end": 518
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "inventory"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.has_inventory_changed(inventory)",
+          "line": 518
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_inventory",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 520,
+        "end": 541
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "inventory"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.update_inventory(inventory, generation)",
+          "line": 541
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_sharing_provider",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 543,
+        "end": 553
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "resource_class"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 552
+        },
+        {
+          "expr": "False",
+          "line": 553
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_traits",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 555,
+        "end": 571
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.has_traits(traits)",
+          "line": 571
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "have_traits_changed",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 573,
+        "end": 586
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.have_traits_changed(traits)",
+          "line": 586
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_traits",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 588,
+        "end": 607
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "traits"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.update_traits(traits, generation=generation)",
+          "line": 607
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_traits",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 609,
+        "end": 621
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "*traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 617
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_traits",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 623,
+        "end": 635
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "*traits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 631
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "in_aggregates",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 637,
+        "end": 653
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "aggregates"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.in_aggregates(aggregates)",
+          "line": 653
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "have_aggregates_changed",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 655,
+        "end": 668
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "aggregates"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.have_aggregates_changed(aggregates)",
+          "line": 668
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_aggregates",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 670,
+        "end": 691
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "aggregates"
+        },
+        {
+          "default": "None",
+          "name": "generation"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.update_aggregates(aggregates, generation=generation)",
+          "line": 690
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_aggregates",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 693,
+        "end": 703
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "*aggregates"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_aggregates",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 705,
+        "end": 716
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "*aggregates"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_resources",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 718,
+        "end": 730
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        },
+        {
+          "name": "resources"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "provider.update_resources(resources)",
+          "line": 730
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "subtree",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 732,
+        "end": 756
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name_or_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "new_sub_tree",
+          "line": 756
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getstate__",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 758,
+        "end": 767
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "state",
+          "line": 767
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__setstate__",
+      "kind": "method",
+      "scope": "ProviderTree",
+      "lineRange": {
+        "start": 769,
+        "end": 776
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ProviderSubTree",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 779,
+        "end": 794
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ProviderSubTree",
+      "lineRange": {
+        "start": 788,
+        "end": 790
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "scope_rp_uuid",
+          "type": "str"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "scope_rp_uuid",
+      "kind": "method",
+      "scope": "ProviderSubTree",
+      "lineRange": {
+        "start": 793,
+        "end": 794
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "self._scope_rp_uuid",
+          "line": 794
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "name": "collections.namedtuple",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 47,
+        "end": 47
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 21,
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 5,
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 2,
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 208,
+        "end": 208
+      }
+    },
+    {
+      "name": "lockutils.internal_lock",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 2,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 333,
+        "end": 333
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 6,
+      "lineRange": {
+        "start": 334,
+        "end": 334
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 789,
+        "end": 789
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "typing",
+      "names": [
+        {
+          "alias": null,
+          "name": "Final"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "os_traits",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "lockutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

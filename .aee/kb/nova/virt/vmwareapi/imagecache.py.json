@@ -1,0 +1,760 @@
+{
+  "file": "nova/virt/vmwareapi/imagecache.py",
+  "hash": "9b79a152cf0e09b52c9c7e13c8589cabdb7f3e32bf076449d7e23b9ce1a74182",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 27,
+    "code": 142,
+    "comment": 28,
+    "total": 197
+  },
+  "symbols": [
+    {
+      "name": "from oslo_concurrency import lockutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import exceptions as vexc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import vim_util as vutil",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import imagecache",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import ds_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TIMESTAMP_PREFIX",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "TIMESTAMP_FORMAT",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ImageCacheManager",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 197
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 57,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "session"
+        },
+        {
+          "name": "base_folder"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_folder_delete",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 63,
+        "end": 74
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "enlist_image",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 76,
+        "end": 89
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_id"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "dc_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "timestamp_folder_get",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 91,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ds_path.join(image_id)",
+          "line": 93
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "timestamp_cleanup",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 95,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "ds_browser"
+        },
+        {
+          "name": "ds_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_timestamp",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 103,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_browser"
+        },
+        {
+          "name": "ds_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "file",
+          "line": 108
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_timestamp_filename",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 110,
+        "end": 112
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'%s%s' % (TIMESTAMP_PREFIX, timeutils.utcnow().strftime(TIMESTAMP_FORMAT))",
+          "line": 111
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_datetime_from_filename",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 114,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "timestamp_filename"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "timeutils.parse_strtime(ts, fmt=TIMESTAMP_FORMAT)",
+          "line": 116
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_ds_browser",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 118,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ds_browser",
+          "line": 125
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_list_datastore_images",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 127,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ds_path"
+        },
+        {
+          "name": "datastore"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'unexplained_images': [], 'originals': originals}",
+          "line": 137
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_age_cached_images",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 140,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "dc_info"
+        },
+        {
+          "name": "ds_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 178,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instances"
+        },
+        {
+          "name": "datastores_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_image_cache_folder",
+      "kind": "method",
+      "scope": "ImageCacheManager",
+      "lineRange": {
+        "start": 195,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "image_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "datastore.build_path(self._base_folder, image_id)",
+          "line": 197
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "imagecache.ImageCacheManager",
+      "usage": "inherit",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 58,
+        "end": 58
+      }
+    },
+    {
+      "name": "ds_util.file_delete",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "lockutils.lock",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 3,
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "name": "ds_util.get_sub_folders",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 2,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "timeutils.parse_strtime",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 116,
+        "end": 116
+      }
+    },
+    {
+      "name": "vutil.get_moref_value",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 2,
+      "lineRange": {
+        "start": 119,
+        "end": 119
+      }
+    },
+    {
+      "name": "vutil.get_object_property",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 121,
+        "end": 121
+      }
+    },
+    {
+      "name": "ds_util.mkdir",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 157,
+        "end": 157
+      }
+    },
+    {
+      "name": "timeutils.is_older_than",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 164,
+        "end": 164
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 187,
+        "end": 187
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "lockutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vexc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vutil",
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "imagecache"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "ds_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

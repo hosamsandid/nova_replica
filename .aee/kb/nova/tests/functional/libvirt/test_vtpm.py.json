@@ -1,0 +1,1753 @@
+{
+  "file": "nova/tests/functional/libvirt/test_vtpm.py",
+  "hash": "45a285ed4ddb9ed7a42700a76112c8060a338493cbce2f19504d33a39c3a8f36",
+  "language": "Python",
+  "component": "tests-functional",
+  "package": null,
+  "lines": {
+    "blank": 238,
+    "code": 694,
+    "comment": 184,
+    "total": 1116
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from castellan.common import exception as castellan_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from castellan.common.objects import passphrase",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from castellan.key_manager import key_manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import ddt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import crypto",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.main import api as db_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import libvirt as fakelibvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.api import client",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.libvirt import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeKeyManager",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 143
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 50,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "configuration"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_key",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 59,
+        "end": 66
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "algorithm"
+        },
+        {
+          "name": "length"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_key_pair",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 68,
+        "end": 75
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "store",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 77,
+        "end": 91
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "managed_object"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "uuid",
+          "line": 91
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 93,
+        "end": 112
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "managed_object_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._passphrases[managed_object_id]",
+          "line": 112
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 114,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "managed_object_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_consumer",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 135,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "managed_object_id"
+        },
+        {
+          "name": "consumer_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_consumer",
+      "kind": "method",
+      "scope": "FakeKeyManager",
+      "lineRange": {
+        "start": 140,
+        "end": 143
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "managed_object_id"
+        },
+        {
+          "name": "consumer_data"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VTPMServersTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 149,
+        "end": 1107
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CAST_AS_CALL",
+      "kind": "constant",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 155,
+        "end": 155
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "microversion",
+      "kind": "field",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 159,
+        "end": 159
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 161,
+        "end": 186
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_nova_service_user_context",
+      "kind": "function",
+      "scope": "VTPMServersTest.setUp",
+      "lineRange": {
+        "start": 181,
+        "end": 182
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nova_context.RequestContext(user_id='nova')",
+          "line": 182
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_with_vtpm",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 188,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "secret_security"
+        },
+        {
+          "default": "'ACTIVE'",
+          "name": "expected_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "server",
+          "line": 197
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_without_vtpm",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 199,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._create_server()",
+          "line": 201
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertInstanceHasSecret",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 203,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "default": "'fake'",
+          "name": "user_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance.system_metadata['vtpm_secret_uuid']",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assertInstanceHasNoSecret",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 214,
+        "end": 218
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_libvirt_has_secret",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 220,
+        "end": 226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_libvirt_had_secret",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 228,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "compute"
+        },
+        {
+          "name": "secret_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_libvirt_secret_missing",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 237,
+        "end": 239
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tpm_secret_security_user",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 241,
+        "end": 256
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_tpm_secret_security_user_negative",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 258,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 265,
+        "end": 284
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_secret_security_host",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 286,
+        "end": 316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_secret_security_deployment",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 318,
+        "end": 351
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_secret_security_user_too_old",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 353,
+        "end": 383
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_secret_security_host_too_old",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 385,
+        "end": 415
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_host_server_secret_security_host_too_old",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 417,
+        "end": 449
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_host_force_server_secret_security_host_too_old",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 451,
+        "end": 491
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_secret_security_host",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 496,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_secret_security_host_missing",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 531,
+        "end": 575
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server_secret_security_host_rollback",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 580,
+        "end": 639
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_migrate_stub",
+      "kind": "function",
+      "scope": "VTPMServersTest.test_live_migrate_server_secret_security_host_rollback",
+      "lineRange": {
+        "start": 587,
+        "end": 593
+      },
+      "parameters": [
+        {
+          "name": "domain"
+        },
+        {
+          "name": "destination"
+        },
+        {
+          "name": "params"
+        },
+        {
+          "name": "flags"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_suspend_resume_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 641,
+        "end": 660
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_soft_reboot_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 662,
+        "end": 674
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_hard_reboot_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 676,
+        "end": 688
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_hard_reboot_server_as_admin",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 691,
+        "end": 706
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "secret_security"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_resize_revert_server__vtpm_to_vtpm",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 708,
+        "end": 743
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_revert_server__vtpm_to_vtpm_same_config",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 745,
+        "end": 746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_revert_server__vtpm_to_vtpm_different_config",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 748,
+        "end": 751
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server__no_vtpm_to_vtpm",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 754,
+        "end": 813
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "secret_security"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_server__vtpm_to_no_vtpm",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 816,
+        "end": 872
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "secret_security"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_vtpm_server_secret_security_deployment_unsupported",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 879,
+        "end": 930
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "from_secret_security"
+        },
+        {
+          "name": "to_secret_security"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_vtpm_server_secret_security_deployment_supported",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 941,
+        "end": 988
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "from_secret_security"
+        },
+        {
+          "name": "to_secret_security"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_secret_security_unsupported",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 990,
+        "end": 1006
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 1008,
+        "end": 1039
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_migrate_server_as_admin",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 1041,
+        "end": 1072
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_live_migrate_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 1074,
+        "end": 1091
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_shelve_server",
+      "kind": "method",
+      "scope": "VTPMServersTest",
+      "lineRange": {
+        "start": 1093,
+        "end": 1107
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VTPMServersTestNonShared",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1110,
+        "end": 1116
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "VTPMServersTestNonShared",
+      "lineRange": {
+        "start": 1112,
+        "end": 1116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "name": "key_manager.KeyManager",
+      "usage": "inherit",
+      "via": "castellan.key_manager",
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "NotImplementedError",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "name": "exception.Forbidden",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 80,
+        "end": 80
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "exception.KeyManagerError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      }
+    },
+    {
+      "name": "castellan_exc.KeyManagerError",
+      "usage": "call",
+      "via": "castellan.common",
+      "count": 2,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "KeyError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "base.LibvirtMigrationMixin",
+      "usage": "inherit",
+      "via": "nova.tests.functional.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "base.ServersTestBase",
+      "usage": "inherit",
+      "via": "nova.tests.functional.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 18,
+      "lineRange": {
+        "start": 172,
+        "end": 172
+      }
+    },
+    {
+      "name": "crypto._get_key_manager",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 177,
+        "end": 177
+      }
+    },
+    {
+      "name": "nova_context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 182,
+        "end": 182
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 184,
+        "end": 184
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 205,
+        "end": 205
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 208,
+        "end": 208
+      }
+    },
+    {
+      "name": "db_api.service_update",
+      "usage": "call",
+      "via": "nova.db.main",
+      "count": 4,
+      "lineRange": {
+        "start": 375,
+        "end": 375
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 383,
+        "end": 383
+      }
+    },
+    {
+      "name": "utils.temporary_mutation",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 480,
+        "end": 480
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 3,
+      "lineRange": {
+        "start": 495,
+        "end": 495
+      }
+    },
+    {
+      "name": "ddt.data",
+      "usage": "call",
+      "via": "ddt",
+      "count": 5,
+      "lineRange": {
+        "start": 690,
+        "end": 690
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "castellan.common",
+      "names": [
+        {
+          "alias": "castellan_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "castellan.common.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "passphrase"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "castellan.key_manager",
+      "names": [
+        {
+          "alias": null,
+          "name": "key_manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "ddt",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "crypto"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.main",
+      "names": [
+        {
+          "alias": "db_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": "fakelibvirt",
+          "name": "libvirt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

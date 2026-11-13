@@ -1,0 +1,894 @@
+{
+  "file": "nova/compute/multi_cell_list.py",
+  "hash": "7992fdd7849b51d15da5e9e0d8848c39d377007702ed952288b474b00c168d1f",
+  "language": "Python",
+  "component": "compute",
+  "package": null,
+  "lines": {
+    "blank": 66,
+    "code": 279,
+    "comment": 109,
+    "total": 454
+  },
+  "symbols": [
+    {
+      "name": "import abc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import heapq",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import time",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RecordSortContext",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RecordSortContext",
+      "lineRange": {
+        "start": 31,
+        "end": 34
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sort_keys"
+        },
+        {
+          "name": "sort_dirs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "timeout_expired",
+      "kind": "method",
+      "scope": "RecordSortContext",
+      "lineRange": {
+        "start": 37,
+        "end": 38
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "time.monotonic() - self.start_time > context.CELL_TIMEOUT",
+          "line": 38
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "compare_records",
+      "kind": "method",
+      "scope": "RecordSortContext",
+      "lineRange": {
+        "start": 40,
+        "end": 52
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "rec1"
+        },
+        {
+          "name": "rec2"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resultflag",
+          "line": 49
+        },
+        {
+          "expr": "resultflag * -1",
+          "line": 51
+        },
+        {
+          "expr": "0",
+          "line": 52
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RecordWrapper",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 90
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RecordWrapper",
+      "lineRange": {
+        "start": 67,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "sort_ctx"
+        },
+        {
+          "name": "db_record"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__lt__",
+      "kind": "method",
+      "scope": "RecordWrapper",
+      "lineRange": {
+        "start": 72,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 83
+        },
+        {
+          "expr": "False",
+          "line": 85
+        },
+        {
+          "expr": "r == -1",
+          "line": 90
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CrossCellLister",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 93,
+        "end": 454
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 104,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "sort_ctx"
+        },
+        {
+          "default": "None",
+          "name": "cells"
+        },
+        {
+          "default": "None",
+          "name": "batch_size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cells_responded",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 113,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(self._cells_responded)",
+          "line": 117
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cells_failed",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 120,
+        "end": 124
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(self._cells_failed)",
+          "line": 124
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cells_timed_out",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 127,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(self._cells_timed_out)",
+          "line": 131
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "marker_identifier",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 135,
+        "end": 142
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_marker_record",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 145,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "marker_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_marker_by_values",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 161,
+        "end": 177
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_filters",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 180,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "query_wrapper",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 195,
+        "end": 221
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "fn"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 215
+        },
+        {
+          "expr": "",
+          "line": 221
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_records_sorted",
+      "kind": "method",
+      "scope": "CrossCellLister",
+      "lineRange": {
+        "start": 223,
+        "end": 454
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ctx"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 418
+        },
+        {
+          "expr": "",
+          "line": 454
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "do_query",
+      "kind": "function",
+      "scope": "CrossCellLister.get_records_sorted",
+      "lineRange": {
+        "start": 267,
+        "end": 383
+      },
+      "parameters": [
+        {
+          "name": "cctx"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 329
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "time.monotonic",
+      "usage": "call",
+      "via": "time",
+      "count": 2,
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "name": "zip",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "context.is_cell_failure_sentinel",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "fn",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "exception.CellTimeout",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 208,
+        "end": 208
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 309,
+        "end": 309
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 354,
+        "end": 354
+      }
+    },
+    {
+      "name": "context.scatter_gather_cells",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 393,
+        "end": 393
+      }
+    },
+    {
+      "name": "context.scatter_gather_all_cells",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 398,
+        "end": 398
+      }
+    },
+    {
+      "name": "heapq.merge",
+      "usage": "call",
+      "via": "heapq",
+      "count": 1,
+      "lineRange": {
+        "start": 413,
+        "end": 413
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 416,
+        "end": 416
+      }
+    },
+    {
+      "name": "exception.NovaException",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 431,
+        "end": 431
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 1,
+      "lineRange": {
+        "start": 432,
+        "end": 432
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 440,
+        "end": 440
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "abc",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "heapq",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "time",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

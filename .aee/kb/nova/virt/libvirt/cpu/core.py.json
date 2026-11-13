@@ -1,0 +1,468 @@
+{
+  "file": "nova/virt/libvirt/cpu/core.py",
+  "hash": "e2fb8eb03ec6ac019d137435fe04d670b33d5fc049bcaaba9ff22c1c0e502cc3",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 22,
+    "code": 48,
+    "comment": 18,
+    "total": 88
+  },
+  "symbols": [
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import filesystem",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.privsep",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import hardware",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AVAILABLE_PATH",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CPU_PATH_TEMPLATE",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_available_cores",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 31
+      },
+      "parameters": [],
+      "returnType": "set[int]",
+      "returns": [
+        {
+          "expr": "hardware.parse_cpu_spec(cores) if cores else set()",
+          "line": 31
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exists",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 35
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "core in get_available_cores()",
+          "line": 35
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "gen_cpu_path",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 42
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "CPU_PATH_TEMPLATE % {'core': core}",
+          "line": 42
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_online",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "online == '1'",
+          "line": 53
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_online",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "get_online(core)",
+          "line": 61
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_offline",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 65,
+        "end": 75
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        }
+      ],
+      "returnType": "bool",
+      "returns": [
+        {
+          "expr": "False",
+          "line": 74
+        },
+        {
+          "expr": "not get_online(core)",
+          "line": 75
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_governor",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 78,
+        "end": 80
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "filesystem.read_sys( os.path.join(gen_cpu_path(core), 'cpufreq/scaling_governor')).strip()",
+          "line": 79
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "set_governor",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 84,
+        "end": 88
+      },
+      "parameters": [
+        {
+          "name": "core",
+          "type": "int"
+        },
+        {
+          "name": "governor",
+          "type": "str"
+        }
+      ],
+      "returnType": "str",
+      "returns": [
+        {
+          "expr": "get_governor(core)",
+          "line": 88
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "name": "set",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "name": "filesystem.read_sys",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "hardware.parse_cpu_spec",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os",
+      "count": 5,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "filesystem.write_sys",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "filesystem"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.privsep",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "hardware"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

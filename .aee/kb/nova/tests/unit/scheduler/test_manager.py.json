@@ -1,0 +1,2877 @@
+{
+  "file": "nova/tests/unit/scheduler/test_manager.py",
+  "hash": "1b56e211e46a9f683b5c899af8ed8f6b9cb9739cdc779be33f6f0cfd4cf1c828",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 214,
+    "code": 1922,
+    "comment": 174,
+    "total": 2310
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as ks_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import oslo_messaging as messaging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import timeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import service",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import filters",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import host_manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import utils as scheduler_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.scheduler import weights",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import servicegroup",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_server_actions",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.scheduler import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_numa_limit",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_limit",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 46,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_limit_obj",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 54
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_alloc_version",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 55,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "json_alloc",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_selection",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 61
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SchedulerManagerTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 64,
+        "end": 1807
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "manager_cls",
+      "kind": "field",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 73,
+        "end": 81
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 87,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_return_objects",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 127,
+        "end": 175
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_select_destination",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 181,
+        "end": 198
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "get_allocation_candidates_response"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_old_placement",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 200,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_placement_connect_fails",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 208,
+        "end": 215
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_no_candidates",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 217,
+        "end": 224
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_is_rebuild",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 230,
+        "end": 244
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_with_4_3_client",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 250,
+        "end": 275
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        },
+        {
+          "default": "False",
+          "name": "cpu_pinning_requested"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_with_pcpu_fallback",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 282,
+        "end": 332
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        },
+        {
+          "name": "mock_log"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_with_pcpu_fallback_disabled",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 334,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destination_with_old_client",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 349,
+        "end": 376
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "from_primitives"
+        },
+        {
+          "name": "mock_get_ac"
+        },
+        {
+          "name": "mock_rfrs"
+        },
+        {
+          "name": "mock_process"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_placement_bad_comms",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 381,
+        "end": 449
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_sorted_hosts",
+      "kind": "function",
+      "scope": "SchedulerManagerTestCase.test_schedule_placement_bad_comms",
+      "lineRange": {
+        "start": 419,
+        "end": 422
+      },
+      "parameters": [
+        {
+          "name": "_spec_obj"
+        },
+        {
+          "name": "host_states"
+        },
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "all_host_states",
+          "line": 422
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_old_conductor",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 454,
+        "end": 515
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_schedule_successful_claim",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 520,
+        "end": 582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "default": "1",
+          "name": "num_instances"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_successful_claim",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 584,
+        "end": 585
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_old_reqspec_and_move_operation",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 587,
+        "end": 592
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_unsuccessful_claim",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 598,
+        "end": 651
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_cleanup"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_not_all_instance_clean_claimed",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 657,
+        "end": 725
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_cleanup"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_sorted_hosts",
+      "kind": "function",
+      "scope": "SchedulerManagerTestCase.test_schedule_not_all_instance_clean_claimed",
+      "lineRange": {
+        "start": 693,
+        "end": 706
+      },
+      "parameters": [
+        {
+          "name": "spec_obj"
+        },
+        {
+          "name": "hosts"
+        },
+        {
+          "name": "num"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hosts",
+          "line": 698
+        },
+        {
+          "expr": "[]",
+          "line": 701
+        },
+        {
+          "expr": "hosts",
+          "line": 704
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_selection_alloc_requests_for_alts",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 730,
+        "end": 814
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_selection_alloc_requests_no_alts",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 819,
+        "end": 899
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_instance_group",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 904,
+        "end": 1025
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_sorted_hosts",
+      "kind": "function",
+      "scope": "SchedulerManagerTestCase.test_schedule_instance_group",
+      "lineRange": {
+        "start": 969,
+        "end": 978
+      },
+      "parameters": [
+        {
+          "name": "_spec_obj"
+        },
+        {
+          "name": "host_states"
+        },
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "s",
+          "line": 975
+        },
+        {
+          "expr": "reversed(s)",
+          "line": 978
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_sorted_hosts",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1031,
+        "end": 1069
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_filt"
+        },
+        {
+          "name": "mock_weighed"
+        },
+        {
+          "name": "mock_rand"
+        },
+        {
+          "name": "debug"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_debug",
+      "kind": "function",
+      "scope": "SchedulerManagerTestCase.test_get_sorted_hosts",
+      "lineRange": {
+        "start": 1048,
+        "end": 1052
+      },
+      "parameters": [
+        {
+          "name": "message"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_sorted_hosts_subset_less_than_num_weighed",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1074,
+        "end": 1101
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_filt"
+        },
+        {
+          "name": "mock_weighed"
+        },
+        {
+          "name": "mock_rand"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_sorted_hosts_subset_greater_than_num_weighed",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1106,
+        "end": 1135
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_filt"
+        },
+        {
+          "name": "mock_weighed"
+        },
+        {
+          "name": "mock_rand"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_sorted_hosts_shuffle_top_equal",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1140,
+        "end": 1172
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_filt"
+        },
+        {
+          "name": "mock_weighed"
+        },
+        {
+          "name": "mock_shuffle"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cleanup_allocations",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1177,
+        "end": 1190
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_delete_alloc"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_add_retry_host",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1192,
+        "end": 1202
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_post_select_populate",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1204,
+        "end": 1214
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destinations_match_num_instances",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1217,
+        "end": 1247
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_schedule"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destinations_for_move_ops",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1250,
+        "end": 1282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_schedule"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_schedule_fewer_num_instances",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1287,
+        "end": 1343
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_hosts"
+        },
+        {
+          "name": "mock_get_all_states"
+        },
+        {
+          "name": "mock_claim"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_sorted_hosts",
+      "kind": "function",
+      "scope": "SchedulerManagerTestCase.test_schedule_fewer_num_instances",
+      "lineRange": {
+        "start": 1325,
+        "end": 1333
+      },
+      "parameters": [
+        {
+          "name": "spec_obj"
+        },
+        {
+          "name": "hosts"
+        },
+        {
+          "name": "num"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(hosts)",
+          "line": 1329
+        },
+        {
+          "expr": "[]",
+          "line": 1331
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_alternates_returned",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1349,
+        "end": 1399
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_hosts"
+        },
+        {
+          "name": "mock_sorted"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_consume"
+        },
+        {
+          "default": "2",
+          "name": "num_instances"
+        },
+        {
+          "default": "2",
+          "name": "num_alternates"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_alternates_returned",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1401,
+        "end": 1406
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_alternates_same_cell",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1412,
+        "end": 1475
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_hosts"
+        },
+        {
+          "name": "mock_sorted"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_consume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_sorted_hosts",
+      "kind": "function",
+      "scope": "SchedulerManagerTestCase.test_alternates_same_cell",
+      "lineRange": {
+        "start": 1435,
+        "end": 1445
+      },
+      "parameters": [
+        {
+          "name": "spec_obj"
+        },
+        {
+          "name": "hosts"
+        },
+        {
+          "name": "num"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(hosts)",
+          "line": 1439
+        },
+        {
+          "expr": "list(reversed(all_host_states))",
+          "line": 1441
+        },
+        {
+          "expr": "list(hosts)",
+          "line": 1443
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_not_enough_alternates",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1481,
+        "end": 1526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_hosts"
+        },
+        {
+          "name": "mock_sorted"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_consume"
+        },
+        {
+          "name": "num_hosts"
+        },
+        {
+          "name": "max_attempts"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_not_enough_alternates",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1528,
+        "end": 1532
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_select_destinations_notifications",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1536,
+        "end": 1582
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_schedule"
+        },
+        {
+          "name": "mock_notify"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_all_host_states_provider_summaries_is_none",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1584,
+        "end": 1595
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_all_host_states_provider_summaries_is_empty",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1597,
+        "end": 1608
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_aggregates",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1610,
+        "end": 1615
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_aggregate",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1617,
+        "end": 1622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_instance_info",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1624,
+        "end": 1633
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_instance_info",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1635,
+        "end": 1644
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_sync_instance_info",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1646,
+        "end": 1655
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_reset",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1657,
+        "end": 1662
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graceful_shutdown",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1667,
+        "end": 1675
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_wait"
+        },
+        {
+          "name": "mock_shutdown_executors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graceful_shutdown_no_negative_wait_time",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1680,
+        "end": 1684
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_wait"
+        },
+        {
+          "name": "mock_shutdown_executors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_graceful_shutdown_handles_shutdown_all_executors_exception",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1689,
+        "end": 1694
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_wait"
+        },
+        {
+          "name": "mock_shutdown_executors"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_discover_hosts",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1698,
+        "end": 1715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_discover"
+        },
+        {
+          "name": "mock_get_by_binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_discover_hosts_duplicate_host_mapping",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1721,
+        "end": 1746
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_discover"
+        },
+        {
+          "name": "mock_log_warning"
+        },
+        {
+          "name": "mock_log_debug"
+        },
+        {
+          "name": "mock_get_by_binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_discover_hosts_not_leader",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1751,
+        "end": 1772
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_discover"
+        },
+        {
+          "name": "mock_log_debug"
+        },
+        {
+          "name": "mock_get_by_binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init_lazy_placement_client",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1779,
+        "end": 1793
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rpc"
+        },
+        {
+          "name": "mock_sg"
+        },
+        {
+          "name": "mock_hm"
+        },
+        {
+          "name": "mock_log"
+        },
+        {
+          "name": "mock_report"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_init_lazy_placement_client_failures",
+      "kind": "method",
+      "scope": "SchedulerManagerTestCase",
+      "lineRange": {
+        "start": 1799,
+        "end": 1807
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_rpc"
+        },
+        {
+          "name": "mock_sg"
+        },
+        {
+          "name": "mock_hm"
+        },
+        {
+          "name": "mock_report"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SchedulerManagerAllocationCandidateTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1810,
+        "end": 2310
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ACRecorderFilter",
+      "kind": "class",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 1812,
+        "end": 1823
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.ACRecorderFilter",
+      "lineRange": {
+        "start": 1816,
+        "end": 1818
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.ACRecorderFilter",
+      "lineRange": {
+        "start": 1820,
+        "end": 1823
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "filter_properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1823
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DropFirstFilter",
+      "kind": "class",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 1825,
+        "end": 1832
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.DropFirstFilter",
+      "lineRange": {
+        "start": 1830,
+        "end": 1832
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "filter_properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bool(host_state.allocation_candidates)",
+          "line": 1832
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 1838,
+        "end": 1848
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_filters_see_allocation_candidates_for_each_host",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 1859,
+        "end": 1904
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_consume"
+        },
+        {
+          "name": "mock_selection_from_host_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_scheduler_selects_filtered_a_c_from_hosts_state",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 1914,
+        "end": 1957
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_consume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_consecutive_filter_sees_filtered_a_c_list",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 1968,
+        "end": 2009
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_consume"
+        },
+        {
+          "name": "mock_selection_from_host_state"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_filters_removes_all_a_c_host_is_not_selected",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 2019,
+        "end": 2069
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_consume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_consume_selected_host_sees_updated_request_spec",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 2079,
+        "end": 2136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_consume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_request_spec_updated_with_selected_candidate",
+      "kind": "function",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.test_consume_selected_host_sees_updated_request_spec",
+      "lineRange": {
+        "start": 2114,
+        "end": 2122
+      },
+      "parameters": [
+        {
+          "name": "selected_host"
+        },
+        {
+          "name": "spec_obj"
+        },
+        {
+          "default": "None",
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_alternate_hosts_returns_main_selection_with_claimed_a_c",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 2146,
+        "end": 2214
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_consume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_alternate_hosts_returns_alts_with_filtered_a_c",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase",
+      "lineRange": {
+        "start": 2224,
+        "end": 2310
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_host_states"
+        },
+        {
+          "name": "mock_claim"
+        },
+        {
+          "name": "mock_consume"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RPFilter",
+      "kind": "class",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.test_get_alternate_hosts_returns_alts_with_filtered_a_c",
+      "lineRange": {
+        "start": 2234,
+        "end": 2247
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.test_get_alternate_hosts_returns_alts_with_filtered_a_c.RPFilter",
+      "lineRange": {
+        "start": 2237,
+        "end": 2238
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "allowed_rp_uuids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "host_passes",
+      "kind": "method",
+      "scope": "SchedulerManagerAllocationCandidateTestCase.test_get_alternate_hosts_returns_alts_with_filtered_a_c.RPFilter",
+      "lineRange": {
+        "start": 2240,
+        "end": 2247
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host_state"
+        },
+        {
+          "name": "filter_properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 2247
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.NUMATopologyLimits",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "objects.SchedulerLimits.from_dict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "jsonutils.dumps",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 56,
+        "end": 56
+      }
+    },
+    {
+      "name": "objects.Selection",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 23,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 50,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "context.RequestContext",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "servicegroup.API",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      }
+    },
+    {
+      "name": "fake_server_actions.stub_out_action_events",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 126,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "objects.RequestSpec",
+      "usage": "call",
+      "via": "nova",
+      "count": 23,
+      "lineRange": {
+        "start": 88,
+        "end": 88
+      }
+    },
+    {
+      "name": "fakes.get_fake_alloc_reqs",
+      "usage": "call",
+      "via": "nova.tests.unit.scheduler",
+      "count": 5,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 14,
+      "lineRange": {
+        "start": 324,
+        "end": 324
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 15,
+      "lineRange": {
+        "start": 390,
+        "end": 390
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 417,
+        "end": 417
+      }
+    },
+    {
+      "name": "objects.Selection.from_host_state",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 431,
+        "end": 431
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 31,
+      "lineRange": {
+        "start": 437,
+        "end": 437
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 447,
+        "end": 447
+      }
+    },
+    {
+      "name": "objects.InstanceGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 462,
+        "end": 462
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 14,
+      "lineRange": {
+        "start": 491,
+        "end": 491
+      }
+    },
+    {
+      "name": "StopIteration",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 706,
+        "end": 706
+      }
+    },
+    {
+      "name": "reversed",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 978,
+        "end": 978
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 981,
+        "end": 981
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 981,
+        "end": 981
+      }
+    },
+    {
+      "name": "weights.WeighedHost",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 10,
+      "lineRange": {
+        "start": 1043,
+        "end": 1043
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 1193,
+        "end": 1193
+      }
+    },
+    {
+      "name": "scheduler_utils._add_retry_host",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 1198,
+        "end": 1198
+      }
+    },
+    {
+      "name": "scheduler_utils.populate_filter_properties",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 1,
+      "lineRange": {
+        "start": 1211,
+        "end": 1211
+      }
+    },
+    {
+      "name": "host_manager.HostState",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 12,
+      "lineRange": {
+        "start": 1357,
+        "end": 1357
+      }
+    },
+    {
+      "name": "min",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1519,
+        "end": 1519
+      }
+    },
+    {
+      "name": "objects.CellMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1699,
+        "end": 1699
+      }
+    },
+    {
+      "name": "objects.HostMapping",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1701,
+        "end": 1701
+      }
+    },
+    {
+      "name": "service.ServiceList",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 3,
+      "lineRange": {
+        "start": 1707,
+        "end": 1707
+      }
+    },
+    {
+      "name": "service.Service",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 4,
+      "lineRange": {
+        "start": 1709,
+        "end": 1709
+      }
+    },
+    {
+      "name": "timeutils.utcnow",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 4,
+      "lineRange": {
+        "start": 1711,
+        "end": 1711
+      }
+    },
+    {
+      "name": "exception.HostMappingExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 1726,
+        "end": 1726
+      }
+    },
+    {
+      "name": "manager.SchedulerManager",
+      "usage": "call",
+      "via": "nova.scheduler",
+      "count": 2,
+      "lineRange": {
+        "start": 1783,
+        "end": 1783
+      }
+    },
+    {
+      "name": "filters.BaseHostFilter",
+      "usage": "inherit",
+      "via": "nova.scheduler",
+      "count": 3,
+      "lineRange": {
+        "start": 1812,
+        "end": 1812
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1832,
+        "end": 1832
+      }
+    },
+    {
+      "name": "iter",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 1885,
+        "end": 1885
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 5,
+      "lineRange": {
+        "start": 1956,
+        "end": 1956
+      }
+    },
+    {
+      "name": "objects.RequestGroup",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 2090,
+        "end": 2090
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "ks_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": "messaging",
+      "module": "oslo_messaging",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "timeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "service"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "filters"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "host_manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": "scheduler_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "weights"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "servicegroup"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_server_actions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.scheduler",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

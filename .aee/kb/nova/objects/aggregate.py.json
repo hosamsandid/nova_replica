@@ -1,0 +1,1633 @@
+{
+  "file": "nova/objects/aggregate.py",
+  "hash": "f4d1901c6ad37689f9d317431721cd39890c6729bf079f9c820063dafa6cc168",
+  "language": "Python",
+  "component": "objects",
+  "package": null,
+  "lines": {
+    "blank": 102,
+    "code": 460,
+    "comment": 35,
+    "total": 597
+  },
+  "symbols": [
+    {
+      "name": "from oslo_db import exception as db_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from sqlalchemy import orm",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import utils as compute_utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.api import api as api_db_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.db.api import models as api_models",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import fields",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEPRECATED_FIELDS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__all__",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_aggregate_get_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 52
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "aggregate",
+          "line": 52
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_aggregate_get_from_db_by_uuid",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 67
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "aggregate",
+          "line": 67
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_host_add_to_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 82
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "host_ref",
+          "line": 79
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_host_delete_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 85,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_metadata_add_to_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 101,
+        "end": 154
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "default": "10",
+          "name": "max_retries"
+        },
+        {
+          "default": "False",
+          "name": "set_delete"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "metadata",
+          "line": 143
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_metadata_delete_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 158,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        },
+        {
+          "name": "key"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_aggregate_create_in_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 173,
+        "end": 193
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "values"
+        },
+        {
+          "default": "None",
+          "name": "metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "aggregate",
+          "line": 193
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_aggregate_delete_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 197,
+        "end": 208
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_aggregate_update_to_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 212,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_aggregate_get_from_db(context, aggregate_id)",
+          "line": 237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Aggregate",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 241,
+        "end": 425
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 246,
+        "end": 246
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 248,
+        "end": 254
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "obj_extra_fields",
+      "kind": "field",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 256,
+        "end": 256
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_from_db_object",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 259,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate"
+        },
+        {
+          "name": "db_aggregate"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "aggregate",
+          "line": 276
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_no_hosts",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 278,
+        "end": 282
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "action"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_id",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 286,
+        "end": 288
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_aggregate)",
+          "line": 288
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_uuid",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 292,
+        "end": 295
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "aggregate_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls._from_db_object(context, cls(), db_aggregate)",
+          "line": 295
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 298,
+        "end": 335
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "save",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 338,
+        "end": 364
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_metadata",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 367,
+        "end": 401
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "updates"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 404,
+        "end": 405
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_host",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 408,
+        "end": 414
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delete_host",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 417,
+        "end": 421
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "availability_zone",
+      "kind": "method",
+      "scope": "Aggregate",
+      "lineRange": {
+        "start": 424,
+        "end": 425
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.metadata.get('availability_zone', None)",
+          "line": 425
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_all_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 429,
+        "end": 434
+      },
+      "parameters": [
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "query.all()",
+          "line": 434
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_by_host_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 438,
+        "end": 449
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "key"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "query.all()",
+          "line": 449
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_by_metadata_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 453,
+        "end": 466
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "key"
+        },
+        {
+          "default": "None",
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "query.all()",
+          "line": 466
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_non_matching_by_metadata_keys_from_db",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 470,
+        "end": 501
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "ignored_keys"
+        },
+        {
+          "name": "key_prefix"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "query.all()",
+          "line": 501
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "AggregateList",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 505,
+        "end": 597
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VERSION",
+      "kind": "constant",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 511,
+        "end": 511
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fields",
+      "kind": "field",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 513,
+        "end": 515
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_filter_db_aggregates",
+      "kind": "method",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 518,
+        "end": 527
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "db_aggregates"
+        },
+        {
+          "name": "hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "filtered_aggregates",
+          "line": 527
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all",
+      "kind": "method",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 531,
+        "end": 533
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(context, cls(context), db_aggregates)",
+          "line": 533
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_host",
+      "kind": "method",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 537,
+        "end": 539
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "default": "None",
+          "name": "key"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(context, cls(context), db_aggregates)",
+          "line": 539
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_metadata_key",
+      "kind": "method",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 543,
+        "end": 547
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "default": "None",
+          "name": "hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(context, cls(context), db_aggregates)",
+          "line": 547
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_by_metadata",
+      "kind": "method",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 551,
+        "end": 559
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "key"
+        },
+        {
+          "default": "None",
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(context, cls(context), db_aggregates)",
+          "line": 559
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_non_matching_by_metadata_keys",
+      "kind": "method",
+      "scope": "AggregateList",
+      "lineRange": {
+        "start": 562,
+        "end": 597
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "ignored_keys"
+        },
+        {
+          "name": "key_prefix"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "base.obj_make_list(context, objects.AggregateList(context), db_aggregates)",
+          "line": 596
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "orm.joinedload",
+      "usage": "call",
+      "via": "sqlalchemy",
+      "count": 10,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "exception.AggregateNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "api_db_api.context_manager.writer.using",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 3,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "api_models.AggregateHost",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 1,
+      "lineRange": {
+        "start": 76,
+        "end": 76
+      }
+    },
+    {
+      "name": "exception.AggregateHostExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 81,
+        "end": 81
+      }
+    },
+    {
+      "name": "exception.AggregateHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "api_models.AggregateMetadata.key.in_",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 3,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 115,
+        "end": 115
+      }
+    },
+    {
+      "name": "exception.AggregateMetadataKeyExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 128,
+        "end": 128
+      }
+    },
+    {
+      "name": "api_models.AggregateMetadata.__table__.insert",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 1,
+      "lineRange": {
+        "start": 140,
+        "end": 140
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 147,
+        "end": 147
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 2,
+      "lineRange": {
+        "start": 151,
+        "end": 151
+      }
+    },
+    {
+      "name": "exception.AggregateMetadataNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 168,
+        "end": 168
+      }
+    },
+    {
+      "name": "api_models.Aggregate",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 1,
+      "lineRange": {
+        "start": 179,
+        "end": 179
+      }
+    },
+    {
+      "name": "exception.AggregateNameExists",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 187,
+        "end": 187
+      }
+    },
+    {
+      "name": "base.NovaObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 2,
+      "lineRange": {
+        "start": 241,
+        "end": 241
+      }
+    },
+    {
+      "name": "base.NovaPersistentObject",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 241,
+        "end": 241
+      }
+    },
+    {
+      "name": "fields.IntegerField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 249,
+        "end": 249
+      }
+    },
+    {
+      "name": "fields.UUIDField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 250,
+        "end": 250
+      }
+    },
+    {
+      "name": "fields.StringField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 251,
+        "end": 251
+      }
+    },
+    {
+      "name": "fields.ListOfStringsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 252,
+        "end": 252
+      }
+    },
+    {
+      "name": "fields.DictOfStringsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "setattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 267,
+        "end": 267
+      }
+    },
+    {
+      "name": "exception.ObjectActionError",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 280,
+        "end": 280
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 288,
+        "end": 288
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 305,
+        "end": 305
+      }
+    },
+    {
+      "name": "uuidutils.generate_uuid",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 310,
+        "end": 310
+      }
+    },
+    {
+      "name": "compute_utils.notify_about_aggregate_update",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 6,
+      "lineRange": {
+        "start": 314,
+        "end": 314
+      }
+    },
+    {
+      "name": "compute_utils.notify_about_aggregate_action",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 6,
+      "lineRange": {
+        "start": 317,
+        "end": 317
+      }
+    },
+    {
+      "name": "orm.contains_eager",
+      "usage": "call",
+      "via": "sqlalchemy",
+      "count": 2,
+      "lineRange": {
+        "start": 462,
+        "end": 462
+      }
+    },
+    {
+      "name": "ValueError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 484,
+        "end": 484
+      }
+    },
+    {
+      "name": "api_models.AggregateMetadata.key.like",
+      "usage": "call",
+      "via": "nova.db.api",
+      "count": 1,
+      "lineRange": {
+        "start": 489,
+        "end": 489
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 491,
+        "end": 491
+      }
+    },
+    {
+      "name": "base.ObjectListBase",
+      "usage": "inherit",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 505,
+        "end": 505
+      }
+    },
+    {
+      "name": "fields.ListOfObjectsField",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 514,
+        "end": 514
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 519,
+        "end": 519
+      }
+    },
+    {
+      "name": "base.obj_make_list",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 5,
+      "lineRange": {
+        "start": 533,
+        "end": 533
+      }
+    },
+    {
+      "name": "objects.AggregateList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 596,
+        "end": 596
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "oslo_db",
+      "names": [
+        {
+          "alias": "db_exc",
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "sqlalchemy",
+      "names": [
+        {
+          "alias": null,
+          "name": "orm"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_utils",
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.api",
+      "names": [
+        {
+          "alias": "api_db_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.db.api",
+      "names": [
+        {
+          "alias": "api_models",
+          "name": "models"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "fields"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

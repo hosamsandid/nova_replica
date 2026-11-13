@@ -1,0 +1,2606 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_services.py",
+  "hash": "30ffc4c7ec758e5fd8cc1346fb27717aead600af89601b9434b01f31fa4d6df4",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 140,
+    "code": 1199,
+    "comment": 31,
+    "total": 1370
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import datetime",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from keystoneauth1 import exceptions as ks_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import fixture as utils_fixture",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob.exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import services as services_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi as os_wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import availability_zones",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.servicegroup.drivers import db as db_driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.objects import test_service",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FAKE_UUID_COMPUTE_HOST1",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_services_list",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 116
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_service_get_all",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 119,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "services"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service_get_all",
+          "line": 126
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "service_get_all",
+      "kind": "function",
+      "scope": "fake_service_get_all",
+      "lineRange": {
+        "start": 120,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "filters"
+        },
+        {
+          "default": "False",
+          "name": "set_zones"
+        },
+        {
+          "default": "False",
+          "name": "all_cells"
+        },
+        {
+          "default": "False",
+          "name": "cell_down_support"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "availability_zones.set_availability_zones(context, services)",
+          "line": 123
+        },
+        {
+          "expr": "services",
+          "line": 125
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_api_service_get_all",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 129,
+        "end": 130
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "default": "None",
+          "name": "disabled"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_services_list",
+          "line": 130
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_service_get_by_host_binary",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 133,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "services"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service_get_by_host_binary",
+          "line": 139
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "service_get_by_host_binary",
+      "kind": "function",
+      "scope": "fake_db_service_get_by_host_binary",
+      "lineRange": {
+        "start": 134,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service",
+          "line": 137
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_service_get_by_host_binary",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 142,
+        "end": 144
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "binary"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake(context, host, binary)",
+          "line": 144
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_service_get_by_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 147,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "services"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service",
+          "line": 150
+        },
+        {
+          "expr": "None",
+          "line": 151
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_db_service_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 154,
+        "end": 162
+      },
+      "parameters": [
+        {
+          "name": "services"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service_update",
+          "line": 162
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "service_update",
+      "kind": "function",
+      "scope": "fake_db_service_update",
+      "lineRange": {
+        "start": 155,
+        "end": 161
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "service_id"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "service",
+          "line": 161
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_service_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 165,
+        "end": 167
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "service_id"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake(context, service_id, values)",
+          "line": 167
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_utcnow",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 170,
+        "end": 171
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "datetime.datetime(2012, 10, 29, 13, 42, 11)",
+          "line": 171
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServicesTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 174,
+        "end": 789
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "service_is_up_exc",
+      "kind": "field",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 175,
+        "end": 175
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bad_request",
+      "kind": "field",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 176,
+        "end": 176
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 177,
+        "end": 177
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "base_path",
+      "kind": "field",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 178,
+        "end": 178
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "base_path_with_query",
+      "kind": "field",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 179,
+        "end": 179
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_up_controller",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 181,
+        "end": 182
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 184,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_process_output",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 208,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "services"
+        },
+        {
+          "default": "False",
+          "name": "has_disabled"
+        },
+        {
+          "default": "False",
+          "name": "has_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "services",
+          "line": 209
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 211,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_host",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 252,
+        "end": 275
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_service",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 277,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_services_list_with_param",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 303,
+        "end": 317
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_host_service",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 319,
+        "end": 321
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_additional_filter",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 323,
+        "end": 326
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_unknown_filter",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 328,
+        "end": 371
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_multiple_host_filter",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 373,
+        "end": 397
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_multiple_service_filter",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 399,
+        "end": 423
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_host_query_allow_int_as_string",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 425,
+        "end": 429
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_service_query_allow_int_as_string",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 431,
+        "end": 435
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_host_service_dummy",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 437,
+        "end": 442
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_detail",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 444,
+        "end": 482
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_service_detail_with_host",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 484,
+        "end": 507
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_service_detail_with_service",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 509,
+        "end": 533
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_service_detail_with_host_service",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 535,
+        "end": 550
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_detail_with_delete_extension",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 552,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_enable",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 593,
+        "end": 603
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_service_update",
+      "kind": "function",
+      "scope": "ServicesTestV21.test_services_enable",
+      "lineRange": {
+        "start": 594,
+        "end": 596
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "service_id"
+        },
+        {
+          "name": "values"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "dict(test_service.fake_service, id=service_id, **values)",
+          "line": 596
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_enable_with_invalid_host",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 605,
+        "end": 611
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_enable_with_unmapped_host",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 613,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_enable_with_invalid_binary",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 624,
+        "end": 630
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_disable",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 632,
+        "end": 637
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_disable_with_invalid_host",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 639,
+        "end": 645
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_disable_with_invalid_binary",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 647,
+        "end": 653
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_disable_log_reason",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 655,
+        "end": 665
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_mandatory_reason_field",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 667,
+        "end": 673
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_invalid_reason_field",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 675,
+        "end": 683
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_delete",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 687,
+        "end": 700
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_compute_nodes"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_delete_compute_host_not_found",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 705,
+        "end": 715
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_all_by_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_delete_not_found",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 717,
+        "end": 720
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_delete_invalid_id",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 722,
+        "end": 725
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_delete_duplicate_service",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 727,
+        "end": 732
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_compute_service_delete_host_mapping_not_found",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 739,
+        "end": 781
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "service_delete"
+        },
+        {
+          "name": "get_hm"
+        },
+        {
+          "name": "get_count_by_hosts"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test",
+      "kind": "function",
+      "scope": "ServicesTestV21.test_compute_service_delete_host_mapping_not_found",
+      "lineRange": {
+        "start": 763,
+        "end": 780
+      },
+      "parameters": [
+        {
+          "name": "mock_log"
+        },
+        {
+          "name": "delete_resource_provider"
+        },
+        {
+          "name": "get_aggregates_by_host"
+        },
+        {
+          "name": "service_get_by_id"
+        },
+        {
+          "name": "cn_get_all_by_host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_with_exception",
+      "kind": "method",
+      "scope": "ServicesTestV21",
+      "lineRange": {
+        "start": 786,
+        "end": 789
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_is_up"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServicesTestV211",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 792,
+        "end": 1134
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 793,
+        "end": 793
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 795,
+        "end": 839
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_host",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 841,
+        "end": 867
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_service",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 869,
+        "end": 895
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_host_service",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 897,
+        "end": 914
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_detail",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 916,
+        "end": 960
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_service_detail_with_host",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 962,
+        "end": 988
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_service_detail_with_service",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 990,
+        "end": 1016
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_service_detail_with_host_service",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 1018,
+        "end": 1035
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_detail_with_delete_extension",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 1037,
+        "end": 1081
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_force_down_service",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 1083,
+        "end": 1098
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_force_down_service_with_string_forced_down",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 1100,
+        "end": 1115
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_force_down_service_with_invalid_parameter",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 1117,
+        "end": 1124
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_forced_down_invalid_service",
+      "kind": "method",
+      "scope": "ServicesTestV211",
+      "lineRange": {
+        "start": 1126,
+        "end": 1134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServicesTestV252",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1137,
+        "end": 1139
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServicesTestV252",
+      "lineRange": {
+        "start": 1139,
+        "end": 1139
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeServiceGroupAPI",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1142,
+        "end": 1147
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "service_is_up",
+      "kind": "method",
+      "scope": "FakeServiceGroupAPI",
+      "lineRange": {
+        "start": 1143,
+        "end": 1144
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 1144
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_updated_time",
+      "kind": "method",
+      "scope": "FakeServiceGroupAPI",
+      "lineRange": {
+        "start": 1146,
+        "end": 1147
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'2024-11-18T18:38:54.000000'",
+          "line": 1147
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServicesTestV253",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1150,
+        "end": 1347
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1153,
+        "end": 1157
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_services_equal",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1159,
+        "end": 1161
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "s1"
+        },
+        {
+          "name": "s2"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_list_has_uuid_in_id_field",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1163,
+        "end": 1182
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_takes_uuid_for_id",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1184,
+        "end": 1193
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_uuid_not_found",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1195,
+        "end": 1200
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_delete_invalid_uuid",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1202,
+        "end": 1206
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_invalid_service_uuid",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1208,
+        "end": 1212
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_service_not_found",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1214,
+        "end": 1219
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_invalid_status",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1221,
+        "end": 1229
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_disabled_no_reason_then_enable",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1231,
+        "end": 1259
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_enable_with_disabled_reason_fails",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1261,
+        "end": 1272
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_disabled_reason_and_forced_down",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1274,
+        "end": 1298
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_forced_down_invalid_value",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1300,
+        "end": 1311
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_forced_down_invalid_service",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1313,
+        "end": 1323
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_empty_body",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1325,
+        "end": 1335
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_update_only_disabled_reason",
+      "kind": "method",
+      "scope": "ServicesTestV253",
+      "lineRange": {
+        "start": 1337,
+        "end": 1347
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ServicesTestV275",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1350,
+        "end": 1370
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wsgi_api_version",
+      "kind": "field",
+      "scope": "ServicesTestV275",
+      "lineRange": {
+        "start": 1351,
+        "end": 1351
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "ServicesTestV275",
+      "lineRange": {
+        "start": 1353,
+        "end": 1355
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_additional_filter_old_version",
+      "kind": "method",
+      "scope": "ServicesTestV275",
+      "lineRange": {
+        "start": 1357,
+        "end": 1362
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_services_list_with_additional_filter",
+      "kind": "method",
+      "scope": "ServicesTestV275",
+      "lineRange": {
+        "start": 1364,
+        "end": 1370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      }
+    },
+    {
+      "name": "datetime.datetime",
+      "usage": "call",
+      "via": "datetime",
+      "count": 67,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "availability_zones.set_availability_zones",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 123,
+        "end": 123
+      }
+    },
+    {
+      "name": "exception.HostBinaryNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 138,
+        "end": 138
+      }
+    },
+    {
+      "name": "fake",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 144,
+        "end": 144
+      }
+    },
+    {
+      "name": "exception.ServiceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      }
+    },
+    {
+      "name": "copy.deepcopy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 159,
+        "end": 159
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 174,
+        "end": 174
+      }
+    },
+    {
+      "name": "services_v21.ServiceController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 3,
+      "lineRange": {
+        "start": 182,
+        "end": 182
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 185,
+        "end": 185
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 187,
+        "end": 187
+      }
+    },
+    {
+      "name": "compute.HostAPI",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 188,
+        "end": 188
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 191,
+        "end": 191
+      }
+    },
+    {
+      "name": "utils_fixture.TimeFixture",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 193,
+        "end": 193
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 33,
+      "lineRange": {
+        "start": 205,
+        "end": 205
+      }
+    },
+    {
+      "name": "fixtures.SingleCellSimple",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 8,
+      "lineRange": {
+        "start": 615,
+        "end": 615
+      }
+    },
+    {
+      "name": "exception.HostMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 617,
+        "end": 617
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 8,
+      "lineRange": {
+        "start": 685,
+        "end": 685
+      }
+    },
+    {
+      "name": "objects.ComputeNodeList",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 686,
+        "end": 686
+      }
+    },
+    {
+      "name": "objects.Service",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 688,
+        "end": 688
+      }
+    },
+    {
+      "name": "compute.create",
+      "usage": "call",
+      "via": "nova.compute",
+      "count": 2,
+      "lineRange": {
+        "start": 693,
+        "end": 693
+      }
+    },
+    {
+      "name": "exception.ComputeHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 704,
+        "end": 704
+      }
+    },
+    {
+      "name": "exception.ServiceNotUnique",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 730,
+        "end": 730
+      }
+    },
+    {
+      "name": "objects.ComputeNode",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 746,
+        "end": 746
+      }
+    },
+    {
+      "name": "objects.AggregateList",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 757,
+        "end": 757
+      }
+    },
+    {
+      "name": "mock.call",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 774,
+        "end": 774
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1142,
+        "end": 1142
+      }
+    },
+    {
+      "name": "filter",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1179,
+        "end": 1179
+      }
+    },
+    {
+      "name": "iter",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1179,
+        "end": 1179
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1179,
+        "end": 1179
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 1206,
+        "end": 1206
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "datetime",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "keystoneauth1",
+      "names": [
+        {
+          "alias": "ks_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": "utils_fixture",
+          "name": "fixture"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob.exc",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "services_v21",
+          "name": "services"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": "os_wsgi",
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "availability_zones"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.servicegroup.drivers",
+      "names": [
+        {
+          "alias": "db_driver",
+          "name": "db"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": null,
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.objects",
+      "names": [
+        {
+          "alias": null,
+          "name": "test_service"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

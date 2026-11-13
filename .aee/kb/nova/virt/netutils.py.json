@@ -1,0 +1,658 @@
+{
+  "file": "nova/virt/netutils.py",
+  "hash": "b08e8fc8539100c86a7d7098b86a38443e9d6d19adece411ee2579c517a81087",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 70,
+    "code": 281,
+    "comment": 33,
+    "total": 384
+  },
+  "symbols": [
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import jinja2",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import netaddr",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_net_and_mask",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 36
+      },
+      "parameters": [
+        {
+          "name": "cidr"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "str(net.ip), str(net.netmask)",
+          "line": 36
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_net_and_prefixlen",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 41
+      },
+      "parameters": [
+        {
+          "name": "cidr"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "str(net.ip), str(net._prefixlen)",
+          "line": 41
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_ip_version",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 46
+      },
+      "parameters": [
+        {
+          "name": "cidr"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "int(net.version)",
+          "line": 46
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_first_network",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "network"
+        },
+        {
+          "name": "version"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "next(i for i in network['subnets'] if i['version'] == version)",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_injected_network_template",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "network_info"
+        },
+        {
+          "default": "None",
+          "name": "template"
+        },
+        {
+          "default": "None",
+          "name": "libvirt_virt_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 74
+        },
+        {
+          "expr": "",
+          "line": 156
+        },
+        {
+          "expr": "template.render({'interfaces': nets, 'use_ipv6': ipv6_is_available, 'libvirt_virt_type': libvirt_virt_type})",
+          "line": 163
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_network_metadata",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 168,
+        "end": 224
+      },
+      "parameters": [
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 178
+        },
+        {
+          "expr": "{ \"links\": links, \"networks\": nets, \"services\": services }",
+          "line": 220
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_ec2_ip_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 227,
+        "end": 240
+      },
+      "parameters": [
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ip_info",
+          "line": 240
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_eth_link",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 243,
+        "end": 269
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        },
+        {
+          "name": "ifc_num"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "link",
+          "line": 269
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_link_mtu",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 272,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 275
+        },
+        {
+          "expr": "vif['network']['meta'].get('mtu')",
+          "line": 276
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_nets",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 279,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "name": "vif"
+        },
+        {
+          "name": "subnet"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "net_num"
+        },
+        {
+          "name": "link_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "net_info",
+          "line": 300
+        },
+        {
+          "expr": "net_info",
+          "line": 331
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_default_route",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 334,
+        "end": 356
+      },
+      "parameters": [
+        {
+          "name": "version"
+        },
+        {
+          "name": "subnet"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 343
+        },
+        {
+          "expr": "[{ 'network': '0.0.0.0', 'netmask': '0.0.0.0', 'gateway': gateway }]",
+          "line": 346
+        },
+        {
+          "expr": "[{ 'network': '::', 'netmask': '::', 'gateway': gateway }]",
+          "line": 352
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_dns_services",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 359,
+        "end": 365
+      },
+      "parameters": [
+        {
+          "name": "subnet"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "services",
+          "line": 363
+        },
+        {
+          "expr": "[{'type': 'dns', 'address': ip.get('address')} for ip in subnet['dns']]",
+          "line": 364
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_cached_vifs_with_vlan",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 368,
+        "end": 375
+      },
+      "parameters": [
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 373
+        },
+        {
+          "expr": "{vif['address']: vif['details']['vlan'] for vif in network_info if vif.get('details', {}).get('vlan')}",
+          "line": 374
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_cached_vifs_with_trusted",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 378,
+        "end": 384
+      },
+      "parameters": [
+        {
+          "name": "network_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 381
+        },
+        {
+          "expr": "{vif['address']: strutils.bool_from_string( vif['profile'].get('trusted', 'False')) for vif in network_info if vif.get('profile')}",
+          "line": 382
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "netaddr.IPNetwork",
+      "usage": "call",
+      "via": "netaddr",
+      "count": 4,
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 46,
+        "end": 46
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "model.get_netmask",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 3,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "os.path.split",
+      "usage": "call",
+      "via": "os",
+      "count": 1,
+      "lineRange": {
+        "start": 158,
+        "end": 158
+      }
+    },
+    {
+      "name": "jinja2.Environment",
+      "usage": "call",
+      "via": "jinja2",
+      "count": 1,
+      "lineRange": {
+        "start": 159,
+        "end": 159
+      }
+    },
+    {
+      "name": "jinja2.FileSystemLoader",
+      "usage": "call",
+      "via": "jinja2",
+      "count": 1,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 228,
+        "end": 228
+      }
+    },
+    {
+      "name": "model.NetworkInfo.hydrate",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 1,
+      "lineRange": {
+        "start": 229,
+        "end": 229
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 382,
+        "end": 382
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "jinja2",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "netaddr",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": null,
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

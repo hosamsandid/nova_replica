@@ -1,0 +1,1117 @@
+{
+  "file": "nova/tests/unit/virt/disk/mount/test_nbd.py",
+  "hash": "fd1a39d1e40b5aa2cb44ce8877737919cc9b6bf1fdc7676fd0199ffa4de79230",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 62,
+    "code": 231,
+    "comment": 41,
+    "total": 334
+  },
+  "symbols": [
+    {
+      "name": "import os",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import tempfile",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import thread_pool_factory",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.disk.mount import nbd",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.image import model as imgmodel",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ORIG_EXISTS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ORIG_LISTDIR",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_exists_no_users",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 38
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 36
+        },
+        {
+          "expr": "True",
+          "line": 37
+        },
+        {
+          "expr": "ORIG_EXISTS(path)",
+          "line": 38
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_listdir_nbd_devices",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 44
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "['nbd0', 'nbd1']",
+          "line": 43
+        },
+        {
+          "expr": "ORIG_LISTDIR(path)",
+          "line": 44
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_exists_all_used",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 50
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 49
+        },
+        {
+          "expr": "ORIG_EXISTS(path)",
+          "line": 50
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_detect_nbd_devices_none",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 53,
+        "end": 54
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[]",
+          "line": 54
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_detect_nbd_devices",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 57,
+        "end": 58
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "['nbd0', 'nbd1']",
+          "line": 58
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fake_noop",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 62
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NbdTestCaseNoStub",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 65,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detect_nbd_devices",
+      "kind": "method",
+      "scope": "NbdTestCaseNoStub",
+      "lineRange": {
+        "start": 68,
+        "end": 75
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "list_dir_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_detect_nbd_devices_empty",
+      "kind": "method",
+      "scope": "NbdTestCaseNoStub",
+      "lineRange": {
+        "start": 78,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "list_dir_mock"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NbdTestCase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 87,
+        "end": 334
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 88,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_nbd_no_devices",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 97,
+        "end": 102
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_nbd_no_free_devices",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 104,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_nbd_not_loaded",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 111,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_exists",
+      "kind": "function",
+      "scope": "NbdTestCase.test_nbd_not_loaded",
+      "lineRange": {
+        "start": 116,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 118
+        },
+        {
+          "expr": "ORIG_EXISTS(path)",
+          "line": 119
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_nbd_allocation",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 128,
+        "end": 136
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_nbd_allocation_one_in_use",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 138,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_exists",
+      "kind": "function",
+      "scope": "NbdTestCase.test_nbd_allocation_one_in_use",
+      "lineRange": {
+        "start": 144,
+        "end": 151
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 147
+        },
+        {
+          "expr": "False",
+          "line": 149
+        },
+        {
+          "expr": "True",
+          "line": 150
+        },
+        {
+          "expr": "ORIG_EXISTS(path)",
+          "line": 151
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_inner_get_dev_no_devices",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 160,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_inner_get_dev_qemu_fails",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 168,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_nbd_connect"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_inner_get_dev_qemu_timeout",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 183,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_sleep"
+        },
+        {
+          "name": "mock_nbd_disconnct"
+        },
+        {
+          "name": "mock_nbd_connect"
+        },
+        {
+          "name": "mock_listdir"
+        },
+        {
+          "name": "mock_shuffle"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_inner_get_dev_works",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 204,
+        "end": 219
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_nbd_disconnect"
+        },
+        {
+          "name": "mock_nbd_connect"
+        },
+        {
+          "name": "mock_exists"
+        },
+        {
+          "name": "mock_listdir"
+        },
+        {
+          "name": "mock_shuffle"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_unget_dev_simple",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 221,
+        "end": 226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_dev",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 235,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_nbd_disconnect"
+        },
+        {
+          "name": "mock_nbd_connect"
+        },
+        {
+          "name": "mock_exists"
+        },
+        {
+          "name": "mock_listdir"
+        },
+        {
+          "name": "mock_shuffle"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_get_dev_timeout",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 259,
+        "end": 268
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_get_dev"
+        },
+        {
+          "name": "mock_exists"
+        },
+        {
+          "name": "mock_nbd_disconnect"
+        },
+        {
+          "name": "mock_nbd_connect"
+        },
+        {
+          "name": "mock_sleep"
+        },
+        {
+          "name": "mock_shuffle"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_do_mount_need_to_specify_fs_type",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 271,
+        "end": 286
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_mount"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_returns_true",
+      "kind": "function",
+      "scope": "NbdTestCase.test_do_mount_need_to_specify_fs_type",
+      "lineRange": {
+        "start": 279,
+        "end": 280
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 280
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_device_creation_race",
+      "kind": "method",
+      "scope": "NbdTestCase",
+      "lineRange": {
+        "start": 291,
+        "end": 334
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_exists"
+        },
+        {
+          "name": "mock_nbd_disconnect"
+        },
+        {
+          "name": "mock_nbd_connect"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_find_unused",
+      "kind": "function",
+      "scope": "NbdTestCase.test_device_creation_race",
+      "lineRange": {
+        "start": 300,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "os.path.join('/dev', free_devices[-1])",
+          "line": 301
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "delay_and_remove_device",
+      "kind": "function",
+      "scope": "NbdTestCase.test_device_creation_race",
+      "lineRange": {
+        "start": 303,
+        "end": 312
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'', ''",
+          "line": 312
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "pid_exists",
+      "kind": "function",
+      "scope": "NbdTestCase.test_device_creation_race",
+      "lineRange": {
+        "start": 314,
+        "end": 316
+      },
+      "parameters": [
+        {
+          "name": "pidfile"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "pidfile not in [os.path.join('/sys/block', dev, 'pid') for dev in free_devices]",
+          "line": 315
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_a_device",
+      "kind": "function",
+      "scope": "NbdTestCase.test_device_creation_race",
+      "lineRange": {
+        "start": 323,
+        "end": 326
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "isinstance",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 31,
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "name": "nbd.NbdMount._detect_nbd_devices",
+      "usage": "call",
+      "via": "nova.virt.disk.mount",
+      "count": 2,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 73,
+        "end": 73
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 89,
+        "end": 89
+      }
+    },
+    {
+      "name": "fixtures.MonkeyPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 9,
+      "lineRange": {
+        "start": 92,
+        "end": 92
+      }
+    },
+    {
+      "name": "imgmodel.LocalFileImage",
+      "usage": "call",
+      "via": "nova.virt.image",
+      "count": 1,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "fixtures.TempDir",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 14,
+      "lineRange": {
+        "start": 98,
+        "end": 98
+      }
+    },
+    {
+      "name": "nbd.NbdMount",
+      "usage": "call",
+      "via": "nova.virt.disk.mount",
+      "count": 14,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 197,
+        "end": 197
+      }
+    },
+    {
+      "name": "tempfile.NamedTemporaryFile",
+      "usage": "call",
+      "via": "tempfile",
+      "count": 1,
+      "lineRange": {
+        "start": 274,
+        "end": 274
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os",
+      "count": 2,
+      "lineRange": {
+        "start": 301,
+        "end": 301
+      }
+    },
+    {
+      "name": "utils.cooperative_yield",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 307,
+        "end": 307
+      }
+    },
+    {
+      "name": "thread_pool_factory.spawn",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 328,
+        "end": 328
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "os",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "tempfile",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "thread_pool_factory"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.disk.mount",
+      "names": [
+        {
+          "alias": null,
+          "name": "nbd"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.image",
+      "names": [
+        {
+          "alias": "imgmodel",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

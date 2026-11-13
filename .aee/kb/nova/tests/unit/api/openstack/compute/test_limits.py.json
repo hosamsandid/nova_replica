@@ -1,0 +1,1529 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_limits.py",
+  "hash": "d50d9f4175638b84dbe22eb9a9e0e21a0e5e2638682b783d5f53eb80667dd083",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 76,
+    "code": 430,
+    "comment": 20,
+    "total": 526
+  },
+  "symbols": [
+    {
+      "name": "from http import client as httplib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from io import StringIO",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_limit import fixture as limit_fixture",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import encodeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import limits as limits_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import views",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import local as local_limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.limit import placement as placement_limit",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.policies import limits as l_policies",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import matchers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_get_project_quotas",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 62
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project_id"
+        },
+        {
+          "default": "True",
+          "name": "usages"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ k: {'limit': v, 'in_use': max(-1, v // 2)} for k, v in absolute_limits.items() }",
+          "line": 59
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "BaseLimitTestSuite",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 65,
+        "end": 84
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "BaseLimitTestSuite",
+      "lineRange": {
+        "start": 68,
+        "end": 80
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_time",
+      "kind": "method",
+      "scope": "BaseLimitTestSuite",
+      "lineRange": {
+        "start": 82,
+        "end": 84
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.time",
+          "line": 84
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LimitsControllerTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 87,
+        "end": 229
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "limits_controller",
+      "kind": "field",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 89,
+        "end": 89
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 91,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_index_request",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 97,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "\"application/json\"",
+          "name": "accept_header"
+        },
+        {
+          "default": "None",
+          "name": "tenant_id"
+        },
+        {
+          "default": "'testuser'",
+          "name": "user_id"
+        },
+        {
+          "default": "'testproject'",
+          "name": "project_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "request",
+          "line": 113
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_json",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 115,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_json_by_tenant",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 118,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_index_json",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 121,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "tenant_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_can_fetch_limits_for_a_given_tenant_id",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 162,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_admin_can_fetch_used_limits_for_own_project",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 180,
+        "end": 195
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "req_get"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_can_fetch_used_limits_for_own_project",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 197,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_can_fetch_used_limits_for_dummy_only",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 201,
+        "end": 205
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_can_fetch_used_limits_with_positive_int",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 207,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_can_fetch_used_limits_with_negative_int",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 211,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_admin_can_fetch_used_limits_with_unknown_param",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 215,
+        "end": 217
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_used_limits_fetched_for_context_project_id",
+      "kind": "method",
+      "scope": "LimitsControllerTestV21",
+      "lineRange": {
+        "start": 219,
+        "end": 229
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeHttplibSocket",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 232,
+        "end": 241
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeHttplibSocket",
+      "lineRange": {
+        "start": 235,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "response_string"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "makefile",
+      "kind": "method",
+      "scope": "FakeHttplibSocket",
+      "lineRange": {
+        "start": 239,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "_mode"
+        },
+        {
+          "name": "_other"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._buffer",
+          "line": 241
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeHttplibConnection",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 244,
+        "end": 274
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeHttplibConnection",
+      "lineRange": {
+        "start": 247,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "app"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "request",
+      "kind": "method",
+      "scope": "FakeHttplibConnection",
+      "lineRange": {
+        "start": 252,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "default": "\"\"",
+          "name": "body"
+        },
+        {
+          "default": "None",
+          "name": "headers"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "getresponse",
+      "kind": "method",
+      "scope": "FakeHttplibConnection",
+      "lineRange": {
+        "start": 272,
+        "end": 274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.http_response",
+          "line": 274
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LimitsViewBuilderTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 277,
+        "end": 309
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "LimitsViewBuilderTest",
+      "lineRange": {
+        "start": 278,
+        "end": 281
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_limits",
+      "kind": "method",
+      "scope": "LimitsViewBuilderTest",
+      "lineRange": {
+        "start": 283,
+        "end": 302
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_build_limits_empty_limits",
+      "kind": "method",
+      "scope": "LimitsViewBuilderTest",
+      "lineRange": {
+        "start": 304,
+        "end": 309
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LimitsControllerTestV236",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 312,
+        "end": 343
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "LimitsControllerTestV236",
+      "lineRange": {
+        "start": 314,
+        "end": 318
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_filtered",
+      "kind": "method",
+      "scope": "LimitsControllerTestV236",
+      "lineRange": {
+        "start": 320,
+        "end": 343
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LimitsControllerTestV239",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 346,
+        "end": 359
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "LimitsControllerTestV239",
+      "lineRange": {
+        "start": 348,
+        "end": 352
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_filtered_no_max_image_meta",
+      "kind": "method",
+      "scope": "LimitsControllerTestV239",
+      "lineRange": {
+        "start": 354,
+        "end": 359
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LimitsControllerTestV275",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 362,
+        "end": 376
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "LimitsControllerTestV275",
+      "lineRange": {
+        "start": 363,
+        "end": 365
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_additional_query_param_old_version",
+      "kind": "method",
+      "scope": "LimitsControllerTestV275",
+      "lineRange": {
+        "start": 367,
+        "end": 370
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_additional_query_param",
+      "kind": "method",
+      "scope": "LimitsControllerTestV275",
+      "lineRange": {
+        "start": 372,
+        "end": 376
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NoopLimitsControllerTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 379,
+        "end": 444
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "quota_driver",
+      "kind": "field",
+      "scope": "NoopLimitsControllerTest",
+      "lineRange": {
+        "start": 380,
+        "end": 380
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NoopLimitsControllerTest",
+      "lineRange": {
+        "start": 382,
+        "end": 389
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_v21",
+      "kind": "method",
+      "scope": "NoopLimitsControllerTest",
+      "lineRange": {
+        "start": 391,
+        "end": 420
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_v275",
+      "kind": "method",
+      "scope": "NoopLimitsControllerTest",
+      "lineRange": {
+        "start": 422,
+        "end": 444
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "UnifiedLimitsControllerTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 447,
+        "end": 526
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "quota_driver",
+      "kind": "field",
+      "scope": "UnifiedLimitsControllerTest",
+      "lineRange": {
+        "start": 448,
+        "end": 448
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "UnifiedLimitsControllerTest",
+      "lineRange": {
+        "start": 450,
+        "end": 459
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_v21",
+      "kind": "method",
+      "scope": "UnifiedLimitsControllerTest",
+      "lineRange": {
+        "start": 464,
+        "end": 496
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_count"
+        },
+        {
+          "name": "mock_proj"
+        },
+        {
+          "name": "mock_kcount"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_index_v275",
+      "kind": "method",
+      "scope": "UnifiedLimitsControllerTest",
+      "lineRange": {
+        "start": 501,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_count"
+        },
+        {
+          "name": "mock_proj"
+        },
+        {
+          "name": "mock_kcount"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "max",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 7,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 78,
+        "end": 78
+      }
+    },
+    {
+      "name": "wsgi.Resource",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 1,
+      "lineRange": {
+        "start": 94,
+        "end": 94
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 12,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "nova.context.RequestContext",
+      "usage": "call",
+      "via": "nova.context",
+      "count": 1,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 1,
+      "lineRange": {
+        "start": 157,
+        "end": 157
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 232,
+        "end": 232
+      }
+    },
+    {
+      "name": "StringIO",
+      "usage": "call",
+      "via": "io",
+      "count": 1,
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      }
+    },
+    {
+      "name": "encodeutils.safe_encode",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 264,
+        "end": 264
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 266,
+        "end": 266
+      }
+    },
+    {
+      "name": "httplib.HTTPResponse",
+      "usage": "call",
+      "via": "http",
+      "count": 1,
+      "lineRange": {
+        "start": 269,
+        "end": 269
+      }
+    },
+    {
+      "name": "views.limits.ViewBuilder",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 280,
+        "end": 280
+      }
+    },
+    {
+      "name": "matchers.DictMatches",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 2,
+      "lineRange": {
+        "start": 302,
+        "end": 302
+      }
+    },
+    {
+      "name": "limits_v21.LimitsController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 4,
+      "lineRange": {
+        "start": 316,
+        "end": 316
+      }
+    },
+    {
+      "name": "limit_fixture.LimitFixture",
+      "usage": "call",
+      "via": "oslo_limit",
+      "count": 1,
+      "lineRange": {
+        "start": 459,
+        "end": 459
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "http",
+      "names": [
+        {
+          "alias": "httplib",
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "io",
+      "names": [
+        {
+          "alias": null,
+          "name": "StringIO"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_limit",
+      "names": [
+        {
+          "alias": "limit_fixture",
+          "name": "fixture"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "encodeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "limits_v21",
+          "name": "limits"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "views"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.context",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "local_limit",
+          "name": "local"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.limit",
+      "names": [
+        {
+          "alias": "placement_limit",
+          "name": "placement"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.policies",
+      "names": [
+        {
+          "alias": "l_policies",
+          "name": "limits"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "matchers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

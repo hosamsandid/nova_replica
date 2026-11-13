@@ -1,0 +1,797 @@
+{
+  "file": "nova/api/openstack/urlmap.py",
+  "hash": "c6acbf54ee03220385b389e05ce02d4ceaa97f7882ecd296c464954fea5b1e09",
+  "language": "Python",
+  "component": "api",
+  "package": null,
+  "lines": {
+    "blank": 62,
+    "code": 202,
+    "comment": 45,
+    "total": 309
+  },
+  "symbols": [
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from urllib import request as urllib2",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import paste.urlmap",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack import wsgi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_quoted_string_re",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_option_header_piece_re",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "unquote_header_value",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 47
+      },
+      "parameters": [
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "value",
+          "line": 47
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_list_header",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 50,
+        "end": 71
+      },
+      "parameters": [
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "result",
+          "line": 71
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_options_header",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 74,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'', {}",
+          "line": 93
+        },
+        {
+          "expr": "name, extra",
+          "line": 98
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_tokenize",
+      "kind": "function",
+      "scope": "parse_options_header",
+      "lineRange": {
+        "start": 84,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "string"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Accept",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 101,
+        "end": 142
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Accept",
+      "lineRange": {
+        "start": 102,
+        "end": 104
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "best_match",
+      "kind": "method",
+      "scope": "Accept",
+      "lineRange": {
+        "start": 106,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "supported_content_types"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "best_content_type, best_params",
+          "line": 133
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_match_mask",
+      "kind": "method",
+      "scope": "Accept",
+      "lineRange": {
+        "start": 135,
+        "end": 142
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mask"
+        },
+        {
+          "name": "content_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "content_type == mask",
+          "line": 137
+        },
+        {
+          "expr": "True",
+          "line": 139
+        },
+        {
+          "expr": "content_type_major == mask_major",
+          "line": 142
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "urlmap_factory",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 145,
+        "end": 157
+      },
+      "parameters": [
+        {
+          "name": "loader"
+        },
+        {
+          "name": "global_conf"
+        },
+        {
+          "name": "**local_conf"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "urlmap",
+          "line": 157
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "URLMap",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 160,
+        "end": 309
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_match",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 161,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "path_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "app, app_url[:-2]",
+          "line": 183
+        },
+        {
+          "expr": "app, app_url",
+          "line": 187
+        },
+        {
+          "expr": "None, None",
+          "line": 189
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_script_name",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 191,
+        "end": 196
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "app"
+        },
+        {
+          "name": "app_url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrap",
+          "line": 196
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrap",
+      "kind": "function",
+      "scope": "URLMap._set_script_name",
+      "lineRange": {
+        "start": 192,
+        "end": 194
+      },
+      "parameters": [
+        {
+          "name": "environ"
+        },
+        {
+          "name": "start_response"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "app(environ, start_response)",
+          "line": 194
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_munge_path",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 198,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "app"
+        },
+        {
+          "name": "path_info"
+        },
+        {
+          "name": "app_url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "wrap",
+          "line": 204
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "wrap",
+      "kind": "function",
+      "scope": "URLMap._munge_path",
+      "lineRange": {
+        "start": 199,
+        "end": 202
+      },
+      "parameters": [
+        {
+          "name": "environ"
+        },
+        {
+          "name": "start_response"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "app(environ, start_response)",
+          "line": 202
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_path_strategy",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 206,
+        "end": 224
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "path_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mime_type, app, app_url",
+          "line": 224
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_content_type_strategy",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 226,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "environ"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "app",
+          "line": 235
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_accept_strategy",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 237,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "environ"
+        },
+        {
+          "name": "supported_content_types"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mime_type, app",
+          "line": 250
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__call__",
+      "kind": "method",
+      "scope": "URLMap",
+      "lineRange": {
+        "start": 252,
+        "end": 309
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "environ"
+        },
+        {
+          "name": "start_response"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "app(environ, start_response)",
+          "line": 305
+        },
+        {
+          "expr": "self.not_found_application(environ, start_response)",
+          "line": 309
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "name": "urllib2.parse_http_list",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 96,
+        "end": 96
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 97,
+        "end": 97
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 101,
+        "end": 101
+      }
+    },
+    {
+      "name": "float",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 117,
+        "end": 117
+      }
+    },
+    {
+      "name": "paste.urlmap.parse_path_expression",
+      "usage": "call",
+      "via": "paste.urlmap",
+      "count": 1,
+      "lineRange": {
+        "start": 154,
+        "end": 154
+      }
+    },
+    {
+      "name": "paste.urlmap.URLMap",
+      "usage": "inherit",
+      "via": "paste.urlmap",
+      "count": 1,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 179,
+        "end": 179
+      }
+    },
+    {
+      "name": "app",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 194,
+        "end": 194
+      }
+    },
+    {
+      "name": "wsgi.get_supported_content_types",
+      "usage": "call",
+      "via": "nova.api.openstack",
+      "count": 2,
+      "lineRange": {
+        "start": 213,
+        "end": 213
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 274,
+        "end": 274
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [
+        {
+          "alias": "urllib2",
+          "name": "request"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "paste.urlmap",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "wsgi"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

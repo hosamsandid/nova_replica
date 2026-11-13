@@ -1,0 +1,1665 @@
+{
+  "file": "nova/storage/rbd_utils.py",
+  "hash": "75b0e471c1ba3757cbfb58f893b1c8c46a90bf8c3fd78014da5756d4f4c9f5ed",
+  "language": "Python",
+  "component": "storage",
+  "package": null,
+  "lines": {
+    "blank": 79,
+    "code": 386,
+    "comment": 48,
+    "total": 513
+  },
+  "symbols": [
+    {
+      "name": "import urllib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_concurrency import processutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_serialization import jsonutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_service import loopingcall",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import encodeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import rados",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import rbd",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rados",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rbd",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RESIZE_SNAPSHOT_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RbdProxy",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RbdProxy",
+      "lineRange": {
+        "start": 53,
+        "end": 54
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getattr__",
+      "kind": "method",
+      "scope": "RbdProxy",
+      "lineRange": {
+        "start": 56,
+        "end": 57
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attr"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "getattr(self._rbd, attr)",
+          "line": 57
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RBDVolumeProxy",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 99
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RBDVolumeProxy",
+      "lineRange": {
+        "start": 70,
+        "end": 87
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "driver"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        },
+        {
+          "default": "None",
+          "name": "snapshot"
+        },
+        {
+          "default": "False",
+          "name": "read_only"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__enter__",
+      "kind": "method",
+      "scope": "RBDVolumeProxy",
+      "lineRange": {
+        "start": 89,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self",
+          "line": 90
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__exit__",
+      "kind": "method",
+      "scope": "RBDVolumeProxy",
+      "lineRange": {
+        "start": 92,
+        "end": 96
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "type_"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "traceback"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__getattr__",
+      "kind": "method",
+      "scope": "RBDVolumeProxy",
+      "lineRange": {
+        "start": 98,
+        "end": 99
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "attrib"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "getattr(self.volume, attrib)",
+          "line": 99
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RADOSClient",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 102,
+        "end": 120
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RADOSClient",
+      "lineRange": {
+        "start": 105,
+        "end": 107
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "driver"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__enter__",
+      "kind": "method",
+      "scope": "RADOSClient",
+      "lineRange": {
+        "start": 109,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self",
+          "line": 110
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__exit__",
+      "kind": "method",
+      "scope": "RADOSClient",
+      "lineRange": {
+        "start": 112,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "type_"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "traceback"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "features",
+      "kind": "method",
+      "scope": "RADOSClient",
+      "lineRange": {
+        "start": 116,
+        "end": 120
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "int(features)",
+          "line": 120
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "RBDDriver",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 123,
+        "end": 513
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 125,
+        "end": 137
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        },
+        {
+          "default": "None",
+          "name": "user"
+        },
+        {
+          "default": "None",
+          "name": "ceph_conf"
+        },
+        {
+          "default": "None",
+          "name": "connect_timeout"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_for_import_failure",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 139,
+        "end": 154
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import rados",
+      "kind": "import",
+      "scope": "RBDDriver._check_for_import_failure",
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import rbd",
+      "kind": "import",
+      "scope": "RBDDriver._check_for_import_failure",
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_connect_to_rados",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 156,
+        "end": 171
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "client, ioctx",
+          "line": 167
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_disconnect_from_rados",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 173,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "ioctx"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ceph_args",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 178,
+        "end": 188
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "args",
+          "line": 188
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_mon_addrs",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 190,
+        "end": 207
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "True",
+          "name": "strip_brackets"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "hosts, ports",
+          "line": 207
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_url",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 209,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "url"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "pieces",
+          "line": 222
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_fsid",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 224,
+        "end": 226
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "encodeutils.safe_decode(client.cluster.get_fsid())",
+          "line": 226
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_cloneable",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 228,
+        "end": 254
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_location"
+        },
+        {
+          "name": "image_meta"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "False",
+          "line": 234
+        },
+        {
+          "expr": "False",
+          "line": 240
+        },
+        {
+          "expr": "False",
+          "line": 246
+        },
+        {
+          "expr": "self.exists(image, pool=pool, snapshot=snapshot)",
+          "line": 250
+        },
+        {
+          "expr": "False",
+          "line": 254
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clone",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 256,
+        "end": 274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "image_location"
+        },
+        {
+          "name": "dest_name"
+        },
+        {
+          "default": "None",
+          "name": "dest_pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "size",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 276,
+        "end": 278
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vol.size()",
+          "line": 278
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "resize",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 280,
+        "end": 288
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "size"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parent_info",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 290,
+        "end": 303
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vol.parent_info()",
+          "line": 300
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "flatten",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 305,
+        "end": 314
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "exists",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 316,
+        "end": 324
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        },
+        {
+          "default": "None",
+          "name": "snapshot"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 322
+        },
+        {
+          "expr": "False",
+          "line": 324
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_image",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 326,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import_image",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 343,
+        "end": 358
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "export_image",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 360,
+        "end": 377
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "snap"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_destroy_volume",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 379,
+        "end": 409
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "client"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_cleanup_vol",
+      "kind": "function",
+      "scope": "RBDDriver._destroy_volume",
+      "lineRange": {
+        "start": 382,
+        "end": 394
+      },
+      "parameters": [
+        {
+          "name": "ioctx"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "name": "retryctx"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "cleanup_volumes",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 411,
+        "end": 415
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "filter_fn"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_pool_info",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 417,
+        "end": 450
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'total': stats['stats']['total_bytes'], 'free': pool_stats['max_avail'], 'used': pool_stats['bytes_used']}",
+          "line": 448
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_snap",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 452,
+        "end": 465
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        },
+        {
+          "default": "False",
+          "name": "protect"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_snap",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 467,
+        "end": 493
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "default": "False",
+          "name": "ignore_errors"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        },
+        {
+          "default": "False",
+          "name": "force"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 486
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rollback_to_snap",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 495,
+        "end": 507
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy_volume",
+      "kind": "method",
+      "scope": "RBDDriver",
+      "lineRange": {
+        "start": 509,
+        "end": 513
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "volume"
+        },
+        {
+          "default": "None",
+          "name": "pool"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "rbd.RBD",
+      "usage": "call",
+      "via": "rbd",
+      "count": 1,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "utils.tpool_wrap",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 54,
+        "end": 54
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 57,
+        "end": 57
+      }
+    },
+    {
+      "name": "rbd.Image",
+      "usage": "call",
+      "via": "rbd",
+      "count": 1,
+      "lineRange": {
+        "start": 75,
+        "end": 75
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "RuntimeError",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 154,
+        "end": 154
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 6,
+      "lineRange": {
+        "start": 154,
+        "end": 154
+      }
+    },
+    {
+      "name": "rados.Rados",
+      "usage": "call",
+      "via": "rados",
+      "count": 1,
+      "lineRange": {
+        "start": 157,
+        "end": 157
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 166,
+        "end": 166
+      }
+    },
+    {
+      "name": "processutils.execute",
+      "usage": "call",
+      "via": "oslo_concurrency",
+      "count": 4,
+      "lineRange": {
+        "start": 192,
+        "end": 192
+      }
+    },
+    {
+      "name": "jsonutils.loads",
+      "usage": "call",
+      "via": "oslo_serialization",
+      "count": 2,
+      "lineRange": {
+        "start": 196,
+        "end": 196
+      }
+    },
+    {
+      "name": "exception.ImageUnacceptable",
+      "usage": "call",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 213,
+        "end": 213
+      }
+    },
+    {
+      "name": "urllib.parse.unquote",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 214,
+        "end": 214
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "encodeutils.safe_decode",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 226,
+        "end": 226
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 253,
+        "end": 253
+      }
+    },
+    {
+      "name": "exception.Forbidden",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 273,
+        "end": 273
+      }
+    },
+    {
+      "name": "loopingcall.LoopingCallDone",
+      "usage": "call",
+      "via": "oslo_service",
+      "count": 2,
+      "lineRange": {
+        "start": 385,
+        "end": 385
+      }
+    },
+    {
+      "name": "loopingcall.FixedIntervalLoopingCall",
+      "usage": "call",
+      "via": "oslo_service",
+      "count": 1,
+      "lineRange": {
+        "start": 399,
+        "end": 399
+      }
+    },
+    {
+      "name": "filter",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "exception.StorageError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 433,
+        "end": 433
+      }
+    },
+    {
+      "name": "exception.NotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 446,
+        "end": 446
+      }
+    },
+    {
+      "name": "exception.SnapshotNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 507,
+        "end": 507
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_concurrency",
+      "names": [
+        {
+          "alias": null,
+          "name": "processutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_serialization",
+      "names": [
+        {
+          "alias": null,
+          "name": "jsonutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_service",
+      "names": [
+        {
+          "alias": null,
+          "name": "loopingcall"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "encodeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "rados",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "rbd",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "rados",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "alias": null,
+      "module": "rbd",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 150,
+        "end": 150
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

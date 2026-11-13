@@ -1,0 +1,3540 @@
+{
+  "file": "nova/virt/vmwareapi/vm_util.py",
+  "hash": "1109587547a8cd919ef969a9ca24759eb15ab70c5298ab54cb584894b697b465",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 301,
+    "code": 1272,
+    "comment": 96,
+    "total": 1669
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_service import loopingcall",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import exceptions as vexc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import pbm",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_vmware import vim_util as vutil",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import model as network_model",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import constants",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import session",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.vmwareapi import vim_util",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 43,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALL_SUPPORTED_NETWORK_DEVICES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 47
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONTROLLER_TO_ADAPTER_TYPE",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 55
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_FOLDER_PATH_REF_MAPPING",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_VM_REFS_CACHE",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 66,
+        "end": 66
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "Limits",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 69,
+        "end": 95
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "Limits",
+      "lineRange": {
+        "start": 71,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "limit"
+        },
+        {
+          "default": "None",
+          "name": "reservation"
+        },
+        {
+          "default": "None",
+          "name": "shares_level"
+        },
+        {
+          "default": "None",
+          "name": "shares_share"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate",
+      "kind": "method",
+      "scope": "Limits",
+      "lineRange": {
+        "start": 79,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 85
+        },
+        {
+          "expr": "",
+          "line": 87
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "has_limits",
+      "kind": "method",
+      "scope": "Limits",
+      "lineRange": {
+        "start": 92,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "bool(self.limit or self.reservation or self.shares_level)",
+          "line": 93
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ExtraSpecs",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 98,
+        "end": 113
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "ExtraSpecs",
+      "lineRange": {
+        "start": 100,
+        "end": 113
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "cpu_limits"
+        },
+        {
+          "default": "None",
+          "name": "hw_version"
+        },
+        {
+          "default": "None",
+          "name": "storage_policy"
+        },
+        {
+          "default": "None",
+          "name": "cores_per_socket"
+        },
+        {
+          "default": "None",
+          "name": "memory_limits"
+        },
+        {
+          "default": "None",
+          "name": "disk_io_limits"
+        },
+        {
+          "default": "None",
+          "name": "vif_limits"
+        },
+        {
+          "default": "None",
+          "name": "firmware"
+        },
+        {
+          "default": "None",
+          "name": "hw_video_ram"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vm_refs_cache_reset",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 116,
+        "end": 118
+      },
+      "parameters": [],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vm_ref_cache_delete",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 121,
+        "end": 122
+      },
+      "parameters": [
+        {
+          "name": "id_"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vm_ref_cache_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 125,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "id_"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "vm_ref_cache_get",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 129,
+        "end": 130
+      },
+      "parameters": [
+        {
+          "name": "id_"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_VM_REFS_CACHE.get(id_)",
+          "line": 130
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VNC_CONFIG_KEY",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 134,
+        "end": 134
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VmdkInfo",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 136,
+        "end": 139
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_iface_id_option_value",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 142,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "iface_id"
+        },
+        {
+          "name": "port_index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "opt",
+          "line": 146
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_allocation_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 149,
+        "end": 177
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "limits"
+        },
+        {
+          "name": "allocation_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "allocation",
+          "line": 177
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_create_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 180,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "data_store_name"
+        },
+        {
+          "name": "vif_infos"
+        },
+        {
+          "name": "extra_specs"
+        },
+        {
+          "default": "constants.DEFAULT_OS_TYPE",
+          "name": "os_type"
+        },
+        {
+          "default": "None",
+          "name": "profile_spec"
+        },
+        {
+          "default": "None",
+          "name": "metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 289
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_video_card_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 292,
+        "end": 301
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "extra_specs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "virtual_device_config_spec",
+          "line": 301
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_serial_port_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 304,
+        "end": 328
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 307
+        },
+        {
+          "expr": "dev_spec",
+          "line": 328
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_boot_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 331,
+        "end": 344
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 344
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_resize_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 347,
+        "end": 358
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "vcpus"
+        },
+        {
+          "name": "memory_mb"
+        },
+        {
+          "name": "extra_specs"
+        },
+        {
+          "default": "None",
+          "name": "metadata"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "resize_spec",
+          "line": 358
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_controller_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 361,
+        "end": 388
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "default": "constants.DEFAULT_ADAPTER_TYPE",
+          "name": "adapter_type"
+        },
+        {
+          "default": "0",
+          "name": "bus_number"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "virtual_device_config",
+          "line": 388
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "convert_vif_model",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 391,
+        "end": 408
+      },
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'VirtualE1000'",
+          "line": 394
+        },
+        {
+          "expr": "'VirtualE1000e'",
+          "line": 396
+        },
+        {
+          "expr": "'VirtualPCNet32'",
+          "line": 398
+        },
+        {
+          "expr": "'VirtualSriovEthernetCard'",
+          "line": 400
+        },
+        {
+          "expr": "'VirtualVmxnet'",
+          "line": 402
+        },
+        {
+          "expr": "'VirtualVmxnet3'",
+          "line": 404
+        },
+        {
+          "expr": "name",
+          "line": 408
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_vif_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 411,
+        "end": 489
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "vif_info"
+        },
+        {
+          "default": "None",
+          "name": "vif_limits"
+        },
+        {
+          "default": "0",
+          "name": "offset"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_spec",
+          "line": 489
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_network_attach_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 492,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "vif_info"
+        },
+        {
+          "name": "index"
+        },
+        {
+          "default": "None",
+          "name": "vif_limits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 502
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_network_detach_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 505,
+        "end": 522
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "port_index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 522
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_vif_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 525,
+        "end": 560
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "vif_info"
+        },
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "network_spec",
+          "line": 560
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_storage_profile_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 563,
+        "end": 571
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "storage_policy"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "storage_profile_spec",
+          "line": 571
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_attach_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 574,
+        "end": 595
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "default": "constants.DEFAULT_DISK_TYPE",
+          "name": "disk_type"
+        },
+        {
+          "default": "None",
+          "name": "file_path"
+        },
+        {
+          "default": "None",
+          "name": "disk_size"
+        },
+        {
+          "default": "False",
+          "name": "linked_clone"
+        },
+        {
+          "default": "None",
+          "name": "controller_key"
+        },
+        {
+          "default": "None",
+          "name": "unit_number"
+        },
+        {
+          "default": "None",
+          "name": "device_name"
+        },
+        {
+          "default": "None",
+          "name": "disk_io_limits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 595
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_cdrom_attach_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 598,
+        "end": 616
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "file_path"
+        },
+        {
+          "name": "controller_key"
+        },
+        {
+          "name": "cdrom_unit_number"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 616
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_detach_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 619,
+        "end": 632
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "default": "False",
+          "name": "destroy_disk"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 632
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_extra_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 635,
+        "end": 646
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "extra_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 646
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_capacity",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 649,
+        "end": 656
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device.capacityInBytes",
+          "line": 654
+        },
+        {
+          "expr": "device.capacityInKB * units.Ki",
+          "line": 656
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_device_disk_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 659,
+        "end": 666
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "constants.DISK_TYPE_THIN",
+          "line": 661
+        },
+        {
+          "expr": "constants.DISK_TYPE_EAGER_ZEROED_THICK",
+          "line": 664
+        },
+        {
+          "expr": "constants.DEFAULT_DISK_TYPE",
+          "line": 666
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_hardware_devices",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 669,
+        "end": 674
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vim_util.get_array_items(hardware_devices)",
+          "line": 674
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_before_in_boot_order",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 677,
+        "end": 680
+      },
+      "parameters": [
+        {
+          "name": "disk1"
+        },
+        {
+          "name": "disk2"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(disk1.controllerKey < disk2.controllerKey or disk1.controllerKey == disk2.controllerKey and disk1.unitNumber < disk2.unitNumber)",
+          "line": 678
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_info",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 683,
+        "end": 727
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "VmdkInfo(vmdk_file_path, adapter_type, disk_type, capacity_in_bytes, lowest_disk_device)",
+          "line": 726
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "scsi_controller_classes",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 730,
+        "end": 735
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_scsi_adapter_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 738,
+        "end": 749
+      },
+      "parameters": [
+        {
+          "name": "hardware_devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "scsi_controller_classes[device.__class__.__name__]",
+          "line": 747
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_controller_slot",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 752,
+        "end": 756
+      },
+      "parameters": [
+        {
+          "name": "controller_keys"
+        },
+        {
+          "name": "taken"
+        },
+        {
+          "name": "max_unit_number"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "controller_key, unit_number",
+          "line": 756
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_ide_controller",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 759,
+        "end": 760
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device.__class__.__name__ == 'VirtualIDEController'",
+          "line": 760
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_is_scsi_controller",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 763,
+        "end": 767
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device.__class__.__name__ in ['VirtualLsiLogicController', 'VirtualLsiLogicSASController', 'VirtualBusLogicController', 'ParaVirtualSCSIController']",
+          "line": 764
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_allocated_slots",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 770,
+        "end": 783
+      },
+      "parameters": [
+        {
+          "name": "devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "taken",
+          "line": 783
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_bus_number_for_scsi_controller",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 786,
+        "end": 796
+      },
+      "parameters": [
+        {
+          "name": "devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "i",
+          "line": 793
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "allocate_controller_key_and_unit_number",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 799,
+        "end": 830
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "devices"
+        },
+        {
+          "name": "adapter_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ret[0], ret[1], None",
+          "line": 818
+        },
+        {
+          "expr": "controller_key, 0, controller_spec",
+          "line": 830
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_rdm_disk",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 833,
+        "end": 840
+      },
+      "parameters": [
+        {
+          "name": "hardware_devices"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device",
+          "line": 840
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_create_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 843,
+        "end": 851
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "size_in_kb"
+        },
+        {
+          "default": "constants.DEFAULT_ADAPTER_TYPE",
+          "name": "adapter_type"
+        },
+        {
+          "default": "constants.DEFAULT_DISK_TYPE",
+          "name": "disk_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "create_vmdk_spec",
+          "line": 851
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_virtual_cdrom_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 854,
+        "end": 884
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "datastore"
+        },
+        {
+          "name": "controller_key"
+        },
+        {
+          "name": "file_path"
+        },
+        {
+          "name": "cdrom_unit_number"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 884
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_virtual_disk_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 887,
+        "end": 952
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "controller_key"
+        },
+        {
+          "default": "constants.DEFAULT_DISK_TYPE",
+          "name": "disk_type"
+        },
+        {
+          "default": "None",
+          "name": "file_path"
+        },
+        {
+          "default": "None",
+          "name": "disk_size"
+        },
+        {
+          "default": "False",
+          "name": "linked_clone"
+        },
+        {
+          "default": "None",
+          "name": "unit_number"
+        },
+        {
+          "default": "None",
+          "name": "device_name"
+        },
+        {
+          "default": "None",
+          "name": "disk_io_limits"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "virtual_device_config",
+          "line": 952
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach_virtual_disk_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 955,
+        "end": 965
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "default": "False",
+          "name": "destroy_disk"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "virtual_device_config",
+          "line": 965
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "clone_vm_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 968,
+        "end": 979
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "location"
+        },
+        {
+          "default": "False",
+          "name": "power_on"
+        },
+        {
+          "default": "None",
+          "name": "snapshot"
+        },
+        {
+          "default": "False",
+          "name": "template"
+        },
+        {
+          "default": "None",
+          "name": "config"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "clone_spec",
+          "line": 979
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "relocate_vm_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 982,
+        "end": 992
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "default": "None",
+          "name": "res_pool"
+        },
+        {
+          "default": "None",
+          "name": "datastore"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "\"moveAllDiskBackingsAndAllowSharing\"",
+          "name": "disk_move_type"
+        },
+        {
+          "default": "None",
+          "name": "devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rel_spec",
+          "line": 992
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "relocate_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 995,
+        "end": 1003
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "default": "None",
+          "name": "res_pool"
+        },
+        {
+          "default": "None",
+          "name": "datastore"
+        },
+        {
+          "default": "None",
+          "name": "host"
+        },
+        {
+          "default": "\"moveAllDiskBackingsAndAllowSharing\"",
+          "name": "disk_move_type"
+        },
+        {
+          "default": "None",
+          "name": "devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_machine_id_change_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1006,
+        "end": 1015
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "machine_id_str"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "virtual_machine_config_spec",
+          "line": 1015
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vnc_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1018,
+        "end": 1036
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "virtual_machine_config_spec",
+          "line": 1036
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vnc_port",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1039,
+        "end": 1049
+      },
+      "parameters": [
+        {
+          "name": "session"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port",
+          "line": 1047
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_allocated_vnc_ports",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1052,
+        "end": 1067
+      },
+      "parameters": [
+        {
+          "name": "session"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vnc_ports",
+          "line": 1067
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_object_for_value",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1070,
+        "end": 1073
+      },
+      "parameters": [
+        {
+          "name": "objects"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "object.obj",
+          "line": 1073
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_object_for_optionvalue",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1076,
+        "end": 1080
+      },
+      "parameters": [
+        {
+          "name": "objects"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "object.obj",
+          "line": 1080
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_object_from_results",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1083,
+        "end": 1085
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "results"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "func"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "func(objects, value)",
+          "line": 1085
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_ref_from_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1088,
+        "end": 1098
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_object_from_results(session, vms, vm_name, _get_object_for_value)",
+          "line": 1097
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_ref_from_vm_uuid",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1101,
+        "end": 1117
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vm_refs[0]",
+          "line": 1117
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_ref_from_extraconfig",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1120,
+        "end": 1125
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance_uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_get_object_from_results(session, vms, instance_uuid, _get_object_for_optionvalue)",
+          "line": 1124
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VmMoRefProxy",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1128,
+        "end": 1137
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "VmMoRefProxy",
+      "lineRange": {
+        "start": 1129,
+        "end": 1131
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "ref"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fetch_moref",
+      "kind": "method",
+      "scope": "VmMoRefProxy",
+      "lineRange": {
+        "start": 1133,
+        "end": 1137
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "session"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_ref",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1140,
+        "end": 1146
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "stable_ref",
+          "line": 1146
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "search_vm_ref_by_identifier",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1149,
+        "end": 1159
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "identifier"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vm_ref",
+          "line": 1159
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_ref_for_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1162,
+        "end": 1167
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "session._call_method(vutil, \"get_object_property\", vm_ref, \"runtime.host\")",
+          "line": 1166
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_name_for_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1170,
+        "end": 1175
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "session._call_method(vutil, \"get_object_property\", host_ref, \"name\")",
+          "line": 1174
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_state",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1178,
+        "end": 1182
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "constants.POWER_STATES[vm_state]",
+          "line": 1182
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_stats_from_cluster",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1185,
+        "end": 1229
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "cluster"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "stats",
+          "line": 1229
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_host_ref",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1232,
+        "end": 1248
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "default": "None",
+          "name": "cluster"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "host_mor",
+          "line": 1248
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "propset_dict",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1251,
+        "end": 1268
+      },
+      "parameters": [
+        {
+          "name": "propset"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 1266
+        },
+        {
+          "expr": "{prop.name: prop.val for prop in propset}",
+          "line": 1268
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_backed_disk_device",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1271,
+        "end": 1277
+      },
+      "parameters": [
+        {
+          "name": "hardware_devices"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device",
+          "line": 1277
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_volume_disk",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1280,
+        "end": 1284
+      },
+      "parameters": [
+        {
+          "name": "hardware_devices"
+        },
+        {
+          "default": "None",
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device",
+          "line": 1284
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_res_pool_ref",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1287,
+        "end": 1294
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "cluster"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "res_pool_ref",
+          "line": 1294
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_all_cluster_mors",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1297,
+        "end": 1305
+      },
+      "parameters": [
+        {
+          "name": "session"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "list(objects)",
+          "line": 1303
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_cluster_ref_by_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1308,
+        "end": 1314
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "cluster_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cluster.obj",
+          "line": 1314
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vmdk_adapter_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1317,
+        "end": 1329
+      },
+      "parameters": [
+        {
+          "name": "adapter_type"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vmdk_adapter_type",
+          "line": 1329
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1335,
+        "end": 1360
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "vm_folder"
+        },
+        {
+          "name": "config_spec"
+        },
+        {
+          "name": "res_pool_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "task_info.result",
+          "line": 1360
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1363,
+        "end": 1374
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_virtual_disk",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1377,
+        "end": 1407
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "adapter_type"
+        },
+        {
+          "name": "disk_type"
+        },
+        {
+          "name": "virtual_disk_path"
+        },
+        {
+          "name": "size_in_kb"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "copy_virtual_disk",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1410,
+        "end": 1435
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "dc_ref"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "dest"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "reconfigure_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1438,
+        "end": 1443
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "config_spec"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_on_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1446,
+        "end": 1460
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_port_indices",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1463,
+        "end": 1475
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ports",
+          "line": 1475
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_attach_port_index",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1478,
+        "end": 1490
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "0",
+          "line": 1483
+        },
+        {
+          "expr": "port_index",
+          "line": 1489
+        },
+        {
+          "expr": "configured_ports_len",
+          "line": 1490
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_vm_detach_port_index",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1493,
+        "end": 1503
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "iface_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "int(option.key.split('.')[2])",
+          "line": 1503
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "power_off_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1506,
+        "end": 1519
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "None",
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "find_rescue_device",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1522,
+        "end": 1539
+      },
+      "parameters": [
+        {
+          "name": "hardware_devices"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device",
+          "line": 1536
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_ephemeral_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1542,
+        "end": 1543
+      },
+      "parameters": [
+        {
+          "name": "id_"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'ephemeral_%d.vmdk' % id_",
+          "line": 1543
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_detach_and_delete_devices_config_spec",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1546,
+        "end": 1557
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "config_spec",
+          "line": 1557
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach_devices_from_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1560,
+        "end": 1565
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "devices"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_ephemerals",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1568,
+        "end": 1578
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "devices",
+          "line": 1578
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_swap",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1581,
+        "end": 1589
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device",
+          "line": 1589
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_folder",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1592,
+        "end": 1614
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "parent_folder_ref"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "folder",
+          "line": 1614
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "folder_ref_cache_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1617,
+        "end": 1618
+      },
+      "parameters": [
+        {
+          "name": "path"
+        },
+        {
+          "name": "folder_ref"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "folder_ref_cache_get",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1621,
+        "end": 1622
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_FOLDER_PATH_REF_MAPPING.get(path)",
+          "line": 1622
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_vm_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1625,
+        "end": 1629
+      },
+      "parameters": [
+        {
+          "name": "display_name"
+        },
+        {
+          "name": "id_"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'%s (%s)' % (display_name[:41], id_[:36])",
+          "line": 1627
+        },
+        {
+          "expr": "id_[:36]",
+          "line": 1629
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "rename_vm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1632,
+        "end": 1636
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "instance"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_fcd_id_obj",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1639,
+        "end": 1642
+      },
+      "parameters": [
+        {
+          "name": "client_factory"
+        },
+        {
+          "name": "fcd_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "id_obj",
+          "line": 1642
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "attach_fcd",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1645,
+        "end": 1659
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "fcd_id"
+        },
+        {
+          "name": "ds_ref_val"
+        },
+        {
+          "name": "controller_key"
+        },
+        {
+          "name": "unit_number"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "detach_fcd",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 1662,
+        "end": 1669
+      },
+      "parameters": [
+        {
+          "name": "session"
+        },
+        {
+          "name": "vm_ref"
+        },
+        {
+          "name": "fcd_id"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 41,
+        "end": 41
+      }
+    },
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 69,
+        "end": 69
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 8,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 84,
+        "end": 84
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 93,
+        "end": 93
+      }
+    },
+    {
+      "name": "collections.namedtuple",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "hasattr",
+      "usage": "call",
+      "via": null,
+      "count": 10,
+      "lineRange": {
+        "start": 173,
+        "end": 173
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 6,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 237,
+        "end": 237
+      }
+    },
+    {
+      "name": "exception.Invalid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 407,
+        "end": 407
+      }
+    },
+    {
+      "name": "pbm.get_profile_id_by_name",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 565,
+        "end": 565
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 660,
+        "end": 660
+      }
+    },
+    {
+      "name": "session._call_method",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 29,
+      "lineRange": {
+        "start": 670,
+        "end": 670
+      }
+    },
+    {
+      "name": "vim_util.get_array_items",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 674,
+        "end": 674
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 745,
+        "end": 745
+      }
+    },
+    {
+      "name": "exception.StorageError",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 748,
+        "end": 748
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 754,
+        "end": 754
+      }
+    },
+    {
+      "name": "vexc.VMwareDriverException",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 1,
+      "lineRange": {
+        "start": 796,
+        "end": 796
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 932,
+        "end": 932
+      }
+    },
+    {
+      "name": "session._wait_for_task",
+      "usage": "call",
+      "via": "nova.virt.vmwareapi",
+      "count": 11,
+      "lineRange": {
+        "start": 1003,
+        "end": 1003
+      }
+    },
+    {
+      "name": "exception.ConsolePortRangeExhausted",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1048,
+        "end": 1048
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1056,
+        "end": 1056
+      }
+    },
+    {
+      "name": "vutil.WithRetrieval",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 4,
+      "lineRange": {
+        "start": 1059,
+        "end": 1059
+      }
+    },
+    {
+      "name": "func",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1085,
+        "end": 1085
+      }
+    },
+    {
+      "name": "session.StableMoRefProxy",
+      "usage": "inherit",
+      "via": "nova.virt.vmwareapi",
+      "count": 1,
+      "lineRange": {
+        "start": 1128,
+        "end": 1128
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1130,
+        "end": 1130
+      }
+    },
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1136,
+        "end": 1136
+      }
+    },
+    {
+      "name": "max",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1219,
+        "end": 1219
+      }
+    },
+    {
+      "name": "exception.NoValidHost",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1245,
+        "end": 1245
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1303,
+        "end": 1303
+      }
+    },
+    {
+      "name": "loopingcall.RetryDecorator",
+      "usage": "call",
+      "via": "oslo_service",
+      "count": 1,
+      "lineRange": {
+        "start": 1332,
+        "end": 1332
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 1353,
+        "end": 1353
+      }
+    },
+    {
+      "name": "exception.NotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 1539,
+        "end": 1539
+      }
+    },
+    {
+      "name": "vutil.get_moref_value",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 3,
+      "lineRange": {
+        "start": 1601,
+        "end": 1601
+      }
+    },
+    {
+      "name": "vutil.get_moref",
+      "usage": "call",
+      "via": "oslo_vmware",
+      "count": 2,
+      "lineRange": {
+        "start": 1613,
+        "end": 1613
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_service",
+      "names": [
+        {
+          "alias": null,
+          "name": "loopingcall"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vexc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": null,
+          "name": "pbm"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_vmware",
+      "names": [
+        {
+          "alias": "vutil",
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "network_model",
+          "name": "model"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "constants"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "session"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 38,
+        "end": 38
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.vmwareapi",
+      "names": [
+        {
+          "alias": null,
+          "name": "vim_util"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

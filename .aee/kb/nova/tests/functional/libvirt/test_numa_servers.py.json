@@ -1,0 +1,1570 @@
+{
+  "file": "nova/tests/functional/libvirt/test_numa_servers.py",
+  "hash": "91b1cce8b4cf72343e5d1fc0d4d2c21afdbb63a377d70ccc98c3260dca2d611b",
+  "language": "Python",
+  "component": "tests-functional",
+  "package": null,
+  "lines": {
+    "blank": 336,
+    "code": 1050,
+    "comment": 254,
+    "total": 1640
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_config import cfg",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import testtools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import manager",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.conf import neutron as neutron_conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import libvirt as fakelibvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.api import client",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional.libvirt import base",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMAServersTestBase",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 53
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADDITIONAL_FILTERS",
+      "kind": "constant",
+      "scope": "NUMAServersTestBase",
+      "lineRange": {
+        "start": 37,
+        "end": 37
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NUMAServersTestBase",
+      "lineRange": {
+        "start": 39,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMAServersTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 56,
+        "end": 1098
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_run_build_test",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 58,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor_id"
+        },
+        {
+          "default": "'ACTIVE'",
+          "name": "end_status"
+        },
+        {
+          "default": "True",
+          "name": "filter_called_on_error"
+        },
+        {
+          "default": "None",
+          "name": "expected_usage"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "created_server",
+          "line": 98
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_numa_topology",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 100,
+        "end": 121
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_numa_topology_and_cpu_topology_and_pinning",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 123,
+        "end": 150
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_numa_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 152,
+        "end": 165
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_hugepages",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 167,
+        "end": 197
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_hugepages_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 199,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_dedicated_policy",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 224,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_mixed_policy",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 251,
+        "end": 303
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_mixed_policy_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 305,
+        "end": 347
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_mixed_policy_asymmetric_multi_numa",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 349,
+        "end": 417
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_dedicated_policy_old_configuration",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 419,
+        "end": 442
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_isolate_thread_policy_old_configuration",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 444,
+        "end": 479
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_dedicated_policy_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 481,
+        "end": 501
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_dedicated_policy_quota_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 503,
+        "end": 529
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_isolate_thread_policy_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 531,
+        "end": 552
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pcpu",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 554,
+        "end": 576
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pcpu_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 578,
+        "end": 597
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_pcpu_quota_fails",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 599,
+        "end": 622
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_inspect_filter_numa_topology",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 624,
+        "end": 635
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "cell_count"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_inspect_request_spec",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 637,
+        "end": 641
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "cell_count"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_revert_server_with_numa",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 643,
+        "end": 713
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_vcpu_to_pcpu",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 715,
+        "end": 816
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_bug_1879878",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 818,
+        "end": 894
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_confirm_migration",
+      "kind": "function",
+      "scope": "NUMAServersTest.test_resize_bug_1879878",
+      "lineRange": {
+        "start": 832,
+        "end": 853
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_confirm(*args, **kwargs)",
+          "line": 853
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_pinned_cpus",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 896,
+        "end": 903
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "expected_number_of_pinned"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server_and_resize_bug_1944759",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 905,
+        "end": 957
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "server, src_host, dst_host",
+          "line": 957
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "inject_periodic_to_finish_resize",
+      "kind": "function",
+      "scope": "NUMAServersTest._create_server_and_resize_bug_1944759",
+      "lineRange": {
+        "start": 930,
+        "end": 932
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_rpc_finish_resize(*args, **kwargs)",
+          "line": 932
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_confirm_bug_1944759",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 959,
+        "end": 978
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_revert_bug_1944759",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 980,
+        "end": 1001
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_resize_dedicated_policy_race_on_dest_bug_1953359",
+      "kind": "method",
+      "scope": "NUMAServersTest",
+      "lineRange": {
+        "start": 1003,
+        "end": 1098
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_finish_resize",
+      "kind": "function",
+      "scope": "NUMAServersTest.test_resize_dedicated_policy_race_on_dest_bug_1953359",
+      "lineRange": {
+        "start": 1048,
+        "end": 1074
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "orig_finish_resize(*args, **kwargs)",
+          "line": 1074
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMAServerTestWithCountingQuotaFromPlacement",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1101,
+        "end": 1105
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NUMAServerTestWithCountingQuotaFromPlacement",
+      "lineRange": {
+        "start": 1103,
+        "end": 1105
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ReshapeForPCPUsTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1108,
+        "end": 1340
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ADMIN_API",
+      "kind": "constant",
+      "scope": "ReshapeForPCPUsTest",
+      "lineRange": {
+        "start": 1111,
+        "end": 1111
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_vcpu_to_pcpu_reshape",
+      "kind": "method",
+      "scope": "ReshapeForPCPUsTest",
+      "lineRange": {
+        "start": 1113,
+        "end": 1340
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMAServersWithNetworksTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1343,
+        "end": 1538
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1345,
+        "end": 1359
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_create_server_with_networks",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1361,
+        "end": 1369
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "flavor_id"
+        },
+        {
+          "name": "networks"
+        },
+        {
+          "default": "'ACTIVE'",
+          "name": "end_status"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._create_server( flavor_id=flavor_id, networks=networks, expected_state=end_status)",
+          "line": 1366
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_single_physnet",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1371,
+        "end": 1380
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_multiple_physnets",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1382,
+        "end": 1398
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_multiple_physnets_fail",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1400,
+        "end": 1416
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_create_server_with_physnet_and_tunneled_net",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1418,
+        "end": 1433
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_attach_interface_with_network_affinity_violation",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1445,
+        "end": 1494
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_cold_migrate_with_physnet",
+      "kind": "method",
+      "scope": "NUMAServersWithNetworksTest",
+      "lineRange": {
+        "start": 1496,
+        "end": 1538
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "NUMAServersRebuildTests",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 1541,
+        "end": 1640
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "NUMAServersRebuildTests",
+      "lineRange": {
+        "start": 1543,
+        "end": 1548
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_active_server",
+      "kind": "method",
+      "scope": "NUMAServersRebuildTests",
+      "lineRange": {
+        "start": 1550,
+        "end": 1562
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "server_args"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._wait_for_state_change(server, 'ACTIVE')",
+          "line": 1562
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_with_numa",
+      "kind": "method",
+      "scope": "NUMAServersRebuildTests",
+      "lineRange": {
+        "start": 1564,
+        "end": 1587
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_with_numa_inplace_fails",
+      "kind": "method",
+      "scope": "NUMAServersRebuildTests",
+      "lineRange": {
+        "start": 1589,
+        "end": 1608
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_rebuild_server_with_different_numa_topology_fails",
+      "kind": "method",
+      "scope": "NUMAServersRebuildTests",
+      "lineRange": {
+        "start": 1610,
+        "end": 1640
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "name": "base.ServersTestBase",
+      "usage": "inherit",
+      "via": "nova.tests.functional.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 40,
+        "end": 40
+      }
+    },
+    {
+      "name": "nova_context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "mock.Mock",
+      "usage": "call",
+      "via": "unittest",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "numa_filter_class",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 10,
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "name": "fakelibvirt.HostInfo",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 22,
+      "lineRange": {
+        "start": 107,
+        "end": 107
+      }
+    },
+    {
+      "name": "objects.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 9,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 25,
+      "lineRange": {
+        "start": 119,
+        "end": 119
+      }
+    },
+    {
+      "name": "fakelibvirt.create_mempages",
+      "usage": "call",
+      "via": "nova.tests.fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 181,
+        "end": 181
+      }
+    },
+    {
+      "name": "objects.NUMATopology.obj_from_db_obj",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 272,
+        "end": 272
+      }
+    },
+    {
+      "name": "objects.ComputeNode.get_by_nodename",
+      "usage": "call",
+      "via": "nova",
+      "count": 7,
+      "lineRange": {
+        "start": 273,
+        "end": 273
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 8,
+      "lineRange": {
+        "start": 302,
+        "end": 302
+      }
+    },
+    {
+      "name": "objects.RequestSpec.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 639,
+        "end": 639
+      }
+    },
+    {
+      "name": "orig_confirm",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 853,
+        "end": 853
+      }
+    },
+    {
+      "name": "orig_rpc_finish_resize",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 932,
+        "end": 932
+      }
+    },
+    {
+      "name": "orig_finish_resize",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1074,
+        "end": 1074
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 1257,
+        "end": 1257
+      }
+    },
+    {
+      "name": "neutron_conf.register_dynamic_opts",
+      "usage": "call",
+      "via": "nova.conf",
+      "count": 1,
+      "lineRange": {
+        "start": 1348,
+        "end": 1348
+      }
+    },
+    {
+      "name": "base.LibvirtNeutronFixture",
+      "usage": "call",
+      "via": "nova.tests.functional.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 1359,
+        "end": 1359
+      }
+    },
+    {
+      "name": "testtools.skip",
+      "usage": "call",
+      "via": "testtools",
+      "count": 1,
+      "lineRange": {
+        "start": 1444,
+        "end": 1444
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 1494,
+        "end": 1494
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_config",
+      "names": [
+        {
+          "alias": null,
+          "name": "cfg"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "testtools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "manager"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [
+        {
+          "alias": "neutron_conf",
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": "fakelibvirt",
+          "name": "libvirt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.api",
+      "names": [
+        {
+          "alias": null,
+          "name": "client"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional.libvirt",
+      "names": [
+        {
+          "alias": null,
+          "name": "base"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

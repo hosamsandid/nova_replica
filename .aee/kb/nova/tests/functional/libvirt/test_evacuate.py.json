@@ -1,0 +1,1878 @@
+{
+  "file": "nova/tests/functional/libvirt/test_evacuate.py",
+  "hash": "8cf0344848af3fdbde875050003b31f147afccb260b8219d455832825d337207",
+  "language": "Python",
+  "component": "tests-functional",
+  "package": null,
+  "lines": {
+    "blank": 139,
+    "code": 431,
+    "comment": 84,
+    "total": 654
+  },
+  "symbols": [
+    {
+      "name": "import collections",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import os.path",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import fileutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests import fixtures as nova_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.fixtures import libvirt as fakelibvirt",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional import fixtures as func_fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.functional import integrated_helpers",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_network",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt.libvirt import config as libvirt_config",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FLAVOR_FIXTURES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 49
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "IMAGE_ID",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 52,
+        "end": 52
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SERVER_FIXTURES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 61,
+        "end": 97
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SERVER_DISKS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 100,
+        "end": 105
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_FileTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 108,
+        "end": 143
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_FileTest",
+      "lineRange": {
+        "start": 111,
+        "end": 112
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_disks_nonshared_instancedir",
+      "kind": "method",
+      "scope": "_FileTest",
+      "lineRange": {
+        "start": 114,
+        "end": 130
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 118
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_disks_shared_instancedir",
+      "kind": "method",
+      "scope": "_FileTest",
+      "lineRange": {
+        "start": 132,
+        "end": 143
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 136
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_FlatTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 146,
+        "end": 168
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_FlatTest",
+      "lineRange": {
+        "start": 153,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create_image",
+      "kind": "function",
+      "scope": "_FlatTest.setUp",
+      "lineRange": {
+        "start": 158,
+        "end": 160
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_Qcow2Test",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 171,
+        "end": 189
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_Qcow2Test",
+      "lineRange": {
+        "start": 178,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create_image",
+      "kind": "function",
+      "scope": "_Qcow2Test.setUp",
+      "lineRange": {
+        "start": 183,
+        "end": 185
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_RbdTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 192,
+        "end": 244
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_RbdTest",
+      "lineRange": {
+        "start": 200,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create_image",
+      "kind": "function",
+      "scope": "_RbdTest.setUp",
+      "lineRange": {
+        "start": 208,
+        "end": 209
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_exists",
+      "kind": "function",
+      "scope": "_RbdTest.setUp",
+      "lineRange": {
+        "start": 211,
+        "end": 212
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_self.rbd_name in self.created",
+          "line": 212
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_disks",
+      "kind": "method",
+      "scope": "_RbdTest",
+      "lineRange": {
+        "start": 230,
+        "end": 239
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 234
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_disks_nonshared_instancedir",
+      "kind": "field",
+      "scope": "_RbdTest",
+      "lineRange": {
+        "start": 243,
+        "end": 243
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_disks_shared_instancedir",
+      "kind": "field",
+      "scope": "_RbdTest",
+      "lineRange": {
+        "start": 244,
+        "end": 244
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "FakeLVM",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 247,
+        "end": 286
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 248,
+        "end": 249
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_exists",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 251,
+        "end": 252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vg"
+        },
+        {
+          "name": "lv"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "any([v for v in self.volumes if v[0] == vg and v[1] == lv])",
+          "line": 252
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_vg_exists",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 254,
+        "end": 255
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vg"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "any([v for v in self.volumes if v[0] == vg])",
+          "line": 255
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_find_vol_from_path",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 257,
+        "end": 262
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vol",
+          "line": 261
+        },
+        {
+          "expr": "None",
+          "line": 262
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_volume",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 264,
+        "end": 265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vg"
+        },
+        {
+          "name": "lv"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "default": "False",
+          "name": "sparse"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list_volumes",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 267,
+        "end": 269
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "vg_path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[vol[1] for vol in self.volumes if vol[0] == vg]",
+          "line": 269
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_info",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 271,
+        "end": 274
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'VG': vg, 'LV': lv}",
+          "line": 274
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_volume_size",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 276,
+        "end": 280
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "vol[2]",
+          "line": 279
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_volumes",
+      "kind": "method",
+      "scope": "FakeLVM",
+      "lineRange": {
+        "start": 282,
+        "end": 286
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "paths"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_LVMTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 289,
+        "end": 384
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_LVMTest",
+      "lineRange": {
+        "start": 297,
+        "end": 345
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_create_image",
+      "kind": "function",
+      "scope": "_LVMTest.setUp",
+      "lineRange": {
+        "start": 310,
+        "end": 312
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "prepare_template"
+        },
+        {
+          "name": "base"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_exists",
+      "kind": "function",
+      "scope": "_LVMTest.setUp",
+      "lineRange": {
+        "start": 314,
+        "end": 315
+      },
+      "parameters": [
+        {
+          "name": "_self"
+        },
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.fake_lvm._exists(_self.vg, _self.lv)",
+          "line": 315
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_path_exists",
+      "kind": "function",
+      "scope": "_LVMTest.setUp",
+      "lineRange": {
+        "start": 326,
+        "end": 342
+      },
+      "parameters": [
+        {
+          "name": "path"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 332
+        },
+        {
+          "expr": "self.fake_lvm._vg_exists(*paths)",
+          "line": 335
+        },
+        {
+          "expr": "self.fake_lvm._exists(*paths)",
+          "line": 338
+        },
+        {
+          "expr": "False",
+          "line": 340
+        },
+        {
+          "expr": "orig_path_exists(path)",
+          "line": 342
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_start_compute",
+      "kind": "method",
+      "scope": "_LVMTest",
+      "lineRange": {
+        "start": 347,
+        "end": 360
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "compute",
+          "line": 360
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_assert_disks",
+      "kind": "method",
+      "scope": "_LVMTest",
+      "lineRange": {
+        "start": 362,
+        "end": 379
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 366
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_disks_nonshared_instancedir",
+      "kind": "field",
+      "scope": "_LVMTest",
+      "lineRange": {
+        "start": 383,
+        "end": 383
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "assert_disks_shared_instancedir",
+      "kind": "field",
+      "scope": "_LVMTest",
+      "lineRange": {
+        "start": 384,
+        "end": 384
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_LibvirtEvacuateTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 387,
+        "end": 638
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_start_compute",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 406,
+        "end": 425
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "compute",
+          "line": 425
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 427,
+        "end": 491
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "source_instance_path",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 494,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "os.path.join(CONF.instances_path, server['id'])",
+          "line": 495
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "dest_instance_path",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 498,
+        "end": 499
+      },
+      "parameters": [
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "os.path.join(CONF.instances_path, 'dest', server['id'])",
+          "line": 499
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_servers",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 501,
+        "end": 514
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[_create_server(server) for server in SERVER_FIXTURES]",
+          "line": 514
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_create_server",
+      "kind": "function",
+      "scope": "_LibvirtEvacuateTest._create_servers",
+      "lineRange": {
+        "start": 502,
+        "end": 512
+      },
+      "parameters": [
+        {
+          "name": "server"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._wait_for_state_change(server, 'ACTIVE', max_retries=30)",
+          "line": 511
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_swap_computes",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 516,
+        "end": 522
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "compute0"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self._start_compute('compute1')",
+          "line": 522
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_evacuate_with_failure",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 524,
+        "end": 544
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "compute1"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "server",
+          "line": 544
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_failure_nonshared_instancedir",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 546,
+        "end": 603
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "dest_get_instance_path",
+      "kind": "function",
+      "scope": "_LibvirtEvacuateTest.test_evacuate_failure_nonshared_instancedir",
+      "lineRange": {
+        "start": 580,
+        "end": 583
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "default": "False",
+          "name": "relative"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instance.uuid",
+          "line": 582
+        },
+        {
+          "expr": "dest_instance_path",
+          "line": 583
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_failure_shared_instancedir",
+      "kind": "method",
+      "scope": "_LibvirtEvacuateTest",
+      "lineRange": {
+        "start": 605,
+        "end": 638
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtFlatEvacuateTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 641,
+        "end": 642
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtQcowEvacuateTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 645,
+        "end": 646
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtRbdEvacuateTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 649,
+        "end": 650
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LibvirtLVMEvacuateTest",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 653,
+        "end": 654
+      },
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "object",
+      "usage": "inherit",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 108,
+        "end": 108
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 7,
+      "lineRange": {
+        "start": 112,
+        "end": 112
+      }
+    },
+    {
+      "name": "os.path.join",
+      "usage": "call",
+      "via": "os.path",
+      "count": 5,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "os.path.exists",
+      "usage": "call",
+      "via": "os.path",
+      "count": 9,
+      "lineRange": {
+        "start": 125,
+        "end": 125
+      }
+    },
+    {
+      "name": "open",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 160,
+        "end": 160
+      }
+    },
+    {
+      "name": "fixtures.MonkeyPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 9,
+      "lineRange": {
+        "start": 162,
+        "end": 162
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 11,
+      "lineRange": {
+        "start": 167,
+        "end": 167
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 206,
+        "end": 206
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 252,
+        "end": 252
+      }
+    },
+    {
+      "name": "os.path.split",
+      "usage": "call",
+      "via": "os.path",
+      "count": 3,
+      "lineRange": {
+        "start": 268,
+        "end": 268
+      }
+    },
+    {
+      "name": "exception.VolumeBDMPathNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 280,
+        "end": 280
+      }
+    },
+    {
+      "name": "collections.defaultdict",
+      "usage": "call",
+      "via": "collections",
+      "count": 1,
+      "lineRange": {
+        "start": 304,
+        "end": 304
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 330,
+        "end": 330
+      }
+    },
+    {
+      "name": "orig_path_exists",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 342,
+        "end": 342
+      }
+    },
+    {
+      "name": "integrated_helpers.InstanceHelperMixin",
+      "usage": "inherit",
+      "via": "nova.tests.functional",
+      "count": 1,
+      "lineRange": {
+        "start": 387,
+        "end": 387
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 418,
+        "end": 418
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 2,
+      "lineRange": {
+        "start": 420,
+        "end": 420
+      }
+    },
+    {
+      "name": "getattr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 421,
+        "end": 421
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 421,
+        "end": 421
+      }
+    },
+    {
+      "name": "nova_fixtures.CinderFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 430,
+        "end": 430
+      }
+    },
+    {
+      "name": "nova_fixtures.NeutronFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 431,
+        "end": 431
+      }
+    },
+    {
+      "name": "nova_fixtures.GlanceFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 432,
+        "end": 432
+      }
+    },
+    {
+      "name": "func_fixtures.PlacementFixture",
+      "usage": "call",
+      "via": "nova.tests.functional",
+      "count": 1,
+      "lineRange": {
+        "start": 433,
+        "end": 433
+      }
+    },
+    {
+      "name": "nova_fixtures.CGroupsFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 434,
+        "end": 434
+      }
+    },
+    {
+      "name": "fake_network.set_stub_network_methods",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 435,
+        "end": 435
+      }
+    },
+    {
+      "name": "nova_fixtures.OSAPIFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 438,
+        "end": 438
+      }
+    },
+    {
+      "name": "nova_fixtures.NotificationFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 445,
+        "end": 445
+      }
+    },
+    {
+      "name": "nova_fixtures.LibvirtFixture",
+      "usage": "call",
+      "via": "nova.tests",
+      "count": 1,
+      "lineRange": {
+        "start": 447,
+        "end": 447
+      }
+    },
+    {
+      "name": "libvirt_config.LibvirtConfigGuestDisk",
+      "usage": "call",
+      "via": "nova.virt.libvirt",
+      "count": 1,
+      "lineRange": {
+        "start": 458,
+        "end": 458
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 475,
+        "end": 475
+      }
+    },
+    {
+      "name": "context.get_admin_context",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 489,
+        "end": 489
+      }
+    },
+    {
+      "name": "objects.Flavor",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 491,
+        "end": 491
+      }
+    },
+    {
+      "name": "test.TestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 4,
+      "lineRange": {
+        "start": 641,
+        "end": 641
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "collections",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "os.path",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "fileutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "conf"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests",
+      "names": [
+        {
+          "alias": "nova_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.fixtures",
+      "names": [
+        {
+          "alias": "fakelibvirt",
+          "name": "libvirt"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional",
+      "names": [
+        {
+          "alias": "func_fixtures",
+          "name": "fixtures"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 31,
+        "end": 31
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.functional",
+      "names": [
+        {
+          "alias": null,
+          "name": "integrated_helpers"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_network"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt.libvirt",
+      "names": [
+        {
+          "alias": "libvirt_config",
+          "name": "config"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

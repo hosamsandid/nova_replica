@@ -1,0 +1,1492 @@
+{
+  "file": "nova/network/security_group_api.py",
+  "hash": "a04bf46ef94d6330de340bdef85b5070a074f5b859d6be8668a48aac12464e6f",
+  "language": "Python",
+  "component": "network",
+  "package": null,
+  "lines": {
+    "blank": 107,
+    "code": 524,
+    "comment": 78,
+    "total": 709
+  },
+  "symbols": [
+    {
+      "name": "import urllib",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import netaddr",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from neutronclient.common import exceptions as n_exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from neutronclient.neutron import v2_0 as neutronv20",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import encodeutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import excutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import netutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import uuidutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from webob import exc",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.network import neutron as neutronapi",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.objects import security_group as security_group_obj",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "MAX_SEARCH_IDS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_id",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 47,
+        "end": 51
+      },
+      "parameters": [
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "id",
+          "line": 51
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 54,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "name",
+          "type": "str"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "neutronv20.find_resourceid_by_name_or_id( neutron, 'security_group', name, context.project_id)",
+          "line": 67
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "parse_cidr",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 80,
+        "end": 92
+      },
+      "parameters": [
+        {
+          "name": "cidr"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "'0.0.0.0/0'",
+          "line": 82
+        },
+        {
+          "expr": "cidr",
+          "line": 92
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "new_group_ingress_rule",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 95,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "name": "grantee_group_id"
+        },
+        {
+          "name": "protocol"
+        },
+        {
+          "name": "from_port"
+        },
+        {
+          "name": "to_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_new_ingress_rule( protocol, from_port, to_port, group_id=grantee_group_id)",
+          "line": 97
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "new_cidr_ingress_rule",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 101,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "name": "grantee_cidr"
+        },
+        {
+          "name": "protocol"
+        },
+        {
+          "name": "from_port"
+        },
+        {
+          "name": "to_port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_new_ingress_rule( protocol, from_port, to_port, cidr=grantee_cidr)",
+          "line": 102
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_new_ingress_rule",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 106,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "ip_protocol"
+        },
+        {
+          "name": "from_port"
+        },
+        {
+          "name": "to_port"
+        },
+        {
+          "default": "None",
+          "name": "group_id"
+        },
+        {
+          "default": "None",
+          "name": "cidr"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 176
+        },
+        {
+          "expr": "values",
+          "line": 178
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_security_group_rule",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 181,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group"
+        },
+        {
+          "name": "new_rule"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "add_rules(context, new_rule['parent_group_id'], security_group['name'], [new_rule])[0]",
+          "line": 187
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_rule_exists",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 192,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "security_group"
+        },
+        {
+          "name": "new_rule"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "rule.get('id') or True",
+          "line": 202
+        },
+        {
+          "expr": "False",
+          "line": 203
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "populate_security_groups",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 206,
+        "end": 216
+      },
+      "parameters": [
+        {
+          "name": "security_groups"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "security_group_obj.SecurityGroupList()",
+          "line": 215
+        },
+        {
+          "expr": "security_group_obj.make_secgroup_list(security_groups)",
+          "line": 216
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_security_group",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 219,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_to_nova_security_group_format(security_group)",
+          "line": 237
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_security_group",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 240,
+        "end": 254
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_to_nova_security_group_format(security_group)",
+          "line": 254
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_convert_to_nova_security_group_format",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 257,
+        "end": 269
+      },
+      "parameters": [
+        {
+          "name": "security_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nova_group",
+          "line": 269
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_convert_to_nova_security_group_rule_format",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 272,
+        "end": 290
+      },
+      "parameters": [
+        {
+          "name": "rule"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "nova_rule",
+          "line": 290
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 293,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_to_nova_security_group_format(group)",
+          "line": 297
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 307,
+        "end": 338
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "project"
+        },
+        {
+          "default": "None",
+          "name": "search_opts"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "converted_rules",
+          "line": 338
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "destroy",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 341,
+        "end": 354
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 357,
+        "end": 388
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "vals"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "converted_rules",
+          "line": 388
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_make_neutron_security_group_dict",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 391,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "description"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_group': {'name': name, 'description': description}}",
+          "line": 392
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_make_neutron_security_group_rules_list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 396,
+        "end": 425
+      },
+      "parameters": [
+        {
+          "name": "rules"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{'security_group_rules': new_rules}",
+          "line": 425
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_rules",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 428,
+        "end": 440
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "security_group"
+        },
+        {
+          "name": "rule_ids"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_rule",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 443,
+        "end": 455
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "id"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_convert_to_nova_security_group_rule_format(rule)",
+          "line": 455
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_ports_from_server_list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 458,
+        "end": 486
+      },
+      "parameters": [
+        {
+          "name": "servers"
+        },
+        {
+          "name": "neutron"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "ports",
+          "line": 486
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_chunk_by_ids",
+      "kind": "function",
+      "scope": "_get_ports_from_server_list",
+      "lineRange": {
+        "start": 461,
+        "end": 469
+      },
+      "parameters": [
+        {
+          "name": "servers"
+        },
+        {
+          "name": "limit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_secgroups_from_port_list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 489,
+        "end": 518
+      },
+      "parameters": [
+        {
+          "name": "ports"
+        },
+        {
+          "name": "neutron"
+        },
+        {
+          "default": "None",
+          "name": "fields"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "security_groups",
+          "line": 518
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_chunk_by_ids",
+      "kind": "function",
+      "scope": "_get_secgroups_from_port_list",
+      "lineRange": {
+        "start": 492,
+        "end": 500
+      },
+      "parameters": [
+        {
+          "name": "sg_ids"
+        },
+        {
+          "name": "limit"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instances_security_groups_bindings",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 521,
+        "end": 563
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "servers"
+        },
+        {
+          "default": "False",
+          "name": "detailed"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "instances_security_group_bindings",
+          "line": 563
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instance_security_groups",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 566,
+        "end": 575
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "default": "False",
+          "name": "detailed"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sg_bindings.get(instance.uuid, [])",
+          "line": 575
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_has_security_group_requirements",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 578,
+        "end": 584
+      },
+      "parameters": [
+        {
+          "name": "port"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "port_security_enabled",
+          "line": 583
+        },
+        {
+          "expr": "False",
+          "line": 584
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "add_to_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 587,
+        "end": 647
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "security_group_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "remove_from_instance",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 650,
+        "end": 709
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "security_group_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 39,
+        "end": 39
+      }
+    },
+    {
+      "name": "uuidutils.is_uuid_like",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 48,
+        "end": 48
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 9,
+      "lineRange": {
+        "start": 49,
+        "end": 49
+      }
+    },
+    {
+      "name": "exception.Invalid",
+      "usage": "call",
+      "via": "nova",
+      "count": 5,
+      "lineRange": {
+        "start": 50,
+        "end": 50
+      }
+    },
+    {
+      "name": "neutronapi.get_client",
+      "usage": "call",
+      "via": "nova.network",
+      "count": 12,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "neutronv20.find_resourceid_by_name_or_id",
+      "usage": "call",
+      "via": "neutronclient.neutron",
+      "count": 3,
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "name": "exception.NoUniqueMatch",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 15,
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      }
+    },
+    {
+      "name": "exception.SecurityGroupNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 10,
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      }
+    },
+    {
+      "name": "encodeutils.safe_decode",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "urllib.parse.unquote",
+      "usage": "call",
+      "via": "urllib",
+      "count": 1,
+      "lineRange": {
+        "start": 85,
+        "end": 85
+      }
+    },
+    {
+      "name": "exception.InvalidCidr",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 87,
+        "end": 87
+      }
+    },
+    {
+      "name": "netutils.is_valid_cidr",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 89,
+        "end": 89
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 132,
+        "end": 132
+      }
+    },
+    {
+      "name": "exception.InvalidInput",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 136,
+        "end": 136
+      }
+    },
+    {
+      "name": "exception.InvalidIpProtocol",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 143,
+        "end": 143
+      }
+    },
+    {
+      "name": "exception.InvalidPortRange",
+      "usage": "call",
+      "via": "nova",
+      "count": 3,
+      "lineRange": {
+        "start": 149,
+        "end": 149
+      }
+    },
+    {
+      "name": "security_group_obj.SecurityGroupList",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 215,
+        "end": 215
+      }
+    },
+    {
+      "name": "security_group_obj.make_secgroup_list",
+      "usage": "call",
+      "via": "nova.objects",
+      "count": 1,
+      "lineRange": {
+        "start": 216,
+        "end": 216
+      }
+    },
+    {
+      "name": "exc.HTTPBadRequest",
+      "usage": "call",
+      "via": "webob",
+      "count": 2,
+      "lineRange": {
+        "start": 233,
+        "end": 233
+      }
+    },
+    {
+      "name": "exception.SecurityGroupLimitExceeded",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 235,
+        "end": 235
+      }
+    },
+    {
+      "name": "excutils.save_and_reraise_exception",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 6,
+      "lineRange": {
+        "start": 330,
+        "end": 330
+      }
+    },
+    {
+      "name": "netaddr.IPNetwork",
+      "usage": "call",
+      "via": "netaddr",
+      "count": 1,
+      "lineRange": {
+        "start": 415,
+        "end": 415
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 430,
+        "end": 430
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 436,
+        "end": 436
+      }
+    },
+    {
+      "name": "range",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 436,
+        "end": 436
+      }
+    },
+    {
+      "name": "exception.SecurityGroupCannotBeApplied",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 627,
+        "end": 627
+      }
+    },
+    {
+      "name": "exception.SecurityGroupConnectionStateConflict",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 642,
+        "end": 642
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "urllib",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "netaddr",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "neutronclient.common",
+      "names": [
+        {
+          "alias": "n_exc",
+          "name": "exceptions"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "neutronclient.neutron",
+      "names": [
+        {
+          "alias": "neutronv20",
+          "name": "v2_0"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "encodeutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "excutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "netutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "uuidutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [
+        {
+          "alias": null,
+          "name": "exc"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 33,
+        "end": 33
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 34,
+        "end": 34
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.network",
+      "names": [
+        {
+          "alias": "neutronapi",
+          "name": "neutron"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 35,
+        "end": 35
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.objects",
+      "names": [
+        {
+          "alias": "security_group_obj",
+          "name": "security_group"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 36,
+        "end": 36
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

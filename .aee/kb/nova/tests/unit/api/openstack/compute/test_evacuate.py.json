@@ -1,0 +1,1771 @@
+{
+  "file": "nova/tests/unit/api/openstack/compute/test_evacuate.py",
+  "hash": "33a025236265a06bac49cfe97727bf14ce77fb43f04382b1b463b088d2089487",
+  "language": "Python",
+  "component": "tests-unit",
+  "package": null,
+  "lines": {
+    "blank": 82,
+    "code": 344,
+    "comment": 21,
+    "total": 447
+  },
+  "symbols": [
+    {
+      "name": "from unittest import mock",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import fixtures",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils.fixture import uuidsentinel as uuids",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import testtools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import webob",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.api.openstack.compute import evacuate as evacuate_v21",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import api as compute_api",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import test",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit.api.openstack import fakes",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.tests.unit import fake_instance",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_compute_api",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 35,
+        "end": 36
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 36
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_compute_api_get",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 39,
+        "end": 46
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "instance_id"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fake_instance.fake_instance_obj(context, id=1, uuid=instance_id, task_state=None, host='host1', vm_state=vm_states.ACTIVE)",
+          "line": 44
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_service_get_by_compute_host",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 49,
+        "end": 59
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "host"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{ 'host_name': host, 'service': 'compute', 'zone': 'nova' }",
+          "line": 55
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EvacuateTestV21",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 62,
+        "end": 265
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validation_error",
+      "kind": "field",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 63,
+        "end": 63
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_methods",
+      "kind": "field",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 64,
+        "end": 64
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 66,
+        "end": 83
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_set_up_controller",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 85,
+        "end": 87
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_evacuate_response",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 89,
+        "end": 94
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "json_load"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "response",
+          "line": 94
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_evacuate_failure",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 96,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exception"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "controller"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.assertRaises(exception, controller._evacuate, self.admin_req, uuid or self.UUID, body=body)",
+          "line": 100
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_valid_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 103,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_invalid_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 111,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_raise_badrequest_with_vtpm",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 119,
+        "end": 124
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_raise_badrequest_with_vdpa_interface",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 127,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_raise_badrequest_for_accelerator",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 137,
+        "end": 142
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_active_service",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 144,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_evacuate",
+      "kind": "function",
+      "scope": "EvacuateTestV21.test_evacuate_with_active_service",
+      "lineRange": {
+        "start": 145,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_no_target",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 154,
+        "end": 159
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_without_on_shared_storage",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 161,
+        "end": 164
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_invalid_characters_host",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 166,
+        "end": 171
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_too_long_host",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 173,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_invalid_on_shared_storage",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 180,
+        "end": 184
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_bad_target",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 186,
+        "end": 190
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_unmapped_target",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 192,
+        "end": 196
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_target",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 198,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_shared_and_pass",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 207,
+        "end": 211
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_not_shared_pass_generated",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 214,
+        "end": 217
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_shared",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 220,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_to_same_host",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 224,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_empty_host",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 230,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_underscore_in_hostname",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 238,
+        "end": 247
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_disable_password_return",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 249,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_enable_password_return",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 252,
+        "end": 253
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_test_evacuate_enable_instance_password_conf",
+      "kind": "method",
+      "scope": "EvacuateTestV21",
+      "lineRange": {
+        "start": 256,
+        "end": 265
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "enable_pass"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EvacuateTestV214",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 268,
+        "end": 356
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 269,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_evacuate_response",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 275,
+        "end": 281
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "json_load"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "response",
+          "line": 281
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_evacuate_failure",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 283,
+        "end": 289
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "exception"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "default": "None",
+          "name": "uuid"
+        },
+        {
+          "default": "None",
+          "name": "controller"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "self.assertRaises(exception, controller._evacuate, self.admin_req, uuid or self.UUID, body=body)",
+          "line": 288
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 292,
+        "end": 297
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_valid_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 299,
+        "end": 304
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_disable_password_return",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 307,
+        "end": 308
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_enable_password_return",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 311,
+        "end": 312
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_invalid_on_shared_storage",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 315,
+        "end": 316
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_not_shared_pass_generated",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 320,
+        "end": 321
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_pass_generated",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 325,
+        "end": 328
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_without_on_shared_storage",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 330,
+        "end": 332
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_no_target",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 334,
+        "end": 339
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_shared_and_pass",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 343,
+        "end": 344
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_target",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 348,
+        "end": 349
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_underscore_in_hostname",
+      "kind": "method",
+      "scope": "EvacuateTestV214",
+      "lineRange": {
+        "start": 352,
+        "end": 356
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_save"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EvacuateTestV229",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 359,
+        "end": 392
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "EvacuateTestV229",
+      "lineRange": {
+        "start": 360,
+        "end": 364
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV229",
+      "lineRange": {
+        "start": 367,
+        "end": 374
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_valid_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV229",
+      "lineRange": {
+        "start": 376,
+        "end": 381
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_forced_host",
+      "kind": "method",
+      "scope": "EvacuateTestV229",
+      "lineRange": {
+        "start": 384,
+        "end": 388
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_forced_evacuate_with_no_host_provided",
+      "kind": "method",
+      "scope": "EvacuateTestV229",
+      "lineRange": {
+        "start": 390,
+        "end": 392
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EvacuateTestV268",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 395,
+        "end": 418
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "EvacuateTestV268",
+      "lineRange": {
+        "start": 396,
+        "end": 400
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_with_valid_instance",
+      "kind": "method",
+      "scope": "EvacuateTestV268",
+      "lineRange": {
+        "start": 402,
+        "end": 407
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_instance_with_forced_host",
+      "kind": "method",
+      "scope": "EvacuateTestV268",
+      "lineRange": {
+        "start": 410,
+        "end": 414
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "mock_evacuate"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_forced_evacuate_with_no_host_provided",
+      "kind": "method",
+      "scope": "EvacuateTestV268",
+      "lineRange": {
+        "start": 416,
+        "end": 418
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "EvacuateTestV295",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 421,
+        "end": 447
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "setUp",
+      "kind": "method",
+      "scope": "EvacuateTestV295",
+      "lineRange": {
+        "start": 422,
+        "end": 429
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_version_error",
+      "kind": "method",
+      "scope": "EvacuateTestV295",
+      "lineRange": {
+        "start": 431,
+        "end": 435
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "test_evacuate_unsupported_rpc",
+      "kind": "method",
+      "scope": "EvacuateTestV295",
+      "lineRange": {
+        "start": 437,
+        "end": 447
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "fake_evacuate",
+      "kind": "function",
+      "scope": "EvacuateTestV295.test_evacuate_unsupported_rpc",
+      "lineRange": {
+        "start": 438,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "*args"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "exception.InstanceNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 42,
+        "end": 42
+      }
+    },
+    {
+      "name": "fake_instance.fake_instance_obj",
+      "usage": "call",
+      "via": "nova.tests.unit",
+      "count": 1,
+      "lineRange": {
+        "start": 44,
+        "end": 44
+      }
+    },
+    {
+      "name": "exception.ComputeHostNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 51,
+        "end": 51
+      }
+    },
+    {
+      "name": "exception.HostMappingNotFound",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 53,
+        "end": 53
+      }
+    },
+    {
+      "name": "test.NoDBTestCase",
+      "usage": "inherit",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 62,
+        "end": 62
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "name": "fixtures.MockPatch",
+      "usage": "call",
+      "via": "fixtures",
+      "count": 2,
+      "lineRange": {
+        "start": 72,
+        "end": 72
+      }
+    },
+    {
+      "name": "fakes.HTTPRequest.blank",
+      "usage": "call",
+      "via": "nova.tests.unit.api.openstack",
+      "count": 10,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "evacuate_v21.EvacuateController",
+      "usage": "call",
+      "via": "nova.api.openstack.compute",
+      "count": 1,
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      }
+    },
+    {
+      "name": "mock.patch",
+      "usage": "call",
+      "via": "unittest",
+      "count": 12,
+      "lineRange": {
+        "start": 118,
+        "end": 118
+      }
+    },
+    {
+      "name": "exception.OperationNotSupportedForVTPM",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 120,
+        "end": 120
+      }
+    },
+    {
+      "name": "exception.OperationNotSupportedForVDPAInterface",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 130,
+        "end": 130
+      }
+    },
+    {
+      "name": "exception.ForbiddenWithAccelerators",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "exception.ComputeServiceInUse",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 146,
+        "end": 146
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 4,
+      "lineRange": {
+        "start": 217,
+        "end": 217
+      }
+    },
+    {
+      "name": "mock.patch.object",
+      "usage": "call",
+      "via": "unittest",
+      "count": 6,
+      "lineRange": {
+        "start": 291,
+        "end": 291
+      }
+    },
+    {
+      "name": "testtools.skip",
+      "usage": "call",
+      "via": "testtools",
+      "count": 6,
+      "lineRange": {
+        "start": 306,
+        "end": 306
+      }
+    },
+    {
+      "name": "str",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 414,
+        "end": 414
+      }
+    },
+    {
+      "name": "exception.UnsupportedRPCVersion",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 439,
+        "end": 439
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "unittest",
+      "names": [
+        {
+          "alias": null,
+          "name": "mock"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 15,
+        "end": 15
+      }
+    },
+    {
+      "alias": null,
+      "module": "fixtures",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils.fixture",
+      "names": [
+        {
+          "alias": "uuids",
+          "name": "uuidsentinel"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "testtools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "webob",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.api.openstack.compute",
+      "names": [
+        {
+          "alias": "evacuate_v21",
+          "name": "evacuate"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 22,
+        "end": 22
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": "compute_api",
+          "name": "api"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "test"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit.api.openstack",
+      "names": [
+        {
+          "alias": null,
+          "name": "fakes"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 28,
+        "end": 28
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.tests.unit",
+      "names": [
+        {
+          "alias": null,
+          "name": "fake_instance"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

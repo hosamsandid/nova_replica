@@ -1,0 +1,577 @@
+{
+  "file": "nova/virt/libvirt/machine_type_utils.py",
+  "hash": "3c7a349369f79628c2b04695a40127db771dd484b5783eccb8b63c2e8e1d330a",
+  "language": "Python",
+  "component": "virt",
+  "package": null,
+  "lines": {
+    "blank": 41,
+    "code": 154,
+    "comment": 30,
+    "total": 225
+  },
+  "symbols": [
+    {
+      "name": "import itertools",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.compute import vm_states",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import context as nova_context",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import objects",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import versionutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "SUPPORTED_TYPE_PATTERNS",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 38
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ALLOWED_UPDATE_VM_STATES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 41,
+        "end": 45
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_machine_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 48,
+        "end": 67
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova_context.RequestContext'"
+        },
+        {
+          "name": "instance_uuid",
+          "type": "str"
+        }
+      ],
+      "returnType": "str | None",
+      "returns": [
+        {
+          "expr": "instance.image_meta.properties.get('hw_machine_type')",
+          "line": 67
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_machine_type_support",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 70,
+        "end": 83
+      },
+      "parameters": [
+        {
+          "name": "mtype",
+          "type": "str"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_update_to_existing_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 86,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "name": "existing_type",
+          "type": "str"
+        },
+        {
+          "name": "machine_type",
+          "type": "str"
+        }
+      ],
+      "returnType": "None",
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_check_vm_state",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 120,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "instance",
+          "type": "'objects.Instance'"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "update_machine_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 134,
+        "end": 180
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "nova_context.RequestContext"
+        },
+        {
+          "name": "instance_uuid",
+          "type": "str"
+        },
+        {
+          "name": "machine_type",
+          "type": "str"
+        },
+        {
+          "default": "False",
+          "name": "force",
+          "type": "bool"
+        }
+      ],
+      "returnType": "tuple[str, str]",
+      "returns": [
+        {
+          "expr": "machine_type, existing_mtype",
+          "line": 158
+        },
+        {
+          "expr": "machine_type, existing_mtype",
+          "line": 164
+        },
+        {
+          "expr": "machine_type, existing_mtype",
+          "line": 180
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_get_instances_without_mtype",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 183,
+        "end": 198
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova_context.RequestContext'"
+        }
+      ],
+      "returnType": "list[objects.instance.Instance]",
+      "returns": [
+        {
+          "expr": "instances_without",
+          "line": 198
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_instances_without_type",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 201,
+        "end": 225
+      },
+      "parameters": [
+        {
+          "name": "context",
+          "type": "'nova_context.RequestContext'"
+        },
+        {
+          "default": "None",
+          "name": "cell_uuid",
+          "type": "str | None"
+        }
+      ],
+      "returnType": "list[objects.instance.Instance]",
+      "returns": [
+        {
+          "expr": "list(itertools.chain(*[r for c, r in results.items()]))",
+          "line": 225
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "objects.InstanceMapping.get_by_instance_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 59,
+        "end": 59
+      }
+    },
+    {
+      "name": "nova_context.target_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      }
+    },
+    {
+      "name": "objects.instance.Instance.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 65,
+        "end": 65
+      }
+    },
+    {
+      "name": "any",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "re.match",
+      "usage": "call",
+      "via": "re",
+      "count": 3,
+      "lineRange": {
+        "start": 82,
+        "end": 82
+      }
+    },
+    {
+      "name": "exception.UnsupportedMachineType",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 83,
+        "end": 83
+      }
+    },
+    {
+      "name": "exception.InvalidMachineTypeUpdate",
+      "usage": "call",
+      "via": "nova",
+      "count": 2,
+      "lineRange": {
+        "start": 104,
+        "end": 104
+      }
+    },
+    {
+      "name": "re.findall",
+      "usage": "call",
+      "via": "re",
+      "count": 3,
+      "lineRange": {
+        "start": 110,
+        "end": 110
+      }
+    },
+    {
+      "name": "versionutils.convert_version_to_int",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 2,
+      "lineRange": {
+        "start": 113,
+        "end": 113
+      }
+    },
+    {
+      "name": "exception.InstanceInvalidState",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 129,
+        "end": 129
+      }
+    },
+    {
+      "name": "tuple",
+      "usage": "type",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 139,
+        "end": 139
+      }
+    },
+    {
+      "name": "list",
+      "usage": "type",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 185,
+        "end": 185
+      }
+    },
+    {
+      "name": "objects.InstanceList.get_all",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 191,
+        "end": 191
+      }
+    },
+    {
+      "name": "objects.CellMapping.get_by_uuid",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 212,
+        "end": 212
+      }
+    },
+    {
+      "name": "nova_context.scatter_gather_single_cell",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 213,
+        "end": 213
+      }
+    },
+    {
+      "name": "nova_context.scatter_gather_skip_cell0",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 219,
+        "end": 219
+      }
+    },
+    {
+      "name": "itertools.chain",
+      "usage": "call",
+      "via": "itertools",
+      "count": 1,
+      "lineRange": {
+        "start": 225,
+        "end": 225
+      }
+    },
+    {
+      "name": "list",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 225,
+        "end": 225
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "itertools",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 13,
+        "end": 13
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 14,
+        "end": 14
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.compute",
+      "names": [
+        {
+          "alias": null,
+          "name": "vm_states"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": "nova_context",
+          "name": "context"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 18,
+        "end": 18
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "objects"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "versionutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}

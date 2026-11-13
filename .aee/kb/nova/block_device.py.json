@@ -1,0 +1,1645 @@
+{
+  "file": "nova/block_device.py",
+  "hash": "7d0fb4166a358fcb18d6f699336ba0d4f2e529246dbb3a23a8d19ce95505ff4b",
+  "language": "Python",
+  "component": "nova",
+  "package": null,
+  "lines": {
+    "blank": 150,
+    "code": 468,
+    "comment": 77,
+    "total": 695
+  },
+  "symbols": [
+    {
+      "name": "import copy",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import re",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_log import log as logging",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import strutils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from oslo_utils import units",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "import nova.conf",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import exception",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.i18n import _",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova import utils",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from nova.virt import driver",
+      "kind": "import",
+      "scope": "",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "CONF",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 29,
+        "end": 29
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "LOG",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "DEFAULT_ROOT_DEV_NAME",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 32,
+        "end": 32
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_DEFAULT_MAPPINGS",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 33,
+        "end": 36
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "VIM_IMAGE_ATTRIBUTES",
+      "kind": "constant",
+      "scope": "",
+      "lineRange": {
+        "start": 40,
+        "end": 43
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bdm_legacy_fields",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 45,
+        "end": 48
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bdm_new_fields",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 51,
+        "end": 57
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bdm_db_only_fields",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 60,
+        "end": 60
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "bdm_db_inherited_fields",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 63,
+        "end": 64
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "BlockDeviceDict",
+      "kind": "class",
+      "scope": "",
+      "lineRange": {
+        "start": 67,
+        "end": 260
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_fields",
+      "kind": "field",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 70,
+        "end": 70
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_db_only_fields",
+      "kind": "field",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 71,
+        "end": 72
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_required_fields",
+      "kind": "field",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 74,
+        "end": 74
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "__init__",
+      "kind": "method",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 76,
+        "end": 90
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "default": "None",
+          "name": "bdm_dict"
+        },
+        {
+          "default": "None",
+          "name": "do_not_default"
+        },
+        {
+          "name": "**kwargs"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_validate",
+      "kind": "method",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 92,
+        "end": 127
+      },
+      "parameters": [
+        {
+          "name": "self"
+        },
+        {
+          "name": "bdm_dict"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "",
+          "line": 104
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_legacy",
+      "kind": "method",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 130,
+        "end": 172
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "legacy_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls(new_bdm, non_computable_fields)",
+          "line": 172
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_api",
+      "kind": "method",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 175,
+        "end": 223
+      },
+      "parameters": [
+        {
+          "name": "cls"
+        },
+        {
+          "name": "api_dict"
+        },
+        {
+          "name": "image_uuid_specified"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "cls(api_dict)",
+          "line": 223
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "legacy",
+      "kind": "method",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 225,
+        "end": 252
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "legacy_block_device",
+          "line": 252
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_image_mapping",
+      "kind": "method",
+      "scope": "BlockDeviceDict",
+      "lineRange": {
+        "start": 254,
+        "end": 260
+      },
+      "parameters": [
+        {
+          "name": "self"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mapping_dict",
+          "line": 260
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_safe_for_update",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 263,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "name": "block_device_dict"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "fields <= (bdm_new_fields | bdm_db_inherited_fields | bdm_db_only_fields)",
+          "line": 271
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_image_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 276,
+        "end": 288
+      },
+      "parameters": [
+        {
+          "name": "image_ref"
+        },
+        {
+          "default": "0",
+          "name": "boot_index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "BlockDeviceDict( {'source_type': 'image', 'image_id': image_ref, 'delete_on_termination': True, 'boot_index': boot_index, 'device_type': 'disk', 'destination_type': 'local'})",
+          "line": 282
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "create_blank_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 291,
+        "end": 299
+      },
+      "parameters": [
+        {
+          "name": "size"
+        },
+        {
+          "default": "None",
+          "name": "guest_format"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "BlockDeviceDict( {'source_type': 'blank', 'delete_on_termination': True, 'device_type': 'disk', 'boot_index': -1, 'destination_type': 'local', 'guest_format': guest_format, 'volume_size': size})",
+          "line": 292
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "snapshot_from_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 302,
+        "end": 313
+      },
+      "parameters": [
+        {
+          "name": "snapshot_id"
+        },
+        {
+          "name": "template"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "BlockDeviceDict(snapshot_dict)",
+          "line": 313
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "from_legacy_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 316,
+        "end": 356
+      },
+      "parameters": [
+        {
+          "name": "legacy_block_device_mapping"
+        },
+        {
+          "default": "''",
+          "name": "image_uuid"
+        },
+        {
+          "default": "None",
+          "name": "root_device_name"
+        },
+        {
+          "default": "False",
+          "name": "no_root"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "new_bdms",
+          "line": 328
+        },
+        {
+          "expr": "([image_bdm] if image_bdm else []) + new_bdms",
+          "line": 356
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "properties_root_device_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 359,
+        "end": 375
+      },
+      "parameters": [
+        {
+          "name": "properties"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "root_device_name",
+          "line": 375
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_device_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 378,
+        "end": 391
+      },
+      "parameters": [
+        {
+          "name": "value"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "validate_and_default_volume_size",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 394,
+        "end": 404
+      },
+      "parameters": [
+        {
+          "name": "bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_ephemeral",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 407,
+        "end": 407
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_ephemeral",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 410,
+        "end": 411
+      },
+      "parameters": [
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_ephemeral.match(device_name) is not None",
+          "line": 411
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "ephemeral_num",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 414,
+        "end": 416
+      },
+      "parameters": [
+        {
+          "name": "ephemeral_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "int(_ephemeral.sub('\\\\1', ephemeral_name))",
+          "line": 416
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "is_swap_or_ephemeral",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 419,
+        "end": 421
+      },
+      "parameters": [
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(device_name and (device_name == 'swap' or is_ephemeral(device_name)))",
+          "line": 420
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "new_format_is_swap",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 424,
+        "end": 429
+      },
+      "parameters": [
+        {
+          "name": "bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 428
+        },
+        {
+          "expr": "False",
+          "line": 429
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "new_format_is_ephemeral",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 432,
+        "end": 437
+      },
+      "parameters": [
+        {
+          "name": "bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "True",
+          "line": 436
+        },
+        {
+          "expr": "False",
+          "line": 437
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_root_bdm",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 440,
+        "end": 444
+      },
+      "parameters": [
+        {
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "next(bdm for bdm in bdms if bdm.get('boot_index', -1) == 0)",
+          "line": 442
+        },
+        {
+          "expr": "None",
+          "line": 444
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bdms_to_connect",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 447,
+        "end": 452
+      },
+      "parameters": [
+        {
+          "name": "bdms"
+        },
+        {
+          "default": "False",
+          "name": "exclude_root_mapping"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "(bdm for bdm in bdms if bdm.get('boot_index', -1) != 0 or not exclude_root_mapping)",
+          "line": 451
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "mappings_prepend_dev",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 455,
+        "end": 462
+      },
+      "parameters": [
+        {
+          "name": "mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "mappings",
+          "line": 462
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_dev",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 465,
+        "end": 465
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "strip_dev",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 468,
+        "end": 470
+      },
+      "parameters": [
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_dev.sub('', device_name) if device_name else device_name",
+          "line": 470
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "prepend_dev",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 473,
+        "end": 475
+      },
+      "parameters": [
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "device_name and '/dev/' + strip_dev(device_name)",
+          "line": 475
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_pref",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 478,
+        "end": 478
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "strip_prefix",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 481,
+        "end": 484
+      },
+      "parameters": [
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_pref.sub('', device_name) if device_name else device_name",
+          "line": 484
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "_nums",
+      "kind": "variable",
+      "scope": "",
+      "lineRange": {
+        "start": 487,
+        "end": 487
+      },
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_device_letter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 490,
+        "end": 494
+      },
+      "parameters": [
+        {
+          "name": "device_name"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_nums.sub('', letter) if device_name else device_name",
+          "line": 494
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "generate_device_letter",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 497,
+        "end": 510
+      },
+      "parameters": [
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "unit_dev_name",
+          "line": 510
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "generate_device_name",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 513,
+        "end": 520
+      },
+      "parameters": [
+        {
+          "name": "prefix"
+        },
+        {
+          "name": "index"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "prefix + generate_device_letter(index)",
+          "line": 520
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "instance_block_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 523,
+        "end": 569
+      },
+      "parameters": [
+        {
+          "name": "instance"
+        },
+        {
+          "name": "bdms"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "_DEFAULT_MAPPINGS",
+          "line": 526
+        },
+        {
+          "expr": "mappings",
+          "line": 569
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "match_device",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 572,
+        "end": 577
+      },
+      "parameters": [
+        {
+          "name": "device"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "None",
+          "line": 576
+        },
+        {
+          "expr": "match.groups()",
+          "line": 577
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "volume_in_mapping",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 580,
+        "end": 596
+      },
+      "parameters": [
+        {
+          "name": "mount_device"
+        },
+        {
+          "name": "block_device_info"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "strip_dev(mount_device) in block_device_list",
+          "line": 596
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bdm_ephemeral_disk_size",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 599,
+        "end": 602
+      },
+      "parameters": [
+        {
+          "name": "block_device_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "sum(bdm.get('volume_size', 0) for bdm in block_device_mappings if new_format_is_ephemeral(bdm))",
+          "line": 600
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bdm_swap_list",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 605,
+        "end": 607
+      },
+      "parameters": [
+        {
+          "name": "block_device_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "[bdm for bdm in block_device_mappings if new_format_is_swap(bdm)]",
+          "line": 606
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bdm_local_disk_num",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 610,
+        "end": 612
+      },
+      "parameters": [
+        {
+          "name": "block_device_mappings"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "len([bdm for bdm in block_device_mappings if bdm.get('destination_type') == 'local'])",
+          "line": 611
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_bdm_image_metadata",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 615,
+        "end": 667
+      },
+      "parameters": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "image_api"
+        },
+        {
+          "name": "volume_api"
+        },
+        {
+          "name": "block_device_mapping"
+        },
+        {
+          "default": "True",
+          "name": "legacy_bdm"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "{}",
+          "line": 629
+        },
+        {
+          "expr": "image_meta",
+          "line": 652
+        },
+        {
+          "expr": "get_image_metadata_from_volume(volume)",
+          "line": 666
+        },
+        {
+          "expr": "{}",
+          "line": 667
+        }
+      ],
+      "source": "aee-inventory"
+    },
+    {
+      "name": "get_image_metadata_from_volume",
+      "kind": "function",
+      "scope": "",
+      "lineRange": {
+        "start": 670,
+        "end": 695
+      },
+      "parameters": [
+        {
+          "name": "volume"
+        }
+      ],
+      "returnType": null,
+      "returns": [
+        {
+          "expr": "image_meta",
+          "line": 695
+        }
+      ],
+      "source": "aee-inventory"
+    }
+  ],
+  "referencedSymbols": [
+    {
+      "name": "logging.getLogger",
+      "usage": "call",
+      "via": "oslo_log",
+      "count": 1,
+      "lineRange": {
+        "start": 30,
+        "end": 30
+      }
+    },
+    {
+      "name": "set",
+      "usage": "call",
+      "via": null,
+      "count": 11,
+      "lineRange": {
+        "start": 45,
+        "end": 45
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "inherit",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 67,
+        "end": 67
+      }
+    },
+    {
+      "name": "super",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 77,
+        "end": 77
+      }
+    },
+    {
+      "name": "bool",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 86,
+        "end": 86
+      }
+    },
+    {
+      "name": "exception.InvalidBDMFormat",
+      "usage": "call",
+      "via": "nova",
+      "count": 12,
+      "lineRange": {
+        "start": 99,
+        "end": 99
+      }
+    },
+    {
+      "name": "_",
+      "usage": "call",
+      "via": "nova.i18n",
+      "count": 11,
+      "lineRange": {
+        "start": 111,
+        "end": 111
+      }
+    },
+    {
+      "name": "strutils.bool_from_string",
+      "usage": "call",
+      "via": "oslo_utils",
+      "count": 1,
+      "lineRange": {
+        "start": 114,
+        "end": 114
+      }
+    },
+    {
+      "name": "int",
+      "usage": "call",
+      "via": null,
+      "count": 5,
+      "lineRange": {
+        "start": 124,
+        "end": 124
+      }
+    },
+    {
+      "name": "cls",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 172,
+        "end": 172
+      }
+    },
+    {
+      "name": "exception.InvalidBDMForLegacy",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 249,
+        "end": 249
+      }
+    },
+    {
+      "name": "dict",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 257,
+        "end": 257
+      }
+    },
+    {
+      "name": "utils.check_string_length",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 383,
+        "end": 383
+      }
+    },
+    {
+      "name": "utils.validate_integer",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 397,
+        "end": 397
+      }
+    },
+    {
+      "name": "re.compile",
+      "usage": "call",
+      "via": "re",
+      "count": 4,
+      "lineRange": {
+        "start": 407,
+        "end": 407
+      }
+    },
+    {
+      "name": "next",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 442,
+        "end": 442
+      }
+    },
+    {
+      "name": "ord",
+      "usage": "call",
+      "via": null,
+      "count": 3,
+      "lineRange": {
+        "start": 503,
+        "end": 503
+      }
+    },
+    {
+      "name": "chr",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 506,
+        "end": 506
+      }
+    },
+    {
+      "name": "sorted",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 556,
+        "end": 556
+      }
+    },
+    {
+      "name": "enumerate",
+      "usage": "call",
+      "via": null,
+      "count": 2,
+      "lineRange": {
+        "start": 557,
+        "end": 557
+      }
+    },
+    {
+      "name": "re.match",
+      "usage": "call",
+      "via": "re",
+      "count": 1,
+      "lineRange": {
+        "start": 574,
+        "end": 574
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_mapping",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 583,
+        "end": 583
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_swap",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 586,
+        "end": 586
+      }
+    },
+    {
+      "name": "driver.swap_is_usable",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 587,
+        "end": 587
+      }
+    },
+    {
+      "name": "driver.block_device_info_get_ephemerals",
+      "usage": "call",
+      "via": "nova.virt",
+      "count": 1,
+      "lineRange": {
+        "start": 592,
+        "end": 592
+      }
+    },
+    {
+      "name": "filter",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 595,
+        "end": 595
+      }
+    },
+    {
+      "name": "sum",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 600,
+        "end": 600
+      }
+    },
+    {
+      "name": "len",
+      "usage": "call",
+      "via": null,
+      "count": 1,
+      "lineRange": {
+        "start": 611,
+        "end": 611
+      }
+    },
+    {
+      "name": "exception.InvalidBDMImage",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 654,
+        "end": 654
+      }
+    },
+    {
+      "name": "exception.InvalidBDMVolume",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 661,
+        "end": 661
+      }
+    },
+    {
+      "name": "exception.InvalidBDMVolumeNotBootable",
+      "usage": "call",
+      "via": "nova",
+      "count": 1,
+      "lineRange": {
+        "start": 664,
+        "end": 664
+      }
+    },
+    {
+      "name": "copy.copy",
+      "usage": "call",
+      "via": "copy",
+      "count": 1,
+      "lineRange": {
+        "start": 671,
+        "end": 671
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "alias": null,
+      "module": "copy",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 16,
+        "end": 16
+      }
+    },
+    {
+      "alias": null,
+      "module": "re",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 17,
+        "end": 17
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_log",
+      "names": [
+        {
+          "alias": "logging",
+          "name": "log"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 19,
+        "end": 19
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "strutils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 20,
+        "end": 20
+      }
+    },
+    {
+      "alias": null,
+      "module": "oslo_utils",
+      "names": [
+        {
+          "alias": null,
+          "name": "units"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 21,
+        "end": 21
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.conf",
+      "names": [],
+      "relative": false,
+      "style": "import",
+      "lineRange": {
+        "start": 23,
+        "end": 23
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "exception"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 24,
+        "end": 24
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.i18n",
+      "names": [
+        {
+          "alias": null,
+          "name": "_"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 25,
+        "end": 25
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova",
+      "names": [
+        {
+          "alias": null,
+          "name": "utils"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 26,
+        "end": 26
+      }
+    },
+    {
+      "alias": null,
+      "module": "nova.virt",
+      "names": [
+        {
+          "alias": null,
+          "name": "driver"
+        }
+      ],
+      "relative": false,
+      "style": "from",
+      "lineRange": {
+        "start": 27,
+        "end": 27
+      }
+    }
+  ],
+  "sideEffects": [],
+  "securitySurface": [],
+  "injection_flags": [],
+  "warnings": [
+    "lizard failed or is missing: nloc and ccn not recorded"
+  ]
+}
