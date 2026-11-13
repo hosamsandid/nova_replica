@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Deterministic replacement of the Fact Extractor agent.
 
-Builds one knowledge-base record per source file from tool output only:
-`aee-inventory` (symbols, line counts, package, imports, references), `lizard`
-(nloc and cyclomatic complexity per function) and, for files the inventory cannot
-parse, `ctags`. Nothing is read or interpreted by a model, so the agent-filled
-parts of the old record are gone: no `source: "manual"` symbols, and `sideEffects`,
-`securitySurface` and `injection_flags` are always `[]`.
+Builds one knowledge-base record per source file from tool output and fixed pattern
+rules; nothing is read or interpreted by a model. Symbols, imports, references and line
+counts come from `aee-inventory`, complexity from `lizard`, and for files the inventory
+cannot parse symbols come from `ctags`. `securitySurface`, `sideEffects` and
+`injection_flags` come from pattern rules (see "surface rules" below): coarser than a
+reader's judgment, but reproducible. There are no `source: "manual"` symbols.
 
 Usage: aee-extract [--aee DIR] [--sync] [--publish] [FILE ...]
 
@@ -24,6 +24,7 @@ that hash. Output: .aee/kb/<file>.json per file, and one line per file appended 
 Exit code and stdout: 0 done; 10 `[PASS]` (nothing to extract); 1 `[ERROR] ...`.
 """
 import argparse
+import ast
 import csv
 import hashlib
 import io
@@ -32,6 +33,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tokenize
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -268,6 +270,218 @@ def build_references(inv):
     return refs
 
 
+# ---------------------------------------------------------------- surface rules
+# Pattern rules for securitySurface (entry-point / sink / privilege), sideEffects and
+# injection_flags. Python is read with the `ast` module; JavaScript, Go, Java, C and C++ with line
+# regexes (block comments skipped). A language without rules says so in `warnings`.
+# Descriptions never contain string literals, so no secret value can reach a KB record.
+
+INJECTION_RE = re.compile(
+    r"ignore (all )?(previous|prior) instructions|disregard (the )?(above|previous)|you are now"
+    r"|system prompt|mark (all|every)\b.*\b(safe|clean|false positive)|do not report", re.I)
+ROUTE_ATTRS = {"route", "get", "post", "put", "delete", "patch"}
+PRIV_RE = re.compile(r"require|login|admin|permission|role|auth", re.I)
+PY_SINKS = [
+    (r"^subprocess\.\w+$|^os\.(system|popen)$", "command-exec", "process / shell execution"),
+    (r"^(pickle|cPickle)\.loads?$|^yaml\.(load|unsafe_load)$|^marshal\.loads?$", "deserialization", "deserialization of data"),
+    (r"\.(execute|executemany|executescript)$", "sql", "SQL statement execution"),
+    (r"^(requests|httpx)\.\w+$", "http-client", "outgoing HTTP request"),
+    (r"^send_file$|^send_from_directory$|^open$", "file-access", "file access"),
+    (r"^hashlib\.\w+$|^hmac\.\w+$", "crypto", "hash / MAC computation"),
+    (r"^random\.\w+$", "random", "non-cryptographic random"),
+    (r"^secrets\.\w+$", "random", "cryptographic random"),
+    (r"^(eval|exec|compile)$", "code-eval", "dynamic code evaluation"),
+    (r"^boto3\.\w+$", "cloud-client", "cloud SDK client"),
+]
+PY_ENTRY_CALLS = [(r"^input$", "stdin", "reads standard input"),
+                  (r"^os\.getenv$|^os\.environ\.get$", "env", "reads an environment variable"),
+                  (r"\.parse_args$", "cli-args", "command line arguments")]
+PY_ENTRY_ATTRS = [("sys.argv", "cli-args", "command line arguments"),
+                  ("os.environ", "env", "reads the environment"),
+                  ("sys.stdin", "stdin", "reads standard input")]
+JS_RULES = [
+    ("entry-point", "http-route", r"\b(app|router)\.(get|post|put|delete|use)\s*\(", "HTTP route registration"),
+    ("entry-point", "cli-args", r"\bprocess\.argv\b", "command line input"),
+    ("entry-point", "env", r"\bprocess\.env\b", "environment variable"),
+    ("entry-point", "browser-input", r"\b(location\.(search|hash|href)|URLSearchParams|\.value\b)", "browser supplied input"),
+    ("sink", "code-eval", r"\beval\s*\(|\bnew\s+Function\s*\(", "dynamic code evaluation"),
+    ("sink", "dom-write", r"\.(innerHTML|outerHTML)\s*=|document\.write\s*\(", "unescaped DOM write"),
+    ("sink", "command-exec", r"\b(exec|execFile|spawn|execSync)\s*\(", "process execution"),
+    ("sink", "http-client", r"\bfetch\s*\(", "outgoing HTTP request"),
+]
+GO_RULES = [
+    ("entry-point", "http-route", r"\b(http\.HandleFunc|mux\.Handle\w*|router\.\w+)\s*\(", "HTTP route registration"),
+    ("entry-point", "http-param", r"\br\.(URL\.Query|FormValue|Body)\b", "request data"),
+    ("entry-point", "cli-args", r"\bos\.Args\b", "command line input"),
+    ("entry-point", "env", r"\bos\.Getenv\s*\(", "environment variable"),
+    ("sink", "command-exec", r"\bexec\.Command(Context)?\s*\(", "process execution"),
+    ("sink", "tls-config", r"\btls\.Config\s*\{", "TLS client configuration"),
+    ("sink", "http-client", r"\bhttp\.(Client|Transport|Get|Post)\b", "outgoing HTTP request"),
+    ("sink", "sql", r"\.(Exec|Query|QueryRow)\s*\(", "SQL statement execution"),
+    ("sink", "file-access", r"\bos\.(Open|ReadFile|Create)\s*\(|\bioutil\.ReadFile\s*\(", "file access"),
+]
+JAVA_RULES = [
+    ("entry-point", "http-route", r"@(RestController|Controller|GetMapping|PostMapping|PutMapping|DeleteMapping|PatchMapping|RequestMapping)\b", "HTTP route mapping"),
+    ("entry-point", "http-route", r"\b(void|public)\s+do(Get|Post|Put|Delete)\s*\(\s*HttpServletRequest", "servlet request handler"),
+    ("entry-point", "http-param", r"\.(getParameter|getParameterMap|getHeader|getQueryString|getInputStream|getReader|getCookies)\s*\(|@(RequestParam|PathVariable|RequestBody|RequestHeader)\b", "request data"),
+    ("entry-point", "cli-args", r"\bpublic\s+static\s+void\s+main\s*\(\s*(final\s+)?String", "command line arguments"),
+    ("entry-point", "env", r"\bSystem\.(getenv|getProperty)\s*\(", "environment or system property"),
+    ("entry-point", "stdin", r"\bSystem\.in\b", "reads standard input"),
+    ("privilege", "access-control", r"@(PreAuthorize|PostAuthorize|RolesAllowed|Secured)\b", "access-control annotation"),
+    ("sink", "command-exec", r"\bRuntime\.getRuntime\(\)\s*\.exec\s*\(|\bnew\s+ProcessBuilder\s*\(", "process execution"),
+    ("sink", "deserialization", r"\bnew\s+ObjectInputStream\s*\(|\.readObject\s*\(|\bXMLDecoder\b", "deserialization of data"),
+    ("sink", "sql", r"\.(executeQuery|executeUpdate|executeBatch|createNativeQuery|prepareStatement|createStatement)\s*\(|\bStatement\.execute\s*\(", "SQL statement execution"),
+    ("sink", "file-access", r"\bnew\s+(File|FileInputStream|FileOutputStream|FileReader|FileWriter)\s*\(|\bFiles\.(read|write|newInputStream|newOutputStream|copy|delete|walk)\w*\s*\(", "file access"),
+    ("sink", "http-client", r"\b(HttpClient|HttpURLConnection|RestTemplate|WebClient|OkHttpClient)\b|\.openConnection\s*\(", "outgoing HTTP request"),
+    ("sink", "crypto", r"\b(MessageDigest|Cipher|KeyGenerator|SecretKeySpec|Mac)\.getInstance\s*\(|\bnew\s+SecretKeySpec\s*\(", "cryptographic primitive"),
+    ("sink", "random", r"\bnew\s+Random\s*\(|\bMath\.random\s*\(", "non-cryptographic random"),
+    ("sink", "code-eval", r"\bScriptEngine\b|\.eval\s*\(|\bClass\.forName\s*\(", "dynamic code evaluation or loading"),
+]
+C_RULES = [
+    ("entry-point", "cli-args", r"\bmain\s*\(\s*int\s+argc\b|\bargv\s*\[", "command line arguments"),
+    ("entry-point", "env", r"\b(secure_)?getenv\s*\(", "environment variable"),
+    ("entry-point", "stdin", r"\b(scanf|gets|getchar)\s*\(|\bfgets\s*\([^)]*\bstdin\b|\bstd::cin\b", "reads standard input"),
+    ("entry-point", "network-input", r"\b(recv|recvfrom|recvmsg|accept)\s*\(", "network input"),
+    ("privilege", "privilege-op", r"\b(setuid|setgid|seteuid|setegid|setresuid|setresgid|chroot|capset|prctl)\s*\(", "privilege or sandbox operation"),
+    ("sink", "command-exec", r"\b(system|popen|execl|execlp|execle|execv|execvp|execve|posix_spawn)\s*\(", "process execution"),
+    ("sink", "memory-unsafe", r"\b(strcpy|strcat|sprintf|vsprintf|gets|stpcpy)\s*\(", "unbounded copy or format"),
+    ("sink", "memory-copy", r"\b(memcpy|memmove|strncpy|strncat)\s*\(", "memory copy"),
+    ("sink", "file-access", r"\b(fopen|open|openat|unlink|remove|rename|mkstemp|tmpnam|creat)\s*\(|\bstd::(i|o)?fstream\b", "file access"),
+    ("sink", "network-send", r"\b(connect|send|sendto|sendmsg|bind|listen)\s*\(", "network operation"),
+    ("sink", "random", r"\b(rand|srand|random|srandom)\s*\(|\bstd::rand\b", "non-cryptographic random"),
+    ("sink", "code-eval", r"\bdlopen\s*\(", "dynamic library loading"),
+]
+SIDE_EFFECT_OF_SINK = {"command-exec": "process-spawn", "file-access": "file-io", "http-client": "network",
+                       "sql": "network", "cloud-client": "network", "network-send": "network"}
+RULE_LANGUAGES = ("Python", "JavaScript", "Go", "Java", "C", "C++")
+
+
+def dotted(node):
+    parts = []
+    while isinstance(node, ast.Attribute):
+        parts.append(node.attr)
+        node = node.value
+    if isinstance(node, ast.Name):
+        parts.append(node.id)
+    return ".".join(reversed(parts))
+
+
+def python_surface(text):
+    """(securitySurface, sideEffects) of a Python source, [] for both if it does not parse."""
+    try:
+        tree = ast.parse(text)
+    except (SyntaxError, ValueError):
+        return [], []
+    surface, effects, seen = [], [], set()
+
+    def add(kind, category, desc, start, end, effect=None, target=None):
+        key = (kind, category, start, end)
+        if key in seen:
+            return
+        seen.add(key)
+        surface.append({"kind": kind, "category": category, "description": desc,
+                        "lineRange": lr(start, end)})
+        if effect:
+            effects.append({"kind": effect, "target": target, "lineRange": lr(start, end)})
+
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            for dec in node.decorator_list:
+                name = dotted(dec.func if isinstance(dec, ast.Call) else dec)
+                if name.split(".")[-1] in ROUTE_ATTRS and "." in name:
+                    add("entry-point", "http-route", f"HTTP route handler {node.name}", dec.lineno, node.lineno)
+                elif PRIV_RE.search(name):
+                    add("privilege", "access-control", f"{node.name} is guarded by {name}", dec.lineno, node.lineno)
+        elif isinstance(node, ast.Call):
+            name = dotted(node.func)
+            end = node.end_lineno or node.lineno
+            if name == "signal.signal":
+                effects.append({"kind": "signal-handling", "target": name, "lineRange": lr(node.lineno, end)})
+            for rx, cat, what in PY_ENTRY_CALLS:
+                if name and re.search(rx, name):
+                    add("entry-point", cat, what, node.lineno, end)
+            for rx, cat, what in PY_SINKS:
+                if name and re.search(rx, name):
+                    add("sink", cat, f"call to {name}: {what}", node.lineno, end,
+                        SIDE_EFFECT_OF_SINK.get(cat), name)
+                    break
+        elif isinstance(node, ast.Attribute):
+            name = dotted(node)
+            if name.startswith("request."):
+                add("entry-point", "request-data", f"reads {name}", node.lineno, node.lineno)
+            for prefix, cat, what in PY_ENTRY_ATTRS:
+                if name == prefix:
+                    add("entry-point", cat, what, node.lineno, node.lineno)
+        elif isinstance(node, (ast.Global, ast.Nonlocal)):
+            effects.append({"kind": "global-mutation", "target": ", ".join(node.names),
+                            "lineRange": lr(node.lineno, node.end_lineno or node.lineno)})
+    return surface, effects
+
+
+def regex_surface(lines, rules):
+    surface, effects, in_block = [], [], False
+    for n, line in enumerate(lines, 1):
+        stripped = line.strip()
+        if in_block:
+            in_block = "*/" not in stripped
+            continue
+        if stripped.startswith("/*") and "*/" not in stripped:
+            in_block = True
+            continue
+        if stripped.startswith(("//", "*", "/*")):
+            continue
+        for kind, cat, rx, what in rules:
+            if re.search(rx, line):
+                surface.append({"kind": kind, "category": cat, "description": what, "lineRange": lr(n)})
+                if kind == "sink" and cat in SIDE_EFFECT_OF_SINK:
+                    effects.append({"kind": SIDE_EFFECT_OF_SINK[cat], "target": what, "lineRange": lr(n)})
+    return surface, effects
+
+
+def injection_flags(text, language):
+    """Lines whose text looks like an instruction to an AI reader; recorded, never followed."""
+    wheres = {}
+    if language == "Python":
+        try:
+            for tok in tokenize.generate_tokens(io.StringIO(text).readline):
+                if tok.type in (tokenize.COMMENT, tokenize.STRING):
+                    for n in range(tok.start[0], tok.end[0] + 1):
+                        wheres[n] = "comment" if tok.type == tokenize.COMMENT else "string"
+        except (tokenize.TokenError, IndentationError, SyntaxError):
+            pass
+    out = []
+    for n, line in enumerate(text.splitlines(), 1):
+        if INJECTION_RE.search(line):
+            where = wheres.get(n) or ("comment" if line.strip().startswith(("#", "//", "*", "/*")) else "string")
+            out.append({"where": where, "excerpt": line.strip()[:120], "lineRange": lr(n)})
+    return out
+
+
+def surface_for(path, language):
+    """(securitySurface, sideEffects, injection_flags, warnings) of one source file."""
+    try:
+        text = Path(path).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return [], [], [], ["source file could not be read for the surface rules"]
+    flags = injection_flags(text, language)
+    if language == "Python":
+        surface, effects = python_surface(text)
+    elif language == "JavaScript":
+        surface, effects = regex_surface(text.splitlines(), JS_RULES)
+    elif language == "Go":
+        surface, effects = regex_surface(text.splitlines(), GO_RULES)
+    elif language == "Java":
+        surface, effects = regex_surface(text.splitlines(), JAVA_RULES)
+    elif language in ("C", "C++"):
+        surface, effects = regex_surface(text.splitlines(), C_RULES)
+    else:
+        return [], [], flags, [f"securitySurface and sideEffects are not extracted for {language}: "
+                               "no pattern rules, so empty lists are not evidence of none"]
+    surface.sort(key=lambda e: (e["lineRange"]["start"], e["kind"], e["category"]))
+    effects.sort(key=lambda e: (e["lineRange"]["start"], e["kind"]))
+    return surface, effects, flags, []
+
+
 def build_record(entry, inv, rows, lizard_ok, ctags_symbols):
     warnings = []
     rec = {"file": entry["file"], "hash": entry["hash"], "language": entry["language"],
@@ -297,6 +511,9 @@ def build_record(entry, inv, rows, lizard_ok, ctags_symbols):
     if rec["lines"] is None:
         del rec["lines"]
         warnings.append("line counts not available")
+    rec["securitySurface"], rec["sideEffects"], rec["injection_flags"], surface_warnings = \
+        surface_for(entry["file"], entry["language"])
+    warnings.extend(surface_warnings)
     return rec, tools
 
 
@@ -341,7 +558,8 @@ def run(a):
         written.append(path)
         log_lines.append({"file": path, "batch": e["batch"], "hash": e["hash"],
                           "symbolCount": len(rec["symbols"]), "depCount": len(rec["dependencies"]),
-                          "sideEffectCount": 0, "securitySurfaceCount": 0,
+                          "sideEffectCount": len(rec["sideEffects"]),
+                          "securitySurfaceCount": len(rec["securitySurface"]),
                           "toolsRun": tools, "mode": "deterministic", "extractedAt": now})
     log = aee / "extract-log.jsonl"
     with log.open("a") as fh:

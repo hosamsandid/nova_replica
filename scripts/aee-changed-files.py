@@ -22,12 +22,6 @@ Exit code and stdout:
 
 With the whole repository as source folder, `.aee/` and `.agent-studio/` (the
 pipeline's own output) are excluded.
-
-How To Run :
-
-export PATH="$PWD/scripts:$PATH" 
-scripts/aee-entry.sh
-
 """
 import argparse
 import json
